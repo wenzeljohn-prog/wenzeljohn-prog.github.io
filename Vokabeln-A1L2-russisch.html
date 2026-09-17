@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Тренажёр немецкой лексики</title>
+<style>
+  :root {
+    --accent: #7A4069;
+    --accent-dark: #522B46;
+    --bg: #F7F5F1;
+    --ink: #22201D;
+    --muted: #8B8477;
+    --card: #FFFFFF;
+    --border: #E4DFD6;
+    --ok: #3F8F5F;
+    --bad: #C0473A;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  button, input {
+    -webkit-appearance: none; appearance: none;
+    touch-action: manipulation;
+  }
+  button { -webkit-user-select: none; user-select: none; }
+  body { padding-bottom: 40px; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+  header.top {
+    background: var(--accent); color: #fff; padding: 22px 0 18px;
+    border-bottom: 4px solid var(--accent-dark);
+  }
+  header.top h1 { margin: 0 0 4px; font-size: 1.35rem; font-weight: 700; letter-spacing: 0.01em; }
+  header.top p { margin: 0; font-size: 0.92rem; opacity: 0.92; }
+
+  nav.tabs {
+    display: flex; gap: 6px; overflow-x: auto; margin-top: 16px; padding-bottom: 2px;
+  }
+  nav.tabs button {
+    flex: 0 0 auto; border: none; background: rgba(255,255,255,0.18); color: #fff;
+    padding: 8px 14px; border-radius: 999px; font-size: 0.88rem; cursor: pointer;
+    font-family: inherit; white-space: nowrap;
+  }
+  nav.tabs button.active { background: #fff; color: var(--accent-dark); font-weight: 700; }
+
+  .cats {
+    display: flex; gap: 6px; flex-wrap: wrap; margin: 16px 0 4px;
+  }
+  .cats button {
+    border: 1px solid var(--border); background: var(--card); color: var(--ink);
+    padding: 6px 12px; border-radius: 999px; font-size: 0.84rem; cursor: pointer; font-family: inherit;
+  }
+  .cats button.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+  main { padding-top: 18px; min-height: 320px; }
+  .panel { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+  .hint { color: var(--muted); font-size: 0.86rem; margin: 0 0 16px; }
+
+  /* Flashcards */
+  .card-counter { text-align: center; color: var(--muted); font-size: 0.84rem; margin-bottom: 10px; }
+  .flashcard {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    min-height: 180px; display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; cursor: pointer; font-size: 1.3rem; font-weight: 600;
+    box-shadow: 0 1px 0 var(--border);
+  }
+  .flashcard .back { color: var(--accent-dark); }
+  .flashcard .tag { display: block; font-size: 0.78rem; font-weight: 500; color: var(--muted); margin-bottom: 10px; text-transform: none; }
+  .flash-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .flash-actions button {
+    flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 0.92rem; cursor: pointer; font-family: inherit; font-weight: 600;
+  }
+  .btn-know { background: var(--ok); color: #fff; }
+  .btn-learn { background: #EFE4DA; color: var(--ink); }
+  .row-tools { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; gap: 10px; }
+  .link-btn {
+    background: none; border: none; color: var(--accent-dark); font-size: 0.86rem; cursor: pointer;
+    font-family: inherit; text-decoration: underline; padding: 4px 0;
+  }
+
+  /* Quiz */
+  .quiz-q { font-size: 1.15rem; font-weight: 700; margin-bottom: 18px; text-align: center; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-opts button {
+    text-align: start; padding: 13px 14px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--card); font-size: 0.98rem; cursor: pointer; font-family: inherit;
+  }
+  .quiz-opts button.correct { background: #E4F3E9; border-color: var(--ok); color: var(--ok); font-weight: 700; }
+  .quiz-opts button.wrong { background: #FBE7E4; border-color: var(--bad); color: var(--bad); font-weight: 700; }
+  .quiz-opts button[disabled] { cursor: default; }
+  .quiz-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 0.86rem; color: var(--muted); }
+  .quiz-feedback { text-align: center; margin-top: 14px; font-weight: 700; min-height: 1.4em; }
+  .quiz-feedback.ok { color: var(--ok); }
+  .quiz-feedback.bad { color: var(--bad); }
+  .primary-btn {
+    display: block; width: 100%; margin-top: 14px; padding: 13px; border-radius: 10px; border: none;
+    background: var(--accent); color: #fff; font-size: 0.96rem; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .center-msg { text-align: center; padding: 20px 0; }
+  .center-msg .big { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; }
+
+  /* Matching */
+  .match-cols { display: flex; gap: 10px; }
+  .match-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .match-col button {
+    padding: 11px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--card);
+    font-size: 0.88rem; cursor: pointer; font-family: inherit; text-align: start;
+  }
+  .match-col button.selected { border-color: var(--accent); background: #EAF3F3; }
+  .match-col button.matched { background: #E4F3E9; border-color: var(--ok); color: var(--ok); cursor: default; }
+  .match-col button.flash-wrong { background: #FBE7E4; border-color: var(--bad); }
+  .match-col button[disabled] { cursor: default; }
+
+  /* Typing */
+  .type-prompt { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; text-align: center; }
+  .type-input {
+    width: 100%; padding: 13px 14px; border-radius: 10px; border: 1px solid var(--border);
+    font-size: 16px; font-family: inherit; margin-bottom: 12px; background: var(--card); color: var(--ink);
+  }
+  .type-input.ok { border-color: var(--ok); }
+  .type-input.bad { border-color: var(--bad); }
+  .type-feedback { min-height: 1.4em; font-weight: 700; margin-bottom: 6px; }
+  .type-feedback.ok { color: var(--ok); }
+  .type-feedback.bad { color: var(--bad); }
+  .type-answer { color: var(--muted); font-size: 0.9rem; }
+
+  /* Progress */
+  .prog-row { margin-bottom: 18px; }
+  .prog-label { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 6px; }
+  .prog-bar-bg { background: var(--border); border-radius: 999px; height: 10px; overflow: hidden; }
+  .prog-bar-fill { background: var(--accent); height: 100%; border-radius: 999px; }
+  .reset-btn { background: none; border: 1px solid var(--bad); color: var(--bad); padding: 9px 16px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 0.86rem; margin-top: 6px; }
+
+  footer.note { text-align: center; color: var(--muted); font-size: 0.78rem; margin-top: 28px; padding: 0 16px; }
+
+  @media (max-width: 420px) {
+    .flashcard { font-size: 1.12rem; min-height: 160px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>Тренажёр немецкой лексики</h1>
+    <p>Профессии, досуг и личные данные (A1/A2)</p>
+    <nav class="tabs" id="tabs"></nav>
+  </div>
+</header>
+<div class="wrap">
+  <div class="cats" id="cats"></div>
+  <main id="app"></main>
+  <footer class="note">Работает полностью офлайн — сохраните этот файл и открывайте его в браузере в любое время.</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var VOCAB = [{"id": "a1", "cat": "A", "de": "der Altenpfleger, die Altenpflegerin", "core": null, "en": "elderly caregiver / geriatric nurse assistant", "ru": "работник по уходу за пожилыми (сиделка)", "ar": "مقدّم/ـة رعاية لكبار السن", "tr": "yaşlı bakım elemanı"}, {"id": "a2", "cat": "A", "de": "der Arzt, die Ärztin", "core": null, "en": "doctor", "ru": "врач", "ar": "طبيب / طبيبة", "tr": "doktor"}, {"id": "a3", "cat": "A", "de": "der Friseur, die Friseurin", "core": null, "en": "hairdresser", "ru": "парикмахер", "ar": "حلاق / مصففة شعر", "tr": "kuaför"}, {"id": "a4", "cat": "A", "de": "der Hausmann, die Hausfrau", "core": null, "en": "stay-at-home dad / homemaker", "ru": "домохозяин / домохозяйка", "ar": "رب منزل / ربة منزل", "tr": "ev erkeği / ev hanımı"}, {"id": "a5", "cat": "A", "de": "der Ingenieur, die Ingenieurin", "core": null, "en": "engineer", "ru": "инженер", "ar": "مهندس / مهندسة", "tr": "mühendis"}, {"id": "a6", "cat": "A", "de": "der Koch, die Köchin", "core": null, "en": "cook / chef", "ru": "повар", "ar": "طاهٍ / طاهية", "tr": "aşçı"}, {"id": "a7", "cat": "A", "de": "der Lehrer, die Lehrerin", "core": null, "en": "teacher", "ru": "учитель / учительница", "ar": "معلم / معلمة", "tr": "öğretmen"}, {"id": "a8", "cat": "A", "de": "der Mechatroniker, die Mechatronikerin", "core": null, "en": "mechatronics technician", "ru": "специалист по мехатронике", "ar": "فني/ة ميكاترونكس", "tr": "mekatronik teknisyeni"}, {"id": "a9", "cat": "A", "de": "der Polizist, die Polizistin", "core": null, "en": "police officer", "ru": "полицейский", "ar": "شرطي / شرطية", "tr": "polis memuru"}, {"id": "a10", "cat": "A", "de": "der Sänger, die Sängerin", "core": null, "en": "singer", "ru": "певец / певица", "ar": "مغني / مغنية", "tr": "şarkıcı"}, {"id": "a11", "cat": "A", "de": "der Taxifahrer, die Taxifahrerin", "core": null, "en": "taxi driver", "ru": "таксист", "ar": "سائق / سائقة تاكسي", "tr": "taksi şoförü"}, {"id": "a12", "cat": "A", "de": "der Verkäufer, die Verkäuferin", "core": null, "en": "salesperson / shop assistant", "ru": "продавец / продавщица", "ar": "بائع / بائعة", "tr": "satış elemanı"}, {"id": "a13", "cat": "A", "de": "arbeiten (als)", "core": "arbeiten", "en": "to work (as)", "ru": "работать (кем-то, в качестве)", "ar": "يعمل (بصفة / كـ)", "tr": "çalışmak (olarak)"}, {"id": "a14", "cat": "A", "de": "der Beruf: von Beruf sein", "core": null, "en": "profession: to be ... by profession (e.g. \"Ich bin Lehrer von Beruf\" = I am a teacher by profession)", "ru": "профессия: быть по профессии (например, «Ich bin Lehrer von Beruf» — «Я учитель по профессии»)", "ar": "المهنة: أن تكون ... من حيث المهنة (مثال: «Ich bin Lehrer von Beruf» = أنا معلم بحكم المهنة)", "tr": "meslek: mesleği ... olmak (örn. \"Ich bin Lehrer von Beruf\" = Mesleğim öğretmenlik)"}, {"id": "a15", "cat": "A", "de": "was", "core": "was", "en": "what", "ru": "что", "ar": "ماذا", "tr": "ne"}, {"id": "a16", "cat": "A", "de": "beruflich", "core": "beruflich", "en": "professionally (e.g. \"Was machst du beruflich?\" = What do you do for a living?)", "ru": "профессионально, по работе (например, «Was machst du beruflich?» — «Чем ты занимаешься по работе?»)", "ar": "مهنياً (مثال: «Was machst du beruflich?» = ماذا تعمل؟)", "tr": "meslek olarak (örn. \"Was machst du beruflich?\" = Ne iş yapıyorsun?)"}, {"id": "a17", "cat": "A", "de": "machen: beruflich machen", "core": "beruflich machen", "en": "to do: to do for a living", "ru": "делать: заниматься по профессии", "ar": "يفعل: يعمل مهنياً", "tr": "yapmak: meslek olarak yapmak"}, {"id": "a18", "cat": "A", "de": "jetzt", "core": "jetzt", "en": "now", "ru": "сейчас", "ar": "الآن", "tr": "şimdi"}, {"id": "a19", "cat": "A", "de": "falsch", "core": "falsch", "en": "wrong / false", "ru": "неправильно", "ar": "خطأ", "tr": "yanlış"}, {"id": "a20", "cat": "A", "de": "aber", "core": "aber", "en": "but", "ru": "но", "ar": "لكن", "tr": "ama"}, {"id": "a21", "cat": "A", "de": "auch", "core": "auch", "en": "also / too", "ru": "тоже", "ar": "أيضاً", "tr": "de / da (ayrıca)"}, {"id": "a22", "cat": "A", "de": "das Auto", "core": "das Auto", "en": "the car", "ru": "машина", "ar": "السيارة", "tr": "araba"}, {"id": "a23", "cat": "A", "de": "das Heimatland", "core": "das Heimatland", "en": "home country", "ru": "родина, страна происхождения", "ar": "الوطن الأم", "tr": "anavatan / memleket"}, {"id": "a24", "cat": "A", "de": "in: in Deutschland", "core": "in Deutschland", "en": "in: in Germany", "ru": "в: в Германии", "ar": "في: في ألمانيا", "tr": "-de / -da: Almanya'da"}, {"id": "a25", "cat": "A", "de": "der Kurs", "core": "der Kurs", "en": "the course (e.g. a language course, Deutschkurs)", "ru": "курс (например, языковые курсы, Deutschkurs)", "ar": "الدورة (مثال: دورة لغة، Deutschkurs)", "tr": "kurs (örn. dil kursu, Deutschkurs)"}, {"id": "a26", "cat": "A", "de": "lernen", "core": "lernen", "en": "to learn", "ru": "учить, изучать", "ar": "يتعلّم", "tr": "öğrenmek"}, {"id": "a27", "cat": "A", "de": "nicht", "core": "nicht", "en": "not", "ru": "не", "ar": "ليس / لا", "tr": "değil"}, {"id": "a28", "cat": "A", "de": "reparieren", "core": "reparieren", "en": "to repair", "ru": "ремонтировать", "ar": "يصلّح", "tr": "tamir etmek"}, {"id": "a29", "cat": "A", "de": "studieren", "core": "studieren", "en": "to study (at university — different from \"lernen\" = to learn)", "ru": "учиться (в университете; отличается от «lernen» — учить/изучать)", "ar": "يدرس (في الجامعة، بخلاف «lernen» بمعنى يتعلّم)", "tr": "(üniversitede) okumak / öğrenim görmek (\"lernen\"den farklı olarak)"}, {"id": "a30", "cat": "A", "de": "der Mann, die Frau", "core": null, "en": "the man, the woman", "ru": "мужчина, женщина", "ar": "الرجل، المرأة", "tr": "erkek, kadın"}, {"id": "a31", "cat": "A", "de": "der Busfahrer, die Busfahrerin", "core": null, "en": "bus driver", "ru": "водитель автобуса", "ar": "سائق / سائقة حافلة", "tr": "otobüs şoförü"}, {"id": "a32", "cat": "A", "de": "der Kellner, die Kellnerin", "core": null, "en": "waiter / waitress", "ru": "официант / официантка", "ar": "نادل / نادلة", "tr": "garson"}, {"id": "a33", "cat": "A", "de": "Was bist du von Beruf?", "core": "Was bist du von Beruf?", "en": "What is your profession?", "ru": "Кто ты по профессии?", "ar": "ما مهنتك؟", "tr": "Mesleğin ne?"}, {"id": "a34", "cat": "A", "de": "Was machst du beruflich?", "core": "Was machst du beruflich?", "en": "What do you do for a living?", "ru": "Чем ты занимаешься по работе?", "ar": "بماذا تعمل؟", "tr": "Ne iş yapıyorsun?"}, {"id": "a35", "cat": "A", "de": "Ich bin ... von Beruf. / Ich arbeite als ... bei ...", "core": null, "en": "I am a ... by profession. / I work as a ... at ...", "ru": "Я по профессии ... . / Я работаю ... в ...", "ar": "أنا ... من حيث المهنة. / أعمل كـ ... في ...", "tr": "Mesleğim ... . / ...'de ... olarak çalışıyorum."}, {"id": "a36", "cat": "A", "de": "Ich arbeite jetzt nicht. / Ich lerne Deutsch.", "core": null, "en": "I'm not working right now. / I'm learning German.", "ru": "Сейчас я не работаю. / Я учу немецкий.", "ar": "لا أعمل الآن. / أتعلّم الألمانية.", "tr": "Şu anda çalışmıyorum. / Almanca öğreniyorum."}, {"id": "a37", "cat": "A", "de": "Stimmt! Richtig! / Leider falsch!", "core": null, "en": "That's right! Correct! / Unfortunately wrong!", "ru": "Верно! Правильно! / К сожалению, неверно!", "ar": "صحيح! هذا صحيح! / للأسف خطأ!", "tr": "Doğru! Tamamdır! / Maalesef yanlış!"}, {"id": "b1", "cat": "B", "de": "bekannt", "core": "bekannt", "en": "known / famous (e.g. \"ein bekannter Sänger\" = a famous singer)", "ru": "известный (например, «ein bekannter Sänger» — известный певец)", "ar": "معروف / مشهور (مثال: «ein bekannter Sänger» = مغني مشهور)", "tr": "tanınmış / ünlü (örn. \"ein bekannter Sänger\" = ünlü bir şarkıcı)"}, {"id": "b2", "cat": "B", "de": "das Buch", "core": "das Buch", "en": "the book", "ru": "книга", "ar": "الكتاب", "tr": "kitap"}, {"id": "b3", "cat": "B", "de": "er", "core": "er", "en": "he", "ru": "он", "ar": "هو", "tr": "o (erkek)"}, {"id": "b4", "cat": "B", "de": "der Film: Filme machen", "core": "Filme machen", "en": "the film: to make films", "ru": "фильм: снимать фильмы", "ar": "الفيلم: يصنع أفلاماً", "tr": "film: film çekmek"}, {"id": "b5", "cat": "B", "de": "schon lange", "core": "schon lange", "en": "for a long time (already)", "ru": "уже долго, давно", "ar": "منذ وقت طويل", "tr": "uzun zamandır"}, {"id": "b6", "cat": "B", "de": "sie", "core": "sie", "en": "she", "ru": "она", "ar": "هي", "tr": "o (kadın)"}, {"id": "b7", "cat": "B", "de": "sie (Pl.)", "core": "sie", "en": "they", "ru": "они", "ar": "هم / هن", "tr": "onlar"}, {"id": "b8", "cat": "B", "de": "wo", "core": "wo", "en": "where", "ru": "где", "ar": "أين", "tr": "nerede"}, {"id": "b9", "cat": "B", "de": "wohnen (in)", "core": "wohnen", "en": "to live (in)", "ru": "жить (в)", "ar": "يسكن (في)", "tr": "oturmak (-de / -da)"}, {"id": "b10", "cat": "B", "de": "das Lied", "core": "das Lied", "en": "the song", "ru": "песня", "ar": "الأغنية", "tr": "şarkı"}, {"id": "b11", "cat": "B", "de": "singen: Lieder singen", "core": "Lieder singen", "en": "to sing: to sing songs", "ru": "петь: петь песни", "ar": "يغنّي: يغنّي أغاني", "tr": "şarkı söylemek: şarkı söylemek"}, {"id": "b12", "cat": "B", "de": "der Sport: Sport machen", "core": "Sport machen", "en": "sport: to do sports / exercise", "ru": "спорт: заниматься спортом", "ar": "الرياضة: يمارس الرياضة", "tr": "spor: spor yapmak"}, {"id": "b13", "cat": "B", "de": "trainieren", "core": "trainieren", "en": "to train / practice", "ru": "тренироваться", "ar": "يتدرّب", "tr": "antrenman yapmak"}, {"id": "b14", "cat": "B", "de": "tanzen", "core": "tanzen", "en": "to dance", "ru": "танцевать", "ar": "يرقص", "tr": "dans etmek"}, {"id": "b15", "cat": "B", "de": "der Tee", "core": "der Tee", "en": "the tea", "ru": "чай", "ar": "الشاي", "tr": "çay"}, {"id": "b16", "cat": "B", "de": "trinken", "core": "trinken", "en": "to drink", "ru": "пить", "ar": "يشرب", "tr": "içmek"}, {"id": "b17", "cat": "B", "de": "wer: Wer ist das?", "core": "Wer ist das?", "en": "who: Who is that?", "ru": "кто: Кто это?", "ar": "من: من هذا؟", "tr": "kim: Bu kim?"}, {"id": "c1", "cat": "C", "de": "Entschuldigung!", "core": "Entschuldigung!", "en": "Sorry! / Excuse me!", "ru": "Извините!", "ar": "عذراً! / آسف!", "tr": "Özür dilerim! / Affedersiniz!"}, {"id": "c2", "cat": "C", "de": "die Hilfe: Hilfe brauchen", "core": "Hilfe brauchen", "en": "the help: to need help", "ru": "помощь: нуждаться в помощи", "ar": "المساعدة: يحتاج إلى مساعدة", "tr": "yardım: yardıma ihtiyaç duymak"}, {"id": "c3", "cat": "C", "de": "bedeuten", "core": "bedeuten", "en": "to mean", "ru": "означать", "ar": "يعني", "tr": "anlamına gelmek"}, {"id": "c4", "cat": "C", "de": "das Problem", "core": "das Problem", "en": "the problem", "ru": "проблема", "ar": "المشكلة", "tr": "sorun / problem"}, {"id": "c5", "cat": "C", "de": "verstehen", "core": "verstehen", "en": "to understand", "ru": "понимать", "ar": "يفهم", "tr": "anlamak"}, {"id": "c6", "cat": "C", "de": "helfen", "core": "helfen", "en": "to help", "ru": "помогать", "ar": "يساعد", "tr": "yardım etmek"}, {"id": "c7", "cat": "C", "de": "gern / gerne", "core": null, "en": "gladly / happily (e.g. \"Ich helfe gerne\" = I like to help / I'm happy to help)", "ru": "охотно, с удовольствием (например, «Ich helfe gerne» — «Я с удовольствием помогу»)", "ar": "بكل سرور (مثال: «Ich helfe gerne» = أساعد بكل سرور)", "tr": "seve seve, memnuniyetle (örn. \"Ich helfe gerne\" = Yardım etmekten mutluluk duyarım)"}, {"id": "c8", "cat": "C", "de": "das Formular", "core": "das Formular", "en": "the form (document)", "ru": "бланк, форма (документ)", "ar": "الاستمارة", "tr": "form (belge)"}, {"id": "c9", "cat": "C", "de": "der Vorname", "core": "der Vorname", "en": "first name", "ru": "имя", "ar": "الاسم الأول", "tr": "ad (isim)"}, {"id": "c10", "cat": "C", "de": "der Nachname", "core": "der Nachname", "en": "last name / surname", "ru": "фамилия", "ar": "اسم العائلة", "tr": "soyadı"}, {"id": "c11", "cat": "C", "de": "die Adresse", "core": "die Adresse", "en": "the address", "ru": "адрес", "ar": "العنوان", "tr": "adres"}, {"id": "c12", "cat": "C", "de": "die Straße", "core": "die Straße", "en": "the street", "ru": "улица", "ar": "الشارع", "tr": "sokak / cadde"}, {"id": "c13", "cat": "C", "de": "die Hausnummer", "core": "die Hausnummer", "en": "house number", "ru": "номер дома", "ar": "رقم المنزل", "tr": "bina numarası"}, {"id": "c14", "cat": "C", "de": "der Ort", "core": "der Ort", "en": "place / town (e.g. Wohnort = place of residence)", "ru": "место, населённый пункт (например, Wohnort — место жительства)", "ar": "المكان / البلدة (مثال: Wohnort = مكان الإقامة)", "tr": "yer / yerleşim yeri (örn. Wohnort = ikamet yeri)"}, {"id": "c15", "cat": "C", "de": "die Postleitzahl (PLZ)", "core": "die Postleitzahl", "en": "postal code (ZIP code)", "ru": "почтовый индекс", "ar": "الرمز البريدي", "tr": "posta kodu"}, {"id": "c16", "cat": "C", "de": "die Telefonnummer", "core": "die Telefonnummer", "en": "phone number", "ru": "номер телефона", "ar": "رقم الهاتف", "tr": "telefon numarası"}, {"id": "c17", "cat": "C", "de": "die E-Mail-Adresse", "core": "die E-Mail-Adresse", "en": "email address", "ru": "адрес электронной почты", "ar": "عنوان البريد الإلكتروني", "tr": "e-posta adresi"}, {"id": "c18", "cat": "C", "de": "die E-Mail", "core": "die E-Mail", "en": "the email", "ru": "электронное письмо, имейл", "ar": "البريد الإلكتروني", "tr": "e-posta"}, {"id": "c19", "cat": "C", "de": "die Arbeit", "core": "die Arbeit", "en": "the work / job", "ru": "работа", "ar": "العمل", "tr": "iş"}, {"id": "c20", "cat": "C", "de": "ihr", "core": "ihr", "en": "you (plural, informal) (e.g. \"Wie geht es euch?\" = How are you all?)", "ru": "вы (мн.ч., неформ.) (например, «Wie geht es euch?» — «Как у вас дела?»)", "ar": "أنتم / أنتنّ (صيغة الجمع غير الرسمية) (مثال: «Wie geht es euch?» = كيف حالكم؟)", "tr": "siz (çoğul, samimi) (örn. \"Wie geht es euch?\" = Nasılsınız?)"}, {"id": "c21", "cat": "C", "de": "wir", "core": "wir", "en": "we", "ru": "мы", "ar": "نحن", "tr": "biz"}, {"id": "c22", "cat": "C", "de": "mein(e): Das ist mein Vorname.", "core": "Das ist mein Vorname.", "en": "my: This is my first name.", "ru": "мой/моя: Это моё имя.", "ar": "ملكي: هذا اسمي الأول.", "tr": "benim: Bu benim adım."}, {"id": "c23", "cat": "C", "de": "dein(e): Wie ist dein Vorname?", "core": "Wie ist dein Vorname?", "en": "your: What is your first name?", "ru": "твой/твоя: Как твоё имя?", "ar": "ملكك: ما اسمك الأول؟", "tr": "senin: Adın ne?"}, {"id": "c24", "cat": "C", "de": "Wo wohnst du?", "core": "Wo wohnst du?", "en": "Where do you live?", "ru": "Где ты живёшь?", "ar": "أين تسكن؟", "tr": "Nerede oturuyorsun?"}, {"id": "c25", "cat": "C", "de": "Ich wohne in ... / in der ...straße.", "core": null, "en": "I live in ... / on ... street.", "ru": "Я живу в ... / на улице ...", "ar": "أسكن في ... / في شارع ...", "tr": "...'de oturuyorum. / ... caddesinde oturuyorum."}, {"id": "c26", "cat": "C", "de": "Wie ist dein Nachname / deine Adresse / ... ?", "core": null, "en": "What is your last name / address / ...?", "ru": "Как твоя фамилия / твой адрес / ...?", "ar": "ما اسم عائلتك / عنوانك / ...؟", "tr": "Soyadın / adresin ... nedir?"}, {"id": "c27", "cat": "C", "de": "Mein Nachname / Meine Adresse ist ...", "core": null, "en": "My last name / address is ...", "ru": "Моя фамилия / Мой адрес ...", "ar": "اسم عائلتي / عنواني هو ...", "tr": "Soyadım / Adresim ..."}, {"id": "c28", "cat": "C", "de": "Entschuldigung, ich brauche Hilfe.", "core": "Entschuldigung, ich brauche Hilfe.", "en": "Excuse me, I need help.", "ru": "Извините, мне нужна помощь.", "ar": "عذراً، أحتاج إلى مساعدة.", "tr": "Affedersiniz, yardıma ihtiyacım var."}, {"id": "c29", "cat": "C", "de": "Ja? Was ist das Problem?", "core": "Ja? Was ist das Problem?", "en": "Yes? What's the problem?", "ru": "Да? В чём проблема?", "ar": "نعم؟ ما المشكلة؟", "tr": "Evet? Sorun ne?"}, {"id": "c30", "cat": "C", "de": "Ich verstehe das nicht. – ... bedeutet: ...", "core": null, "en": "I don't understand that. – ... means: ...", "ru": "Я это не понимаю. – ... означает: ...", "ar": "لا أفهم ذلك. – ... تعني: ...", "tr": "Bunu anlamıyorum. – ... anlamına gelir: ..."}, {"id": "c31", "cat": "C", "de": "Ah, danke. – Bitte, ich helfe gerne.", "core": null, "en": "Ah, thanks. – You're welcome, happy to help.", "ru": "А, спасибо. – Пожалуйста, рада/рад помочь.", "ar": "آه، شكراً. – عفواً، بكل سرور.", "tr": "Ah, teşekkürler. – Rica ederim, yardımcı olmaktan mutluluk duyarım."}];
+  var STR = {"lang": "ru", "dir": "ltr", "font": "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif", "accent": "#7A4069", "accentDark": "#522B46", "appTitle": "Тренажёр немецкой лексики", "appSubtitle": "Профессии, досуг и личные данные (A1/A2)", "tabFlashcards": "Карточки", "tabQuiz": "Тест", "tabMatch": "Найди пару", "tabType": "Письмо", "tabProgress": "Прогресс", "catAll": "Все", "catA": "Профессии", "catB": "Досуг и повседневная жизнь", "catC": "Общение и личные данные", "categoryLabel": "Категория", "directionToggle": "Сменить направление", "directionDeToTarget": "Немецкий → русский", "directionTargetToDe": "Русский → немецкий", "flashcardFlip": "Нажмите на карточку, чтобы перевернуть", "knowIt": "Я знаю", "stillLearning": "Ещё учу", "cardCounter": "Карточка {n} из {total}", "quizQuestionPrompt": "Что это значит?", "quizCorrect": "Правильно!", "quizWrong": "Не совсем.", "quizNext": "Далее", "quizScore": "Счёт", "quizRestart": "Новый раунд", "quizFinished": "Раунд завершён!", "matchInstructions": "Нажмите на немецкое слово, затем на его перевод.", "matchNewRound": "Новый раунд", "matchAllMatched": "Все пары найдены!", "typeInstructions": "Вы увидите перевод на русском — напишите слово или фразу по-немецки.", "typePlaceholder": "Печатайте здесь ...", "typeCheck": "Проверить", "typeCorrect": "Правильно!", "typeWrong": "Не совсем.", "typeShowAnswer": "Правильный ответ:", "typeNext": "Далее", "progressTitle": "Ваш прогресс", "progressOverall": "Общий результат", "progressByCategory": "По категориям", "progressReset": "Сбросить прогресс", "progressResetConfirm": "Сбросить весь сохранённый прогресс?", "progressNoData": "Пока нет данных о тренировках. Начните с карточек или теста!", "startButton": "Начать", "footerNote": "Работает полностью офлайн — сохраните этот файл и открывайте его в браузере в любое время."};
+  var STORAGE_KEY = "daz_trainer_beruf_progress_ru";
+
+  var state = {
+    tab: "flash",
+    category: "ALL",
+    direction: "de2target",
+    flash: { deck: [], idx: 0, flipped: false },
+    quiz: { deck: [], idx: 0, score: 0, answered: false, finished: false },
+    match: { pairs: [], leftSel: null, rightItems: [], leftItems: [], matchedIds: {} },
+    typeMode: { deck: [], idx: 0, checked: false, lastCorrect: null }
+  };
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function fmt(str, vals) {
+    return str.replace(/\{(\w+)\}/g, function (m, k) {
+      return (vals && (k in vals)) ? vals[k] : m;
+    });
+  }
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined && text !== null) e.textContent = text;
+    return e;
+  }
+
+  function getFiltered() {
+    if (state.category === "ALL") return VOCAB;
+    var out = [];
+    for (var i = 0; i < VOCAB.length; i++) {
+      if (VOCAB[i].cat === state.category) out.push(VOCAB[i]);
+    }
+    return out;
+  }
+
+  function catLabel(c) {
+    if (c === "A") return STR.catA;
+    if (c === "B") return STR.catB;
+    if (c === "C") return STR.catC;
+    return STR.catAll;
+  }
+
+  /* ---------- progress storage ---------- */
+  function loadProgress() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+  }
+  function saveProgress(p) {
+    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); } catch (e) {}
+  }
+  function recordResult(id, isCorrect) {
+    var p = loadProgress();
+    if (!p[id]) p[id] = { correct: 0, wrong: 0 };
+    if (isCorrect) p[id].correct += 1; else p[id].wrong += 1;
+    saveProgress(p);
+  }
+
+  /* ---------- top nav ---------- */
+  function renderTabs() {
+    var nav = document.getElementById("tabs");
+    nav.innerHTML = "";
+    var tabs = [
+      ["flash", STR.tabFlashcards],
+      ["quiz", STR.tabQuiz],
+      ["match", STR.tabMatch],
+      ["type", STR.tabType],
+      ["progress", STR.tabProgress]
+    ];
+    for (var i = 0; i < tabs.length; i++) {
+      (function (key, label) {
+        var b = el("button", key === state.tab ? "active" : "", label);
+        b.addEventListener("click", function () {
+          state.tab = key;
+          initModeIfNeeded(key, true);
+          render();
+        });
+        nav.appendChild(b);
+      })(tabs[i][0], tabs[i][1]);
+    }
+  }
+
+  function renderCats() {
+    var wrap = document.getElementById("cats");
+    if (state.tab === "progress") { wrap.style.display = "none"; wrap.innerHTML = ""; return; }
+    wrap.style.display = "flex";
+    wrap.innerHTML = "";
+    var cats = ["ALL", "A", "B", "C"];
+    for (var i = 0; i < cats.length; i++) {
+      (function (c) {
+        var b = el("button", c === state.category ? "active" : "", catLabel(c));
+        b.addEventListener("click", function () {
+          state.category = c;
+          initModeIfNeeded(state.tab, true);
+          render();
+        });
+        wrap.appendChild(b);
+      })(cats[i]);
+    }
+  }
+
+  /* ---------- mode init ---------- */
+  function initModeIfNeeded(tab, force) {
+    var pool = getFiltered();
+    if (tab === "flash" && (force || state.flash.deck.length === 0)) {
+      state.flash.deck = shuffle(pool);
+      state.flash.idx = 0;
+      state.flash.flipped = false;
+    }
+    if (tab === "quiz" && (force || state.quiz.deck.length === 0)) {
+      state.quiz.deck = shuffle(pool);
+      state.quiz.idx = 0;
+      state.quiz.score = 0;
+      state.quiz.answered = false;
+      state.quiz.finished = false;
+    }
+    if (tab === "match" && (force || state.match.leftItems.length === 0)) {
+      setupMatchRound(pool);
+    }
+    if (tab === "type" && (force || state.typeMode.deck.length === 0)) {
+      var typable = [];
+      for (var i = 0; i < pool.length; i++) if (pool[i].core) typable.push(pool[i]);
+      if (typable.length === 0) typable = VOCAB.filter(function (v) { return !!v.core; });
+      state.typeMode.deck = shuffle(typable);
+      state.typeMode.idx = 0;
+      state.typeMode.checked = false;
+      state.typeMode.lastCorrect = null;
+    }
+  }
+
+  function setupMatchRound(pool) {
+    var n = Math.min(6, pool.length);
+    var chosen = shuffle(pool).slice(0, n);
+    state.match.leftItems = chosen;
+    state.match.rightItems = shuffle(chosen);
+    state.match.leftSel = null;
+    state.match.matchedIds = {};
+  }
+
+  /* ---------- render dispatch ---------- */
+  function render() {
+    renderTabs();
+    renderCats();
+    var app = document.getElementById("app");
+    app.innerHTML = "";
+    if (state.tab === "flash") renderFlash(app);
+    else if (state.tab === "quiz") renderQuiz(app);
+    else if (state.tab === "match") renderMatch(app);
+    else if (state.tab === "type") renderType(app);
+    else renderProgress(app);
+  }
+
+  /* ---------- Flashcards ---------- */
+  function renderFlash(app) {
+    var deck = state.flash.deck;
+    if (deck.length === 0) { app.appendChild(el("p", "hint", STR.progressNoData)); return; }
+    if (state.flash.idx >= deck.length) { state.flash.idx = 0; }
+    var item = deck[state.flash.idx];
+
+    var panel = el("div", "panel");
+    panel.appendChild(el("p", "card-counter", fmt(STR.cardCounter, { n: state.flash.idx + 1, total: deck.length })));
+
+    var frontIsDe = state.direction === "de2target";
+    var frontText = frontIsDe ? item.de : item[STR.lang];
+    var backText = frontIsDe ? item[STR.lang] : item.de;
+
+    var card = el("div", "flashcard");
+    var tag = el("span", "tag", state.flash.flipped ? "" : STR.flashcardFlip);
+    var txt = el("div", state.flash.flipped ? "back" : "front", state.flash.flipped ? backText : frontText);
+    card.appendChild(tag);
+    card.appendChild(txt);
+    card.addEventListener("click", function () {
+      state.flash.flipped = !state.flash.flipped;
+      render();
+    });
+    panel.appendChild(card);
+
+    var actions = el("div", "flash-actions");
+    var learnBtn = el("button", "btn-learn", STR.stillLearning);
+    var knowBtn = el("button", "btn-know", STR.knowIt);
+    function advance(isCorrect) {
+      recordResult(item.id, isCorrect);
+      state.flash.idx = (state.flash.idx + 1) % deck.length;
+      state.flash.flipped = false;
+      render();
+    }
+    learnBtn.addEventListener("click", function () { advance(false); });
+    knowBtn.addEventListener("click", function () { advance(true); });
+    actions.appendChild(learnBtn);
+    actions.appendChild(knowBtn);
+    panel.appendChild(actions);
+
+    var tools = el("div", "row-tools");
+    var dirBtn = el("button", "link-btn", STR.directionToggle + ": " + (frontIsDe ? STR.directionDeToTarget : STR.directionTargetToDe));
+    dirBtn.addEventListener("click", function () {
+      state.direction = state.direction === "de2target" ? "target2de" : "de2target";
+      state.flash.flipped = false;
+      render();
+    });
+    tools.appendChild(dirBtn);
+    panel.appendChild(tools);
+
+    app.appendChild(panel);
+  }
+
+  /* ---------- Quiz ---------- */
+  function renderQuiz(app) {
+    var q = state.quiz;
+    var panel = el("div", "panel");
+    if (q.deck.length === 0) { panel.appendChild(el("p", "hint", STR.progressNoData)); app.appendChild(panel); return; }
+
+    if (q.finished || q.idx >= q.deck.length) {
+      var msg = el("div", "center-msg");
+      msg.appendChild(el("div", "big", STR.quizFinished));
+      msg.appendChild(el("div", "", STR.quizScore + ": " + q.score + " / " + q.deck.length));
+      var restart = el("button", "primary-btn", STR.quizRestart);
+      restart.addEventListener("click", function () { initModeIfNeeded("quiz", true); render(); });
+      msg.appendChild(restart);
+      panel.appendChild(msg);
+      app.appendChild(panel);
+      return;
+    }
+
+    var item = q.deck[q.idx];
+    var top = el("div", "quiz-top");
+    top.appendChild(el("span", "", STR.quizScore + ": " + q.score + "/" + q.deck.length));
+    top.appendChild(el("span", "", (q.idx + 1) + " / " + q.deck.length));
+    panel.appendChild(top);
+
+    var frontIsDe = state.direction === "de2target";
+    var promptText = frontIsDe ? item.de : item[STR.lang];
+    var answerField = frontIsDe ? STR.lang : "de";
+
+    panel.appendChild(el("p", "hint", STR.quizQuestionPrompt));
+    panel.appendChild(el("div", "quiz-q", promptText));
+
+    if (!q._options || q._optForId !== item.id) {
+      var pool = getFiltered();
+      var others = [];
+      for (var i = 0; i < pool.length; i++) if (pool[i].id !== item.id) others.push(pool[i]);
+      var distractors = shuffle(others).slice(0, 3);
+      var opts = [item].concat(distractors);
+      opts = shuffle(opts);
+      q._options = opts;
+      q._optForId = item.id;
+    }
+
+    var optWrap = el("div", "quiz-opts");
+    var feedback = el("div", "quiz-feedback");
+    var nextBtn = el("button", "primary-btn", STR.quizNext);
+    nextBtn.style.display = "none";
+    nextBtn.addEventListener("click", function () {
+      q.idx += 1;
+      q.answered = false;
+      render();
+    });
+
+    for (var k = 0; k < q._options.length; k++) {
+      (function (opt) {
+        var label = answerField === "de" ? opt.de : opt[STR.lang];
+        var b = el("button", "", label);
+        b.addEventListener("click", function () {
+          if (q.answered) return;
+          q.answered = true;
+          var isCorrect = opt.id === item.id;
+          recordResult(item.id, isCorrect);
+          if (isCorrect) { q.score += 1; b.className = "correct"; feedback.textContent = STR.quizCorrect; feedback.className = "quiz-feedback ok"; }
+          else {
+            b.className = "wrong"; feedback.textContent = STR.quizWrong; feedback.className = "quiz-feedback bad";
+            var allBtns = optWrap.querySelectorAll("button");
+            for (var m = 0; m < allBtns.length; m++) {
+              if (allBtns[m].textContent === (answerField === "de" ? item.de : item[STR.lang])) allBtns[m].className = "correct";
+            }
+          }
+          var allBtns2 = optWrap.querySelectorAll("button");
+          for (var n2 = 0; n2 < allBtns2.length; n2++) allBtns2[n2].disabled = true;
+          nextBtn.style.display = "block";
+        });
+        optWrap.appendChild(b);
+      })(q._options[k]);
+    }
+
+    panel.appendChild(optWrap);
+    panel.appendChild(feedback);
+    panel.appendChild(nextBtn);
+
+    var tools = el("div", "row-tools");
+    var dirBtn = el("button", "link-btn", STR.directionToggle + ": " + (frontIsDe ? STR.directionDeToTarget : STR.directionTargetToDe));
+    dirBtn.addEventListener("click", function () {
+      state.direction = state.direction === "de2target" ? "target2de" : "de2target";
+      q._options = null;
+      render();
+    });
+    tools.appendChild(dirBtn);
+    panel.appendChild(tools);
+
+    app.appendChild(panel);
+  }
+
+  /* ---------- Matching ---------- */
+  function renderMatch(app) {
+    var panel = el("div", "panel");
+    var m = state.match;
+    if (m.leftItems.length === 0) { panel.appendChild(el("p", "hint", STR.progressNoData)); app.appendChild(panel); return; }
+
+    panel.appendChild(el("p", "hint", STR.matchInstructions));
+
+    var allMatched = m.leftItems.length > 0 && Object.keys(m.matchedIds).length === m.leftItems.length;
+
+    if (allMatched) {
+      var msg = el("div", "center-msg");
+      msg.appendChild(el("div", "big", STR.matchAllMatched));
+      var again = el("button", "primary-btn", STR.matchNewRound);
+      again.addEventListener("click", function () { setupMatchRound(getFiltered()); render(); });
+      msg.appendChild(again);
+      panel.appendChild(msg);
+      app.appendChild(panel);
+      return;
+    }
+
+    var cols = el("div", "match-cols");
+    var leftCol = el("div", "match-col");
+    var rightCol = el("div", "match-col");
+
+    for (var i = 0; i < m.leftItems.length; i++) {
+      (function (item) {
+        var isMatched = !!m.matchedIds[item.id];
+        var cls = isMatched ? "matched" : (m.leftSel === item.id ? "selected" : "");
+        var b = el("button", cls, item.de);
+        b.disabled = isMatched;
+        b.addEventListener("click", function () {
+          m.leftSel = item.id;
+          render();
+        });
+        leftCol.appendChild(b);
+      })(m.leftItems[i]);
+    }
+
+    for (var j = 0; j < m.rightItems.length; j++) {
+      (function (item) {
+        var isMatched = !!m.matchedIds[item.id];
+        var b = el("button", isMatched ? "matched" : "", item[STR.lang]);
+        b.disabled = isMatched;
+        b.addEventListener("click", function () {
+          if (!m.leftSel) return;
+          if (m.leftSel === item.id) {
+            recordResult(item.id, true);
+            m.matchedIds[item.id] = true;
+            m.leftSel = null;
+            render();
+          } else {
+            recordResult(item.id, false);
+            b.className = "flash-wrong";
+            var leftBtns = leftCol.querySelectorAll("button");
+            for (var q2 = 0; q2 < leftBtns.length; q2++) {
+              if (leftBtns[q2].textContent === (function () {
+                    for (var z = 0; z < m.leftItems.length; z++) if (m.leftItems[z].id === m.leftSel) return m.leftItems[z].de;
+                    return "";
+                  })()) leftBtns[q2].className = "flash-wrong";
+            }
+            var selId = m.leftSel;
+            setTimeout(function () {
+              m.leftSel = null;
+              render();
+            }, 550);
+          }
+        });
+        rightCol.appendChild(b);
+      })(m.rightItems[j]);
+    }
+
+    cols.appendChild(leftCol);
+    cols.appendChild(rightCol);
+    panel.appendChild(cols);
+
+    var tools = el("div", "row-tools");
+    var newBtn = el("button", "link-btn", STR.matchNewRound);
+    newBtn.addEventListener("click", function () { setupMatchRound(getFiltered()); render(); });
+    tools.appendChild(newBtn);
+    panel.appendChild(tools);
+
+    app.appendChild(panel);
+  }
+
+  /* ---------- Typing ---------- */
+  function normalize(s) {
+    return s.replace(/[.!?,]+$/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+  }
+
+  function renderType(app) {
+    var panel = el("div", "panel");
+    var t = state.typeMode;
+    if (t.deck.length === 0) { panel.appendChild(el("p", "hint", STR.progressNoData)); app.appendChild(panel); return; }
+    if (t.idx >= t.deck.length) { t.idx = 0; }
+    var item = t.deck[t.idx];
+
+    panel.appendChild(el("p", "hint", STR.typeInstructions));
+    panel.appendChild(el("div", "type-prompt", item[STR.lang]));
+
+    var input = el("input", "type-input");
+    input.type = "text";
+    input.placeholder = STR.typePlaceholder;
+    input.autocomplete = "off";
+    input.autocapitalize = "off";
+    input.setAttribute("autocorrect", "off");
+    input.setAttribute("autocapitalize", "off");
+    input.spellcheck = false;
+
+    var feedback = el("div", "type-feedback");
+    var answerLine = el("div", "type-answer");
+    var checkBtn = el("button", "primary-btn", STR.typeCheck);
+
+    function doCheck() {
+      if (t.checked) return;
+      t.checked = true;
+      var isCorrect = normalize(input.value) === normalize(item.core);
+      recordResult(item.id, isCorrect);
+      t.lastCorrect = isCorrect;
+      if (isCorrect) {
+        input.className = "type-input ok";
+        feedback.textContent = STR.typeCorrect;
+        feedback.className = "type-feedback ok";
+      } else {
+        input.className = "type-input bad";
+        feedback.textContent = STR.typeWrong;
+        feedback.className = "type-feedback bad";
+        answerLine.textContent = STR.typeShowAnswer + " " + item.core;
+      }
+      input.disabled = true;
+      checkBtn.textContent = STR.typeNext;
+    }
+
+    checkBtn.addEventListener("click", function () {
+      if (!t.checked) { doCheck(); }
+      else {
+        t.idx += 1;
+        t.checked = false;
+        t.lastCorrect = null;
+        render();
+      }
+    });
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); checkBtn.click(); }
+    });
+
+    panel.appendChild(input);
+    panel.appendChild(checkBtn);
+    panel.appendChild(feedback);
+    panel.appendChild(answerLine);
+
+    app.appendChild(panel);
+    setTimeout(function () { input.focus(); }, 0);
+  }
+
+  /* ---------- Progress ---------- */
+  function renderProgress(app) {
+    var panel = el("div", "panel");
+    panel.appendChild(el("h2", "", STR.progressTitle));
+
+    var p = loadProgress();
+    var ids = Object.keys(p);
+    var hasData = false;
+    for (var i = 0; i < ids.length; i++) {
+      if (p[ids[i]].correct > 0 || p[ids[i]].wrong > 0) { hasData = true; break; }
+    }
+
+    if (!hasData) {
+      panel.appendChild(el("p", "hint", STR.progressNoData));
+      app.appendChild(panel);
+      return;
+    }
+
+    function tally(items) {
+      var c = 0, w = 0;
+      for (var i2 = 0; i2 < items.length; i2++) {
+        var rec = p[items[i2].id];
+        if (rec) { c += rec.correct; w += rec.wrong; }
+      }
+      return { c: c, w: w };
+    }
+
+    function bar(label, items) {
+      var t = tally(items);
+      var total = t.c + t.w;
+      var pct = total > 0 ? Math.round((t.c / total) * 100) : 0;
+      var row = el("div", "prog-row");
+      var lab = el("div", "prog-label");
+      lab.appendChild(el("span", "", label));
+      lab.appendChild(el("span", "", total > 0 ? (pct + "%") : "—"));
+      row.appendChild(lab);
+      var bg = el("div", "prog-bar-bg");
+      var fill = el("div", "prog-bar-fill");
+      fill.style.width = pct + "%";
+      bg.appendChild(fill);
+      row.appendChild(bg);
+      return row;
+    }
+
+    panel.appendChild(bar(STR.progressOverall, VOCAB));
+    var byCat = el("h3", "", STR.progressByCategory);
+    byCat.style.fontSize = "0.92rem";
+    byCat.style.margin = "18px 0 8px";
+    panel.appendChild(byCat);
+    panel.appendChild(bar(STR.catA, VOCAB.filter(function (v) { return v.cat === "A"; })));
+    panel.appendChild(bar(STR.catB, VOCAB.filter(function (v) { return v.cat === "B"; })));
+    panel.appendChild(bar(STR.catC, VOCAB.filter(function (v) { return v.cat === "C"; })));
+
+    var resetBtn = el("button", "reset-btn", STR.progressReset);
+    resetBtn.addEventListener("click", function () {
+      if (window.confirm(STR.progressResetConfirm)) {
+        saveProgress({});
+        render();
+      }
+    });
+    panel.appendChild(resetBtn);
+
+    app.appendChild(panel);
+  }
+
+  initModeIfNeeded("flash", true);
+  render();
+})();
+</script>
+</body>
+</html>
