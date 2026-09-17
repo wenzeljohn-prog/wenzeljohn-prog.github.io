@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Verben-Übersetzungstrainer A1.1</title>
+<style>
+  :root{
+    --bg:#f4f6f8;
+    --card:#ffffff;
+    --ink:#1f2933;
+    --muted:#6b7684;
+    --accent:#2b6cb0;
+    --accent-dark:#1a4e8a;
+    --good:#2f855a;
+    --good-bg:#e6f6ec;
+    --bad:#c53030;
+    --bad-bg:#fdecec;
+    --border:#dfe4ea;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI",Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:20px 12px 60px;
+  }
+  .wrap{width:100%;max-width:620px;}
+  header{text-align:center;margin-bottom:18px;}
+  h1{font-size:1.35rem;margin:0 0 4px;}
+  .sub{color:var(--muted);font-size:0.92rem;margin:0;}
+
+  .setup{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:20px;
+    margin-bottom:18px;
+  }
+  .setup label{display:block;font-weight:600;margin-bottom:8px;font-size:0.95rem;}
+  select{
+    width:100%;
+    padding:12px 14px;
+    font-size:1rem;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--ink);
+  }
+  .start-btn{
+    width:100%;
+    margin-top:14px;
+    padding:13px;
+    font-size:1.02rem;
+    font-weight:600;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+  }
+  .start-btn:active{background:var(--accent-dark);}
+  .rule-box{
+    margin-top:16px;
+    padding:12px 14px;
+    background:#fff8e6;
+    border:1px solid #f0dca0;
+    border-radius:10px;
+    font-size:0.86rem;
+    line-height:1.5;
+    color:#6b5410;
+  }
+
+  .progress-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+    font-size:0.85rem;
+    color:var(--muted);
+  }
+  .progress-bar{
+    flex:1;
+    height:8px;
+    background:var(--border);
+    border-radius:5px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--accent);
+    width:0%;
+    transition:width .25s ease;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:22px 20px;
+    margin-bottom:16px;
+  }
+  .verb-badge{
+    display:inline-block;
+    background:#eaf1fb;
+    color:var(--accent-dark);
+    font-size:0.78rem;
+    font-weight:700;
+    padding:3px 10px;
+    border-radius:20px;
+    margin-bottom:12px;
+    letter-spacing:.3px;
+  }
+  .prompt-label{
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+  .prompt-sentence{
+    font-size:1.28rem;
+    line-height:1.5;
+    font-weight:600;
+    margin:0;
+  }
+  .prompt-sentence.rtl{direction:rtl;text-align:right;font-family:"Segoe UI","Tahoma",Arial,sans-serif;}
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:20px;
+  }
+  .option{
+    text-align:left;
+    padding:13px 16px;
+    font-size:1rem;
+    border-radius:10px;
+    border:2px solid var(--border);
+    background:#fff;
+    cursor:pointer;
+    color:var(--ink);
+    transition:border-color .15s, background .15s;
+  }
+  .option:active{background:#f0f3f7;}
+  .option.correct{
+    border-color:var(--good);
+    background:var(--good-bg);
+    color:var(--good);
+    font-weight:600;
+  }
+  .option.wrong{
+    border-color:var(--bad);
+    background:var(--bad-bg);
+    color:var(--bad);
+    font-weight:600;
+  }
+  .option[disabled]{cursor:default;}
+
+  .feedback{
+    margin-top:16px;
+    padding:12px 14px;
+    border-radius:10px;
+    font-size:0.92rem;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.ok{background:var(--good-bg);color:var(--good);}
+  .feedback.no{background:var(--bad-bg);color:var(--bad);}
+
+  .next-btn{
+    display:none;
+    width:100%;
+    margin-top:16px;
+    padding:13px;
+    font-size:1rem;
+    font-weight:600;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+  }
+  .next-btn.show{display:block;}
+
+  .result{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:26px 20px;
+    text-align:center;
+  }
+  .result .score{
+    font-size:2.4rem;
+    font-weight:800;
+    color:var(--accent);
+    margin:6px 0;
+  }
+  .result p{color:var(--muted);margin:4px 0 18px;}
+  .verb-table{
+    text-align:left;
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+    font-size:0.88rem;
+  }
+  .verb-table th, .verb-table td{
+    padding:6px 8px;
+    border-bottom:1px solid var(--border);
+  }
+  .verb-table th{color:var(--muted);font-weight:600;}
+  .restart-btn{
+    width:100%;
+    margin-top:18px;
+    padding:13px;
+    font-size:1rem;
+    font-weight:600;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+  }
+
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>🇩🇪 Verben-Übersetzungstrainer</h1>
+    <p class="sub">Präsens · Niveau A1.1 · 17 Verben</p>
+  </header>
+
+  <!-- SETUP SCREEN -->
+  <div id="setup" class="setup">
+    <label for="langSelect">Wähle deine Muttersprache / Choose your native language:</label>
+    <select id="langSelect">
+      <option value="en">English</option>
+      <option value="ru">Русский</option>
+      <option value="uk">Українська</option>
+      <option value="ar">العربية</option>
+      <option value="tr">Türkçe</option>
+    </select>
+    <button class="start-btn" id="startBtn">Training starten</button>
+    <div class="rule-box">
+      💡 <strong>studieren</strong> vs. <strong>lernen</strong><br>
+      <strong>studieren</strong> = nur ein Fach an einer Universität/Hochschule (z. B. Medizin, Informatik).<br>
+      <strong>lernen</strong> = alle anderen Kontexte: eine Sprache, eine Fähigkeit, Schule, Kurs, Vokabeln.
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quiz" class="hidden">
+    <div class="progress-row">
+      <span id="progressText">Frage 1 / 46</span>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <span id="scoreText">✓ 0</span>
+    </div>
+
+    <div class="card">
+      <span class="verb-badge" id="verbBadge">wohnen</span>
+      <div class="prompt-label">Übersetze ins Deutsche:</div>
+      <p class="prompt-sentence" id="promptSentence">…</p>
+
+      <div class="options" id="optionsBox"></div>
+
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="nextBtn">Weiter →</button>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result" class="result hidden">
+    <div class="prompt-label">Ergebnis</div>
+    <div class="score" id="finalScore">0 / 34</div>
+    <p id="finalPct">0 % richtig</p>
+    <table class="verb-table" id="verbTable"></table>
+    <button class="restart-btn" id="restartBtn">Nochmal üben</button>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- DATA ----------
+  // type: "conj" = falsche Verbendung, "verb" = falsches Verb, "order" = falsche Wortstellung
+  var SL_HINT = "\u201Estudieren\u201C gilt nur f\u00FCr ein Fach an einer Universit\u00E4t/Hochschule (z. B. Medizin, Informatik) \u2013 hier ist \u201Estudieren\u201C richtig, nicht \u201Elernen\u201C.";
+  var LS_HINT = "\u201Elernen\u201C passt f\u00FCr alle Kontexte au\u00DFer dem Studium an einer Universit\u00E4t/Hochschule (Sprachen, Schule, Kurse, F\u00E4higkeiten) \u2013 hier ist \u201Elernen\u201C richtig, nicht \u201Estudieren\u201C.";
+  var ITEMS = [
+    {verb:"wohnen", de:"Ich wohne in Berlin.",
+     t:{en:"I live in Berlin.",ru:"Я живу в Берлине.",uk:"Я живу в Берліні.",ar:"أنا أسكن في برلين.",tr:"Ben Berlin'de yaşıyorum."},
+     wrong:[{s:"Ich wohnst in Berlin.",type:"conj"},{s:"Ich komme in Berlin.",type:"verb"},{s:"Berlin wohne ich in.",type:"order"}]},
+    {verb:"wohnen", de:"Wir wohnen in Erfurt.",
+     t:{en:"We live in Erfurt.",ru:"Мы живём в Эрфурте.",uk:"Ми живемо в Ерфурті.",ar:"نحن نسكن في إيرفورت.",tr:"Biz Erfurt'ta yaşıyoruz."},
+     wrong:[{s:"Wir wohnt in Erfurt.",type:"conj"},{s:"Wir kommen in Erfurt.",type:"verb"},{s:"Erfurt wohnen wir in.",type:"order"}]},
+
+    {verb:"kommen", de:"Er kommt aus Syrien.",
+     t:{en:"He comes from Syria.",ru:"Он из Сирии.",uk:"Він з Сирії.",ar:"هو من سوريا.",tr:"O Suriye'den geliyor."},
+     wrong:[{s:"Er komme aus Syrien.",type:"conj"},{s:"Er wohnt aus Syrien.",type:"verb"},{s:"Aus Syrien er kommt.",type:"order"}]},
+    {verb:"kommen", de:"Sie kommen aus der Ukraine.",
+     t:{en:"They come from Ukraine.",ru:"Они из Украины.",uk:"Вони з України.",ar:"هم من أوكرانيا.",tr:"Onlar Ukrayna'dan geliyorlar."},
+     wrong:[{s:"Sie kommt aus der Ukraine.",type:"conj"},{s:"Sie wohnen aus der Ukraine.",type:"verb"},{s:"Die Ukraine kommen sie aus.",type:"order"}]},
+
+    {verb:"arbeiten", de:"Ich arbeite in einer Fabrik.",
+     t:{en:"I work in a factory.",ru:"Я работаю на фабрике.",uk:"Я працюю на фабриці.",ar:"أنا أعمل في مصنع.",tr:"Ben bir fabrikada çalışıyorum."},
+     wrong:[{s:"Ich arbeitest in einer Fabrik.",type:"conj"},{s:"Ich wohne in einer Fabrik.",type:"verb"},{s:"In einer Fabrik ich arbeite.",type:"order"}]},
+    {verb:"arbeiten", de:"Du arbeitest heute.",
+     t:{en:"You work today.",ru:"Ты работаешь сегодня.",uk:"Ти працюєш сьогодні.",ar:"أنت تعمل اليوم.",tr:"Sen bugün çalışıyorsun."},
+     wrong:[{s:"Du arbeite heute.",type:"conj"},{s:"Du kommst heute.",type:"verb"},{s:"Heute du arbeitest.",type:"order"}]},
+
+    {verb:"sprechen", de:"Sie spricht Deutsch.",
+     t:{en:"She speaks German.",ru:"Она говорит по-немецки.",uk:"Вона розмовляє німецькою.",ar:"هي تتحدث الألمانية.",tr:"O Almanca konuşuyor."},
+     wrong:[{s:"Sie sprichst Deutsch.",type:"conj"},{s:"Sie versteht Deutsch.",type:"verb"},{s:"Deutsch sie spricht.",type:"order"}]},
+    {verb:"sprechen", de:"Wir sprechen Englisch.",
+     t:{en:"We speak English.",ru:"Мы говорим по-английски.",uk:"Ми розмовляємо англійською.",ar:"نحن نتحدث الإنجليزية.",tr:"Biz İngilizce konuşuyoruz."},
+     wrong:[{s:"Wir spricht Englisch.",type:"conj"},{s:"Wir verstehen Englisch.",type:"verb"},{s:"Englisch wir sprechen.",type:"order"}]},
+
+    {verb:"brauchen", de:"Ich brauche ein Wörterbuch.",
+     t:{en:"I need a dictionary.",ru:"Мне нужен словарь.",uk:"Мені потрібен словник.",ar:"أنا أحتاج إلى قاموس.",tr:"Benim bir sözlüğe ihtiyacım var."},
+     wrong:[{s:"Ich brauchst ein Wörterbuch.",type:"conj"},{s:"Ich verstehe ein Wörterbuch.",type:"verb"},{s:"Ein Wörterbuch ich brauche.",type:"order"}]},
+    {verb:"brauchen", de:"Wir brauchen Hilfe.",
+     t:{en:"We need help.",ru:"Нам нужна помощь.",uk:"Нам потрібна допомога.",ar:"نحن نحتاج إلى مساعدة.",tr:"Bizim yardıma ihtiyacımız var."},
+     wrong:[{s:"Wir braucht Hilfe.",type:"conj"},{s:"Wir sprechen Hilfe.",type:"verb"},{s:"Hilfe wir brauchen.",type:"order"}]},
+
+    {verb:"verstehen", de:"Ich verstehe das nicht.",
+     t:{en:"I don't understand that.",ru:"Я это не понимаю.",uk:"Я цього не розумію.",ar:"أنا لا أفهم ذلك.",tr:"Ben bunu anlamıyorum."},
+     wrong:[{s:"Ich verstehst das nicht.",type:"conj"},{s:"Ich brauche das nicht.",type:"verb"},{s:"Das nicht ich verstehe.",type:"order"}]},
+    {verb:"verstehen", de:"Er versteht die Frage.",
+     t:{en:"He understands the question.",ru:"Он понимает вопрос.",uk:"Він розуміє питання.",ar:"هو يفهم السؤال.",tr:"O soruyu anlıyor."},
+     wrong:[{s:"Er verstehe die Frage.",type:"conj"},{s:"Er braucht die Frage.",type:"verb"},{s:"Die Frage er versteht.",type:"order"}]},
+
+    {verb:"tanzen", de:"Wir tanzen gern.",
+     t:{en:"We like to dance.",ru:"Мы любим танцевать.",uk:"Ми любимо танцювати.",ar:"نحن نحب الرقص.",tr:"Biz dans etmeyi severiz."},
+     wrong:[{s:"Wir tanzt gern.",type:"conj"},{s:"Wir sprechen gern.",type:"verb"},{s:"Gern wir tanzen.",type:"order"}]},
+    {verb:"tanzen", de:"Sie tanzt gut.",
+     t:{en:"She dances well.",ru:"Она хорошо танцует.",uk:"Вона добре танцює.",ar:"هي ترقص جيدًا.",tr:"O iyi dans ediyor."},
+     wrong:[{s:"Sie tanze gut.",type:"conj"},{s:"Sie spricht gut.",type:"verb"},{s:"Gut sie tanzt.",type:"order"}]},
+
+    {verb:"reparieren", de:"Er repariert das Auto.",
+     t:{en:"He repairs the car.",ru:"Он ремонтирует машину.",uk:"Він ремонтує машину.",ar:"هو يصلح السيارة.",tr:"O arabayı tamir ediyor."},
+     wrong:[{s:"Er reparierst das Auto.",type:"conj"},{s:"Er kommt das Auto.",type:"verb"},{s:"Das Auto er repariert.",type:"order"}]},
+    {verb:"reparieren", de:"Ich repariere den Computer.",
+     t:{en:"I repair the computer.",ru:"Я ремонтирую компьютер.",uk:"Я ремонтую комп'ютер.",ar:"أنا أصلح الحاسوب.",tr:"Ben bilgisayarı tamir ediyorum."},
+     wrong:[{s:"Ich reparierst den Computer.",type:"conj"},{s:"Ich brauche den Computer.",type:"verb"},{s:"Den Computer ich repariere.",type:"order"}]},
+
+    {verb:"heißen", de:"Ich heiße Maria.",
+     t:{en:"My name is Maria.",ru:"Меня зовут Мария.",uk:"Мене звати Марія.",ar:"اسمي ماريا.",tr:"Benim adım Maria."},
+     wrong:[{s:"Ich heißt Maria.",type:"conj"},{s:"Ich wohne Maria.",type:"verb"},{s:"Maria ich heiße.",type:"order"}]},
+    {verb:"heißen", de:"Er heißt Ahmed.",
+     t:{en:"His name is Ahmed.",ru:"Его зовут Ахмед.",uk:"Його звати Ахмед.",ar:"اسمه أحمد.",tr:"Onun adı Ahmed."},
+     wrong:[{s:"Er heiße Ahmed.",type:"conj"},{s:"Er wohnt Ahmed.",type:"verb"},{s:"Ahmed er heißt.",type:"order"}]},
+
+    {verb:"bedeuten", de:"Das bedeutet \"Danke\".",
+     t:{en:"That means \"thank you\".",ru:"Это значит «спасибо».",uk:"Це означає «дякую».",ar:"هذا يعني «شكرًا».",tr:"Bu \"teşekkürler\" demektir."},
+     wrong:[{s:"Das bedeuten \"Danke\".",type:"conj"},{s:"Das sagt \"Danke\".",type:"verb"},{s:"Das \"Danke\" bedeutet.",type:"order"}]},
+    {verb:"bedeuten", de:"Die Wörter bedeuten \"Hallo\".",
+     t:{en:"The words mean \"hello\".",ru:"Эти слова значат «привет».",uk:"Ці слова означають «привіт».",ar:"هذه الكلمات تعني «مرحبًا».",tr:"Bu kelimeler \"merhaba\" demektir."},
+     wrong:[{s:"Die Wörter bedeutet \"Hallo\".",type:"conj"},{s:"Die Wörter sagen \"Hallo\".",type:"verb"},{s:"Die Wörter \"Hallo\" bedeuten.",type:"order"}]},
+
+    {verb:"studieren", de:"Sie studiert Medizin an der Universität.",
+     t:{en:"She studies medicine at university.",ru:"Она изучает медицину в университете.",uk:"Вона вивчає медицину в університеті.",ar:"هي تدرس الطب في الجامعة.",tr:"O üniversitede tıp okuyor."},
+     wrong:[{s:"Sie studierst Medizin an der Universität.",type:"conj"},{s:"Sie lernt Medizin an der Universität.",type:"verb",hint:SL_HINT},{s:"An der Universität sie studiert Medizin.",type:"order"}]},
+    {verb:"studieren", de:"Ich studiere Informatik an der Hochschule.",
+     t:{en:"I study computer science at university.",ru:"Я изучаю информатику в вузе.",uk:"Я вивчаю інформатику у виші.",ar:"أنا أدرس علوم الحاسوب في الجامعة.",tr:"Ben üniversitede bilgisayar bilimi okuyorum."},
+     wrong:[{s:"Ich studierst Informatik an der Hochschule.",type:"conj"},{s:"Ich lerne Informatik an der Hochschule.",type:"verb",hint:SL_HINT},{s:"An der Hochschule ich studiere Informatik.",type:"order"}]},
+    {verb:"studieren", de:"Was studierst du?",
+     t:{en:"What do you study (at university)?",ru:"Что ты изучаешь (в университете)?",uk:"Що ти вивчаєш (в університеті)?",ar:"ماذا تدرس (في الجامعة)؟",tr:"Üniversitede ne okuyorsun?"},
+     wrong:[{s:"Was studiert du?",type:"conj"},{s:"Was lernst du?",type:"verb",hint:SL_HINT},{s:"Du was studierst?",type:"order"}]},
+
+    {verb:"lernen", de:"Ich lerne Deutsch im Kurs.",
+     t:{en:"I am learning German in a course.",ru:"Я учу немецкий на курсах.",uk:"Я вивчаю німецьку на курсах.",ar:"أنا أتعلم الألمانية في الدورة.",tr:"Ben kursta Almanca öğreniyorum."},
+     wrong:[{s:"Ich lernst Deutsch im Kurs.",type:"conj"},{s:"Ich studiere Deutsch im Kurs.",type:"verb",hint:LS_HINT},{s:"Im Kurs ich lerne Deutsch.",type:"order"}]},
+    {verb:"lernen", de:"Er lernt kochen.",
+     t:{en:"He is learning to cook.",ru:"Он учится готовить.",uk:"Він вчиться готувати.",ar:"هو يتعلم الطبخ.",tr:"O yemek yapmayı öğreniyor."},
+     wrong:[{s:"Er lernst kochen.",type:"conj"},{s:"Er studiert kochen.",type:"verb",hint:LS_HINT},{s:"Kochen er lernt.",type:"order"}]},
+    {verb:"lernen", de:"Wir lernen Vokabeln.",
+     t:{en:"We are learning vocabulary.",ru:"Мы учим слова.",uk:"Ми вчимо слова.",ar:"نحن نتعلم المفردات.",tr:"Biz kelime öğreniyoruz."},
+     wrong:[{s:"Wir lernt Vokabeln.",type:"conj"},{s:"Wir studieren Vokabeln.",type:"verb",hint:LS_HINT},{s:"Vokabeln wir lernen.",type:"order"}]},
+
+    {verb:"wohnen", de:"Wo wohnst du?",
+     t:{en:"Where do you live?",ru:"Где ты живёшь?",uk:"Де ти живеш?",ar:"أين تسكن؟",tr:"Sen nerede yaşıyorsun?"},
+     wrong:[{s:"Wo wohnt du?",type:"conj"},{s:"Wo kommst du?",type:"verb"},{s:"Du wo wohnst?",type:"order"}]},
+    {verb:"arbeiten", de:"Wo arbeitet sie?",
+     t:{en:"Where does she work?",ru:"Где она работает?",uk:"Де вона працює?",ar:"أين تعمل؟",tr:"O nerede çalışıyor?"},
+     wrong:[{s:"Wo arbeitest sie?",type:"conj"},{s:"Wo wohnt sie?",type:"verb"},{s:"Sie wo arbeitet?",type:"order"}]},
+    {verb:"heißen", de:"Wie heißt du?",
+     t:{en:"What is your name?",ru:"Как тебя зовут?",uk:"Як тебе звати?",ar:"ما اسمك؟",tr:"Senin adın ne?"},
+     wrong:[{s:"Wie heißen du?",type:"conj"},{s:"Wie kommst du?",type:"verb"},{s:"Du wie heißt?",type:"order"}]},
+    {verb:"heißen", de:"Wie heißen Sie?",
+     t:{en:"What is your name? (formal)",ru:"Как вас зовут?",uk:"Як вас звати?",ar:"ما اسمكم؟",tr:"Sizin adınız ne?"},
+     wrong:[{s:"Wie heißt Sie?",type:"conj"},{s:"Wie sprechen Sie?",type:"verb"},{s:"Sie wie heißen?",type:"order"}]},
+    {verb:"kommen", de:"Wer kommt aus der Türkei?",
+     t:{en:"Who comes from Turkey?",ru:"Кто из Турции?",uk:"Хто з Туреччини?",ar:"من من تركيا؟",tr:"Kim Türkiye'den geliyor?"},
+     wrong:[{s:"Wer kommst aus der Türkei?",type:"conj"},{s:"Wer wohnt aus der Türkei?",type:"verb"},{s:"Aus der Türkei wer kommt?",type:"order"}]},
+    {verb:"sprechen", de:"Wer spricht Arabisch?",
+     t:{en:"Who speaks Arabic?",ru:"Кто говорит по-арабски?",uk:"Хто розмовляє арабською?",ar:"من يتحدث العربية؟",tr:"Kim Arapça konuşuyor?"},
+     wrong:[{s:"Wer sprichst Arabisch?",type:"conj"},{s:"Wer versteht Arabisch?",type:"verb"},{s:"Arabisch wer spricht?",type:"order"}]},
+    {verb:"kommen", de:"Woher kommst du?",
+     t:{en:"Where are you from?",ru:"Откуда ты?",uk:"Звідки ти?",ar:"من أين أنت؟",tr:"Sen nereden geliyorsun?"},
+     wrong:[{s:"Woher kommt du?",type:"conj"},{s:"Woher wohnst du?",type:"verb"},{s:"Du woher kommst?",type:"order"}]},
+    {verb:"kommen", de:"Woher kommt ihr?",
+     t:{en:"Where are you (plural) from?",ru:"Откуда вы?",uk:"Звідки ви?",ar:"من أين أنتم؟",tr:"Siz nereden geliyorsunuz?"},
+     wrong:[{s:"Woher kommen ihr?",type:"conj"},{s:"Woher sprecht ihr?",type:"verb"},{s:"Ihr woher kommt?",type:"order"}]},
+    {verb:"sprechen", de:"Welche Sprachen sprichst du?",
+     t:{en:"Which languages do you speak?",ru:"На каких языках ты говоришь?",uk:"Якими мовами ти розмовляєш?",ar:"ما هي اللغات التي تتحدثها؟",tr:"Hangi dilleri konuşuyorsun?"},
+     wrong:[{s:"Welche Sprachen sprecht du?",type:"conj"},{s:"Welche Sprachen verstehst du?",type:"verb"},{s:"Du welche Sprachen sprichst?",type:"order"}]},
+    {verb:"bedeuten", de:"Was bedeutet das Wort?",
+     t:{en:"What does the word mean?",ru:"Что значит это слово?",uk:"Що означає це слово?",ar:"ماذا تعني هذه الكلمة؟",tr:"Bu kelime ne anlama geliyor?"},
+     wrong:[{s:"Was bedeuten das Wort?",type:"conj"},{s:"Was sagt das Wort?",type:"verb"},{s:"Das Wort was bedeutet?",type:"order"}]},
+
+    {verb:"machen", de:"Was machst du?",
+     t:{en:"What are you doing?",ru:"Что ты делаешь?",uk:"Що ти робиш?",ar:"ماذا تفعل؟",tr:"Sen ne yapıyorsun?"},
+     wrong:[{s:"Was macht du?",type:"conj"},{s:"Was sagst du?",type:"verb"},{s:"Du was machst?",type:"order"}]},
+    {verb:"machen", de:"Ich mache eine Pause.",
+     t:{en:"I am taking a break.",ru:"Я делаю перерыв.",uk:"Я роблю перерву.",ar:"أنا آخذ استراحة.",tr:"Ben bir mola veriyorum."},
+     wrong:[{s:"Ich machst eine Pause.",type:"conj"},{s:"Ich sage eine Pause.",type:"verb"},{s:"Eine Pause ich mache.",type:"order"}]},
+
+    {verb:"sagen", de:"Er sagt \"Danke\".",
+     t:{en:"He says \"thank you\".",ru:"Он говорит «спасибо».",uk:"Він каже «дякую».",ar:"هو يقول «شكرًا».",tr:"O \"teşekkürler\" diyor."},
+     wrong:[{s:"Er sagst \"Danke\".",type:"conj"},{s:"Er macht \"Danke\".",type:"verb"},{s:"\"Danke\" er sagt.",type:"order"}]},
+    {verb:"sagen", de:"Was sagt ihr?",
+     t:{en:"What are you (plural) saying?",ru:"Что вы говорите?",uk:"Що ви кажете?",ar:"ماذا تقولون؟",tr:"Siz ne diyorsunuz?"},
+     wrong:[{s:"Was sagen ihr?",type:"conj"},{s:"Was macht ihr?",type:"verb"},{s:"Ihr was sagt?",type:"order"}]},
+
+    {verb:"buchstabieren", de:"Ich buchstabiere das Wort.",
+     t:{en:"I spell the word.",ru:"Я произношу слово по буквам.",uk:"Я вимовляю слово по буквах.",ar:"أنا أتهجى الكلمة.",tr:"Ben kelimeyi heceliyorum."},
+     wrong:[{s:"Ich buchstabierst das Wort.",type:"conj"},{s:"Ich sage das Wort.",type:"verb"},{s:"Das Wort ich buchstabiere.",type:"order"}]},
+    {verb:"buchstabieren", de:"Er buchstabiert seinen Namen.",
+     t:{en:"He spells his name.",ru:"Он произносит своё имя по буквам.",uk:"Він вимовляє своє ім'я по буквах.",ar:"هو يتهجى اسمه.",tr:"O adını heceliyor."},
+     wrong:[{s:"Er buchstabiere seinen Namen.",type:"conj"},{s:"Er sagt seinen Namen.",type:"verb"},{s:"Seinen Namen er buchstabiert.",type:"order"}]},
+
+    {verb:"gehen", de:"Ich gehe nach Hause.",
+     t:{en:"I am going home.",ru:"Я иду домой.",uk:"Я йду додому.",ar:"أنا أذهب إلى المنزل.",tr:"Ben eve gidiyorum."},
+     wrong:[{s:"Ich gehst nach Hause.",type:"conj"},{s:"Ich komme nach Hause.",type:"verb"},{s:"Nach Hause ich gehe.",type:"order"}]},
+    {verb:"gehen", de:"Wir gehen zur Schule.",
+     t:{en:"We are going to school.",ru:"Мы идём в школу.",uk:"Ми йдемо до школи.",ar:"نحن نذهب إلى المدرسة.",tr:"Biz okula gidiyoruz."},
+     wrong:[{s:"Wir geht zur Schule.",type:"conj"},{s:"Wir kommen zur Schule.",type:"verb"},{s:"Zur Schule wir gehen.",type:"order"}]},
+
+    {verb:"sein", de:"Ich bin müde.",
+     t:{en:"I am tired.",ru:"Я устал(а).",uk:"Я втомлений / втомлена.",ar:"أنا متعب / متعبة.",tr:"Ben yorgunum."},
+     wrong:[{s:"Ich bist müde.",type:"conj"},{s:"Ich habe müde.",type:"verb"},{s:"Müde ich bin.",type:"order"}]},
+    {verb:"sein", de:"Er ist Lehrer.",
+     t:{en:"He is a teacher.",ru:"Он учитель.",uk:"Він вчитель.",ar:"هو مدرّس.",tr:"O öğretmen."},
+     wrong:[{s:"Er bin Lehrer.",type:"conj"},{s:"Er hat Lehrer.",type:"verb"},{s:"Lehrer er ist.",type:"order"}]}
+  ];
+
+  var HINTS = {
+    conj: "Achtung: falsche Verbendung (Konjugation) für diese Person.",
+    verb: "Das ist ein anderes Verb – nicht das gesuchte Verb aus der Aufgabe.",
+    order: "Das Verb steht im deutschen Hauptsatz an Position 2."
+  };
+
+  var RTL_LANGS = {ar:true};
+
+  // ---------- STATE ----------
+  var lang = "en";
+  var order = [];       // shuffled indices into ITEMS
+  var pos = 0;           // current position in order
+  var score = 0;
+  var answered = false;
+  var verbStats = {};    // verb -> {correct, total}
+
+  // ---------- ELEMENTS ----------
+  var setupEl = document.getElementById("setup");
+  var quizEl = document.getElementById("quiz");
+  var resultEl = document.getElementById("result");
+  var langSelect = document.getElementById("langSelect");
+  var startBtn = document.getElementById("startBtn");
+  var restartBtn = document.getElementById("restartBtn");
+  var nextBtn = document.getElementById("nextBtn");
+
+  var progressText = document.getElementById("progressText");
+  var progressFill = document.getElementById("progressFill");
+  var scoreText = document.getElementById("scoreText");
+  var verbBadge = document.getElementById("verbBadge");
+  var promptSentence = document.getElementById("promptSentence");
+  var optionsBox = document.getElementById("optionsBox");
+  var feedback = document.getElementById("feedback");
+
+  var finalScore = document.getElementById("finalScore");
+  var finalPct = document.getElementById("finalPct");
+  var verbTable = document.getElementById("verbTable");
+
+  // ---------- HELPERS ----------
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function startQuiz(){
+    lang = langSelect.value;
+    order = shuffle(ITEMS.map(function(_, i){ return i; }));
+    pos = 0;
+    score = 0;
+    verbStats = {};
+    ITEMS.forEach(function(it){
+      if (!verbStats[it.verb]) verbStats[it.verb] = {correct:0, total:0};
+    });
+    setupEl.classList.add("hidden");
+    resultEl.classList.add("hidden");
+    quizEl.classList.remove("hidden");
+    renderQuestion();
+  }
+
+  function renderQuestion(){
+    answered = false;
+    feedback.className = "feedback";
+    feedback.textContent = "";
+    nextBtn.classList.remove("show");
+
+    var item = ITEMS[order[pos]];
+    verbBadge.textContent = item.verb;
+
+    promptSentence.textContent = item.t[lang];
+    promptSentence.className = "prompt-sentence" + (RTL_LANGS[lang] ? " rtl" : "");
+
+    progressText.textContent = "Frage " + (pos + 1) + " / " + order.length;
+    progressFill.style.width = Math.round((pos / order.length) * 100) + "%";
+    scoreText.textContent = "✓ " + score;
+
+    var opts = shuffle([
+      {s: item.de, correct: true, type: null}
+    ].concat(item.wrong.map(function(w){ return {s: w.s, correct: false, type: w.type}; })));
+
+    optionsBox.innerHTML = "";
+    opts.forEach(function(opt){
+      var btn = document.createElement("button");
+      btn.className = "option";
+      btn.textContent = opt.s;
+      btn.addEventListener("click", function(){ selectAnswer(opt, btn, item); });
+      optionsBox.appendChild(btn);
+    });
+  }
+
+  function selectAnswer(opt, btn, item){
+    if (answered) return;
+    answered = true;
+
+    verbStats[item.verb].total++;
+
+    var buttons = optionsBox.querySelectorAll(".option");
+    buttons.forEach(function(b){ b.setAttribute("disabled", "true"); });
+
+    if (opt.correct){
+      btn.classList.add("correct");
+      score++;
+      verbStats[item.verb].correct++;
+      feedback.className = "feedback show ok";
+      feedback.textContent = "✓ Richtig!";
+    } else {
+      btn.classList.add("wrong");
+      buttons.forEach(function(b){
+        if (b.textContent === item.de) b.classList.add("correct");
+      });
+      feedback.className = "feedback show no";
+      feedback.textContent = "✗ Nicht ganz. Richtig: „" + item.de + "“. " + (opt.hint || HINTS[opt.type] || "");
+    }
+
+    scoreText.textContent = "✓ " + score;
+    nextBtn.classList.add("show");
+  }
+
+  function nextQuestion(){
+    pos++;
+    if (pos >= order.length){
+      showResult();
+    } else {
+      renderQuestion();
+    }
+  }
+
+  function showResult(){
+    quizEl.classList.add("hidden");
+    resultEl.classList.remove("hidden");
+    progressFill.style.width = "100%";
+
+    finalScore.textContent = score + " / " + order.length;
+    var pct = Math.round((score / order.length) * 100);
+    finalPct.textContent = pct + " % richtig";
+
+    var rows = "<tr><th>Verb</th><th>Richtig</th></tr>";
+    Object.keys(verbStats).sort().forEach(function(v){
+      var st = verbStats[v];
+      rows += "<tr><td>" + v + "</td><td>" + st.correct + " / " + st.total + "</td></tr>";
+    });
+    verbTable.innerHTML = rows;
+  }
+
+  // ---------- EVENTS ----------
+  startBtn.addEventListener("click", startQuiz);
+  nextBtn.addEventListener("click", nextQuestion);
+  restartBtn.addEventListener("click", function(){
+    resultEl.classList.add("hidden");
+    setupEl.classList.remove("hidden");
+  });
+
+})();
+</script>
+</body>
+</html>
