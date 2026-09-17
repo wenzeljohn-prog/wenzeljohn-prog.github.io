@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trainer: mein/meine – dein/deine</title>
+<style>
+  :root {
+    --blue: #2b6cb0;
+    --blue-dark: #1a4971;
+    --green: #2f855a;
+    --red: #c53030;
+    --bg: #f4f7fb;
+    --card: #ffffff;
+    --border: #d9e2ec;
+    --text: #1a202c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Verdana, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px 16px 60px;
+  }
+  .wrap {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  h1 {
+    text-align: center;
+    color: var(--blue-dark);
+    font-size: 1.7rem;
+    margin-bottom: 4px;
+  }
+  p.sub {
+    text-align: center;
+    color: #4a5568;
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-size: 1.05rem;
+  }
+  .legend {
+    background: #eef4fb;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-bottom: 26px;
+    font-size: 0.95rem;
+  }
+  .legend table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .legend td {
+    padding: 3px 6px;
+  }
+  .item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .item.correct {
+    background: #eafaf1;
+    border-color: var(--green);
+  }
+  .item.incorrect {
+    background: #fdecec;
+    border-color: var(--red);
+  }
+  .sentence {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    flex: 1 1 400px;
+  }
+  .tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .tag.frage { background: #fff3d6; color: #8a5a00; }
+  .tag.antwort { background: #e3f0ff; color: var(--blue-dark); }
+  select {
+    font-size: 1.05rem;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    background: #fff;
+    min-width: 130px;
+    cursor: pointer;
+  }
+  select:focus { outline: none; border-color: var(--blue); }
+  .feedback-icon {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+  }
+  .controls {
+    text-align: center;
+    margin: 28px 0 10px;
+  }
+  button {
+    font-size: 1.05rem;
+    padding: 12px 26px;
+    margin: 6px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  button:hover { transform: translateY(-1px); }
+  #checkBtn { background: var(--blue); color: #fff; }
+  #resetBtn { background: #e2e8f0; color: #333; }
+  #resultBox {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 12px;
+    display: none;
+  }
+  #resultBox.show { display: block; }
+  #resultBox.good { background: #eafaf1; color: var(--green); }
+  #resultBox.bad { background: #fff8e1; color: #8a5a00; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Possessivartikel-Trainer</h1>
+  <p class="sub">mein / meine &nbsp;–&nbsp; dein / deine</p>
+
+  <div class="legend">
+    <table>
+      <tr>
+        <td><strong>der</strong> Wohnort, <strong>der</strong> Name, <strong>der</strong> Beruf</td>
+        <td>→ <strong>mein</strong> / <strong>dein</strong></td>
+      </tr>
+      <tr>
+        <td><strong>die</strong> Adresse, <strong>die</strong> Postleitzahl, <strong>die</strong> Telefonnummer</td>
+        <td>→ <strong>meine</strong> / <strong>deine</strong></td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="items"></div>
+
+  <div class="controls">
+    <button id="checkBtn">Auswertung</button>
+    <button id="resetBtn">Neu starten</button>
+  </div>
+
+  <div id="resultBox"></div>
+</div>
+
+<script>
+// data: type = "frage" (dein/deine) oder "antwort" (mein/meine)
+// gender = "m" -> Optionen ohne -e, "f" -> Optionen mit -e
+const data = [
+  { pre: "Wie ist", noun: "Wohnort", post: "?", type: "frage", gender: "m", correct: "dein" },
+  { pre: "", noun: "Wohnort ist Erfurt.", post: "", type: "antwort", gender: "m", correct: "mein", noSpace: true },
+
+  { pre: "Wie ist", noun: "Name", post: "?", type: "frage", gender: "m", correct: "dein" },
+  { pre: "", noun: "Name ist Alex.", post: "", type: "antwort", gender: "m", correct: "mein", noSpace: true },
+
+  { pre: "Wie ist", noun: "Adresse", post: "?", type: "frage", gender: "f", correct: "deine" },
+  { pre: "", noun: "Adresse ist Bahnhofstraße 5.", post: "", type: "antwort", gender: "f", correct: "meine", noSpace: true },
+
+  { pre: "Wie ist", noun: "Postleitzahl", post: "?", type: "frage", gender: "f", correct: "deine" },
+  { pre: "", noun: "Postleitzahl ist 99084.", post: "", type: "antwort", gender: "f", correct: "meine", noSpace: true },
+
+  { pre: "Wie ist", noun: "Telefonnummer", post: "?", type: "frage", gender: "f", correct: "deine" },
+  { pre: "", noun: "Telefonnummer ist 0176 12345678.", post: "", type: "antwort", gender: "f", correct: "meine", noSpace: true },
+
+  { pre: "Was ist", noun: "Beruf", post: "?", type: "frage", gender: "m", correct: "dein" },
+  { pre: "", noun: "Beruf ist Deutschlehrer.", post: "", type: "antwort", gender: "m", correct: "mein", noSpace: true },
+
+  { pre: "Wie lautet", noun: "Wohnort", post: "genau?", type: "frage", gender: "m", correct: "dein" },
+  { pre: "Kannst du mir", noun: "Adresse", post: "geben?", type: "frage", gender: "f", correct: "deine" },
+  { pre: "Wie lautet", noun: "Telefonnummer", post: "?", type: "frage", gender: "f", correct: "deine" },
+
+  { pre: "", noun: "Name ist auf dem Formular richtig.", post: "", type: "antwort", gender: "m", correct: "mein", noSpace: true },
+  { pre: "", noun: "Postleitzahl ändert sich beim Umzug.", post: "", type: "antwort", gender: "f", correct: "meine", noSpace: true },
+  { pre: "", noun: "Beruf gefällt mir sehr.", post: "", type: "antwort", gender: "m", correct: "mein", noSpace: true }
+];
+
+// Shuffle
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+const items = shuffle(data.slice());
+
+const container = document.getElementById("items");
+
+function buildOptions(type, gender) {
+  if (type === "frage") {
+    return gender === "m" ? ["dein", "deine"] : ["deine", "dein"];
+  } else {
+    return gender === "m" ? ["mein", "meine"] : ["meine", "mein"];
+  }
+}
+
+items.forEach((it, idx) => {
+  const div = document.createElement("div");
+  div.className = "item";
+  div.dataset.correct = it.correct;
+
+  const tag = document.createElement("span");
+  tag.className = "tag " + it.type;
+  tag.textContent = it.type === "frage" ? "Frage" : "Antwort";
+
+  const sentence = document.createElement("span");
+  sentence.className = "sentence";
+
+  const select = document.createElement("select");
+  select.id = "sel" + idx;
+  const placeholder = document.createElement("option");
+  placeholder.textContent = "– wählen –";
+  placeholder.value = "";
+  placeholder.disabled = true;
+  placeholder.selected = true;
+  select.appendChild(placeholder);
+
+  const opts = buildOptions(it.type, it.gender);
+  const capitalizeFirst = it.type === "antwort"; // Antwort-Sätze beginnen mit dem Dropdown-Wort
+  opts.forEach(o => {
+    const opt = document.createElement("option");
+    opt.value = o; // Wert bleibt klein für den Vergleich mit correct
+    opt.textContent = capitalizeFirst ? (o.charAt(0).toUpperCase() + o.slice(1)) : o;
+    select.appendChild(opt);
+  });
+
+  sentence.appendChild(tag);
+  if (it.noSpace) {
+    sentence.appendChild(document.createTextNode(""));
+    sentence.appendChild(select);
+    sentence.appendChild(document.createTextNode(" " + it.noun));
+  } else {
+    sentence.appendChild(document.createTextNode(it.pre + " "));
+    sentence.appendChild(select);
+    sentence.appendChild(document.createTextNode(" " + it.noun + " " + it.post));
+  }
+
+  const icon = document.createElement("span");
+  icon.className = "feedback-icon";
+  icon.id = "icon" + idx;
+
+  div.appendChild(sentence);
+  div.appendChild(icon);
+  container.appendChild(div);
+});
+
+document.getElementById("checkBtn").addEventListener("click", () => {
+  let correctCount = 0;
+  let answered = 0;
+  const boxes = document.querySelectorAll(".item");
+  boxes.forEach((box, idx) => {
+    const select = document.getElementById("sel" + idx);
+    const icon = document.getElementById("icon" + idx);
+    const val = select.value;
+    box.classList.remove("correct", "incorrect");
+    if (!val) {
+      icon.textContent = "";
+      return;
+    }
+    answered++;
+    if (val === box.dataset.correct) {
+      box.classList.add("correct");
+      icon.textContent = "✓";
+      correctCount++;
+    } else {
+      box.classList.add("incorrect");
+      icon.textContent = "✗";
+    }
+  });
+
+  const resultBox = document.getElementById("resultBox");
+  resultBox.classList.add("show");
+  const total = items.length;
+  if (answered < total) {
+    resultBox.className = "show bad";
+    resultBox.textContent = `Bitte alle ${total} Aufgaben beantworten (bisher ${answered}/${total}).`;
+  } else {
+    resultBox.className = "show " + (correctCount === total ? "good" : "bad");
+    resultBox.textContent = `Ergebnis: ${correctCount} von ${total} richtig.`;
+  }
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  location.reload();
+});
+</script>
+</body>
+</html>
