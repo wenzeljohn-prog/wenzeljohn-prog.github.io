@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#14707A">
+<title>Zahlen 0–20 – Deutsch lernen</title>
+<style>
+  :root{
+    --bg:#EFF3F1;
+    --surface:#FFFFFF;
+    --ink:#24312F;
+    --ink-soft:#5C6D69;
+    --primary:#14707A;
+    --primary-dark:#0E5760;
+    --accent:#D98A3D;
+    --accent-soft:#F3D9AE;
+    --success:#3F8F5F;
+    --success-bg:#E3F3E7;
+    --error:#C1503D;
+    --error-bg:#FBE7E2;
+    --border:#CBD8D4;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans Arabic","Noto Sans",sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.4;
+  }
+  [dir="rtl"] body{ text-align:right; }
+  button, input{ font-family:inherit; }
+  .ltr-num{ direction:ltr; unicode-bidi:isolate; display:inline-block; }
+  #app{
+    max-width:520px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:0 0 28px 0;
+  }
+  /* ---------- header ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:14px 18px 10px 18px;
+  }
+  .topbar h1{
+    font-size:1.05rem;
+    font-weight:700;
+    margin:0;
+    color:var(--primary-dark);
+  }
+  .iconbtn{
+    border:none;
+    background:var(--surface);
+    color:var(--primary-dark);
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    min-width:40px;
+    min-height:40px;
+    font-size:1.1rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    touch-action:manipulation;
+  }
+  .iconbtn:active{ background:var(--accent-soft); }
+  .progressbar-wrap{
+    padding:0 18px 10px 18px;
+  }
+  .progressbar-track{
+    height:8px;
+    border-radius:6px;
+    background:var(--border);
+    overflow:hidden;
+  }
+  .progressbar-fill{
+    height:100%;
+    background:var(--accent);
+    border-radius:6px;
+    transition:width .35s ease;
+  }
+  /* ---------- generic layout ---------- */
+  .stage{
+    flex:1;
+    padding:6px 18px 18px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .card{
+    background:var(--surface);
+    border:1.5px solid var(--border);
+    border-radius:var(--radius);
+    padding:20px;
+  }
+  .muted{ color:var(--ink-soft); font-size:.92rem; }
+  h2.screen-title{
+    font-size:1.3rem;
+    margin:4px 0 2px 0;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:13px 20px;
+    border-radius:12px;
+    border:1.5px solid var(--primary);
+    background:var(--primary);
+    color:#fff;
+    font-size:1rem;
+    font-weight:600;
+    cursor:pointer;
+    min-height:48px;
+    touch-action:manipulation;
+  }
+  .btn:active{ background:var(--primary-dark); }
+  .btn[disabled]{ opacity:.4; cursor:default; }
+  .btn.secondary{
+    background:transparent;
+    color:var(--primary-dark);
+  }
+  .btn.secondary:active{ background:var(--accent-soft); }
+  .btn.block{ width:100%; }
+  .btn-row{ display:flex; gap:10px; }
+  .btn-row .btn{ flex:1; }
+  /* ---------- language screen ---------- */
+  .lang-list{ display:flex; flex-direction:column; gap:10px; }
+  .lang-option{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:15px 16px;
+    background:var(--surface);
+    border:1.5px solid var(--border);
+    border-radius:var(--radius);
+    cursor:pointer;
+    touch-action:manipulation;
+    font-size:1rem;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .lang-option .native{ font-weight:600; }
+  .lang-option .de-sub{ display:block; font-weight:400; font-size:.82rem; color:var(--ink-soft); margin-top:2px; }
+  .lang-option[aria-pressed="true"]{
+    border-color:var(--primary);
+    background:var(--success-bg);
+  }
+  .lang-option .chk{
+    width:22px;height:22px;border-radius:50%;
+    border:2px solid var(--border);
+    flex:0 0 auto;
+  }
+  .lang-option[aria-pressed="true"] .chk{
+    border-color:var(--primary);
+    background:var(--primary);
+  }
+  /* ---------- menu ---------- */
+  .menu-grid{ display:flex; flex-direction:column; gap:12px; }
+  .menu-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:var(--surface);
+    border:1.5px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px;
+    cursor:pointer;
+    text-align:start;
+    touch-action:manipulation;
+    position:relative;
+  }
+  .menu-item .emoji{ font-size:1.8rem; flex:0 0 auto; width:44px; text-align:center; }
+  .menu-item .txt{ flex:1; min-width:0; }
+  .menu-item .txt .title-de{ font-weight:700; font-size:1.02rem; }
+  .menu-item .txt .title-2{ font-size:.85rem; color:var(--ink-soft); }
+  .menu-item .txt .desc{ font-size:.82rem; color:var(--ink-soft); margin-top:3px; }
+  .menu-item .badge{
+    position:absolute; top:10px; inset-inline-end:10px;
+    font-size:.7rem; font-weight:700; color:var(--success);
+    background:var(--success-bg); padding:3px 8px; border-radius:20px;
+  }
+  /* ---------- number tile / dots ---------- */
+  .num-stage{
+    display:flex; flex-direction:column; align-items:center; gap:14px;
+    padding:10px 0 4px 0;
+  }
+  .num-digit{
+    font-size:5.2rem; font-weight:800; color:var(--primary-dark);
+    line-height:1;
+  }
+  .num-word{
+    font-size:1.5rem; font-weight:700; color:var(--ink);
+  }
+  .dots{
+    display:flex; flex-direction:column; gap:6px; align-items:center;
+  }
+  .dots .row{ display:flex; gap:6px; }
+  .dots .row.bundles{ gap:8px; margin-bottom:2px; }
+  .dot{
+    width:16px;height:16px;border-radius:50%;
+    background:var(--accent);
+  }
+  .bundle{
+    width:44px;height:18px;border-radius:5px;
+    background:var(--primary);
+  }
+  .dot.empty{
+    width:44px;height:44px;border-radius:10px;
+    border:2px dashed var(--border);
+    background:none;
+  }
+  /* ---------- flashcard nav dots ---------- */
+  .steps{ display:flex; gap:6px; justify-content:center; flex-wrap:wrap; }
+  .steps .s{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--border);
+  }
+  .steps .s.active{ background:var(--primary); width:20px; border-radius:5px; }
+  .steps .s.seen{ background:var(--accent); }
+  /* ---------- quiz options ---------- */
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{
+    display:flex; align-items:center; justify-content:center;
+    padding:14px 16px;
+    border-radius:12px;
+    border:1.5px solid var(--border);
+    background:var(--surface);
+    font-size:1.15rem; font-weight:700;
+    cursor:pointer;
+    min-height:52px;
+    touch-action:manipulation;
+    color:var(--ink);
+  }
+  .opt:active{ border-color:var(--primary); }
+  .opt.correct{ background:var(--success-bg); border-color:var(--success); color:var(--success); }
+  .opt.wrong{ background:var(--error-bg); border-color:var(--error); color:var(--error); }
+  .opt.disabled{ pointer-events:none; opacity:.75; }
+  .feedback{
+    text-align:center; font-weight:700; min-height:1.4rem;
+  }
+  .feedback.ok{ color:var(--success); }
+  .feedback.bad{ color:var(--error); }
+  .qcounter{ text-align:center; color:var(--ink-soft); font-size:.85rem; }
+  /* ---------- match grid ---------- */
+  .match-wrap{ display:flex; gap:10px; }
+  .match-col{ flex:1; display:flex; flex-direction:column; gap:8px; }
+  .match-tile{
+    border:1.5px solid var(--border);
+    background:var(--surface);
+    border-radius:10px;
+    padding:12px 8px;
+    text-align:center;
+    font-weight:700;
+    font-size:1.05rem;
+    cursor:pointer;
+    min-height:46px;
+    display:flex;align-items:center;justify-content:center;
+    touch-action:manipulation;
+  }
+  .match-tile.selected{ border-color:var(--primary); background:var(--accent-soft); }
+  .match-tile.solved{ border-color:var(--success); background:var(--success-bg); color:var(--success); opacity:.85; pointer-events:none; }
+  .match-tile.shake{ border-color:var(--error); background:var(--error-bg); color:var(--error); }
+  /* ---------- write mode ---------- */
+  .write-input{
+    width:100%;
+    padding:14px 16px;
+    font-size:1.1rem;
+    border-radius:12px;
+    border:1.5px solid var(--border);
+    background:var(--surface);
+    color:var(--ink);
+  }
+  .write-input:focus{ outline:none; border-color:var(--primary); }
+  .write-input.correct{ border-color:var(--success); background:var(--success-bg); }
+  .write-input.wrong{ border-color:var(--error); background:var(--error-bg); }
+  /* ---------- series ---------- */
+  .series-row{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+  .series-tile{
+    min-width:52px; min-height:48px; padding:10px 12px; border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800; font-size:1rem;
+    background:var(--accent-soft); color:var(--primary-dark);
+  }
+  .series-tile.blank{
+    background:none; border:2px dashed var(--primary);
+    color:var(--primary-dark); font-size:1.3rem;
+  }
+  /* ---------- complete screen ---------- */
+  .complete-emoji{ font-size:3.2rem; text-align:center; }
+  .score-big{ text-align:center; font-size:1.6rem; font-weight:800; color:var(--primary-dark); }
+  footer.credit{
+    text-align:center; color:var(--ink-soft); font-size:.72rem; padding:10px 18px 0 18px;
+  }
+  @media (max-width:360px){
+    .num-digit{ font-size:4.2rem; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+"use strict";
+
+/* ================= DATA ================= */
+var NUMBERS = [
+  {n:0,  word:"null",   alt:[]},
+  {n:1,  word:"eins",   alt:[]},
+  {n:2,  word:"zwei",   alt:[]},
+  {n:3,  word:"drei",   alt:[]},
+  {n:4,  word:"vier",   alt:[]},
+  {n:5,  word:"fünf",   alt:["fuenf"]},
+  {n:6,  word:"sechs",  alt:[]},
+  {n:7,  word:"sieben", alt:[]},
+  {n:8,  word:"acht",   alt:[]},
+  {n:9,  word:"neun",   alt:[]},
+  {n:10, word:"zehn",   alt:[]},
+  {n:11, word:"elf",       alt:[]},
+  {n:12, word:"zwölf",     alt:["zwoelf"]},
+  {n:13, word:"dreizehn",  alt:[]},
+  {n:14, word:"vierzehn",  alt:[]},
+  {n:15, word:"fünfzehn",  alt:["fuenfzehn"]},
+  {n:16, word:"sechzehn",  alt:[]},
+  {n:17, word:"siebzehn",  alt:[]},
+  {n:18, word:"achtzehn",  alt:[]},
+  {n:19, word:"neunzehn",  alt:[]},
+  {n:20, word:"zwanzig",   alt:[]}
+];
+
+function wordFor(n){
+  for(var i=0;i<NUMBERS.length;i++){ if(NUMBERS[i].n===n){ return NUMBERS[i].word; } }
+  return "";
+}
+
+var LANGS = ["de","en","ru","uk","tr","ar"];
+var RTL_LANGS = ["ar"];
+
+var STR = {
+  de:{
+    tagline:"Deutsch lernen – Zahlen von 0 bis 20",
+    selectLangSubtitle:"In welcher Sprache möchtest du die Erklärungen sehen?",
+    germanOnly:"Nur Deutsch",
+    startBtn:"Los geht's",
+    menuTitle:"Wähle eine Übung",
+    modeLearn:"Kennenlernen", modeLearnDesc:"Sieh dir die Zahlen an und höre sie",
+    modeQuiz:"Quiz", modeQuizDesc:"Wähle die richtige Antwort",
+    modeMatch:"Paare finden", modeMatchDesc:"Verbinde Ziffer und Wort",
+    modeWrite:"Schreiben", modeWriteDesc:"Tippe das Zahlwort",
+    modeSeries:"Zahlenreihe", modeSeriesDesc:"Welche Zahl fehlt?",
+    home:"Menü", next:"Weiter", prev:"Zurück", checkBtn:"Prüfen",
+    correct:"Richtig!", incorrect:"Leider falsch.",
+    tryAgain:"Nochmal versuchen", restart:"Übung wiederholen", backToMenu:"Zurück zum Menü",
+    finished:"Geschafft!", finishedDesc:"Du hast diese Übung abgeschlossen.",
+    progress:"Fortschritt", score:"Ergebnis", placeholder:"Antwort eingeben…",
+    round:"Runde", question:"Frage", correctWas:"Richtig wäre:",
+    allDone:"Super, du hast alle Übungen abgeschlossen! 🎉",
+    completedBadge:"Erledigt",
+    learnInstruction:"Tippe auf „Weiter“, um alle Zahlen zu sehen.",
+    quizInstruction:"Wähle die richtige Antwort aus.",
+    matchInstruction:"Tippe zuerst auf eine Ziffer, dann auf das passende Wort.",
+    writeInstruction:"Schreibe das deutsche Zahlwort.",
+    seriesInstruction:"Welche Zahl fehlt in der Reihe?"
+  },
+  en:{
+    tagline:"Learn German – numbers from 0 to 20",
+    selectLangSubtitle:"Which language would you like explanations in?",
+    germanOnly:"German only",
+    startBtn:"Let's start",
+    menuTitle:"Choose an exercise",
+    modeLearn:"Learn", modeLearnDesc:"Look at the numbers and listen to them",
+    modeQuiz:"Quiz", modeQuizDesc:"Choose the correct answer",
+    modeMatch:"Find pairs", modeMatchDesc:"Match the digit and the word",
+    modeWrite:"Writing", modeWriteDesc:"Type the number word",
+    modeSeries:"Number sequence", modeSeriesDesc:"Which number is missing?",
+    home:"Menu", next:"Next", prev:"Back", checkBtn:"Check",
+    correct:"Correct!", incorrect:"Not quite.",
+    tryAgain:"Try again", restart:"Repeat exercise", backToMenu:"Back to menu",
+    finished:"Well done!", finishedDesc:"You completed this exercise.",
+    progress:"Progress", score:"Score", placeholder:"Type your answer…",
+    round:"Round", question:"Question", correctWas:"The correct answer was:",
+    allDone:"Great job — you completed all the exercises! 🎉",
+    completedBadge:"Done",
+    learnInstruction:"Tap “Next” to see all the numbers.",
+    quizInstruction:"Choose the correct answer.",
+    matchInstruction:"Tap a digit first, then the matching word.",
+    writeInstruction:"Write the German number word.",
+    seriesInstruction:"Which number is missing from the sequence?"
+  },
+  ru:{
+    tagline:"Учим немецкий – числа от 0 до 20",
+    selectLangSubtitle:"На каком языке вы хотите видеть объяснения?",
+    germanOnly:"Только немецкий",
+    startBtn:"Начать",
+    menuTitle:"Выберите упражнение",
+    modeLearn:"Изучение", modeLearnDesc:"Посмотрите на числа и послушайте их",
+    modeQuiz:"Тест", modeQuizDesc:"Выберите правильный ответ",
+    modeMatch:"Найти пары", modeMatchDesc:"Соедините цифру и слово",
+    modeWrite:"Письмо", modeWriteDesc:"Напишите слово-число",
+    modeSeries:"Числовой ряд", modeSeriesDesc:"Какого числа не хватает?",
+    home:"Меню", next:"Далее", prev:"Назад", checkBtn:"Проверить",
+    correct:"Правильно!", incorrect:"Не совсем.",
+    tryAgain:"Ещё раз", restart:"Повторить упражнение", backToMenu:"Назад в меню",
+    finished:"Отлично!", finishedDesc:"Вы завершили это упражнение.",
+    progress:"Прогресс", score:"Результат", placeholder:"Введите ответ…",
+    round:"Раунд", question:"Вопрос", correctWas:"Правильный ответ:",
+    allDone:"Отлично — вы выполнили все упражнения! 🎉",
+    completedBadge:"Готово",
+    learnInstruction:"Нажмите «Далее», чтобы увидеть все числа.",
+    quizInstruction:"Выберите правильный ответ.",
+    matchInstruction:"Сначала нажмите на цифру, затем на подходящее слово.",
+    writeInstruction:"Напишите немецкое слово-число.",
+    seriesInstruction:"Какое число пропущено в ряду?"
+  },
+  uk:{
+    tagline:"Вивчаємо німецьку – числа від 0 до 20",
+    selectLangSubtitle:"Якою мовою ви хочете бачити пояснення?",
+    germanOnly:"Лише німецька",
+    startBtn:"Почати",
+    menuTitle:"Оберіть вправу",
+    modeLearn:"Вивчення", modeLearnDesc:"Подивіться на числа та послухайте їх",
+    modeQuiz:"Тест", modeQuizDesc:"Оберіть правильну відповідь",
+    modeMatch:"Знайти пари", modeMatchDesc:"З'єднайте цифру і слово",
+    modeWrite:"Письмо", modeWriteDesc:"Напишіть слово-число",
+    modeSeries:"Числовий ряд", modeSeriesDesc:"Якого числа бракує?",
+    home:"Меню", next:"Далі", prev:"Назад", checkBtn:"Перевірити",
+    correct:"Правильно!", incorrect:"Не зовсім.",
+    tryAgain:"Ще раз", restart:"Повторити вправу", backToMenu:"Назад до меню",
+    finished:"Чудово!", finishedDesc:"Ви завершили цю вправу.",
+    progress:"Прогрес", score:"Результат", placeholder:"Введіть відповідь…",
+    round:"Раунд", question:"Питання", correctWas:"Правильна відповідь:",
+    allDone:"Чудово — ви виконали всі вправи! 🎉",
+    completedBadge:"Готово",
+    learnInstruction:"Натисніть «Далі», щоб побачити всі числа.",
+    quizInstruction:"Оберіть правильну відповідь.",
+    matchInstruction:"Спочатку торкніться цифри, потім відповідного слова.",
+    writeInstruction:"Напишіть німецьке слово-число.",
+    seriesInstruction:"Яке число пропущено в ряду?"
+  },
+  tr:{
+    tagline:"Almanca öğren – 0'dan 20'ye kadar sayılar",
+    selectLangSubtitle:"Açıklamaları hangi dilde görmek istersiniz?",
+    germanOnly:"Sadece Almanca",
+    startBtn:"Başlayalım",
+    menuTitle:"Bir alıştırma seçin",
+    modeLearn:"Öğrenme", modeLearnDesc:"Sayılara bakın ve onları dinleyin",
+    modeQuiz:"Test", modeQuizDesc:"Doğru cevabı seçin",
+    modeMatch:"Eşleştirme", modeMatchDesc:"Rakamı ve kelimeyi eşleştirin",
+    modeWrite:"Yazma", modeWriteDesc:"Sayı kelimesini yazın",
+    modeSeries:"Sayı dizisi", modeSeriesDesc:"Hangi sayı eksik?",
+    home:"Menü", next:"İleri", prev:"Geri", checkBtn:"Kontrol et",
+    correct:"Doğru!", incorrect:"Maalesef yanlış.",
+    tryAgain:"Tekrar dene", restart:"Alıştırmayı tekrarla", backToMenu:"Menüye dön",
+    finished:"Harika!", finishedDesc:"Bu alıştırmayı tamamladınız.",
+    progress:"İlerleme", score:"Sonuç", placeholder:"Cevabınızı yazın…",
+    round:"Tur", question:"Soru", correctWas:"Doğru cevap:",
+    allDone:"Harika — tüm alıştırmaları tamamladınız! 🎉",
+    completedBadge:"Tamamlandı",
+    learnInstruction:"Tüm sayıları görmek için “İleri”ye dokunun.",
+    quizInstruction:"Doğru cevabı seçin.",
+    matchInstruction:"Önce bir rakama, sonra eşleşen kelimeye dokunun.",
+    writeInstruction:"Almanca sayı kelimesini yazın.",
+    seriesInstruction:"Dizide hangi sayı eksik?"
+  },
+  ar:{
+    tagline:"تعلّم الألمانية – الأرقام من 0 إلى 20",
+    selectLangSubtitle:"بأي لغة تريد أن ترى الشروحات؟",
+    germanOnly:"الألمانية فقط",
+    startBtn:"لنبدأ",
+    menuTitle:"اختر تمرينًا",
+    modeLearn:"التعرّف على الأرقام", modeLearnDesc:"انظر إلى الأرقام واستمع إليها",
+    modeQuiz:"اختبار", modeQuizDesc:"اختر الإجابة الصحيحة",
+    modeMatch:"إيجاد الأزواج", modeMatchDesc:"اربط الرقم بالكلمة",
+    modeWrite:"الكتابة", modeWriteDesc:"اكتب كلمة الرقم",
+    modeSeries:"سلسلة الأرقام", modeSeriesDesc:"أي رقم مفقود؟",
+    home:"القائمة", next:"التالي", prev:"السابق", checkBtn:"تحقق",
+    correct:"صحيح!", incorrect:"غير صحيح.",
+    tryAgain:"حاول مرة أخرى", restart:"إعادة التمرين", backToMenu:"العودة إلى القائمة",
+    finished:"أحسنت!", finishedDesc:"لقد أكملت هذا التمرين.",
+    progress:"التقدم", score:"النتيجة", placeholder:"اكتب إجابتك…",
+    round:"جولة", question:"سؤال", correctWas:"الإجابة الصحيحة كانت:",
+    allDone:"رائع — لقد أكملت جميع التمارين! 🎉",
+    completedBadge:"مكتمل",
+    learnInstruction:"اضغط على «التالي» لرؤية جميع الأرقام.",
+    quizInstruction:"اختر الإجابة الصحيحة.",
+    matchInstruction:"اضغط أولًا على الرقم، ثم على الكلمة المطابقة.",
+    writeInstruction:"اكتب كلمة الرقم بالألمانية.",
+    seriesInstruction:"أي رقم مفقود في التسلسل؟"
+  }
+};
+
+var NATIVE_NAME = { en:"English", ru:"Русский", uk:"Українська", tr:"Türkçe", ar:"العربية" };
+
+/* ================= STATE ================= */
+var state = {
+  secondLang: null,   /* null = nur Deutsch, sonst z.B. "en" */
+  screen: "lang",      /* lang | menu | learn | quiz | match | write | series | complete */
+  mode: null
+};
+
+var PROGRESS_KEY = "zahlentrainer_0_20_progress_v1";
+var LANG_KEY = "zahlentrainer_0_20_lang_v1";
+
+function loadProgress(){
+  try{
+    var raw = window.localStorage.getItem(PROGRESS_KEY);
+    if(raw){ return JSON.parse(raw); }
+  }catch(e){}
+  return {};
+}
+function saveProgress(p){
+  try{ window.localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)); }catch(e){}
+}
+function markDone(modeKey){
+  var p = loadProgress();
+  p[modeKey] = true;
+  saveProgress(p);
+}
+function progressPercent(){
+  var p = loadProgress();
+  var keys = ["learn","quiz","match","write","series"];
+  var done = 0;
+  for(var i=0;i<keys.length;i++){ if(p[keys[i]]){ done++; } }
+  return Math.round(done/keys.length*100);
+}
+function isDone(modeKey){
+  var p = loadProgress();
+  return !!p[modeKey];
+}
+
+function saveLangChoice(){
+  try{ window.localStorage.setItem(LANG_KEY, state.secondLang===null ? "de" : state.secondLang); }catch(e){}
+}
+function loadLangChoice(){
+  try{
+    var v = window.localStorage.getItem(LANG_KEY);
+    if(v && v!=="de" && LANGS.indexOf(v)!==-1){ return v; }
+  }catch(e){}
+  return null;
+}
+
+/* ================= HELPERS ================= */
+function t(key){
+  return STR.de[key];
+}
+function t2(key){
+  if(state.secondLang && STR[state.secondLang] && STR[state.secondLang][key]!==undefined){
+    return STR[state.secondLang][key];
+  }
+  return null;
+}
+function el(tag, attrs, children){
+  var e = document.createElement(tag);
+  if(attrs){
+    for(var k in attrs){
+      if(!attrs.hasOwnProperty(k)) continue;
+      if(k==="class"){ e.className = attrs[k]; }
+      else if(k==="text"){ e.textContent = attrs[k]; }
+      else if(k==="html"){ e.innerHTML = attrs[k]; }
+      else { e.setAttribute(k, attrs[k]); }
+    }
+  }
+  if(children){
+    for(var i=0;i<children.length;i++){
+      if(children[i]){ e.appendChild(children[i]); }
+    }
+  }
+  return e;
+}
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var tmp = a[i]; a[i]=a[j]; a[j]=tmp;
+  }
+  return a;
+}
+function sample(arr, count){
+  return shuffle(arr).slice(0, count);
+}
+function bilingualLine(deText, otherText, deClass, otherClass){
+  var wrap = el("div", {});
+  wrap.appendChild(el("div", {class: deClass||"", text: deText}));
+  if(otherText){
+    wrap.appendChild(el("div", {class: otherClass||"muted", text: otherText}));
+  }
+  return wrap;
+}
+
+function buildDotsRows(count){
+  var frag = document.createDocumentFragment();
+  var first = Math.min(count,5);
+  var second = count-5>0 ? count-5 : 0;
+  var row1 = el("div", {class:"row"});
+  for(var i=0;i<first;i++){ row1.appendChild(el("div", {class:"dot"})); }
+  frag.appendChild(row1);
+  if(second>0){
+    var row2 = el("div", {class:"row"});
+    for(var j=0;j<second;j++){ row2.appendChild(el("div", {class:"dot"})); }
+    frag.appendChild(row2);
+  }
+  return frag;
+}
+function buildDots(n){
+  var wrap = el("div", {class:"dots"});
+  if(n===0){
+    wrap.appendChild(el("div", {class:"dot empty"}));
+    return wrap;
+  }
+  if(n<=10){
+    wrap.appendChild(buildDotsRows(n));
+    return wrap;
+  }
+  /* über 10: ein oder zwei Zehnerbündel plus Einer als Punkte (Zehner/Einer-Prinzip) */
+  var bundles = Math.floor(n/10);
+  var rest = n%10;
+  var bundleRow = el("div", {class:"row bundles"});
+  for(var b=0;b<bundles;b++){ bundleRow.appendChild(el("div", {class:"bundle"})); }
+  wrap.appendChild(bundleRow);
+  if(rest>0){
+    wrap.appendChild(buildDotsRows(rest));
+  }
+  return wrap;
+}
+
+/* ================= RENDER ROOT ================= */
+var app = document.getElementById("app");
+
+function applyDirection(){
+  var isRtl = state.secondLang && RTL_LANGS.indexOf(state.secondLang)!==-1;
+  document.documentElement.setAttribute("dir", isRtl ? "rtl" : "ltr");
+  document.documentElement.setAttribute("lang", state.secondLang || "de");
+}
+
+function render(){
+  applyDirection();
+  app.innerHTML = "";
+  if(state.screen==="lang"){ renderLangScreen(); }
+  else if(state.screen==="menu"){ renderMenu(); }
+  else if(state.screen==="learn"){ renderLearn(); }
+  else if(state.screen==="quiz"){ renderQuiz(); }
+  else if(state.screen==="match"){ renderMatch(); }
+  else if(state.screen==="write"){ renderWrite(); }
+  else if(state.screen==="series"){ renderSeries(); }
+  else if(state.screen==="complete"){ renderComplete(); }
+}
+
+function renderTopbar(showHome){
+  var bar = el("div", {class:"topbar"});
+  if(showHome){
+    var homeBtn = el("button", {class:"iconbtn", "aria-label":t("home"), text:"🏠"});
+    homeBtn.addEventListener("click", function(){
+      state.screen = "menu";
+      render();
+    });
+    bar.appendChild(homeBtn);
+  } else {
+    bar.appendChild(el("div", {}));
+  }
+  bar.appendChild(el("h1", {text:"Zahlen 0–20"}));
+  var langBtn = el("button", {class:"iconbtn", "aria-label":"Sprache", text:"🌐"});
+  langBtn.addEventListener("click", function(){
+    state.screen = "lang";
+    render();
+  });
+  bar.appendChild(langBtn);
+  app.appendChild(bar);
+}
+
+function renderProgressBar(){
+  var wrap = el("div", {class:"progressbar-wrap"});
+  var track = el("div", {class:"progressbar-track"});
+  var fill = el("div", {class:"progressbar-fill", style:"width:"+progressPercent()+"%"});
+  track.appendChild(fill);
+  wrap.appendChild(track);
+  app.appendChild(wrap);
+}
+
+/* ================= SCREEN: LANGUAGE ================= */
+function renderLangScreen(){
+  renderTopbar(false);
+  var stage = el("div", {class:"stage"});
+  stage.appendChild(el("h2", {class:"screen-title", text:"Wähle deine Sprache"}));
+  var subtitleWrap = el("div", {class:"muted"});
+  var lines = [];
+  for(var li=0; li<LANGS.length; li++){
+    var lg = LANGS[li];
+    if(lg==="de") continue;
+    if(STR[lg].selectLangSubtitle){ lines.push(STR[lg].selectLangSubtitle); }
+  }
+  subtitleWrap.textContent = STR.de.selectLangSubtitle;
+  stage.appendChild(subtitleWrap);
+
+  var list = el("div", {class:"lang-list"});
+
+  function makeOption(code, label, deSub){
+    var pressed = (code===null && state.secondLang===null) || (code===state.secondLang);
+    var opt = el("div", {class:"lang-option", role:"button", "aria-pressed": pressed ? "true":"false"});
+    var left = el("div", {});
+    left.appendChild(el("span", {class:"native", text:label}));
+    if(deSub){
+      left.appendChild(el("span", {class:"de-sub", text:deSub}));
+    }
+    opt.appendChild(left);
+    opt.appendChild(el("div", {class:"chk"}));
+    opt.addEventListener("click", function(){
+      state.secondLang = code;
+      saveLangChoice();
+      state.screen = "menu";
+      render();
+    });
+    return opt;
+  }
+
+  list.appendChild(makeOption(null, "Deutsch", STR.de.germanOnly));
+  for(var i=0;i<LANGS.length;i++){
+    var code = LANGS[i];
+    if(code==="de") continue;
+    list.appendChild(makeOption(code, "Deutsch + " + NATIVE_NAME[code], STR[code].tagline));
+  }
+  stage.appendChild(list);
+  app.appendChild(stage);
+}
+
+/* ================= SCREEN: MENU ================= */
+var MODES = [
+  {key:"learn", emoji:"📖"},
+  {key:"quiz", emoji:"❓"},
+  {key:"match", emoji:"🔗"},
+  {key:"write", emoji:"✏️"},
+  {key:"series", emoji:"🔢"}
+];
+
+function renderMenu(){
+  renderTopbar(false);
+  renderProgressBar();
+  var stage = el("div", {class:"stage"});
+  stage.appendChild(el("h2", {class:"screen-title", text:t("menuTitle")}));
+  if(t2("menuTitle")){
+    stage.appendChild(el("div", {class:"muted", text:t2("menuTitle")}));
+  }
+
+  var grid = el("div", {class:"menu-grid"});
+  for(var i=0;i<MODES.length;i++){
+    (function(m){
+      var titleKey = "mode"+m.key.charAt(0).toUpperCase()+m.key.slice(1);
+      var descKey = titleKey+"Desc";
+      var item = el("div", {class:"menu-item", role:"button"});
+      item.appendChild(el("div", {class:"emoji", text:m.emoji}));
+      var txt = el("div", {class:"txt"});
+      txt.appendChild(el("div", {class:"title-de", text: STR.de[titleKey]}));
+      if(t2(titleKey)){
+        txt.appendChild(el("div", {class:"title-2", text: t2(titleKey)}));
+      }
+      txt.appendChild(el("div", {class:"desc", text: t2(descKey) || STR.de[descKey]}));
+      item.appendChild(txt);
+      if(isDone(m.key)){
+        item.appendChild(el("div", {class:"badge", text: t2("completedBadge") || STR.de.completedBadge}));
+      }
+      item.addEventListener("click", function(){
+        startMode(m.key);
+      });
+      grid.appendChild(item);
+    })(MODES[i]);
+  }
+  stage.appendChild(grid);
+  app.appendChild(stage);
+
+  var f = el("footer", {class:"credit", text:"Zahlen 0–20 · DaZ-Trainer"});
+  app.appendChild(f);
+}
+
+function startMode(modeKey){
+  if(modeKey==="learn"){ initLearn(); state.screen="learn"; }
+  else if(modeKey==="quiz"){ initQuiz(); state.screen="quiz"; }
+  else if(modeKey==="match"){ initMatch(); state.screen="match"; }
+  else if(modeKey==="write"){ initWrite(); state.screen="write"; }
+  else if(modeKey==="series"){ initSeries(); state.screen="series"; }
+  render();
+}
+
+/* ================= SCREEN: LEARN (Kennenlernen) ================= */
+var learnState = { index:0 };
+function initLearn(){ learnState.index = 0; }
+
+function renderLearn(){
+  renderTopbar(true);
+  var stage = el("div", {class:"stage"});
+  stage.appendChild(el("h2", {class:"screen-title", text:t("modeLearn")}));
+  var instr = bilingualLine(t("learnInstruction"), t2("learnInstruction"), "muted", "muted");
+  stage.appendChild(instr);
+
+  var item = NUMBERS[learnState.index];
+  var card = el("div", {class:"card"});
+  var numStage = el("div", {class:"num-stage"});
+  numStage.appendChild(el("div", {class:"num-digit ltr-num", text:String(item.n)}));
+  numStage.appendChild(buildDots(item.n));
+  numStage.appendChild(el("div", {class:"num-word", text:item.word}));
+  card.appendChild(numStage);
+  stage.appendChild(card);
+
+  var steps = el("div", {class:"steps"});
+  for(var i=0;i<NUMBERS.length;i++){
+    var cls = "s";
+    if(i===learnState.index){ cls += " active"; }
+    else if(i<learnState.index){ cls += " seen"; }
+    steps.appendChild(el("div", {class:cls}));
+  }
+  stage.appendChild(steps);
+
+  var nav = el("div", {class:"btn-row"});
+  var prevBtn = el("button", {class:"btn secondary", text:t("prev")});
+  prevBtn.disabled = learnState.index===0;
+  if(prevBtn.disabled){ prevBtn.setAttribute("disabled","disabled"); }
+  prevBtn.addEventListener("click", function(){
+    if(learnState.index>0){ learnState.index--; render(); }
+  });
+  var nextBtn = el("button", {class:"btn", text: learnState.index===NUMBERS.length-1 ? t("finished") : t("next")});
+  nextBtn.addEventListener("click", function(){
+    if(learnState.index<NUMBERS.length-1){
+      learnState.index++;
+      render();
+    } else {
+      markDone("learn");
+      state.screen = "complete";
+      state.mode = "learn";
+      render();
+    }
+  });
+  nav.appendChild(prevBtn);
+  nav.appendChild(nextBtn);
+  stage.appendChild(nav);
+
+  app.appendChild(stage);
+}
+
+/* ================= SCREEN: QUIZ ================= */
+var quizState = { qs:[], index:0, score:0, answered:false };
+function initQuiz(){
+  var order = shuffle(NUMBERS);
+  var qs = [];
+  for(var i=0;i<order.length;i++){
+    var direction = Math.random()<0.5 ? "d2w" : "w2d";
+    var correct = order[i].n;
+    var distractPool = [];
+    for(var j=0;j<NUMBERS.length;j++){
+      if(NUMBERS[j].n!==correct){ distractPool.push(NUMBERS[j].n); }
+    }
+    var distractors = sample(distractPool, 3);
+    var options = shuffle(distractors.concat([correct]));
+    qs.push({direction:direction, correct:correct, options:options});
+  }
+  quizState = { qs:qs, index:0, score:0, answered:false };
+}
+
+function renderQuiz(){
+  renderTopbar(true);
+  var stage = el("div", {class:"stage"});
+  stage.appendChild(el("h2", {class:"screen-title", text:t("modeQuiz")}));
+  stage.appendChild(bilingualLine(t("quizInstruction"), t2("quizInstruction"), "muted", "muted"));
+
+  var q = quizState.qs[quizState.index];
+  stage.appendChild(el("div", {class:"qcounter", text: t("question")+" "+(quizState.index+1)+" / "+quizState.qs.length}));
+
+  var card = el("div", {class:"card"});
+  var promptWrap = el("div", {class:"num-stage"});
+  if(q.direction==="d2w"){
+    promptWrap.appendChild(el("div", {class:"num-digit ltr-num", text:String(q.correct)}));
+  } else {
+    promptWrap.appendChild(el("div", {class:"num-word", text:wordFor(q.correct)}));
+  }
+  card.appendChild(promptWrap);
+  stage.appendChild(card);
+
+  var opts = el("div", {class:"options"});
+  var feedback = el("div", {class:"feedback"});
+
+  for(var i=0;i<q.options.length;i++){
+    (function(optVal){
+      var label = q.direction==="d2w" ? wordFor(optVal) : String(optVal);
+      var attrs = {class:"opt"};
+      var o = el("div", attrs);
+      var span = el("span", {class: q.direction==="w2d" ? "ltr-num":"", text:label});
+      o.appendChild(span);
+      o.addEventListener("click", function(){
+        if(quizState.answered){ return; }
+        quizState.answered = true;
+        var allOpts = opts.querySelectorAll(".opt");
+        for(var k=0;k<allOpts.length;k++){ allOpts[k].classList.add("disabled"); }
+        if(optVal===q.correct){
+          o.classList.add("correct");
+          quizState.score++;
+          feedback.textContent = t("correct");
+          feedback.className = "feedback ok";
+        } else {
+          o.classList.add("wrong");
+          feedback.textContent = t("incorrect");
+          feedback.className = "feedback bad";
+          for(var m=0;m<allOpts.length;m++){
+            if(allOpts[m].textContent.replace(/\s/g,"") === label2match(q, q.correct)){
+              allOpts[m].classList.add("correct");
+            }
+          }
+        }
+        setTimeout(function(){
+          if(quizState.index<quizState.qs.length-1){
+            quizState.index++;
+            quizState.answered = false;
+            render();
+          } else {
+            markDone("quiz");
+            state.screen = "complete";
+            state.mode = "quiz";
+            render();
+          }
+        }, 900);
+      });
+      opts.appendChild(o);
+    })(q.options[i]);
+  }
+
+  function label2match(qq, val){
+    return qq.direction==="d2w" ? wordFor(val) : String(val);
+  }
+
+  stage.appendChild(opts);
+  stage.appendChild(feedback);
+  app.appendChild(stage);
+}
+
+/* ================= SCREEN: MATCH (Paare finden) ================= */
+var matchState = { round:0, rounds:[], digits:[], words:[], solved:[], selectedDigit:null, selectedWord:null };
+function initMatch(){
+  var all = NUMBERS.map(function(x){ return x.n; });
+  var r1 = all.slice(0,7);
+  var r2 = all.slice(7,14);
+  var r3 = all.slice(14,21);
+  matchState.rounds = [r1, r2, r3];
+  matchState.round = 0;
+  setupMatchRound();
+}
+function setupMatchRound(){
+  var nums = matchState.rounds[matchState.round];
+  matchState.digits = shuffle(nums);
+  matchState.words = shuffle(nums);
+  matchState.solved = [];
+  matchState.selectedDigit = null;
+  matchState.selectedWord = null;
+}
+
+function renderMatch(){
+  renderTopbar(true);
+  var stage = el("div", {class:"stage"});
+  stage.appendChild(el("h2", {class:"screen-title", text:t("modeMatch")}));
+  stage.appendChild(bilingualLine(t("matchInstruction"), t2("matchInstruction"), "muted", "muted"));
+  stage.appendChild(el("div", {class:"qcounter", text: t("round")+" "+(matchState.round+1)+" / "+matchState.rounds.length}));
+
+  var wrap = el("div", {class:"match-wrap"});
+  var colDigits = el("div", {class:"match-col"});
+  var colWords = el("div", {class:"match-col"});
+
+  for(var i=0;i<matchState.digits.length;i++){
+    (function(val){
+      var solved = matchState.solved.indexOf(val)!==-1;
+      var cls = "match-tile";
+      if(solved){ cls += " solved"; }
+      else if(matchState.selectedDigit===val){ cls += " selected"; }
+      var tile = el("div", {class:cls});
+      tile.appendChild(el("span", {class:"ltr-num", text:String(val)}));
+      tile.addEventListener("click", function(){
+        if(solved){ return; }
+        matchState.selectedDigit = val;
+        checkMatchPair();
+        render();
+      });
+      colDigits.appendChild(tile);
+    })(matchState.digits[i]);
+  }
+  for(var j=0;j<matchState.words.length;j++){
+    (function(val){
+      var solved = matchState.solved.indexOf(val)!==-1;
+      var cls = "match-tile";
+      if(solved){ cls += " solved"; }
+      else if(matchState.selectedWord===val){ cls += " selected"; }
+      var tile = el("div", {class:cls, text:wordFor(val)});
+      tile.addEventListener("click", function(){
+        if(solved){ return; }
+        matchState.selectedWord = val;
+        checkMatchPair();
+        render();
+      });
+      colWords.appendChild(tile);
+    })(matchState.words[j]);
+  }
+
+  wrap.appendChild(colDigits);
+  wrap.appendChild(colWords);
+  stage.appendChild(wrap);
+  app.appendChild(stage);
+}
+
+function checkMatchPair(){
+  if(matchState.selectedDigit===null || matchState.selectedWord===null){ return; }
+  if(matchState.selectedDigit===matchState.selectedWord){
+    matchState.solved.push(matchState.selectedDigit);
+    matchState.selectedDigit = null;
+    matchState.selectedWord = null;
+    var nums = matchState.rounds[matchState.round];
+    if(matchState.solved.length===nums.length){
+      setTimeout(function(){
+        if(matchState.round<matchState.rounds.length-1){
+          matchState.round++;
+          setupMatchRound();
+          render();
+        } else {
+          markDone("match");
+          state.screen = "complete";
+          state.mode = "match";
+          render();
+        }
+      }, 500);
+    }
+  } else {
+    var d = matchState.selectedDigit, w = matchState.selectedWord;
+    setTimeout(function(){
+      if(matchState.selectedDigit===d){ matchState.selectedDigit=null; }
+      if(matchState.selectedWord===w){ matchState.selectedWord=null; }
+      render();
+    }, 550);
+  }
+}
+
+/* ================= SCREEN: WRITE (Schreiben) ================= */
+var writeState = { order:[], index:0, score:0, checked:false, lastCorrect:null };
+function initWrite(){
+  writeState.order = shuffle(NUMBERS);
+  writeState.index = 0;
+  writeState.score = 0;
+  writeState.checked = false;
+}
+function normalize(s){
+  return s.toLowerCase().trim().replace(/[.!?]+$/,"");
+}
+function isAnswerCorrect(input, item){
+  var v = normalize(input);
+  if(v===item.word){ return true; }
+  for(var i=0;i<item.alt.length;i++){
+    if(v===item.alt[i]){ return true; }
+  }
+  return false;
+}
+
+function renderWrite(){
+  renderTopbar(true);
+  var stage = el("div", {class:"stage"});
+  stage.appendChild(el("h2", {class:"screen-title", text:t("modeWrite")}));
+  stage.appendChild(bilingualLine(t("writeInstruction"), t2("writeInstruction"), "muted", "muted"));
+
+  var item = writeState.order[writeState.index];
+  stage.appendChild(el("div", {class:"qcounter", text: t("question")+" "+(writeState.index+1)+" / "+writeState.order.length}));
+
+  var card = el("div", {class:"card"});
+  var numStage = el("div", {class:"num-stage"});
+  numStage.appendChild(el("div", {class:"num-digit ltr-num", text:String(item.n)}));
+  numStage.appendChild(buildDots(item.n));
+  card.appendChild(numStage);
+  stage.appendChild(card);
+
+  var input = el("input", {type:"text", class:"write-input", placeholder:t("placeholder"), autocapitalize:"none", autocomplete:"off", spellcheck:"false"});
+  stage.appendChild(input);
+
+  var feedback = el("div", {class:"feedback"});
+  stage.appendChild(feedback);
+
+  var actionBtn = el("button", {class:"btn block", text:t("checkBtn")});
+
+  function doCheck(){
+    if(writeState.checked){ return; }
+    var ok = isAnswerCorrect(input.value, item);
+    writeState.checked = true;
+    input.classList.add(ok ? "correct" : "wrong");
+    input.setAttribute("readonly","readonly");
+    if(ok){
+      writeState.score++;
+      feedback.textContent = t("correct");
+      feedback.className = "feedback ok";
+    } else {
+      feedback.textContent = t("incorrect")+" "+t("correctWas")+" "+item.word;
+      feedback.className = "feedback bad";
+    }
+    actionBtn.textContent = writeState.index<writeState.order.length-1 ? t("next") : t("finished");
+  }
+
+  actionBtn.addEventListener("click", function(){
+    if(!writeState.checked){
+      doCheck();
+    } else {
+      if(writeState.index<writeState.order.length-1){
+        writeState.index++;
+        writeState.checked = false;
+        render();
+      } else {
+        markDone("write");
+        state.screen = "complete";
+        state.mode = "write";
+        render();
+      }
+    }
+  });
+  input.addEventListener("keydown", function(ev){
+    if(ev.key==="Enter"){ actionBtn.click(); }
+  });
+
+  stage.appendChild(actionBtn);
+  app.appendChild(stage);
+  input.focus();
+}
+
+/* ================= SCREEN: SERIES (Zahlenreihe) ================= */
+var seriesState = { rounds:[], index:0, score:0, answered:false };
+function initSeries(){
+  var rounds = [];
+  var startPool = [];
+  for(var s=0;s<=16;s++){ startPool.push(s); }
+  var starts = sample(startPool, 8);
+  for(var i=0;i<8;i++){
+    var start = starts[i];
+    var seq = [start, start+1, start+2, start+3, start+4];
+    var blankPos = Math.floor(Math.random()*5);
+    var correct = seq[blankPos];
+    var pool = [];
+    for(var n=0;n<=20;n++){ if(n!==correct){ pool.push(n); } }
+    var distractors = sample(pool, 3);
+    var options = shuffle(distractors.concat([correct]));
+    rounds.push({seq:seq, blankPos:blankPos, correct:correct, options:options});
+  }
+  seriesState = { rounds:rounds, index:0, score:0, answered:false };
+}
+
+function renderSeries(){
+  renderTopbar(true);
+  var stage = el("div", {class:"stage"});
+  stage.appendChild(el("h2", {class:"screen-title", text:t("modeSeries")}));
+  stage.appendChild(bilingualLine(t("seriesInstruction"), t2("seriesInstruction"), "muted", "muted"));
+
+  var r = seriesState.rounds[seriesState.index];
+  stage.appendChild(el("div", {class:"qcounter", text: t("round")+" "+(seriesState.index+1)+" / "+seriesState.rounds.length}));
+
+  var card = el("div", {class:"card"});
+  var row = el("div", {class:"series-row"});
+  for(var i=0;i<r.seq.length;i++){
+    if(i===r.blankPos){
+      row.appendChild(el("div", {class:"series-tile blank", text:"?"}));
+    } else {
+      row.appendChild(el("div", {class:"series-tile", text:wordFor(r.seq[i])}));
+    }
+  }
+  card.appendChild(row);
+  stage.appendChild(card);
+
+  var opts = el("div", {class:"options"});
+  var feedback = el("div", {class:"feedback"});
+  for(var j=0;j<r.options.length;j++){
+    (function(val){
+      var o = el("div", {class:"opt"});
+      o.appendChild(el("span", {text:wordFor(val)}));
+      o.addEventListener("click", function(){
+        if(seriesState.answered){ return; }
+        seriesState.answered = true;
+        var allOpts = opts.querySelectorAll(".opt");
+        for(var k=0;k<allOpts.length;k++){ allOpts[k].classList.add("disabled"); }
+        if(val===r.correct){
+          o.classList.add("correct");
+          seriesState.score++;
+          feedback.textContent = t("correct");
+          feedback.className = "feedback ok";
+        } else {
+          o.classList.add("wrong");
+          feedback.textContent = t("incorrect");
+          feedback.className = "feedback bad";
+          for(var m=0;m<allOpts.length;m++){
+            if(allOpts[m].textContent===wordFor(r.correct)){ allOpts[m].classList.add("correct"); }
+          }
+        }
+        setTimeout(function(){
+          if(seriesState.index<seriesState.rounds.length-1){
+            seriesState.index++;
+            seriesState.answered = false;
+            render();
+          } else {
+            markDone("series");
+            state.screen = "complete";
+            state.mode = "series";
+            render();
+          }
+        }, 900);
+      });
+      opts.appendChild(o);
+    })(r.options[j]);
+  }
+  stage.appendChild(opts);
+  stage.appendChild(feedback);
+  app.appendChild(stage);
+}
+
+/* ================= SCREEN: COMPLETE ================= */
+function renderComplete(){
+  renderTopbar(true);
+  renderProgressBar();
+  var stage = el("div", {class:"stage"});
+  var card = el("div", {class:"card"});
+  card.appendChild(el("div", {class:"complete-emoji", text:"🎉"}));
+  card.appendChild(el("h2", {class:"screen-title", style:"text-align:center", text:t("finished")}));
+  card.appendChild(el("div", {class:"muted", style:"text-align:center", text: t2("finished") || ""}));
+  var desc = el("div", {style:"text-align:center;margin-top:6px"});
+  desc.appendChild(el("div", {text:t("finishedDesc")}));
+  if(t2("finishedDesc")){ desc.appendChild(el("div", {class:"muted", text:t2("finishedDesc")})); }
+  card.appendChild(desc);
+
+  var scoreLine = scoreForMode(state.mode);
+  if(scoreLine!==null){
+    card.appendChild(el("div", {class:"score-big", text: t("score")+": "+scoreLine}));
+  }
+
+  if(progressPercent()===100){
+    var allDoneEl = el("div", {class:"feedback ok", style:"margin-top:10px;text-align:center", text:t("allDone")});
+    card.appendChild(allDoneEl);
+  }
+
+  stage.appendChild(card);
+
+  var btnRow = el("div", {class:"btn-row"});
+  var restartBtn = el("button", {class:"btn secondary", text:t("restart")});
+  restartBtn.addEventListener("click", function(){
+    startMode(state.mode);
+  });
+  var menuBtn = el("button", {class:"btn", text:t("backToMenu")});
+  menuBtn.addEventListener("click", function(){
+    state.screen = "menu";
+    render();
+  });
+  btnRow.appendChild(restartBtn);
+  btnRow.appendChild(menuBtn);
+  stage.appendChild(btnRow);
+
+  app.appendChild(stage);
+}
+
+function scoreForMode(modeKey){
+  if(modeKey==="quiz"){ return quizState.score+" / "+quizState.qs.length; }
+  if(modeKey==="write"){ return writeState.score+" / "+writeState.order.length; }
+  if(modeKey==="series"){ return seriesState.score+" / "+seriesState.rounds.length; }
+  return null;
+}
+
+/* ================= INIT ================= */
+function boot(){
+  var saved = loadLangChoice();
+  if(saved){
+    state.secondLang = saved;
+    state.screen = "menu";
+  } else {
+    state.screen = "lang";
+  }
+  render();
+}
+
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded", boot);
+} else {
+  boot();
+}
+
+})();
+</script>
+</body>
+</html>
