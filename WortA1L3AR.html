@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مدرّب المفردات الألمانية</title>
+<style>
+  :root {
+    --accent: #2F6D5B;
+    --accent-dark: #1F4A3D;
+    --bg: #F7F5F1;
+    --ink: #22201D;
+    --muted: #8B8477;
+    --card: #FFFFFF;
+    --border: #E4DFD6;
+    --ok: #3F8F5F;
+    --bad: #C0473A;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--ink);
+    font-family: "Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  button, input {
+    -webkit-appearance: none; appearance: none;
+    touch-action: manipulation;
+  }
+  button { -webkit-user-select: none; user-select: none; }
+  body { padding-bottom: 40px; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+  header.top {
+    background: var(--accent); color: #fff; padding: 22px 0 18px;
+    border-bottom: 4px solid var(--accent-dark);
+  }
+  header.top h1 { margin: 0 0 4px; font-size: 1.35rem; font-weight: 700; letter-spacing: 0.01em; }
+  header.top p { margin: 0; font-size: 0.92rem; opacity: 0.92; }
+
+  nav.tabs {
+    display: flex; gap: 6px; overflow-x: auto; margin-top: 16px; padding-bottom: 2px;
+  }
+  nav.tabs button {
+    flex: 0 0 auto; border: none; background: rgba(255,255,255,0.18); color: #fff;
+    padding: 8px 14px; border-radius: 999px; font-size: 0.88rem; cursor: pointer;
+    font-family: inherit; white-space: nowrap;
+  }
+  nav.tabs button.active { background: #fff; color: var(--accent-dark); font-weight: 700; }
+
+  .cats {
+    display: flex; gap: 6px; flex-wrap: wrap; margin: 16px 0 4px;
+  }
+  .cats button {
+    border: 1px solid var(--border); background: var(--card); color: var(--ink);
+    padding: 6px 12px; border-radius: 999px; font-size: 0.84rem; cursor: pointer; font-family: inherit;
+  }
+  .cats button.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+  main { padding-top: 18px; min-height: 320px; }
+  .panel { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+  .hint { color: var(--muted); font-size: 0.86rem; margin: 0 0 16px; }
+
+  /* Flashcards */
+  .card-counter { text-align: center; color: var(--muted); font-size: 0.84rem; margin-bottom: 10px; }
+  .flashcard {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    min-height: 180px; display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; cursor: pointer; font-size: 1.3rem; font-weight: 600;
+    box-shadow: 0 1px 0 var(--border);
+  }
+  .flashcard .back { color: var(--accent-dark); }
+  .flashcard .tag { display: block; font-size: 0.78rem; font-weight: 500; color: var(--muted); margin-bottom: 10px; text-transform: none; }
+  .flash-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .flash-actions button {
+    flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 0.92rem; cursor: pointer; font-family: inherit; font-weight: 600;
+  }
+  .btn-know { background: var(--ok); color: #fff; }
+  .btn-learn { background: #EFE4DA; color: var(--ink); }
+  .dir-switch { display: flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 14px; }
+  .dir-switch button {
+    flex: 1; border: none; background: var(--card); color: var(--ink); padding: 10px 8px;
+    font-size: 0.84rem; cursor: pointer; font-family: inherit;
+  }
+  .dir-switch button.active { background: var(--accent); color: #fff; font-weight: 700; }
+  .dir-switch button:first-child { border-inline-end: 1px solid var(--border); }
+  .row-tools { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; gap: 10px; }
+  .link-btn {
+    background: none; border: none; color: var(--accent-dark); font-size: 0.86rem; cursor: pointer;
+    font-family: inherit; text-decoration: underline; padding: 4px 0;
+  }
+
+  /* Quiz */
+  .quiz-q { font-size: 1.15rem; font-weight: 700; margin-bottom: 18px; text-align: center; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-opts button {
+    text-align: start; padding: 13px 14px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--card); font-size: 0.98rem; cursor: pointer; font-family: inherit;
+  }
+  .quiz-opts button.correct { background: #E4F3E9; border-color: var(--ok); color: var(--ok); font-weight: 700; }
+  .quiz-opts button.wrong { background: #FBE7E4; border-color: var(--bad); color: var(--bad); font-weight: 700; }
+  .quiz-opts button[disabled] { cursor: default; }
+  .quiz-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 0.86rem; color: var(--muted); }
+  .quiz-feedback { text-align: center; margin-top: 14px; font-weight: 700; min-height: 1.4em; }
+  .quiz-feedback.ok { color: var(--ok); }
+  .quiz-feedback.bad { color: var(--bad); }
+  .primary-btn {
+    display: block; width: 100%; margin-top: 14px; padding: 13px; border-radius: 10px; border: none;
+    background: var(--accent); color: #fff; font-size: 0.96rem; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .center-msg { text-align: center; padding: 20px 0; }
+  .center-msg .big { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; }
+
+  /* Matching */
+  .match-cols { display: flex; gap: 10px; }
+  .match-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .match-col button {
+    padding: 11px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--card);
+    font-size: 0.88rem; cursor: pointer; font-family: inherit; text-align: start;
+  }
+  .match-col button.selected { border-color: var(--accent); background: #EAF3F3; }
+  .match-col button.matched { background: #E4F3E9; border-color: var(--ok); color: var(--ok); cursor: default; }
+  .match-col button.flash-wrong { background: #FBE7E4; border-color: var(--bad); }
+  .match-col button[disabled] { cursor: default; }
+
+  /* Typing */
+  .type-prompt { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; text-align: center; }
+  .type-input {
+    width: 100%; padding: 13px 14px; border-radius: 10px; border: 1px solid var(--border);
+    font-size: 16px; font-family: inherit; margin-bottom: 12px; background: var(--card); color: var(--ink);
+  }
+  .type-input.ok { border-color: var(--ok); }
+  .type-input.bad { border-color: var(--bad); }
+  .type-feedback { min-height: 1.4em; font-weight: 700; margin-bottom: 6px; }
+  .type-feedback.ok { color: var(--ok); }
+  .type-feedback.bad { color: var(--bad); }
+  .type-answer { color: var(--muted); font-size: 0.9rem; }
+
+  /* Progress */
+  .prog-row { margin-bottom: 18px; }
+  .prog-label { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 6px; }
+  .prog-bar-bg { background: var(--border); border-radius: 999px; height: 10px; overflow: hidden; }
+  .prog-bar-fill { background: var(--accent); height: 100%; border-radius: 999px; }
+  .reset-btn { background: none; border: 1px solid var(--bad); color: var(--bad); padding: 9px 16px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 0.86rem; margin-top: 6px; }
+
+  footer.note { text-align: center; color: var(--muted); font-size: 0.78rem; margin-top: 28px; padding: 0 16px; }
+
+  @media (max-width: 420px) {
+    .flashcard { font-size: 1.12rem; min-height: 160px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>مدرّب المفردات الألمانية</h1>
+    <p>الأثاث والأجهزة الإلكترونية والمقاسات والأسعار (المستوى A1/A2)</p>
+    <nav class="tabs" id="tabs"></nav>
+  </div>
+</header>
+<div class="wrap">
+  <div class="cats" id="cats"></div>
+  <main id="app"></main>
+  <footer class="note">يعمل بدون اتصال بالإنترنت بالكامل — احفظ هذا الملف وافتحه في متصفحك في أي وقت.</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var VOCAB = [{"id": "a1", "cat": "A", "pos": "noun", "de": "die Tasche, Taschen", "core": "die Tasche", "en": "bag(s)", "ru": "сумка", "ar": "الحقيبة", "tr": "çanta", "type": "object"}, {"id": "a2", "cat": "A", "pos": "noun", "de": "der Tisch, Tische", "core": "der Tisch", "en": "table(s)", "ru": "стол", "ar": "الطاولة", "tr": "masa", "type": "object"}, {"id": "a3", "cat": "A", "pos": "noun", "de": "der Stuhl, Stühle", "core": "der Stuhl", "en": "chair(s)", "ru": "стул", "ar": "الكرسي", "tr": "sandalye", "type": "object"}, {"id": "a4", "cat": "A", "pos": "noun", "de": "die Bank, Bänke", "core": "die Bank", "en": "bench(es) — furniture, not a financial bank", "ru": "скамейка (мебель — не банк как финансовое учреждение)", "ar": "المقعد (أثاث — وليس البنك المالي)", "tr": "bank (oturma mobilyası — banka değil)", "type": "object"}, {"id": "a5", "cat": "A", "pos": "noun", "de": "das Sofa, Sofas", "core": "das Sofa", "en": "sofa(s)", "ru": "диван", "ar": "الأريكة", "tr": "kanepe", "type": "object"}, {"id": "a6", "cat": "A", "pos": "noun", "de": "das Bett, Betten", "core": "das Bett", "en": "bed(s)", "ru": "кровать", "ar": "السرير", "tr": "yatak", "type": "object"}, {"id": "a7", "cat": "A", "pos": "noun", "de": "das Regal, Regale", "core": "das Regal", "en": "shelf / shelves", "ru": "полка, стеллаж", "ar": "الرف", "tr": "raf", "type": "object"}, {"id": "a8", "cat": "A", "pos": "noun", "de": "der Schrank, Schränke", "core": "der Schrank", "en": "cupboard(s) / wardrobe(s)", "ru": "шкаф", "ar": "الخزانة", "tr": "dolap", "type": "object"}, {"id": "a9", "cat": "A", "pos": "noun", "de": "der Herd, Herde", "core": "der Herd", "en": "stove(s) / cooker(s) — kitchen appliance, not a fireplace hearth", "ru": "плита (кухонная — не камин)", "ar": "الموقد (موقد المطبخ — وليس موقد المدفأة)", "tr": "ocak (mutfak ocağı — şömine değil)", "type": "object"}, {"id": "a10", "cat": "A", "pos": "noun", "de": "der Bleistift, Bleistifte", "core": "der Bleistift", "en": "pencil(s)", "ru": "карандаш", "ar": "قلم الرصاص", "tr": "kurşun kalem", "type": "object"}, {"id": "a11", "cat": "A", "pos": "noun", "de": "das Heft, Hefte", "core": "das Heft", "en": "notebook(s) / exercise book(s)", "ru": "тетрадь", "ar": "الدفتر", "tr": "defter", "type": "object"}, {"id": "a12", "cat": "A", "pos": "noun", "de": "das Plakat, Plakate", "core": "das Plakat", "en": "poster(s)", "ru": "плакат", "ar": "الملصق", "tr": "poster", "type": "object"}, {"id": "a13", "cat": "A", "pos": "noun", "de": "das Handy, Handys", "core": "das Handy", "en": "mobile phone(s) / cell phone(s)", "ru": "мобильный телефон", "ar": "الهاتف المحمول", "tr": "cep telefonu", "type": "object"}, {"id": "a14", "cat": "A", "pos": "noun", "de": "der Dialog, Dialoge", "core": "der Dialog", "en": "dialogue(s)", "ru": "диалог", "ar": "الحوار", "tr": "diyalog", "type": "object"}, {"id": "a15", "cat": "A", "pos": "noun", "de": "die Hausaufgabe, Hausaufgaben", "core": "die Hausaufgabe", "en": "homework", "ru": "домашнее задание", "ar": "الواجب المنزلي", "tr": "ev ödevi", "type": "concept"}, {"id": "a16", "cat": "A", "pos": "phrase", "de": "Hausaufgaben machen", "core": "Hausaufgaben machen", "en": "to do homework", "ru": "делать домашнее задание", "ar": "يقوم بالواجب المنزلي", "tr": "ev ödevi yapmak"}, {"id": "a17", "cat": "A", "pos": "verb", "de": "hören", "core": "hören", "en": "to hear / to listen", "ru": "слышать, слушать", "ar": "يسمع / يستمع", "tr": "duymak / dinlemek"}, {"id": "a18", "cat": "A", "pos": "noun", "de": "das Kind, Kinder", "core": "das Kind", "en": "child(ren)", "ru": "ребёнок", "ar": "الطفل", "tr": "çocuk", "type": "person"}, {"id": "a19", "cat": "A", "pos": "noun", "de": "das Foto, Fotos", "core": "das Foto", "en": "photo(s)", "ru": "фото", "ar": "الصورة", "tr": "fotoğraf", "type": "object"}, {"id": "a20", "cat": "A", "pos": "verb", "de": "spielen", "core": "spielen", "en": "to play", "ru": "играть", "ar": "يلعب", "tr": "oynamak"}, {"id": "a21", "cat": "A", "pos": "verb", "de": "stehen", "core": "stehen", "en": "to stand", "ru": "стоять", "ar": "يقف", "tr": "durmak / ayakta durmak"}, {"id": "a22", "cat": "A", "pos": "other", "de": "viel / viele", "core": "viele", "en": "much / many", "ru": "много", "ar": "كثير", "tr": "çok"}, {"id": "a23", "cat": "A", "pos": "noun", "de": "der Kaffee (Pl. selten)", "core": "der Kaffee", "en": "coffee (plural rarely used)", "ru": "кофе (во множественном числе используется редко)", "ar": "القهوة (نادراً ما تُستخدم بصيغة الجمع)", "tr": "kahve (çoğulu nadiren kullanılır)", "type": "object"}, {"id": "a24", "cat": "A", "pos": "phrase", "de": "Was ist das? / Wie heißt das auf Deutsch?", "core": null, "en": "What is that? / What's that called in German?", "ru": "Что это? / Как это называется по-немецки?", "ar": "ما هذا؟ / ما اسم هذا بالألمانية؟", "tr": "Bu nedir? / Bu Almanca'da ne demek?"}, {"id": "a25", "cat": "A", "pos": "phrase", "de": "Das ist ein ... / Das ist eine ...", "core": null, "en": "This is a ...", "ru": "Это ...", "ar": "هذا ... / هذه ...", "tr": "Bu bir ..."}, {"id": "a26", "cat": "A", "pos": "phrase", "de": "Keine Ahnung. Ich weiß nicht.", "core": "Keine Ahnung. Ich weiß nicht.", "en": "No idea. I don't know.", "ru": "Понятия не имею. Я не знаю.", "ar": "ليس لدي فكرة. لا أعرف.", "tr": "Hiçbir fikrim yok. Bilmiyorum."}, {"id": "b1", "cat": "B", "pos": "noun", "de": "der Computer, Computer", "core": "der Computer", "en": "computer(s)", "ru": "компьютер", "ar": "الحاسوب", "tr": "bilgisayar", "type": "object"}, {"id": "b2", "cat": "B", "pos": "noun", "de": "die Kaffeemaschine, Kaffeemaschinen", "core": "die Kaffeemaschine", "en": "coffee machine(s)", "ru": "кофемашина", "ar": "ماكينة القهوة", "tr": "kahve makinesi", "type": "object"}, {"id": "b3", "cat": "B", "pos": "noun", "de": "die Kasse, Kassen", "core": "die Kasse", "en": "cash register(s) / checkout", "ru": "касса", "ar": "الصندوق (الكاشير)", "tr": "kasa", "type": "object"}, {"id": "b4", "cat": "B", "pos": "noun", "de": "der Laptop, Laptops", "core": "der Laptop", "en": "laptop(s)", "ru": "ноутбук", "ar": "الحاسوب المحمول", "tr": "dizüstü bilgisayar", "type": "object"}, {"id": "b5", "cat": "B", "pos": "adjective", "de": "groß", "core": "groß", "en": "big / tall", "ru": "большой, высокий", "ar": "كبير", "tr": "büyük"}, {"id": "b6", "cat": "B", "pos": "adjective", "de": "klein", "core": "klein", "en": "small", "ru": "маленький", "ar": "صغير", "tr": "küçük"}, {"id": "b7", "cat": "B", "pos": "adjective", "de": "neu", "core": "neu", "en": "new", "ru": "новый", "ar": "جديد", "tr": "yeni"}, {"id": "b8", "cat": "B", "pos": "adjective", "de": "alt", "core": "alt", "en": "old", "ru": "старый", "ar": "قديم", "tr": "eski"}, {"id": "b9", "cat": "B", "pos": "adjective", "de": "schön", "core": "schön", "en": "beautiful / nice", "ru": "красивый", "ar": "جميل", "tr": "güzel"}, {"id": "b10", "cat": "B", "pos": "verb", "de": "funktionieren", "core": "funktionieren", "en": "to function / to work (for machines/devices)", "ru": "работать, функционировать (о технике)", "ar": "يعمل (يشتغل، عن الأجهزة)", "tr": "çalışmak (cihazlar için)"}, {"id": "b11", "cat": "B", "pos": "noun", "de": "die Tafel, Tafeln", "core": "die Tafel", "en": "board(s) (e.g. blackboard/whiteboard) — not a chocolate bar", "ru": "доска (например, школьная — не плитка шоколада)", "ar": "اللوح (مثال: السبورة — وليس قطعة الشوكولاتة)", "tr": "tahta (örn. yazı tahtası — çikolata değil)", "type": "object"}, {"id": "b12", "cat": "B", "pos": "noun", "de": "der Kiosk, Kioske", "core": "der Kiosk", "en": "kiosk(s)", "ru": "киоск", "ar": "الكشك", "tr": "büfe", "type": "object"}, {"id": "b13", "cat": "B", "pos": "noun", "de": "die Tür, Türen", "core": "die Tür", "en": "door(s)", "ru": "дверь", "ar": "الباب", "tr": "kapı", "type": "object"}, {"id": "b14", "cat": "B", "pos": "noun", "de": "der Schlüssel, Schlüssel", "core": "der Schlüssel", "en": "key(s)", "ru": "ключ", "ar": "المفتاح", "tr": "anahtar", "type": "object"}, {"id": "b15", "cat": "B", "pos": "noun", "de": "das Fenster, Fenster", "core": "das Fenster", "en": "window(s)", "ru": "окно", "ar": "النافذة", "tr": "pencere", "type": "object"}, {"id": "b16", "cat": "B", "pos": "noun", "de": "der Kühlschrank, Kühlschränke", "core": "der Kühlschrank", "en": "refrigerator(s)", "ru": "холодильник", "ar": "الثلاجة", "tr": "buzdolabı", "type": "object"}, {"id": "b17", "cat": "B", "pos": "adjective", "de": "praktisch", "core": "praktisch", "en": "practical", "ru": "практичный", "ar": "عملي", "tr": "pratik"}, {"id": "b18", "cat": "B", "pos": "adjective", "de": "wichtig", "core": "wichtig", "en": "important", "ru": "важный", "ar": "مهم", "tr": "önemli"}, {"id": "b19", "cat": "B", "pos": "adjective", "de": "kaputt", "core": "kaputt", "en": "broken", "ru": "сломанный", "ar": "معطّل / مكسور", "tr": "bozuk"}, {"id": "b20", "cat": "B", "pos": "phrase", "de": "Oh, der Stuhl / die Tasche / ... ist schön!", "core": null, "en": "Oh, the chair / bag / ... is beautiful!", "ru": "О, этот стул / эта сумка / ... красивый/красивая!", "ar": "أوه، الكرسي / الحقيبة / ... جميل/جميلة!", "tr": "Ah, sandalye / çanta / ... çok güzel!"}, {"id": "b21", "cat": "B", "pos": "phrase", "de": "Stimmt! Ja? Ich finde, er/sie/... ist ...", "core": null, "en": "That's right! Yes? I think it's ...", "ru": "Верно! Да? По-моему, он/она ...", "ar": "صحيح! حقاً؟ أعتقد أنه/أنها ...", "tr": "Doğru! Öyle mi? Bence o ..."}, {"id": "c1", "cat": "C", "pos": "adjective", "de": "hoch", "core": "hoch", "en": "high / tall", "ru": "высокий", "ar": "مرتفع / عالٍ", "tr": "yüksek"}, {"id": "c2", "cat": "C", "pos": "adjective", "de": "breit", "core": "breit", "en": "wide", "ru": "широкий", "ar": "عريض", "tr": "geniş"}, {"id": "c3", "cat": "C", "pos": "noun", "de": "der Zentimeter, Zentimeter (cm)", "core": "der Zentimeter", "en": "centimeter(s)", "ru": "сантиметр", "ar": "السنتيمتر", "tr": "santimetre", "type": "concept"}, {"id": "c4", "cat": "C", "pos": "noun", "de": "der Meter, Meter (m)", "core": "der Meter", "en": "meter(s)", "ru": "метр", "ar": "المتر", "tr": "metre", "type": "concept"}, {"id": "c5", "cat": "C", "pos": "noun", "de": "der Euro, Euro (EUR)", "core": "der Euro", "en": "euro(s)", "ru": "евро", "ar": "اليورو", "tr": "avro", "type": "concept"}, {"id": "c6", "cat": "C", "pos": "noun", "de": "die Spülmaschine, Spülmaschinen", "core": "die Spülmaschine", "en": "dishwasher(s)", "ru": "посудомоечная машина", "ar": "غسالة الصحون", "tr": "bulaşık makinesi", "type": "object"}, {"id": "c7", "cat": "C", "pos": "noun", "de": "die Waschmaschine, Waschmaschinen", "core": "die Waschmaschine", "en": "washing machine(s)", "ru": "стиральная машина", "ar": "غسالة الملابس", "tr": "çamaşır makinesi", "type": "object"}, {"id": "c8", "cat": "C", "pos": "noun", "de": "das Alter (Sg.)", "core": "das Alter", "en": "age (used only in singular)", "ru": "возраст (употребляется только в единственном числе)", "ar": "العمر (يُستخدم بصيغة المفرد فقط)", "tr": "yaş (yalnızca tekil kullanılır)", "type": "concept"}, {"id": "c9", "cat": "C", "pos": "noun", "de": "der Preis, Preise", "core": "der Preis", "en": "price(s)", "ru": "цена", "ar": "السعر", "tr": "fiyat", "type": "concept"}, {"id": "c10", "cat": "C", "pos": "verb", "de": "kosten", "core": "kosten", "en": "to cost", "ru": "стоить", "ar": "يُكلّف", "tr": "-e mal olmak (fiyatı olmak)"}, {"id": "c11", "cat": "C", "pos": "verb", "de": "kommen", "core": "kommen", "en": "to come (here also used idiomatically: \"Das kommt auf ... Euro\" = \"That comes to ... euros\")", "ru": "приходить, приезжать (здесь также: «Das kommt auf ... Euro» — «Это выходит в ... евро»)", "ar": "يأتي / يصل (يُستخدم هنا أيضاً بمعنى: «Das kommt auf ... Euro» = «يصل السعر إلى ... يورو»)", "tr": "gelmek (burada ayrıca: \"Das kommt auf ... Euro\" = \"Bu ... avroya gelir/mal olur\")"}, {"id": "c12", "cat": "C", "pos": "other", "de": "noch", "core": "noch", "en": "still / yet", "ru": "ещё", "ar": "ما زال / بعد", "tr": "hâlâ / henüz"}, {"id": "c13", "cat": "C", "pos": "noun", "de": "die Frage, Fragen", "core": "die Frage", "en": "question(s)", "ru": "вопрос", "ar": "السؤال", "tr": "soru", "type": "concept"}, {"id": "c14", "cat": "C", "pos": "phrase", "de": "Ich habe eine Frage / zwei/drei Fragen.", "core": null, "en": "I have a question / two/three questions.", "ru": "У меня один вопрос / два/три вопроса.", "ar": "لدي سؤال واحد / سؤالان/ثلاثة أسئلة.", "tr": "Bir sorum var / iki/üç sorum var."}, {"id": "c15", "cat": "C", "pos": "phrase", "de": "Wie alt ist der Herd / die Waschmaschine / ... ?", "core": null, "en": "How old is the stove / washing machine / ...?", "ru": "Сколько лет плите / стиральной машине / ...?", "ar": "كم عمر الموقد / الغسالة / ...؟", "tr": "Ocak / çamaşır makinesi / ... kaç yaşında?"}, {"id": "c16", "cat": "C", "pos": "phrase", "de": "Er/Sie ist ... Jahre alt.", "core": null, "en": "It is ... years old.", "ru": "Ей ... лет.", "ar": "عمره/عمرها ... سنة.", "tr": "O ... yaşında."}, {"id": "c17", "cat": "C", "pos": "phrase", "de": "Was kostet der Herd / die Waschmaschine / ... ?", "core": null, "en": "How much does the stove / washing machine / ... cost?", "ru": "Сколько стоит плита / стиральная машина / ...?", "ar": "كم يكلّف الموقد / الغسالة / ...؟", "tr": "Ocak / çamaşır makinesi / ... ne kadar tutuyor?"}, {"id": "c18", "cat": "C", "pos": "phrase", "de": "Er/Sie kostet ... Euro.", "core": null, "en": "It costs ... euros.", "ru": "Она стоит ... евро.", "ar": "يكلّف/تكلّف ... يورو.", "tr": "... avroya mal oluyor."}, {"id": "c19", "cat": "C", "pos": "phrase", "de": "Wie hoch/breit ist der Herd / ... ?", "core": null, "en": "How high/wide is the stove / ...?", "ru": "Какой высоты/ширины плита / ...?", "ar": "ما ارتفاع/عرض الموقد / ...؟", "tr": "Ocak / ... ne kadar yüksek/geniş?"}, {"id": "c20", "cat": "C", "pos": "phrase", "de": "Er ist ... cm hoch/breit.", "core": null, "en": "It is ... cm high/wide.", "ru": "Он ... см в высоту/ширину.", "ar": "ارتفاعه/عرضه ... سم.", "tr": "... cm yüksekliğinde/genişliğinde."}];
+  var POOL = [{"id": "l1-a1", "cat": "A", "de": "Guten Tag!", "core": "Guten Tag!", "en": "Hello! / Good afternoon!", "ru": "Добрый день!", "ar": "طاب يومك!", "tr": "İyi günler!", "pos": "phrase"}, {"id": "l1-a2", "cat": "A", "de": "Herzlich willkommen!", "core": "Herzlich willkommen!", "en": "Welcome!", "ru": "Добро пожаловать!", "ar": "أهلاً وسهلاً!", "tr": "Hoş geldiniz!", "pos": "phrase"}, {"id": "l1-a3", "cat": "A", "de": "wie", "core": "wie", "en": "how", "ru": "как", "ar": "كيف", "tr": "nasıl", "pos": "other"}, {"id": "l1-a4", "cat": "A", "de": "heißen", "core": "heißen", "en": "to be called", "ru": "зваться, называться", "ar": "يُسمّى", "tr": "adı olmak", "pos": "verb"}, {"id": "l1-a5", "cat": "A", "de": "Sie", "core": "Sie", "en": "you (formal)", "ru": "Вы (вежливая форма)", "ar": "أنتَ / أنتِ (صيغة الاحترام)", "tr": "siz (resmî hitap)", "pos": "other"}, {"id": "l1-a6", "cat": "A", "de": "ich", "core": "ich", "en": "I", "ru": "я", "ar": "أنا", "tr": "ben", "pos": "other"}, {"id": "l1-a7", "cat": "A", "de": "sein: Ich bin ...", "core": null, "en": "to be: I am ...", "ru": "быть: Я ...", "ar": "يكون: أنا ...", "tr": "olmak: Ben ...", "pos": "phrase"}, {"id": "l1-a8", "cat": "A", "de": "Herr", "core": "Herr", "en": "Mr.", "ru": "господин", "ar": "السيد", "tr": "Bay", "pos": "noun", "type": "person"}, {"id": "l1-a9", "cat": "A", "de": "Frau", "core": "Frau", "en": "Mrs. / Ms.", "ru": "госпожа", "ar": "السيدة", "tr": "Bayan", "pos": "noun", "type": "person"}, {"id": "l1-a10", "cat": "A", "de": "und", "core": "und", "en": "and", "ru": "и", "ar": "و", "tr": "ve", "pos": "other"}, {"id": "l1-a11", "cat": "A", "de": "woher", "core": "woher", "en": "where from", "ru": "откуда", "ar": "من أين", "tr": "nereden", "pos": "other"}, {"id": "l1-a12", "cat": "A", "de": "kommen (aus)", "core": "kommen", "en": "to come (from)", "ru": "приезжать (из)", "ar": "يأتي (من)", "tr": "gelmek (-den)", "pos": "verb"}, {"id": "l1-a13", "cat": "A", "de": "Wie heißen Sie?", "core": null, "en": "What is your name?", "ru": "Как Вас зовут?", "ar": "ما اسمك؟", "tr": "Adınız nedir?", "pos": "phrase"}, {"id": "l1-a14", "cat": "A", "de": "Ich heiße ...", "core": null, "en": "My name is ...", "ru": "Меня зовут ...", "ar": "اسمي ...", "tr": "Benim adım ...", "pos": "phrase"}, {"id": "l1-a15", "cat": "A", "de": "Ich bin ...", "core": null, "en": "I am ...", "ru": "Я ...", "ar": "أنا ...", "tr": "Ben ...", "pos": "phrase"}, {"id": "l1-a16", "cat": "A", "de": "Woher kommen Sie?", "core": null, "en": "Where are you from?", "ru": "Откуда Вы?", "ar": "من أين أنتَ / أنتِ؟", "tr": "Nerelisiniz?", "pos": "phrase"}, {"id": "l1-a17", "cat": "A", "de": "Ich komme aus Deutschland / aus ...", "core": null, "en": "I come from Germany / from ...", "ru": "Я из Германии / из ...", "ar": "أنا من ألمانيا / من ...", "tr": "Almanya'dan / ...'dan geliyorum.", "pos": "phrase"}, {"id": "l1-b1", "cat": "B", "de": "die Sprache", "core": "die Sprache", "en": "the language", "ru": "язык", "ar": "اللغة", "tr": "dil", "pos": "noun", "type": "concept"}, {"id": "l1-b2", "cat": "B", "de": "sprechen", "core": "sprechen", "en": "to speak", "ru": "говорить", "ar": "يتحدّث", "tr": "konuşmak", "pos": "verb"}, {"id": "l1-b3", "cat": "B", "de": "du", "core": "du", "en": "you (informal)", "ru": "ты", "ar": "أنتَ / أنتِ (غير رسمي)", "tr": "sen", "pos": "other"}, {"id": "l1-b4", "cat": "B", "de": "ein bisschen", "core": "ein bisschen", "en": "a little", "ru": "немного", "ar": "قليلاً", "tr": "biraz", "pos": "other"}, {"id": "l1-b5", "cat": "B", "de": "deutsch: Ich spreche Deutsch.", "core": "deutsch", "en": "German: I speak German.", "ru": "немецкий: Я говорю по-немецки.", "ar": "الألمانية: أنا أتحدث الألمانية.", "tr": "Almanca: Almanca konuşuyorum.", "pos": "phrase"}, {"id": "l1-b6", "cat": "B", "de": "Hallo!", "core": "Hallo!", "en": "Hi!", "ru": "Привет!", "ar": "مرحباً!", "tr": "Merhaba!", "pos": "phrase"}, {"id": "l1-b7", "cat": "B", "de": "der Name", "core": "der Name", "en": "the name", "ru": "имя", "ar": "الاسم", "tr": "isim / ad", "pos": "noun", "type": "concept"}, {"id": "l1-b8", "cat": "B", "de": "neu: Ich bin neu hier.", "core": "neu", "en": "new: I am new here.", "ru": "новый: Я здесь новенький/новенькая.", "ar": "جديد: أنا جديد/جديدة هنا.", "tr": "yeni: Burada yeniyim.", "pos": "phrase"}, {"id": "l1-b9", "cat": "B", "de": "hier", "core": "hier", "en": "here", "ru": "здесь", "ar": "هنا", "tr": "burada", "pos": "other"}, {"id": "l1-b10", "cat": "B", "de": "das Land", "core": "das Land", "en": "the country", "ru": "страна", "ar": "البلد", "tr": "ülke", "pos": "noun", "type": "place"}, {"id": "l1-b11", "cat": "B", "de": "schreiben", "core": "schreiben", "en": "to write", "ru": "писать", "ar": "يكتب", "tr": "yazmak", "pos": "verb"}, {"id": "l1-b12", "cat": "B", "de": "buchstabieren", "core": "buchstabieren", "en": "to spell", "ru": "произносить по буквам", "ar": "يتهجّى", "tr": "harf harf söylemek", "pos": "verb"}, {"id": "l1-b13", "cat": "B", "de": "danke", "core": "danke", "en": "thank you", "ru": "спасибо", "ar": "شكراً", "tr": "teşekkürler", "pos": "other"}, {"id": "l1-b14", "cat": "B", "de": "bitte", "core": "bitte", "en": "please / you're welcome", "ru": "пожалуйста", "ar": "من فضلك / عفواً", "tr": "lütfen / rica ederim", "pos": "other"}, {"id": "l1-b15", "cat": "B", "de": "ja", "core": "ja", "en": "yes", "ru": "да", "ar": "نعم", "tr": "evet", "pos": "other"}, {"id": "l1-b16", "cat": "B", "de": "nein", "core": "nein", "en": "no", "ru": "нет", "ar": "لا", "tr": "hayır", "pos": "other"}, {"id": "l1-b17", "cat": "B", "de": "richtig", "core": "richtig", "en": "correct", "ru": "правильно", "ar": "صحيح", "tr": "doğru", "pos": "adjective"}, {"id": "l1-b18", "cat": "B", "de": "interessant", "core": "interessant", "en": "interesting", "ru": "интересно", "ar": "مثير للاهتمام", "tr": "ilginç", "pos": "adjective"}, {"id": "l1-b19", "cat": "B", "de": "Welche Sprachen sprechen Sie?", "core": null, "en": "Which languages do you speak?", "ru": "На каких языках Вы говорите?", "ar": "ما هي اللغات التي تتحدثها؟", "tr": "Hangi dilleri konuşuyorsunuz?", "pos": "phrase"}, {"id": "l1-b20", "cat": "B", "de": "Ich spreche ... und ein bisschen Deutsch.", "core": null, "en": "I speak ... and a little German.", "ru": "Я говорю на ... и немного по-немецки.", "ar": "أنا أتحدث ... وقليلاً من الألمانية.", "tr": "... konuşuyorum ve biraz Almanca.", "pos": "phrase"}, {"id": "l1-b21", "cat": "B", "de": "Mein Name ist ...", "core": null, "en": "My name is ...", "ru": "Меня зовут ...", "ar": "اسمي هو ...", "tr": "Benim adım ...", "pos": "phrase"}, {"id": "l1-b22", "cat": "B", "de": "Wie bitte? Wie schreibt man das?", "core": null, "en": "Sorry? How do you write that?", "ru": "Простите? Как это пишется?", "ar": "عفواً؟ كيف تُكتب هذه الكلمة؟", "tr": "Efendim? Bu nasıl yazılır?", "pos": "phrase"}, {"id": "l1-b23", "cat": "B", "de": "Ich buchstabiere: ...", "core": null, "en": "I'll spell it: ...", "ru": "Я произнесу по буквам: ...", "ar": "سأتهجّى: ...", "tr": "Harf harf söylüyorum: ...", "pos": "phrase"}, {"id": "l1-c1", "cat": "C", "de": "Guten Morgen!", "core": "Guten Morgen!", "en": "Good morning!", "ru": "Доброе утро!", "ar": "صباح الخير!", "tr": "Günaydın!", "pos": "phrase"}, {"id": "l1-c2", "cat": "C", "de": "Guten Abend!", "core": "Guten Abend!", "en": "Good evening!", "ru": "Добрый вечер!", "ar": "مساء الخير!", "tr": "İyi akşamlar!", "pos": "phrase"}, {"id": "l1-c3", "cat": "C", "de": "Gute Nacht!", "core": "Gute Nacht!", "en": "Good night!", "ru": "Спокойной ночи!", "ar": "تصبح على خير!", "tr": "İyi geceler!", "pos": "phrase"}, {"id": "l1-c4", "cat": "C", "de": "Auf Wiedersehen!", "core": "Auf Wiedersehen!", "en": "Goodbye!", "ru": "До свидания!", "ar": "إلى اللقاء!", "tr": "Hoşça kalın!", "pos": "phrase"}, {"id": "l1-c5", "cat": "C", "de": "Bis bald!", "core": "Bis bald!", "en": "See you soon!", "ru": "До скорого!", "ar": "إلى اللقاء قريباً!", "tr": "Yakında görüşürüz!", "pos": "phrase"}, {"id": "l1-c6", "cat": "C", "de": "Tschüs!", "core": "Tschüs!", "en": "Bye!", "ru": "Пока!", "ar": "مع السلامة!", "tr": "Görüşürüz!", "pos": "phrase"}, {"id": "l1-c7", "cat": "C", "de": "Wie geht es dir?", "core": "Wie geht es dir?", "en": "How are you? (informal)", "ru": "Как у тебя дела?", "ar": "كيف حالك؟ (غير رسمي)", "tr": "Nasılsın?", "pos": "phrase"}, {"id": "l1-c8", "cat": "C", "de": "gut", "core": "gut", "en": "good", "ru": "хорошо", "ar": "جيد", "tr": "iyi", "pos": "adjective"}, {"id": "l1-c9", "cat": "C", "de": "sehr: sehr gut", "core": "sehr gut", "en": "very: very good", "ru": "очень: очень хорошо", "ar": "جداً: جيد جداً", "tr": "çok: çok iyi", "pos": "phrase"}, {"id": "l1-c10", "cat": "C", "de": "nicht: nicht so gut", "core": "nicht so gut", "en": "not: not so good", "ru": "не: не очень хорошо", "ar": "ليس: ليس جيداً جداً", "tr": "değil: pek iyi değil", "pos": "phrase"}, {"id": "l1-c11", "cat": "C", "de": "schlecht", "core": "schlecht", "en": "bad", "ru": "плохо", "ar": "سيء", "tr": "kötü", "pos": "adjective"}, {"id": "l1-c12", "cat": "C", "de": "sagen: Sagen wir du?", "core": "Sagen wir du?", "en": "to say: Shall we use \"du\" (informal)?", "ru": "говорить «ты»: Перейдём на «ты»?", "ar": "يقول: هل نتحدث بصيغة \"أنتَ\" غير الرسمية؟", "tr": "demek: Birbirimize \"sen\" mi diyelim?", "pos": "phrase"}, {"id": "l1-c13", "cat": "C", "de": "Wie geht es Ihnen?", "core": "Wie geht es Ihnen?", "en": "How are you? (formal)", "ru": "Как у Вас дела?", "ar": "كيف حالك؟ (رسمي)", "tr": "Nasılsınız?", "pos": "phrase"}, {"id": "l1-c14", "cat": "C", "de": "Danke, super / (sehr) gut.", "core": null, "en": "Thanks, great / (very) good.", "ru": "Спасибо, отлично / (очень) хорошо.", "ar": "شكراً، رائع / جيد (جداً).", "tr": "Teşekkürler, harika / (çok) iyi.", "pos": "phrase"}, {"id": "l1-c15", "cat": "C", "de": "Na ja, es geht. / Nicht so gut. / Schlecht.", "core": null, "en": "Well, so-so. / Not so good. / Bad.", "ru": "Ну, так себе. / Не очень хорошо. / Плохо.", "ar": "حسناً، لا بأس. / ليس جيداً. / سيء.", "tr": "Eh işte, şöyle böyle. / Pek iyi değil. / Kötü.", "pos": "phrase"}, {"id": "l2-a1", "cat": "A", "de": "der Altenpfleger, die Altenpflegerin", "core": null, "en": "elderly caregiver / geriatric nurse assistant", "ru": "работник по уходу за пожилыми (сиделка)", "ar": "مقدّم/ـة رعاية لكبار السن", "tr": "yaşlı bakım elemanı", "pos": "noun", "type": "profession"}, {"id": "l2-a2", "cat": "A", "de": "der Arzt, die Ärztin", "core": null, "en": "doctor", "ru": "врач", "ar": "طبيب / طبيبة", "tr": "doktor", "pos": "noun", "type": "profession"}, {"id": "l2-a3", "cat": "A", "de": "der Friseur, die Friseurin", "core": null, "en": "hairdresser", "ru": "парикмахер", "ar": "حلاق / مصففة شعر", "tr": "kuaför", "pos": "noun", "type": "profession"}, {"id": "l2-a4", "cat": "A", "de": "der Hausmann, die Hausfrau", "core": null, "en": "stay-at-home dad / homemaker", "ru": "домохозяин / домохозяйка", "ar": "رب منزل / ربة منزل", "tr": "ev erkeği / ev hanımı", "pos": "noun", "type": "profession"}, {"id": "l2-a5", "cat": "A", "de": "der Ingenieur, die Ingenieurin", "core": null, "en": "engineer", "ru": "инженер", "ar": "مهندس / مهندسة", "tr": "mühendis", "pos": "noun", "type": "profession"}, {"id": "l2-a6", "cat": "A", "de": "der Koch, die Köchin", "core": null, "en": "cook / chef", "ru": "повар", "ar": "طاهٍ / طاهية", "tr": "aşçı", "pos": "noun", "type": "profession"}, {"id": "l2-a7", "cat": "A", "de": "der Lehrer, die Lehrerin", "core": null, "en": "teacher", "ru": "учитель / учительница", "ar": "معلم / معلمة", "tr": "öğretmen", "pos": "noun", "type": "profession"}, {"id": "l2-a8", "cat": "A", "de": "der Mechatroniker, die Mechatronikerin", "core": null, "en": "mechatronics technician", "ru": "специалист по мехатронике", "ar": "فني/ة ميكاترونكس", "tr": "mekatronik teknisyeni", "pos": "noun", "type": "profession"}, {"id": "l2-a9", "cat": "A", "de": "der Polizist, die Polizistin", "core": null, "en": "police officer", "ru": "полицейский", "ar": "شرطي / شرطية", "tr": "polis memuru", "pos": "noun", "type": "profession"}, {"id": "l2-a10", "cat": "A", "de": "der Sänger, die Sängerin", "core": null, "en": "singer", "ru": "певец / певица", "ar": "مغني / مغنية", "tr": "şarkıcı", "pos": "noun", "type": "profession"}, {"id": "l2-a11", "cat": "A", "de": "der Taxifahrer, die Taxifahrerin", "core": null, "en": "taxi driver", "ru": "таксист", "ar": "سائق / سائقة تاكسي", "tr": "taksi şoförü", "pos": "noun", "type": "profession"}, {"id": "l2-a12", "cat": "A", "de": "der Verkäufer, die Verkäuferin", "core": null, "en": "salesperson / shop assistant", "ru": "продавец / продавщица", "ar": "بائع / بائعة", "tr": "satış elemanı", "pos": "noun", "type": "profession"}, {"id": "l2-a13", "cat": "A", "de": "arbeiten (als)", "core": "arbeiten", "en": "to work (as)", "ru": "работать (кем-то, в качестве)", "ar": "يعمل (بصفة / كـ)", "tr": "çalışmak (olarak)", "pos": "verb"}, {"id": "l2-a14", "cat": "A", "de": "der Beruf: von Beruf sein", "core": null, "en": "profession: to be ... by profession (e.g. \"Ich bin Lehrer von Beruf\" = I am a teacher by profession)", "ru": "профессия: быть по профессии (например, «Ich bin Lehrer von Beruf» — «Я учитель по профессии»)", "ar": "المهنة: أن تكون ... من حيث المهنة (مثال: «Ich bin Lehrer von Beruf» = أنا معلم بحكم المهنة)", "tr": "meslek: mesleği ... olmak (örn. \"Ich bin Lehrer von Beruf\" = Mesleğim öğretmenlik)", "pos": "phrase"}, {"id": "l2-a15", "cat": "A", "de": "was", "core": "was", "en": "what", "ru": "что", "ar": "ماذا", "tr": "ne", "pos": "other"}, {"id": "l2-a16", "cat": "A", "de": "beruflich", "core": "beruflich", "en": "professionally (e.g. \"Was machst du beruflich?\" = What do you do for a living?)", "ru": "профессионально, по работе (например, «Was machst du beruflich?» — «Чем ты занимаешься по работе?»)", "ar": "مهنياً (مثال: «Was machst du beruflich?» = ماذا تعمل؟)", "tr": "meslek olarak (örn. \"Was machst du beruflich?\" = Ne iş yapıyorsun?)", "pos": "adjective"}, {"id": "l2-a17", "cat": "A", "de": "machen: beruflich machen", "core": "beruflich machen", "en": "to do: to do for a living", "ru": "делать: заниматься по профессии", "ar": "يفعل: يعمل مهنياً", "tr": "yapmak: meslek olarak yapmak", "pos": "phrase"}, {"id": "l2-a18", "cat": "A", "de": "jetzt", "core": "jetzt", "en": "now", "ru": "сейчас", "ar": "الآن", "tr": "şimdi", "pos": "other"}, {"id": "l2-a19", "cat": "A", "de": "falsch", "core": "falsch", "en": "wrong / false", "ru": "неправильно", "ar": "خطأ", "tr": "yanlış", "pos": "adjective"}, {"id": "l2-a20", "cat": "A", "de": "aber", "core": "aber", "en": "but", "ru": "но", "ar": "لكن", "tr": "ama", "pos": "other"}, {"id": "l2-a21", "cat": "A", "de": "auch", "core": "auch", "en": "also / too", "ru": "тоже", "ar": "أيضاً", "tr": "de / da (ayrıca)", "pos": "other"}, {"id": "l2-a22", "cat": "A", "de": "das Auto", "core": "das Auto", "en": "the car", "ru": "машина", "ar": "السيارة", "tr": "araba", "pos": "noun", "type": "object"}, {"id": "l2-a23", "cat": "A", "de": "das Heimatland", "core": "das Heimatland", "en": "home country", "ru": "родина, страна происхождения", "ar": "الوطن الأم", "tr": "anavatan / memleket", "pos": "noun", "type": "place"}, {"id": "l2-a24", "cat": "A", "de": "in: in Deutschland", "core": "in Deutschland", "en": "in: in Germany", "ru": "в: в Германии", "ar": "في: في ألمانيا", "tr": "-de / -da: Almanya'da", "pos": "phrase"}, {"id": "l2-a25", "cat": "A", "de": "der Kurs", "core": "der Kurs", "en": "the course (e.g. a language course, Deutschkurs)", "ru": "курс (например, языковые курсы, Deutschkurs)", "ar": "الدورة (مثال: دورة لغة، Deutschkurs)", "tr": "kurs (örn. dil kursu, Deutschkurs)", "pos": "noun", "type": "concept"}, {"id": "l2-a26", "cat": "A", "de": "lernen", "core": "lernen", "en": "to learn", "ru": "учить, изучать", "ar": "يتعلّم", "tr": "öğrenmek", "pos": "verb"}, {"id": "l2-a27", "cat": "A", "de": "nicht", "core": "nicht", "en": "not", "ru": "не", "ar": "ليس / لا", "tr": "değil", "pos": "other"}, {"id": "l2-a28", "cat": "A", "de": "reparieren", "core": "reparieren", "en": "to repair", "ru": "ремонтировать", "ar": "يصلّح", "tr": "tamir etmek", "pos": "verb"}, {"id": "l2-a29", "cat": "A", "de": "studieren", "core": "studieren", "en": "to study (at university — different from \"lernen\" = to learn)", "ru": "учиться (в университете; отличается от «lernen» — учить/изучать)", "ar": "يدرس (في الجامعة، بخلاف «lernen» بمعنى يتعلّم)", "tr": "(üniversitede) okumak / öğrenim görmek (\"lernen\"den farklı olarak)", "pos": "verb"}, {"id": "l2-a30", "cat": "A", "de": "der Mann, die Frau", "core": null, "en": "the man, the woman", "ru": "мужчина, женщина", "ar": "الرجل، المرأة", "tr": "erkek, kadın", "pos": "noun", "type": "person"}, {"id": "l2-a31", "cat": "A", "de": "der Busfahrer, die Busfahrerin", "core": null, "en": "bus driver", "ru": "водитель автобуса", "ar": "سائق / سائقة حافلة", "tr": "otobüs şoförü", "pos": "noun", "type": "profession"}, {"id": "l2-a32", "cat": "A", "de": "der Kellner, die Kellnerin", "core": null, "en": "waiter / waitress", "ru": "официант / официантка", "ar": "نادل / نادلة", "tr": "garson", "pos": "noun", "type": "profession"}, {"id": "l2-a33", "cat": "A", "de": "Was bist du von Beruf?", "core": "Was bist du von Beruf?", "en": "What is your profession?", "ru": "Кто ты по профессии?", "ar": "ما مهنتك؟", "tr": "Mesleğin ne?", "pos": "phrase"}, {"id": "l2-a34", "cat": "A", "de": "Was machst du beruflich?", "core": "Was machst du beruflich?", "en": "What do you do for a living?", "ru": "Чем ты занимаешься по работе?", "ar": "بماذا تعمل؟", "tr": "Ne iş yapıyorsun?", "pos": "phrase"}, {"id": "l2-a35", "cat": "A", "de": "Ich bin ... von Beruf. / Ich arbeite als ... bei ...", "core": null, "en": "I am a ... by profession. / I work as a ... at ...", "ru": "Я по профессии ... . / Я работаю ... в ...", "ar": "أنا ... من حيث المهنة. / أعمل كـ ... في ...", "tr": "Mesleğim ... . / ...'de ... olarak çalışıyorum.", "pos": "phrase"}, {"id": "l2-a36", "cat": "A", "de": "Ich arbeite jetzt nicht. / Ich lerne Deutsch.", "core": null, "en": "I'm not working right now. / I'm learning German.", "ru": "Сейчас я не работаю. / Я учу немецкий.", "ar": "لا أعمل الآن. / أتعلّم الألمانية.", "tr": "Şu anda çalışmıyorum. / Almanca öğreniyorum.", "pos": "phrase"}, {"id": "l2-a37", "cat": "A", "de": "Stimmt! Richtig! / Leider falsch!", "core": null, "en": "That's right! Correct! / Unfortunately wrong!", "ru": "Верно! Правильно! / К сожалению, неверно!", "ar": "صحيح! هذا صحيح! / للأسف خطأ!", "tr": "Doğru! Tamamdır! / Maalesef yanlış!", "pos": "phrase"}, {"id": "l2-b1", "cat": "B", "de": "bekannt", "core": "bekannt", "en": "known / famous (e.g. \"ein bekannter Sänger\" = a famous singer)", "ru": "известный (например, «ein bekannter Sänger» — известный певец)", "ar": "معروف / مشهور (مثال: «ein bekannter Sänger» = مغني مشهور)", "tr": "tanınmış / ünlü (örn. \"ein bekannter Sänger\" = ünlü bir şarkıcı)", "pos": "adjective"}, {"id": "l2-b2", "cat": "B", "de": "das Buch", "core": "das Buch", "en": "the book", "ru": "книга", "ar": "الكتاب", "tr": "kitap", "pos": "noun", "type": "object"}, {"id": "l2-b3", "cat": "B", "de": "er", "core": "er", "en": "he", "ru": "он", "ar": "هو", "tr": "o (erkek)", "pos": "other"}, {"id": "l2-b4", "cat": "B", "de": "der Film: Filme machen", "core": "Filme machen", "en": "the film: to make films", "ru": "фильм: снимать фильмы", "ar": "الفيلم: يصنع أفلاماً", "tr": "film: film çekmek", "pos": "phrase"}, {"id": "l2-b5", "cat": "B", "de": "schon lange", "core": "schon lange", "en": "for a long time (already)", "ru": "уже долго, давно", "ar": "منذ وقت طويل", "tr": "uzun zamandır", "pos": "other"}, {"id": "l2-b6", "cat": "B", "de": "sie", "core": "sie", "en": "she", "ru": "она", "ar": "هي", "tr": "o (kadın)", "pos": "other"}, {"id": "l2-b7", "cat": "B", "de": "sie (Pl.)", "core": "sie", "en": "they", "ru": "они", "ar": "هم / هن", "tr": "onlar", "pos": "other"}, {"id": "l2-b8", "cat": "B", "de": "wo", "core": "wo", "en": "where", "ru": "где", "ar": "أين", "tr": "nerede", "pos": "other"}, {"id": "l2-b9", "cat": "B", "de": "wohnen (in)", "core": "wohnen", "en": "to live (in)", "ru": "жить (в)", "ar": "يسكن (في)", "tr": "oturmak (-de / -da)", "pos": "verb"}, {"id": "l2-b10", "cat": "B", "de": "das Lied", "core": "das Lied", "en": "the song", "ru": "песня", "ar": "الأغنية", "tr": "şarkı", "pos": "noun", "type": "object"}, {"id": "l2-b11", "cat": "B", "de": "singen: Lieder singen", "core": "Lieder singen", "en": "to sing: to sing songs", "ru": "петь: петь песни", "ar": "يغنّي: يغنّي أغاني", "tr": "şarkı söylemek: şarkı söylemek", "pos": "phrase"}, {"id": "l2-b12", "cat": "B", "de": "der Sport: Sport machen", "core": "Sport machen", "en": "sport: to do sports / exercise", "ru": "спорт: заниматься спортом", "ar": "الرياضة: يمارس الرياضة", "tr": "spor: spor yapmak", "pos": "phrase"}, {"id": "l2-b13", "cat": "B", "de": "trainieren", "core": "trainieren", "en": "to train / practice", "ru": "тренироваться", "ar": "يتدرّب", "tr": "antrenman yapmak", "pos": "verb"}, {"id": "l2-b14", "cat": "B", "de": "tanzen", "core": "tanzen", "en": "to dance", "ru": "танцевать", "ar": "يرقص", "tr": "dans etmek", "pos": "verb"}, {"id": "l2-b15", "cat": "B", "de": "der Tee", "core": "der Tee", "en": "the tea", "ru": "чай", "ar": "الشاي", "tr": "çay", "pos": "noun", "type": "object"}, {"id": "l2-b16", "cat": "B", "de": "trinken", "core": "trinken", "en": "to drink", "ru": "пить", "ar": "يشرب", "tr": "içmek", "pos": "verb"}, {"id": "l2-b17", "cat": "B", "de": "wer: Wer ist das?", "core": "Wer ist das?", "en": "who: Who is that?", "ru": "кто: Кто это?", "ar": "من: من هذا؟", "tr": "kim: Bu kim?", "pos": "phrase"}, {"id": "l2-c1", "cat": "C", "de": "Entschuldigung!", "core": "Entschuldigung!", "en": "Sorry! / Excuse me!", "ru": "Извините!", "ar": "عذراً! / آسف!", "tr": "Özür dilerim! / Affedersiniz!", "pos": "phrase"}, {"id": "l2-c2", "cat": "C", "de": "die Hilfe: Hilfe brauchen", "core": "Hilfe brauchen", "en": "the help: to need help", "ru": "помощь: нуждаться в помощи", "ar": "المساعدة: يحتاج إلى مساعدة", "tr": "yardım: yardıma ihtiyaç duymak", "pos": "phrase"}, {"id": "l2-c3", "cat": "C", "de": "bedeuten", "core": "bedeuten", "en": "to mean", "ru": "означать", "ar": "يعني", "tr": "anlamına gelmek", "pos": "verb"}, {"id": "l2-c4", "cat": "C", "de": "das Problem", "core": "das Problem", "en": "the problem", "ru": "проблема", "ar": "المشكلة", "tr": "sorun / problem", "pos": "noun", "type": "concept"}, {"id": "l2-c5", "cat": "C", "de": "verstehen", "core": "verstehen", "en": "to understand", "ru": "понимать", "ar": "يفهم", "tr": "anlamak", "pos": "verb"}, {"id": "l2-c6", "cat": "C", "de": "helfen", "core": "helfen", "en": "to help", "ru": "помогать", "ar": "يساعد", "tr": "yardım etmek", "pos": "verb"}, {"id": "l2-c7", "cat": "C", "de": "gern / gerne", "core": null, "en": "gladly / happily (e.g. \"Ich helfe gerne\" = I like to help / I'm happy to help)", "ru": "охотно, с удовольствием (например, «Ich helfe gerne» — «Я с удовольствием помогу»)", "ar": "بكل سرور (مثال: «Ich helfe gerne» = أساعد بكل سرور)", "tr": "seve seve, memnuniyetle (örn. \"Ich helfe gerne\" = Yardım etmekten mutluluk duyarım)", "pos": "other"}, {"id": "l2-c8", "cat": "C", "de": "das Formular", "core": "das Formular", "en": "the form (document)", "ru": "бланк, форма (документ)", "ar": "الاستمارة", "tr": "form (belge)", "pos": "noun", "type": "concept"}, {"id": "l2-c9", "cat": "C", "de": "der Vorname", "core": "der Vorname", "en": "first name", "ru": "имя", "ar": "الاسم الأول", "tr": "ad (isim)", "pos": "noun", "type": "contact"}, {"id": "l2-c10", "cat": "C", "de": "der Nachname", "core": "der Nachname", "en": "last name / surname", "ru": "фамилия", "ar": "اسم العائلة", "tr": "soyadı", "pos": "noun", "type": "contact"}, {"id": "l2-c11", "cat": "C", "de": "die Adresse", "core": "die Adresse", "en": "the address", "ru": "адрес", "ar": "العنوان", "tr": "adres", "pos": "noun", "type": "place"}, {"id": "l2-c12", "cat": "C", "de": "die Straße", "core": "die Straße", "en": "the street", "ru": "улица", "ar": "الشارع", "tr": "sokak / cadde", "pos": "noun", "type": "place"}, {"id": "l2-c13", "cat": "C", "de": "die Hausnummer", "core": "die Hausnummer", "en": "house number", "ru": "номер дома", "ar": "رقم المنزل", "tr": "bina numarası", "pos": "noun", "type": "place"}, {"id": "l2-c14", "cat": "C", "de": "der Ort", "core": "der Ort", "en": "place / town (e.g. Wohnort = place of residence)", "ru": "место, населённый пункт (например, Wohnort — место жительства)", "ar": "المكان / البلدة (مثال: Wohnort = مكان الإقامة)", "tr": "yer / yerleşim yeri (örn. Wohnort = ikamet yeri)", "pos": "noun", "type": "place"}, {"id": "l2-c15", "cat": "C", "de": "die Postleitzahl (PLZ)", "core": "die Postleitzahl", "en": "postal code (ZIP code)", "ru": "почтовый индекс", "ar": "الرمز البريدي", "tr": "posta kodu", "pos": "noun", "type": "place"}, {"id": "l2-c16", "cat": "C", "de": "die Telefonnummer", "core": "die Telefonnummer", "en": "phone number", "ru": "номер телефона", "ar": "رقم الهاتف", "tr": "telefon numarası", "pos": "noun", "type": "contact"}, {"id": "l2-c17", "cat": "C", "de": "die E-Mail-Adresse", "core": "die E-Mail-Adresse", "en": "email address", "ru": "адрес электронной почты", "ar": "عنوان البريد الإلكتروني", "tr": "e-posta adresi", "pos": "noun", "type": "contact"}, {"id": "l2-c18", "cat": "C", "de": "die E-Mail", "core": "die E-Mail", "en": "the email", "ru": "электронное письмо, имейл", "ar": "البريد الإلكتروني", "tr": "e-posta", "pos": "noun", "type": "contact"}, {"id": "l2-c19", "cat": "C", "de": "die Arbeit", "core": "die Arbeit", "en": "the work / job", "ru": "работа", "ar": "العمل", "tr": "iş", "pos": "noun", "type": "concept"}, {"id": "l2-c20", "cat": "C", "de": "ihr", "core": "ihr", "en": "you (plural, informal) (e.g. \"Wie geht es euch?\" = How are you all?)", "ru": "вы (мн.ч., неформ.) (например, «Wie geht es euch?» — «Как у вас дела?»)", "ar": "أنتم / أنتنّ (صيغة الجمع غير الرسمية) (مثال: «Wie geht es euch?» = كيف حالكم؟)", "tr": "siz (çoğul, samimi) (örn. \"Wie geht es euch?\" = Nasılsınız?)", "pos": "other"}, {"id": "l2-c21", "cat": "C", "de": "wir", "core": "wir", "en": "we", "ru": "мы", "ar": "نحن", "tr": "biz", "pos": "other"}, {"id": "l2-c22", "cat": "C", "de": "mein(e): Das ist mein Vorname.", "core": "Das ist mein Vorname.", "en": "my: This is my first name.", "ru": "мой/моя: Это моё имя.", "ar": "ملكي: هذا اسمي الأول.", "tr": "benim: Bu benim adım.", "pos": "phrase"}, {"id": "l2-c23", "cat": "C", "de": "dein(e): Wie ist dein Vorname?", "core": "Wie ist dein Vorname?", "en": "your: What is your first name?", "ru": "твой/твоя: Как твоё имя?", "ar": "ملكك: ما اسمك الأول؟", "tr": "senin: Adın ne?", "pos": "phrase"}, {"id": "l2-c24", "cat": "C", "de": "Wo wohnst du?", "core": "Wo wohnst du?", "en": "Where do you live?", "ru": "Где ты живёшь?", "ar": "أين تسكن؟", "tr": "Nerede oturuyorsun?", "pos": "phrase"}, {"id": "l2-c25", "cat": "C", "de": "Ich wohne in ... / in der ...straße.", "core": null, "en": "I live in ... / on ... street.", "ru": "Я живу в ... / на улице ...", "ar": "أسكن في ... / في شارع ...", "tr": "...'de oturuyorum. / ... caddesinde oturuyorum.", "pos": "phrase"}, {"id": "l2-c26", "cat": "C", "de": "Wie ist dein Nachname / deine Adresse / ... ?", "core": null, "en": "What is your last name / address / ...?", "ru": "Как твоя фамилия / твой адрес / ...?", "ar": "ما اسم عائلتك / عنوانك / ...؟", "tr": "Soyadın / adresin ... nedir?", "pos": "phrase"}, {"id": "l2-c27", "cat": "C", "de": "Mein Nachname / Meine Adresse ist ...", "core": null, "en": "My last name / address is ...", "ru": "Моя фамилия / Мой адрес ...", "ar": "اسم عائلتي / عنواني هو ...", "tr": "Soyadım / Adresim ...", "pos": "phrase"}, {"id": "l2-c28", "cat": "C", "de": "Entschuldigung, ich brauche Hilfe.", "core": "Entschuldigung, ich brauche Hilfe.", "en": "Excuse me, I need help.", "ru": "Извините, мне нужна помощь.", "ar": "عذراً، أحتاج إلى مساعدة.", "tr": "Affedersiniz, yardıma ihtiyacım var.", "pos": "phrase"}, {"id": "l2-c29", "cat": "C", "de": "Ja? Was ist das Problem?", "core": "Ja? Was ist das Problem?", "en": "Yes? What's the problem?", "ru": "Да? В чём проблема?", "ar": "نعم؟ ما المشكلة؟", "tr": "Evet? Sorun ne?", "pos": "phrase"}, {"id": "l2-c30", "cat": "C", "de": "Ich verstehe das nicht. – ... bedeutet: ...", "core": null, "en": "I don't understand that. – ... means: ...", "ru": "Я это не понимаю. – ... означает: ...", "ar": "لا أفهم ذلك. – ... تعني: ...", "tr": "Bunu anlamıyorum. – ... anlamına gelir: ...", "pos": "phrase"}, {"id": "l2-c31", "cat": "C", "de": "Ah, danke. – Bitte, ich helfe gerne.", "core": null, "en": "Ah, thanks. – You're welcome, happy to help.", "ru": "А, спасибо. – Пожалуйста, рада/рад помочь.", "ar": "آه، شكراً. – عفواً، بكل سرور.", "tr": "Ah, teşekkürler. – Rica ederim, yardımcı olmaktan mutluluk duyarım.", "pos": "phrase"}, {"id": "l3-a1", "cat": "A", "pos": "noun", "de": "die Tasche, Taschen", "core": "die Tasche", "en": "bag(s)", "ru": "сумка", "ar": "الحقيبة", "tr": "çanta", "type": "object"}, {"id": "l3-a2", "cat": "A", "pos": "noun", "de": "der Tisch, Tische", "core": "der Tisch", "en": "table(s)", "ru": "стол", "ar": "الطاولة", "tr": "masa", "type": "object"}, {"id": "l3-a3", "cat": "A", "pos": "noun", "de": "der Stuhl, Stühle", "core": "der Stuhl", "en": "chair(s)", "ru": "стул", "ar": "الكرسي", "tr": "sandalye", "type": "object"}, {"id": "l3-a4", "cat": "A", "pos": "noun", "de": "die Bank, Bänke", "core": "die Bank", "en": "bench(es) — furniture, not a financial bank", "ru": "скамейка (мебель — не банк как финансовое учреждение)", "ar": "المقعد (أثاث — وليس البنك المالي)", "tr": "bank (oturma mobilyası — banka değil)", "type": "object"}, {"id": "l3-a5", "cat": "A", "pos": "noun", "de": "das Sofa, Sofas", "core": "das Sofa", "en": "sofa(s)", "ru": "диван", "ar": "الأريكة", "tr": "kanepe", "type": "object"}, {"id": "l3-a6", "cat": "A", "pos": "noun", "de": "das Bett, Betten", "core": "das Bett", "en": "bed(s)", "ru": "кровать", "ar": "السرير", "tr": "yatak", "type": "object"}, {"id": "l3-a7", "cat": "A", "pos": "noun", "de": "das Regal, Regale", "core": "das Regal", "en": "shelf / shelves", "ru": "полка, стеллаж", "ar": "الرف", "tr": "raf", "type": "object"}, {"id": "l3-a8", "cat": "A", "pos": "noun", "de": "der Schrank, Schränke", "core": "der Schrank", "en": "cupboard(s) / wardrobe(s)", "ru": "шкаф", "ar": "الخزانة", "tr": "dolap", "type": "object"}, {"id": "l3-a9", "cat": "A", "pos": "noun", "de": "der Herd, Herde", "core": "der Herd", "en": "stove(s) / cooker(s) — kitchen appliance, not a fireplace hearth", "ru": "плита (кухонная — не камин)", "ar": "الموقد (موقد المطبخ — وليس موقد المدفأة)", "tr": "ocak (mutfak ocağı — şömine değil)", "type": "object"}, {"id": "l3-a10", "cat": "A", "pos": "noun", "de": "der Bleistift, Bleistifte", "core": "der Bleistift", "en": "pencil(s)", "ru": "карандаш", "ar": "قلم الرصاص", "tr": "kurşun kalem", "type": "object"}, {"id": "l3-a11", "cat": "A", "pos": "noun", "de": "das Heft, Hefte", "core": "das Heft", "en": "notebook(s) / exercise book(s)", "ru": "тетрадь", "ar": "الدفتر", "tr": "defter", "type": "object"}, {"id": "l3-a12", "cat": "A", "pos": "noun", "de": "das Plakat, Plakate", "core": "das Plakat", "en": "poster(s)", "ru": "плакат", "ar": "الملصق", "tr": "poster", "type": "object"}, {"id": "l3-a13", "cat": "A", "pos": "noun", "de": "das Handy, Handys", "core": "das Handy", "en": "mobile phone(s) / cell phone(s)", "ru": "мобильный телефон", "ar": "الهاتف المحمول", "tr": "cep telefonu", "type": "object"}, {"id": "l3-a14", "cat": "A", "pos": "noun", "de": "der Dialog, Dialoge", "core": "der Dialog", "en": "dialogue(s)", "ru": "диалог", "ar": "الحوار", "tr": "diyalog", "type": "object"}, {"id": "l3-a15", "cat": "A", "pos": "noun", "de": "die Hausaufgabe, Hausaufgaben", "core": "die Hausaufgabe", "en": "homework", "ru": "домашнее задание", "ar": "الواجب المنزلي", "tr": "ev ödevi", "type": "concept"}, {"id": "l3-a16", "cat": "A", "pos": "phrase", "de": "Hausaufgaben machen", "core": "Hausaufgaben machen", "en": "to do homework", "ru": "делать домашнее задание", "ar": "يقوم بالواجب المنزلي", "tr": "ev ödevi yapmak"}, {"id": "l3-a17", "cat": "A", "pos": "verb", "de": "hören", "core": "hören", "en": "to hear / to listen", "ru": "слышать, слушать", "ar": "يسمع / يستمع", "tr": "duymak / dinlemek"}, {"id": "l3-a18", "cat": "A", "pos": "noun", "de": "das Kind, Kinder", "core": "das Kind", "en": "child(ren)", "ru": "ребёнок", "ar": "الطفل", "tr": "çocuk", "type": "person"}, {"id": "l3-a19", "cat": "A", "pos": "noun", "de": "das Foto, Fotos", "core": "das Foto", "en": "photo(s)", "ru": "фото", "ar": "الصورة", "tr": "fotoğraf", "type": "object"}, {"id": "l3-a20", "cat": "A", "pos": "verb", "de": "spielen", "core": "spielen", "en": "to play", "ru": "играть", "ar": "يلعب", "tr": "oynamak"}, {"id": "l3-a21", "cat": "A", "pos": "verb", "de": "stehen", "core": "stehen", "en": "to stand", "ru": "стоять", "ar": "يقف", "tr": "durmak / ayakta durmak"}, {"id": "l3-a22", "cat": "A", "pos": "other", "de": "viel / viele", "core": "viele", "en": "much / many", "ru": "много", "ar": "كثير", "tr": "çok"}, {"id": "l3-a23", "cat": "A", "pos": "noun", "de": "der Kaffee (Pl. selten)", "core": "der Kaffee", "en": "coffee (plural rarely used)", "ru": "кофе (во множественном числе используется редко)", "ar": "القهوة (نادراً ما تُستخدم بصيغة الجمع)", "tr": "kahve (çoğulu nadiren kullanılır)", "type": "object"}, {"id": "l3-a24", "cat": "A", "pos": "phrase", "de": "Was ist das? / Wie heißt das auf Deutsch?", "core": null, "en": "What is that? / What's that called in German?", "ru": "Что это? / Как это называется по-немецки?", "ar": "ما هذا؟ / ما اسم هذا بالألمانية؟", "tr": "Bu nedir? / Bu Almanca'da ne demek?"}, {"id": "l3-a25", "cat": "A", "pos": "phrase", "de": "Das ist ein ... / Das ist eine ...", "core": null, "en": "This is a ...", "ru": "Это ...", "ar": "هذا ... / هذه ...", "tr": "Bu bir ..."}, {"id": "l3-a26", "cat": "A", "pos": "phrase", "de": "Keine Ahnung. Ich weiß nicht.", "core": "Keine Ahnung. Ich weiß nicht.", "en": "No idea. I don't know.", "ru": "Понятия не имею. Я не знаю.", "ar": "ليس لدي فكرة. لا أعرف.", "tr": "Hiçbir fikrim yok. Bilmiyorum."}, {"id": "l3-b1", "cat": "B", "pos": "noun", "de": "der Computer, Computer", "core": "der Computer", "en": "computer(s)", "ru": "компьютер", "ar": "الحاسوب", "tr": "bilgisayar", "type": "object"}, {"id": "l3-b2", "cat": "B", "pos": "noun", "de": "die Kaffeemaschine, Kaffeemaschinen", "core": "die Kaffeemaschine", "en": "coffee machine(s)", "ru": "кофемашина", "ar": "ماكينة القهوة", "tr": "kahve makinesi", "type": "object"}, {"id": "l3-b3", "cat": "B", "pos": "noun", "de": "die Kasse, Kassen", "core": "die Kasse", "en": "cash register(s) / checkout", "ru": "касса", "ar": "الصندوق (الكاشير)", "tr": "kasa", "type": "object"}, {"id": "l3-b4", "cat": "B", "pos": "noun", "de": "der Laptop, Laptops", "core": "der Laptop", "en": "laptop(s)", "ru": "ноутбук", "ar": "الحاسوب المحمول", "tr": "dizüstü bilgisayar", "type": "object"}, {"id": "l3-b5", "cat": "B", "pos": "adjective", "de": "groß", "core": "groß", "en": "big / tall", "ru": "большой, высокий", "ar": "كبير", "tr": "büyük"}, {"id": "l3-b6", "cat": "B", "pos": "adjective", "de": "klein", "core": "klein", "en": "small", "ru": "маленький", "ar": "صغير", "tr": "küçük"}, {"id": "l3-b7", "cat": "B", "pos": "adjective", "de": "neu", "core": "neu", "en": "new", "ru": "новый", "ar": "جديد", "tr": "yeni"}, {"id": "l3-b8", "cat": "B", "pos": "adjective", "de": "alt", "core": "alt", "en": "old", "ru": "старый", "ar": "قديم", "tr": "eski"}, {"id": "l3-b9", "cat": "B", "pos": "adjective", "de": "schön", "core": "schön", "en": "beautiful / nice", "ru": "красивый", "ar": "جميل", "tr": "güzel"}, {"id": "l3-b10", "cat": "B", "pos": "verb", "de": "funktionieren", "core": "funktionieren", "en": "to function / to work (for machines/devices)", "ru": "работать, функционировать (о технике)", "ar": "يعمل (يشتغل، عن الأجهزة)", "tr": "çalışmak (cihazlar için)"}, {"id": "l3-b11", "cat": "B", "pos": "noun", "de": "die Tafel, Tafeln", "core": "die Tafel", "en": "board(s) (e.g. blackboard/whiteboard) — not a chocolate bar", "ru": "доска (например, школьная — не плитка шоколада)", "ar": "اللوح (مثال: السبورة — وليس قطعة الشوكولاتة)", "tr": "tahta (örn. yazı tahtası — çikolata değil)", "type": "object"}, {"id": "l3-b12", "cat": "B", "pos": "noun", "de": "der Kiosk, Kioske", "core": "der Kiosk", "en": "kiosk(s)", "ru": "киоск", "ar": "الكشك", "tr": "büfe", "type": "object"}, {"id": "l3-b13", "cat": "B", "pos": "noun", "de": "die Tür, Türen", "core": "die Tür", "en": "door(s)", "ru": "дверь", "ar": "الباب", "tr": "kapı", "type": "object"}, {"id": "l3-b14", "cat": "B", "pos": "noun", "de": "der Schlüssel, Schlüssel", "core": "der Schlüssel", "en": "key(s)", "ru": "ключ", "ar": "المفتاح", "tr": "anahtar", "type": "object"}, {"id": "l3-b15", "cat": "B", "pos": "noun", "de": "das Fenster, Fenster", "core": "das Fenster", "en": "window(s)", "ru": "окно", "ar": "النافذة", "tr": "pencere", "type": "object"}, {"id": "l3-b16", "cat": "B", "pos": "noun", "de": "der Kühlschrank, Kühlschränke", "core": "der Kühlschrank", "en": "refrigerator(s)", "ru": "холодильник", "ar": "الثلاجة", "tr": "buzdolabı", "type": "object"}, {"id": "l3-b17", "cat": "B", "pos": "adjective", "de": "praktisch", "core": "praktisch", "en": "practical", "ru": "практичный", "ar": "عملي", "tr": "pratik"}, {"id": "l3-b18", "cat": "B", "pos": "adjective", "de": "wichtig", "core": "wichtig", "en": "important", "ru": "важный", "ar": "مهم", "tr": "önemli"}, {"id": "l3-b19", "cat": "B", "pos": "adjective", "de": "kaputt", "core": "kaputt", "en": "broken", "ru": "сломанный", "ar": "معطّل / مكسور", "tr": "bozuk"}, {"id": "l3-b20", "cat": "B", "pos": "phrase", "de": "Oh, der Stuhl / die Tasche / ... ist schön!", "core": null, "en": "Oh, the chair / bag / ... is beautiful!", "ru": "О, этот стул / эта сумка / ... красивый/красивая!", "ar": "أوه، الكرسي / الحقيبة / ... جميل/جميلة!", "tr": "Ah, sandalye / çanta / ... çok güzel!"}, {"id": "l3-b21", "cat": "B", "pos": "phrase", "de": "Stimmt! Ja? Ich finde, er/sie/... ist ...", "core": null, "en": "That's right! Yes? I think it's ...", "ru": "Верно! Да? По-моему, он/она ...", "ar": "صحيح! حقاً؟ أعتقد أنه/أنها ...", "tr": "Doğru! Öyle mi? Bence o ..."}, {"id": "l3-c1", "cat": "C", "pos": "adjective", "de": "hoch", "core": "hoch", "en": "high / tall", "ru": "высокий", "ar": "مرتفع / عالٍ", "tr": "yüksek"}, {"id": "l3-c2", "cat": "C", "pos": "adjective", "de": "breit", "core": "breit", "en": "wide", "ru": "широкий", "ar": "عريض", "tr": "geniş"}, {"id": "l3-c3", "cat": "C", "pos": "noun", "de": "der Zentimeter, Zentimeter (cm)", "core": "der Zentimeter", "en": "centimeter(s)", "ru": "сантиметр", "ar": "السنتيمتر", "tr": "santimetre", "type": "concept"}, {"id": "l3-c4", "cat": "C", "pos": "noun", "de": "der Meter, Meter (m)", "core": "der Meter", "en": "meter(s)", "ru": "метр", "ar": "المتر", "tr": "metre", "type": "concept"}, {"id": "l3-c5", "cat": "C", "pos": "noun", "de": "der Euro, Euro (EUR)", "core": "der Euro", "en": "euro(s)", "ru": "евро", "ar": "اليورو", "tr": "avro", "type": "concept"}, {"id": "l3-c6", "cat": "C", "pos": "noun", "de": "die Spülmaschine, Spülmaschinen", "core": "die Spülmaschine", "en": "dishwasher(s)", "ru": "посудомоечная машина", "ar": "غسالة الصحون", "tr": "bulaşık makinesi", "type": "object"}, {"id": "l3-c7", "cat": "C", "pos": "noun", "de": "die Waschmaschine, Waschmaschinen", "core": "die Waschmaschine", "en": "washing machine(s)", "ru": "стиральная машина", "ar": "غسالة الملابس", "tr": "çamaşır makinesi", "type": "object"}, {"id": "l3-c8", "cat": "C", "pos": "noun", "de": "das Alter (Sg.)", "core": "das Alter", "en": "age (used only in singular)", "ru": "возраст (употребляется только в единственном числе)", "ar": "العمر (يُستخدم بصيغة المفرد فقط)", "tr": "yaş (yalnızca tekil kullanılır)", "type": "concept"}, {"id": "l3-c9", "cat": "C", "pos": "noun", "de": "der Preis, Preise", "core": "der Preis", "en": "price(s)", "ru": "цена", "ar": "السعر", "tr": "fiyat", "type": "concept"}, {"id": "l3-c10", "cat": "C", "pos": "verb", "de": "kosten", "core": "kosten", "en": "to cost", "ru": "стоить", "ar": "يُكلّف", "tr": "-e mal olmak (fiyatı olmak)"}, {"id": "l3-c11", "cat": "C", "pos": "verb", "de": "kommen", "core": "kommen", "en": "to come (here also used idiomatically: \"Das kommt auf ... Euro\" = \"That comes to ... euros\")", "ru": "приходить, приезжать (здесь также: «Das kommt auf ... Euro» — «Это выходит в ... евро»)", "ar": "يأتي / يصل (يُستخدم هنا أيضاً بمعنى: «Das kommt auf ... Euro» = «يصل السعر إلى ... يورو»)", "tr": "gelmek (burada ayrıca: \"Das kommt auf ... Euro\" = \"Bu ... avroya gelir/mal olur\")"}, {"id": "l3-c12", "cat": "C", "pos": "other", "de": "noch", "core": "noch", "en": "still / yet", "ru": "ещё", "ar": "ما زال / بعد", "tr": "hâlâ / henüz"}, {"id": "l3-c13", "cat": "C", "pos": "noun", "de": "die Frage, Fragen", "core": "die Frage", "en": "question(s)", "ru": "вопрос", "ar": "السؤال", "tr": "soru", "type": "concept"}, {"id": "l3-c14", "cat": "C", "pos": "phrase", "de": "Ich habe eine Frage / zwei/drei Fragen.", "core": null, "en": "I have a question / two/three questions.", "ru": "У меня один вопрос / два/три вопроса.", "ar": "لدي سؤال واحد / سؤالان/ثلاثة أسئلة.", "tr": "Bir sorum var / iki/üç sorum var."}, {"id": "l3-c15", "cat": "C", "pos": "phrase", "de": "Wie alt ist der Herd / die Waschmaschine / ... ?", "core": null, "en": "How old is the stove / washing machine / ...?", "ru": "Сколько лет плите / стиральной машине / ...?", "ar": "كم عمر الموقد / الغسالة / ...؟", "tr": "Ocak / çamaşır makinesi / ... kaç yaşında?"}, {"id": "l3-c16", "cat": "C", "pos": "phrase", "de": "Er/Sie ist ... Jahre alt.", "core": null, "en": "It is ... years old.", "ru": "Ей ... лет.", "ar": "عمره/عمرها ... سنة.", "tr": "O ... yaşında."}, {"id": "l3-c17", "cat": "C", "pos": "phrase", "de": "Was kostet der Herd / die Waschmaschine / ... ?", "core": null, "en": "How much does the stove / washing machine / ... cost?", "ru": "Сколько стоит плита / стиральная машина / ...?", "ar": "كم يكلّف الموقد / الغسالة / ...؟", "tr": "Ocak / çamaşır makinesi / ... ne kadar tutuyor?"}, {"id": "l3-c18", "cat": "C", "pos": "phrase", "de": "Er/Sie kostet ... Euro.", "core": null, "en": "It costs ... euros.", "ru": "Она стоит ... евро.", "ar": "يكلّف/تكلّف ... يورو.", "tr": "... avroya mal oluyor."}, {"id": "l3-c19", "cat": "C", "pos": "phrase", "de": "Wie hoch/breit ist der Herd / ... ?", "core": null, "en": "How high/wide is the stove / ...?", "ru": "Какой высоты/ширины плита / ...?", "ar": "ما ارتفاع/عرض الموقد / ...؟", "tr": "Ocak / ... ne kadar yüksek/geniş?"}, {"id": "l3-c20", "cat": "C", "pos": "phrase", "de": "Er ist ... cm hoch/breit.", "core": null, "en": "It is ... cm high/wide.", "ru": "Он ... см в высоту/ширину.", "ar": "ارتفاعه/عرضه ... سم.", "tr": "... cm yüksekliğinde/genişliğinde."}];
+  var STR = {"lang": "ar", "dir": "rtl", "font": "\"Segoe UI\", Tahoma, \"Geeza Pro\", \"Noto Naskh Arabic\", Arial, sans-serif", "accent": "#2F6D5B", "accentDark": "#1F4A3D", "appTitle": "مدرّب المفردات الألمانية", "appSubtitle": "الأثاث والأجهزة الإلكترونية والمقاسات والأسعار (المستوى A1/A2)", "tabFlashcards": "البطاقات", "tabQuiz": "اختبار", "tabMatch": "طابِق", "tabType": "الكتابة", "tabProgress": "التقدّم", "catAll": "الكل", "catA": "الأثاث ولوازم المدرسة", "catB": "الأجهزة الإلكترونية والغرف", "catC": "المقاسات والعمر والأسعار", "categoryLabel": "الفئة", "directionToggle": "تبديل الاتجاه", "directionDeToTarget": "الألمانية ← العربية", "directionTargetToDe": "العربية ← الألمانية", "flashcardFlip": "اضغط على البطاقة لقلبها", "knowIt": "أعرفها", "stillLearning": "ما زلت أتعلّم", "cardCounter": "البطاقة {n} من {total}", "quizQuestionPrompt": "ما معنى هذه الكلمة؟", "quizCorrect": "إجابة صحيحة!", "quizWrong": "ليست صحيحة تماماً.", "quizNext": "التالي", "quizScore": "النتيجة", "quizRestart": "جولة جديدة", "quizFinished": "انتهت الجولة!", "matchInstructions": "اضغط على الكلمة الألمانية ثم على ترجمتها الصحيحة.", "matchNewRound": "جولة جديدة", "matchAllMatched": "تم مطابقة جميع الأزواج!", "typeInstructions": "سترى الترجمة بالعربية — اكتب الكلمة أو العبارة بالألمانية.", "typePlaceholder": "اكتب هنا ...", "typeCheck": "تحقّق", "typeCorrect": "إجابة صحيحة!", "typeWrong": "ليست صحيحة تماماً.", "typeShowAnswer": "الإجابة الصحيحة:", "typeNext": "التالي", "progressTitle": "تقدّمك", "progressOverall": "الإتقان العام", "progressByCategory": "حسب الفئة", "progressReset": "إعادة ضبط التقدّم", "progressResetConfirm": "هل تريد حذف كل بيانات التقدّم المحفوظة؟", "progressNoData": "لا توجد بيانات تدريب بعد. ابدأ بالبطاقات أو الاختبار!", "startButton": "ابدأ", "footerNote": "يعمل بدون اتصال بالإنترنت بالكامل — احفظ هذا الملف وافتحه في متصفحك في أي وقت."};
+  var STORAGE_KEY = "daz_trainer_moebel_progress_ar";
+
+  var state = {
+    tab: "flash",
+    category: "ALL",
+    direction: "de2target",
+    flash: { deck: [], idx: 0, flipped: false },
+    quiz: { deck: [], idx: 0, score: 0, answered: false, finished: false },
+    match: { pairs: [], leftSel: null, rightItems: [], leftItems: [], matchedIds: {} },
+    typeMode: { deck: [], idx: 0, checked: false, lastCorrect: null }
+  };
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function fmt(str, vals) {
+    return str.replace(/\{(\w+)\}/g, function (m, k) {
+      return (vals && (k in vals)) ? vals[k] : m;
+    });
+  }
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined && text !== null) e.textContent = text;
+    return e;
+  }
+
+  function getFiltered() {
+    if (state.category === "ALL") return VOCAB;
+    var out = [];
+    for (var i = 0; i < VOCAB.length; i++) {
+      if (VOCAB[i].cat === state.category) out.push(VOCAB[i]);
+    }
+    return out;
+  }
+
+  function catLabel(c) {
+    if (c === "A") return STR.catA;
+    if (c === "B") return STR.catB;
+    if (c === "C") return STR.catC;
+    return STR.catAll;
+  }
+
+  function renderDirectionSwitch(onChange) {
+    var wrap = el("div", "dir-switch");
+    var b1 = el("button", state.direction === "de2target" ? "active" : "", STR.directionDeToTarget);
+    var b2 = el("button", state.direction === "target2de" ? "active" : "", STR.directionTargetToDe);
+    b1.addEventListener("click", function () {
+      if (state.direction === "de2target") return;
+      state.direction = "de2target";
+      onChange();
+    });
+    b2.addEventListener("click", function () {
+      if (state.direction === "target2de") return;
+      state.direction = "target2de";
+      onChange();
+    });
+    wrap.appendChild(b1);
+    wrap.appendChild(b2);
+    return wrap;
+  }
+
+  /* ---------- progress storage ---------- */
+  function loadProgress() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+  }
+  function saveProgress(p) {
+    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); } catch (e) {}
+  }
+  function recordResult(id, isCorrect) {
+    var p = loadProgress();
+    if (!p[id]) p[id] = { correct: 0, wrong: 0 };
+    if (isCorrect) p[id].correct += 1; else p[id].wrong += 1;
+    saveProgress(p);
+  }
+
+  /* ---------- top nav ---------- */
+  function renderTabs() {
+    var nav = document.getElementById("tabs");
+    nav.innerHTML = "";
+    var tabs = [
+      ["flash", STR.tabFlashcards],
+      ["quiz", STR.tabQuiz],
+      ["match", STR.tabMatch],
+      ["type", STR.tabType],
+      ["progress", STR.tabProgress]
+    ];
+    for (var i = 0; i < tabs.length; i++) {
+      (function (key, label) {
+        var b = el("button", key === state.tab ? "active" : "", label);
+        b.addEventListener("click", function () {
+          state.tab = key;
+          initModeIfNeeded(key, true);
+          render();
+        });
+        nav.appendChild(b);
+      })(tabs[i][0], tabs[i][1]);
+    }
+  }
+
+  function renderCats() {
+    var wrap = document.getElementById("cats");
+    if (state.tab === "progress") { wrap.style.display = "none"; wrap.innerHTML = ""; return; }
+    wrap.style.display = "flex";
+    wrap.innerHTML = "";
+    var cats = ["ALL", "A", "B", "C"];
+    for (var i = 0; i < cats.length; i++) {
+      (function (c) {
+        var b = el("button", c === state.category ? "active" : "", catLabel(c));
+        b.addEventListener("click", function () {
+          state.category = c;
+          initModeIfNeeded(state.tab, true);
+          render();
+        });
+        wrap.appendChild(b);
+      })(cats[i]);
+    }
+  }
+
+  /* ---------- mode init ---------- */
+  function initModeIfNeeded(tab, force) {
+    var pool = getFiltered();
+    if (tab === "flash" && (force || state.flash.deck.length === 0)) {
+      state.flash.deck = shuffle(pool);
+      state.flash.idx = 0;
+      state.flash.flipped = false;
+    }
+    if (tab === "quiz" && (force || state.quiz.deck.length === 0)) {
+      state.quiz.deck = shuffle(pool);
+      state.quiz.idx = 0;
+      state.quiz.score = 0;
+      state.quiz.answered = false;
+      state.quiz.finished = false;
+    }
+    if (tab === "match" && (force || state.match.leftItems.length === 0)) {
+      setupMatchRound(pool);
+    }
+    if (tab === "type" && (force || state.typeMode.deck.length === 0)) {
+      var typable = [];
+      for (var i = 0; i < pool.length; i++) if (pool[i].core) typable.push(pool[i]);
+      if (typable.length === 0) typable = VOCAB.filter(function (v) { return !!v.core; });
+      state.typeMode.deck = shuffle(typable);
+      state.typeMode.idx = 0;
+      state.typeMode.checked = false;
+      state.typeMode.lastCorrect = null;
+    }
+  }
+
+  function setupMatchRound(pool) {
+    var n = Math.min(6, pool.length);
+    var chosen = shuffle(pool).slice(0, n);
+    state.match.leftItems = chosen;
+    state.match.rightItems = shuffle(chosen);
+    state.match.leftSel = null;
+    state.match.matchedIds = {};
+  }
+
+  /* ---------- render dispatch ---------- */
+  function render() {
+    renderTabs();
+    renderCats();
+    var app = document.getElementById("app");
+    app.innerHTML = "";
+    if (state.tab === "flash") renderFlash(app);
+    else if (state.tab === "quiz") renderQuiz(app);
+    else if (state.tab === "match") renderMatch(app);
+    else if (state.tab === "type") renderType(app);
+    else renderProgress(app);
+  }
+
+  /* ---------- Flashcards ---------- */
+  function renderFlash(app) {
+    var deck = state.flash.deck;
+    if (deck.length === 0) { app.appendChild(el("p", "hint", STR.progressNoData)); return; }
+    if (state.flash.idx >= deck.length) { state.flash.idx = 0; }
+    var item = deck[state.flash.idx];
+
+    var panel = el("div", "panel");
+    panel.appendChild(renderDirectionSwitch(function () {
+      state.flash.flipped = false;
+      render();
+    }));
+    panel.appendChild(el("p", "card-counter", fmt(STR.cardCounter, { n: state.flash.idx + 1, total: deck.length })));
+
+    var frontIsDe = state.direction === "de2target";
+    var frontText = frontIsDe ? item.de : item[STR.lang];
+    var backText = frontIsDe ? item[STR.lang] : item.de;
+
+    var card = el("div", "flashcard");
+    var tag = el("span", "tag", state.flash.flipped ? "" : STR.flashcardFlip);
+    var txt = el("div", state.flash.flipped ? "back" : "front", state.flash.flipped ? backText : frontText);
+    card.appendChild(tag);
+    card.appendChild(txt);
+    card.addEventListener("click", function () {
+      state.flash.flipped = !state.flash.flipped;
+      render();
+    });
+    panel.appendChild(card);
+
+    var actions = el("div", "flash-actions");
+    var learnBtn = el("button", "btn-learn", STR.stillLearning);
+    var knowBtn = el("button", "btn-know", STR.knowIt);
+    function advance(isCorrect) {
+      recordResult(item.id, isCorrect);
+      state.flash.idx = (state.flash.idx + 1) % deck.length;
+      state.flash.flipped = false;
+      render();
+    }
+    learnBtn.addEventListener("click", function () { advance(false); });
+    knowBtn.addEventListener("click", function () { advance(true); });
+    actions.appendChild(learnBtn);
+    actions.appendChild(knowBtn);
+    panel.appendChild(actions);
+
+    app.appendChild(panel);
+  }
+
+  /* ---------- Quiz ---------- */
+  function renderQuiz(app) {
+    var q = state.quiz;
+    var panel = el("div", "panel");
+    if (q.deck.length === 0) { panel.appendChild(el("p", "hint", STR.progressNoData)); app.appendChild(panel); return; }
+
+    if (q.finished || q.idx >= q.deck.length) {
+      var msg = el("div", "center-msg");
+      msg.appendChild(el("div", "big", STR.quizFinished));
+      msg.appendChild(el("div", "", STR.quizScore + ": " + q.score + " / " + q.deck.length));
+      var restart = el("button", "primary-btn", STR.quizRestart);
+      restart.addEventListener("click", function () { initModeIfNeeded("quiz", true); render(); });
+      msg.appendChild(restart);
+      panel.appendChild(msg);
+      app.appendChild(panel);
+      return;
+    }
+
+    var item = q.deck[q.idx];
+    panel.appendChild(renderDirectionSwitch(function () {
+      q._options = null;
+      render();
+    }));
+    var top = el("div", "quiz-top");
+    top.appendChild(el("span", "", STR.quizScore + ": " + q.score + "/" + q.deck.length));
+    top.appendChild(el("span", "", (q.idx + 1) + " / " + q.deck.length));
+    panel.appendChild(top);
+
+    var frontIsDe = state.direction === "de2target";
+    var promptText = frontIsDe ? item.de : item[STR.lang];
+    var answerField = frontIsDe ? STR.lang : "de";
+
+    panel.appendChild(el("p", "hint", STR.quizQuestionPrompt));
+    panel.appendChild(el("div", "quiz-q", promptText));
+
+    if (!q._options || q._optForId !== item.id) {
+      // Distraktoren: zuerst feine Unterkategorie (type, z.B. "object"/"profession"),
+      // bei zu wenigen Treffern Rückfall auf die grobe Wortart (pos).
+      var correctText = answerField === "de" ? item.de : item[STR.lang];
+      var seenTexts = {};
+      seenTexts[correctText] = true;
+      var textOf = function (cand) { return answerField === "de" ? cand.de : cand[STR.lang]; };
+      var pickBy = function (pred, limit) {
+        var cands = [];
+        for (var i = 0; i < POOL.length; i++) {
+          var c = POOL[i];
+          if (!pred(c)) continue;
+          if (seenTexts[textOf(c)]) continue;
+          cands.push(c);
+        }
+        cands = shuffle(cands);
+        var out = [];
+        for (var j = 0; j < cands.length && out.length < limit; j++) {
+          var t = textOf(cands[j]);
+          if (seenTexts[t]) continue;
+          seenTexts[t] = true;
+          out.push(cands[j]);
+        }
+        return out;
+      };
+      var itemType = item.type || item.pos;
+      var distractors = pickBy(function (c) { return (c.type || c.pos) === itemType; }, 3);
+      if (distractors.length < 3) {
+        var more = pickBy(function (c) { return c.pos === item.pos; }, 3 - distractors.length);
+        distractors = distractors.concat(more);
+      }
+      var opts = [item].concat(distractors);
+      opts = shuffle(opts);
+      q._options = opts;
+      q._optForId = item.id;
+    }
+
+    var optWrap = el("div", "quiz-opts");
+    var feedback = el("div", "quiz-feedback");
+    var nextBtn = el("button", "primary-btn", STR.quizNext);
+    nextBtn.style.display = "none";
+    nextBtn.addEventListener("click", function () {
+      q.idx += 1;
+      q.answered = false;
+      render();
+    });
+
+    for (var k = 0; k < q._options.length; k++) {
+      (function (opt) {
+        var label = answerField === "de" ? opt.de : opt[STR.lang];
+        var b = el("button", "", label);
+        b.addEventListener("click", function () {
+          if (q.answered) return;
+          q.answered = true;
+          var isCorrect = opt.id === item.id;
+          recordResult(item.id, isCorrect);
+          if (isCorrect) { q.score += 1; b.className = "correct"; feedback.textContent = STR.quizCorrect; feedback.className = "quiz-feedback ok"; }
+          else {
+            b.className = "wrong"; feedback.textContent = STR.quizWrong; feedback.className = "quiz-feedback bad";
+            var allBtns = optWrap.querySelectorAll("button");
+            for (var m = 0; m < allBtns.length; m++) {
+              if (allBtns[m].textContent === (answerField === "de" ? item.de : item[STR.lang])) allBtns[m].className = "correct";
+            }
+          }
+          var allBtns2 = optWrap.querySelectorAll("button");
+          for (var n2 = 0; n2 < allBtns2.length; n2++) allBtns2[n2].disabled = true;
+          nextBtn.style.display = "block";
+        });
+        optWrap.appendChild(b);
+      })(q._options[k]);
+    }
+
+    panel.appendChild(optWrap);
+    panel.appendChild(feedback);
+    panel.appendChild(nextBtn);
+
+    app.appendChild(panel);
+  }
+
+  /* ---------- Matching ---------- */
+  function renderMatch(app) {
+    var panel = el("div", "panel");
+    var m = state.match;
+    if (m.leftItems.length === 0) { panel.appendChild(el("p", "hint", STR.progressNoData)); app.appendChild(panel); return; }
+
+    panel.appendChild(el("p", "hint", STR.matchInstructions));
+
+    var allMatched = m.leftItems.length > 0 && Object.keys(m.matchedIds).length === m.leftItems.length;
+
+    if (allMatched) {
+      var msg = el("div", "center-msg");
+      msg.appendChild(el("div", "big", STR.matchAllMatched));
+      var again = el("button", "primary-btn", STR.matchNewRound);
+      again.addEventListener("click", function () { setupMatchRound(getFiltered()); render(); });
+      msg.appendChild(again);
+      panel.appendChild(msg);
+      app.appendChild(panel);
+      return;
+    }
+
+    var cols = el("div", "match-cols");
+    var leftCol = el("div", "match-col");
+    var rightCol = el("div", "match-col");
+
+    for (var i = 0; i < m.leftItems.length; i++) {
+      (function (item) {
+        var isMatched = !!m.matchedIds[item.id];
+        var cls = isMatched ? "matched" : (m.leftSel === item.id ? "selected" : "");
+        var b = el("button", cls, item.de);
+        b.disabled = isMatched;
+        b.addEventListener("click", function () {
+          m.leftSel = item.id;
+          render();
+        });
+        leftCol.appendChild(b);
+      })(m.leftItems[i]);
+    }
+
+    for (var j = 0; j < m.rightItems.length; j++) {
+      (function (item) {
+        var isMatched = !!m.matchedIds[item.id];
+        var b = el("button", isMatched ? "matched" : "", item[STR.lang]);
+        b.disabled = isMatched;
+        b.addEventListener("click", function () {
+          if (!m.leftSel) return;
+          if (m.leftSel === item.id) {
+            recordResult(item.id, true);
+            m.matchedIds[item.id] = true;
+            m.leftSel = null;
+            render();
+          } else {
+            recordResult(item.id, false);
+            b.className = "flash-wrong";
+            var leftBtns = leftCol.querySelectorAll("button");
+            for (var q2 = 0; q2 < leftBtns.length; q2++) {
+              if (leftBtns[q2].textContent === (function () {
+                    for (var z = 0; z < m.leftItems.length; z++) if (m.leftItems[z].id === m.leftSel) return m.leftItems[z].de;
+                    return "";
+                  })()) leftBtns[q2].className = "flash-wrong";
+            }
+            var selId = m.leftSel;
+            setTimeout(function () {
+              m.leftSel = null;
+              render();
+            }, 550);
+          }
+        });
+        rightCol.appendChild(b);
+      })(m.rightItems[j]);
+    }
+
+    cols.appendChild(leftCol);
+    cols.appendChild(rightCol);
+    panel.appendChild(cols);
+
+    var tools = el("div", "row-tools");
+    var newBtn = el("button", "link-btn", STR.matchNewRound);
+    newBtn.addEventListener("click", function () { setupMatchRound(getFiltered()); render(); });
+    tools.appendChild(newBtn);
+    panel.appendChild(tools);
+
+    app.appendChild(panel);
+  }
+
+  /* ---------- Typing ---------- */
+  function normalize(s) {
+    return s.replace(/[.!?,]+$/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+  }
+
+  function renderType(app) {
+    var panel = el("div", "panel");
+    var t = state.typeMode;
+    if (t.deck.length === 0) { panel.appendChild(el("p", "hint", STR.progressNoData)); app.appendChild(panel); return; }
+    if (t.idx >= t.deck.length) { t.idx = 0; }
+    var item = t.deck[t.idx];
+
+    panel.appendChild(el("p", "hint", STR.typeInstructions));
+    panel.appendChild(el("div", "type-prompt", item[STR.lang]));
+
+    var input = el("input", "type-input");
+    input.type = "text";
+    input.placeholder = STR.typePlaceholder;
+    input.autocomplete = "off";
+    input.autocapitalize = "off";
+    input.setAttribute("autocorrect", "off");
+    input.setAttribute("autocapitalize", "off");
+    input.spellcheck = false;
+
+    var feedback = el("div", "type-feedback");
+    var answerLine = el("div", "type-answer");
+    var checkBtn = el("button", "primary-btn", STR.typeCheck);
+
+    function doCheck() {
+      if (t.checked) return;
+      t.checked = true;
+      var isCorrect = normalize(input.value) === normalize(item.core);
+      recordResult(item.id, isCorrect);
+      t.lastCorrect = isCorrect;
+      if (isCorrect) {
+        input.className = "type-input ok";
+        feedback.textContent = STR.typeCorrect;
+        feedback.className = "type-feedback ok";
+      } else {
+        input.className = "type-input bad";
+        feedback.textContent = STR.typeWrong;
+        feedback.className = "type-feedback bad";
+        answerLine.textContent = STR.typeShowAnswer + " " + item.core;
+      }
+      input.disabled = true;
+      checkBtn.textContent = STR.typeNext;
+    }
+
+    checkBtn.addEventListener("click", function () {
+      if (!t.checked) { doCheck(); }
+      else {
+        t.idx += 1;
+        t.checked = false;
+        t.lastCorrect = null;
+        render();
+      }
+    });
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); checkBtn.click(); }
+    });
+
+    panel.appendChild(input);
+    panel.appendChild(checkBtn);
+    panel.appendChild(feedback);
+    panel.appendChild(answerLine);
+
+    app.appendChild(panel);
+    setTimeout(function () { input.focus(); }, 0);
+  }
+
+  /* ---------- Progress ---------- */
+  function renderProgress(app) {
+    var panel = el("div", "panel");
+    panel.appendChild(el("h2", "", STR.progressTitle));
+
+    var p = loadProgress();
+    var ids = Object.keys(p);
+    var hasData = false;
+    for (var i = 0; i < ids.length; i++) {
+      if (p[ids[i]].correct > 0 || p[ids[i]].wrong > 0) { hasData = true; break; }
+    }
+
+    if (!hasData) {
+      panel.appendChild(el("p", "hint", STR.progressNoData));
+      app.appendChild(panel);
+      return;
+    }
+
+    function tally(items) {
+      var c = 0, w = 0;
+      for (var i2 = 0; i2 < items.length; i2++) {
+        var rec = p[items[i2].id];
+        if (rec) { c += rec.correct; w += rec.wrong; }
+      }
+      return { c: c, w: w };
+    }
+
+    function bar(label, items) {
+      var t = tally(items);
+      var total = t.c + t.w;
+      var pct = total > 0 ? Math.round((t.c / total) * 100) : 0;
+      var row = el("div", "prog-row");
+      var lab = el("div", "prog-label");
+      lab.appendChild(el("span", "", label));
+      lab.appendChild(el("span", "", total > 0 ? (pct + "%") : "—"));
+      row.appendChild(lab);
+      var bg = el("div", "prog-bar-bg");
+      var fill = el("div", "prog-bar-fill");
+      fill.style.width = pct + "%";
+      bg.appendChild(fill);
+      row.appendChild(bg);
+      return row;
+    }
+
+    panel.appendChild(bar(STR.progressOverall, VOCAB));
+    var byCat = el("h3", "", STR.progressByCategory);
+    byCat.style.fontSize = "0.92rem";
+    byCat.style.margin = "18px 0 8px";
+    panel.appendChild(byCat);
+    panel.appendChild(bar(STR.catA, VOCAB.filter(function (v) { return v.cat === "A"; })));
+    panel.appendChild(bar(STR.catB, VOCAB.filter(function (v) { return v.cat === "B"; })));
+    panel.appendChild(bar(STR.catC, VOCAB.filter(function (v) { return v.cat === "C"; })));
+
+    var resetBtn = el("button", "reset-btn", STR.progressReset);
+    resetBtn.addEventListener("click", function () {
+      if (window.confirm(STR.progressResetConfirm)) {
+        saveProgress({});
+        render();
+      }
+    });
+    panel.appendChild(resetBtn);
+
+    app.appendChild(panel);
+  }
+
+  initModeIfNeeded("flash", true);
+  render();
+})();
+</script>
+</body>
+</html>
