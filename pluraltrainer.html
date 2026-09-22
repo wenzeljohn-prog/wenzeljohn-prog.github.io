@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pluraltrainer</title>
+<style>
+  :root {
+    --bg: #f3f1ea;
+    --card: #ffffff;
+    --ink: #26241f;
+    --ink-soft: #6b6a63;
+    --line: #e4e1d6;
+    --der: #2f5fa8;
+    --der-bg: #e8eefb;
+    --die: #c8611b;
+    --die-bg: #fbeee0;
+    --das: #2f7d4f;
+    --das-bg: #e6f3ea;
+    --ok: #2f7d4f;
+    --ok-bg: #e6f3ea;
+    --err: #b0362b;
+    --err-bg: #fbe9e6;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .page {
+    width: 100%;
+    max-width: 480px;
+    padding: 32px 20px 48px;
+  }
+
+  header {
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .sub {
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .stats-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0 8px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .progress-track {
+    height: 6px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--das);
+    width: 0%;
+    transition: width 0.25s ease;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+  }
+
+  .article-badge {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    letter-spacing: 0.01em;
+  }
+  .article-badge.der { color: var(--der); background: var(--der-bg); }
+  .article-badge.die { color: var(--die); background: var(--die-bg); }
+  .article-badge.das { color: var(--das); background: var(--das-bg); }
+
+  .singular {
+    font-size: 30px;
+    font-weight: 700;
+    margin: 0 0 26px;
+  }
+  .singular .art {
+    font-weight: 700;
+  }
+  .singular.der .art { color: var(--der); }
+  .singular.die .art { color: var(--die); }
+  .singular.das .art { color: var(--das); }
+
+  .plural-label {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+
+  .answer-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    font-size: 18px;
+    padding: 12px 14px;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    font-family: inherit;
+    color: var(--ink);
+    background: #fff;
+    min-width: 0;
+  }
+  input[type="text"]:focus {
+    outline: none;
+    border-color: var(--das);
+  }
+  input[type="text"].ok { border-color: var(--ok); background: var(--ok-bg); }
+  input[type="text"].err { border-color: var(--err); background: var(--err-bg); }
+
+  .btn {
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background: var(--ink);
+    color: #fff;
+    white-space: nowrap;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn.secondary {
+    background: transparent;
+    color: var(--ink-soft);
+    border: 2px solid var(--line);
+  }
+
+  .feedback {
+    margin-top: 16px;
+    min-height: 24px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .feedback.ok { color: var(--ok); }
+  .feedback.err { color: var(--err); }
+
+  .correction {
+    display: none;
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: var(--err-bg);
+    border: 1px solid #f0c9c3;
+    font-size: 15px;
+    text-align: left;
+  }
+  .correction.show { display: block; }
+  .correction .c-label {
+    font-size: 11px;
+    color: var(--err);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .correction .c-form {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .next-row {
+    margin-top: 18px;
+    display: none;
+  }
+  .next-row.show { display: block; }
+
+  footer {
+    margin-top: 22px;
+    text-align: center;
+  }
+  .btn-reset {
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    font-size: 13px;
+    text-decoration: underline;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .done-card {
+    display: none;
+  }
+  .done-card.show { display: block; }
+  .live-card.hide { display: none; }
+
+  .done-score {
+    font-size: 44px;
+    font-weight: 700;
+    margin: 6px 0 2px;
+  }
+  .done-sub {
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin-bottom: 22px;
+  }
+  .mistake-list {
+    text-align: left;
+    font-size: 14px;
+    margin: 0 0 22px;
+    padding: 0;
+    list-style: none;
+  }
+  .mistake-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .mistake-list .m-sg { color: var(--ink-soft); }
+  .mistake-list .m-pl { font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>Pluraltrainer</h1>
+    <p class="sub">Gib die richtige Pluralform ein (ohne Artikel).</p>
+  </header>
+
+  <div class="stats-row">
+    <span id="progressLabel">Wort 1 / 50</span>
+    <span id="scoreLabel">✓ 0</span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="card live-card" id="liveCard">
+    <div class="article-badge" id="articleBadge"></div>
+    <p class="singular" id="singularWord"></p>
+
+    <div class="plural-label">Plural:</div>
+    <div class="answer-row">
+      <input type="text" id="answerInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <button class="btn" id="checkBtn">Prüfen</button>
+    </div>
+
+    <p class="feedback" id="feedback"></p>
+    <div class="correction" id="correction">
+      <span class="c-label">RICHTIGE FORM</span>
+      <span class="c-form" id="correctionForm"></span>
+    </div>
+
+    <div class="next-row" id="nextRow">
+      <button class="btn secondary" id="nextBtn">Weiter →</button>
+    </div>
+  </div>
+
+  <div class="card done-card" id="doneCard">
+    <div class="plural-label">Ergebnis</div>
+    <div class="done-score" id="doneScore">0 / 50</div>
+    <div class="done-sub" id="doneSub">richtig beim ersten Versuch</div>
+    <ul class="mistake-list" id="mistakeList"></ul>
+    <button class="btn" id="restartBtn" style="width:100%;">Nochmal üben</button>
+  </div>
+
+  <footer>
+    <button class="btn-reset" id="shuffleBtn">Reihenfolge neu mischen</button>
+  </footer>
+
+</div>
+
+<script>
+// ============================================================
+// NOMEN-LISTE
+// Jeder Eintrag: { art: "der" | "die" | "das", sg: "Singular", pl: "Plural" }
+// Neue Nomen einfach unten anhängen (Komma nicht vergessen).
+// Nur Nomen aufnehmen, bei denen Singular UND Plural bekannt sind.
+// ============================================================
+var NOUNS = [
+  // Familie
+  { art: "der", sg: "Opa", pl: "Opas" },
+  { art: "die", sg: "Tante", pl: "Tanten" },
+  { art: "der", sg: "Onkel", pl: "Onkel" },
+  { art: "die", sg: "Cousine", pl: "Cousinen" },
+  { art: "der", sg: "Cousin", pl: "Cousins" },
+  { art: "der", sg: "Sohn", pl: "Söhne" },
+  { art: "die", sg: "Tochter", pl: "Töchter" },
+  { art: "der", sg: "Freund", pl: "Freunde" },
+  { art: "die", sg: "Freundin", pl: "Freundinnen" },
+  { art: "die", sg: "Familie", pl: "Familien" },
+  { art: "die", sg: "Mutter", pl: "Mütter" },
+  { art: "der", sg: "Vater", pl: "Väter" },
+  { art: "die", sg: "Schwester", pl: "Schwestern" },
+  { art: "der", sg: "Bruder", pl: "Brüder" },
+  { art: "die", sg: "Großmutter", pl: "Großmütter" },
+  { art: "die", sg: "Oma", pl: "Omas" },
+  { art: "der", sg: "Großvater", pl: "Großväter" },
+
+  // Maße, Preise, Haushaltsgeräte
+  { art: "der", sg: "Zentimeter", pl: "Zentimeter" },
+  { art: "der", sg: "Meter", pl: "Meter" },
+  { art: "der", sg: "Euro", pl: "Euro" },
+  { art: "die", sg: "Spülmaschine", pl: "Spülmaschinen" },
+  { art: "die", sg: "Waschmaschine", pl: "Waschmaschinen" },
+  { art: "der", sg: "Preis", pl: "Preise" },
+
+  // Arbeitsplatz / Geräte
+  { art: "der", sg: "Computer", pl: "Computer" },
+  { art: "die", sg: "Kaffeemaschine", pl: "Kaffeemaschinen" },
+  { art: "die", sg: "Kasse", pl: "Kassen" },
+  { art: "der", sg: "Laptop", pl: "Laptops" },
+  { art: "die", sg: "Tafel", pl: "Tafeln" },
+  { art: "der", sg: "Kiosk", pl: "Kioske" },
+  { art: "die", sg: "Tür", pl: "Türen" },
+  { art: "der", sg: "Schlüssel", pl: "Schlüssel" },
+  { art: "das", sg: "Fenster", pl: "Fenster" },
+  { art: "der", sg: "Kühlschrank", pl: "Kühlschränke" },
+
+  // Möbel, Klassenzimmer, Zuhause
+  { art: "die", sg: "Tasche", pl: "Taschen" },
+  { art: "der", sg: "Tisch", pl: "Tische" },
+  { art: "der", sg: "Stuhl", pl: "Stühle" },
+  { art: "die", sg: "Bank", pl: "Bänke" },
+  { art: "das", sg: "Sofa", pl: "Sofas" },
+  { art: "das", sg: "Bett", pl: "Betten" },
+  { art: "das", sg: "Regal", pl: "Regale" },
+  { art: "der", sg: "Schrank", pl: "Schränke" },
+  { art: "der", sg: "Herd", pl: "Herde" },
+  { art: "der", sg: "Bleistift", pl: "Bleistifte" },
+  { art: "das", sg: "Heft", pl: "Hefte" },
+  { art: "das", sg: "Plakat", pl: "Plakate" },
+  { art: "das", sg: "Handy", pl: "Handys" },
+  { art: "der", sg: "Dialog", pl: "Dialoge" },
+  { art: "die", sg: "Hausaufgabe", pl: "Hausaufgaben" },
+  { art: "das", sg: "Kind", pl: "Kinder" },
+  { art: "das", sg: "Foto", pl: "Fotos" }
+];
+
+// ============================================================
+// LOGIK
+// ============================================================
+var order = [];
+var pos = 0;
+var correctCount = 0;
+var answeredCurrent = false;
+var mistakes = [];
+
+var liveCard = document.getElementById("liveCard");
+var doneCard = document.getElementById("doneCard");
+var articleBadge = document.getElementById("articleBadge");
+var singularWord = document.getElementById("singularWord");
+var answerInput = document.getElementById("answerInput");
+var checkBtn = document.getElementById("checkBtn");
+var feedback = document.getElementById("feedback");
+var nextRow = document.getElementById("nextRow");
+var nextBtn = document.getElementById("nextBtn");
+var progressLabel = document.getElementById("progressLabel");
+var scoreLabel = document.getElementById("scoreLabel");
+var progressFill = document.getElementById("progressFill");
+var shuffleBtn = document.getElementById("shuffleBtn");
+var restartBtn = document.getElementById("restartBtn");
+var correction = document.getElementById("correction");
+var correctionForm = document.getElementById("correctionForm");
+var doneScore = document.getElementById("doneScore");
+var doneSub = document.getElementById("doneSub");
+var mistakeList = document.getElementById("mistakeList");
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i];
+    a[i] = a[j];
+    a[j] = tmp;
+  }
+  return a;
+}
+
+function buildOrder() {
+  var idx = [];
+  for (var i = 0; i < NOUNS.length; i++) idx.push(i);
+  order = shuffle(idx);
+}
+
+function startSession() {
+  buildOrder();
+  pos = 0;
+  correctCount = 0;
+  mistakes = [];
+  doneCard.classList.remove("show");
+  liveCard.classList.remove("hide");
+  showCurrent();
+}
+
+function showCurrent() {
+  answeredCurrent = false;
+  var noun = NOUNS[order[pos]];
+
+  articleBadge.className = "article-badge " + noun.art;
+  articleBadge.textContent = noun.art;
+
+  singularWord.className = "singular " + noun.art;
+  singularWord.innerHTML = '<span class="art">' + noun.art + '</span> ' + noun.sg;
+
+  answerInput.value = "";
+  answerInput.className = "";
+  answerInput.disabled = false;
+  feedback.textContent = "";
+  feedback.className = "feedback";
+  correction.classList.remove("show");
+  correctionForm.textContent = "";
+  nextRow.classList.remove("show");
+  checkBtn.disabled = false;
+  checkBtn.textContent = "Prüfen";
+
+  progressLabel.textContent = "Wort " + (pos + 1) + " / " + NOUNS.length;
+  scoreLabel.textContent = "✓ " + correctCount;
+  progressFill.style.width = Math.round((pos / NOUNS.length) * 100) + "%";
+
+  answerInput.focus();
+}
+
+function normalize(s) {
+  return s.trim().replace(/\s+/g, " ");
+}
+
+// Plural-Artikel "die" am Anfang der Eingabe ist immer korrekt (da er ja
+// stets "die" wäre) und wird vor dem Vergleich entfernt, ohne als Fehler zu zählen.
+function stripPluralArticle(s) {
+  return s.replace(/^die\s+/i, "");
+}
+
+function checkAnswer() {
+  if (answeredCurrent) return;
+  var noun = NOUNS[order[pos]];
+  var rawGiven = normalize(answerInput.value);
+  if (rawGiven === "") return;
+
+  var hadArticle = /^die\s+/i.test(rawGiven);
+  var given = stripPluralArticle(rawGiven);
+
+  answeredCurrent = true;
+  answerInput.disabled = true;
+  checkBtn.disabled = true;
+  nextRow.classList.add("show");
+
+  var isCorrect = given === noun.pl;
+  // Feedback bei falscher Groß-/Kleinschreibung, aber sonst korrekter Form
+  var isCaseOnly = !isCorrect && given.toLowerCase() === noun.pl.toLowerCase();
+
+  if (isCorrect) {
+    correctCount++;
+    answerInput.className = "ok";
+    feedback.className = "feedback ok";
+    feedback.textContent = hadArticle
+      ? "Richtig! (Artikel ist hier nicht nötig.)"
+      : "Richtig!";
+  } else {
+    answerInput.className = "err";
+    feedback.className = "feedback err";
+    feedback.textContent = isCaseOnly
+      ? "Fast — Nomen werden großgeschrieben:"
+      : "Leider falsch:";
+    correctionForm.textContent = noun.art + " " + noun.sg + " → " + noun.pl;
+    correction.classList.add("show");
+    mistakes.push(noun);
+  }
+
+  scoreLabel.textContent = "✓ " + correctCount;
+  // Fokus erst nach Ablauf des aktuellen Tastatur-Events setzen, sonst
+  // löst das keyup derselben Enter-Taste sofort einen Klick auf den
+  // frisch fokussierten "Weiter"-Button aus.
+  setTimeout(function () { nextBtn.focus(); }, 0);
+}
+
+function goNext() {
+  if (!answeredCurrent) return;
+  pos++;
+  if (pos >= NOUNS.length) {
+    finishSession();
+  } else {
+    showCurrent();
+  }
+}
+
+function finishSession() {
+  liveCard.classList.add("hide");
+  doneCard.classList.add("show");
+  progressFill.style.width = "100%";
+  progressLabel.textContent = "Wort " + NOUNS.length + " / " + NOUNS.length;
+
+  doneScore.textContent = correctCount + " / " + NOUNS.length;
+  doneSub.textContent = correctCount === NOUNS.length
+    ? "Alles richtig — sehr gut!"
+    : "richtig beim ersten Versuch";
+
+  mistakeList.innerHTML = "";
+  if (mistakes.length === 0) {
+    var li = document.createElement("li");
+    li.textContent = "Keine Fehler.";
+    mistakeList.appendChild(li);
+  } else {
+    for (var i = 0; i < mistakes.length; i++) {
+      var m = mistakes[i];
+      var row = document.createElement("li");
+      var sgSpan = document.createElement("span");
+      sgSpan.className = "m-sg";
+      sgSpan.textContent = m.art + " " + m.sg;
+      var plSpan = document.createElement("span");
+      plSpan.className = "m-pl";
+      plSpan.textContent = m.pl;
+      row.appendChild(sgSpan);
+      row.appendChild(plSpan);
+      mistakeList.appendChild(row);
+    }
+  }
+}
+
+checkBtn.addEventListener("click", checkAnswer);
+nextBtn.addEventListener("click", goNext);
+shuffleBtn.addEventListener("click", startSession);
+restartBtn.addEventListener("click", startSession);
+
+answerInput.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    if (!answeredCurrent) {
+      checkAnswer();
+    } else {
+      goNext();
+    }
+  }
+});
+
+startSession();
+</script>
+</body>
+</html>
