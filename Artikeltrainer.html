@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artikeltrainer – der, die, das</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f4f6f8;
+    color: #22303c;
+    padding: 16px;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  h1 {
+    font-size: 22px;
+    text-align: center;
+    margin: 8px 0 4px 0;
+  }
+  .sub {
+    text-align: center;
+    color: #5b6b77;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .panel {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .panel h2 {
+    font-size: 15px;
+    margin: 0 0 10px 0;
+  }
+  .cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .cat-btn {
+    border: 1px solid #c7d0d8;
+    background: #f0f3f5;
+    border-radius: 20px;
+    padding: 7px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .cat-btn.active {
+    background: #2b6cb0;
+    border-color: #2b6cb0;
+    color: #fff;
+  }
+  .cat-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .cat-actions a {
+    color: #2b6cb0;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .start-btn {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    padding: 12px;
+    background: #2b6cb0;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .start-btn:disabled {
+    background: #a9b7c2;
+    cursor: not-allowed;
+  }
+  .hidden { display: none !important; }
+
+  .statbar {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #5b6b77;
+    margin-bottom: 8px;
+  }
+  .progress-outer {
+    height: 8px;
+    background: #e1e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .progress-inner {
+    height: 100%;
+    background: #2b6cb0;
+    width: 0%;
+    transition: width .2s ease;
+  }
+  .question-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    padding: 28px 20px;
+    text-align: center;
+  }
+  .noun-cat {
+    font-size: 12px;
+    color: #8a97a1;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  .noun-word {
+    font-size: 30px;
+    font-weight: 600;
+    margin: 6px 0 20px 0;
+  }
+  .answers {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  .ans-btn {
+    flex: 1;
+    max-width: 140px;
+    padding: 14px 0;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 12px;
+    border: 2px solid #c7d0d8;
+    background: #f7f9fa;
+    cursor: pointer;
+  }
+  .ans-btn.der { color: #2b6cb0; }
+  .ans-btn.die { color: #b83280; }
+  .ans-btn.das { color: #2f855a; }
+  .ans-btn.correct { background: #d3f4de; border-color: #38a169; }
+  .ans-btn.wrong { background: #fddede; border-color: #e53e3e; }
+  .ans-btn:disabled { cursor: default; opacity: .85; }
+
+  .feedback {
+    min-height: 46px;
+    margin-top: 16px;
+    font-size: 15px;
+  }
+  .feedback .plural {
+    color: #5b6b77;
+    font-size: 13px;
+    display: block;
+    margin-top: 4px;
+  }
+  .next-btn {
+    margin-top: 16px;
+    padding: 10px 22px;
+    background: #2b6cb0;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .next-btn.hidden { visibility: hidden; }
+
+  .summary {
+    text-align: center;
+  }
+  .summary .score {
+    font-size: 40px;
+    font-weight: 700;
+    margin: 10px 0;
+    color: #2b6cb0;
+  }
+  .miss-list {
+    text-align: left;
+    margin-top: 18px;
+    font-size: 14px;
+  }
+  .miss-list h3 { font-size: 14px; margin-bottom: 8px; }
+  .miss-list ul { padding-left: 20px; margin: 0; }
+  .miss-list li { margin-bottom: 4px; }
+  .restart-btn {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background: #2b6cb0;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Artikeltrainer</h1>
+  <div class="sub">der, die oder das? Wähle den richtigen Artikel.</div>
+
+  <!-- ===================== AUSWAHL-BILDSCHIRM ===================== -->
+  <div id="screen-setup" class="panel">
+    <h2>Themen auswählen</h2>
+    <div class="cats" id="catButtons"></div>
+    <div class="cat-actions">
+      <a id="selAll">Alle auswählen</a>
+      <a id="selNone">Keine auswählen</a>
+    </div>
+    <button class="start-btn" id="startBtn">Start</button>
+  </div>
+
+  <!-- ===================== QUIZ-BILDSCHIRM ===================== -->
+  <div id="screen-quiz" class="hidden">
+    <div class="statbar">
+      <span id="progressText">Frage 1 / 20</span>
+      <span id="scoreText">Richtig: 0</span>
+    </div>
+    <div class="progress-outer"><div class="progress-inner" id="progressBar"></div></div>
+
+    <div class="question-card">
+      <div class="noun-cat" id="qCategory"></div>
+      <div class="noun-word" id="qWord"></div>
+      <div class="answers">
+        <button class="ans-btn der" data-a="der">der</button>
+        <button class="ans-btn die" data-a="die">die</button>
+        <button class="ans-btn das" data-a="das">das</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn hidden" id="nextBtn">Weiter</button>
+    </div>
+  </div>
+
+  <!-- ===================== ERGEBNIS-BILDSCHIRM ===================== -->
+  <div id="screen-result" class="hidden panel summary">
+    <h2>Ergebnis</h2>
+    <div class="score" id="resultScore"></div>
+    <div id="resultText"></div>
+    <div class="miss-list hidden" id="missWrap">
+      <h3>Diese Wörter noch einmal üben:</h3>
+      <ul id="missList"></ul>
+    </div>
+    <button class="restart-btn" id="restartBtn">Neue Runde</button>
+  </div>
+</div>
+
+<script>
+// =====================================================================
+// NOMEN-DATENBANK
+// Neue Nomen einfach als neues Objekt in "nomen" ergänzen:
+//   { wort: "Beispiel", artikel: "das", plural: "Beispiele", kategorie: "Meine Kategorie" }
+// - "plural" ist optional (leer lassen, wenn unbekannt/nicht gebraucht: plural: "")
+// - "kategorie" bestimmt, unter welchem Filter das Wort im Auswahl-Bildschirm erscheint.
+//   Neue Kategorienamen erzeugen automatisch einen neuen Filter-Button.
+// =====================================================================
+var nomen = [
+  // --- Begrüßung / Vorstellung ---
+  { wort: "Herr", artikel: "der", plural: "Herren", kategorie: "Begrüßung & Vorstellung" },
+  { wort: "Frau", artikel: "die", plural: "Frauen", kategorie: "Begrüßung & Vorstellung" },
+  { wort: "Sprache", artikel: "die", plural: "Sprachen", kategorie: "Begrüßung & Vorstellung" },
+  { wort: "Name", artikel: "der", plural: "Namen", kategorie: "Begrüßung & Vorstellung" },
+  { wort: "Land", artikel: "das", plural: "Länder", kategorie: "Begrüßung & Vorstellung" },
+
+  // --- Berufe ---
+  { wort: "Altenpfleger", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Altenpflegerin", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Arzt", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Ärztin", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Friseur", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Friseurin", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Hausmann", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Hausfrau", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Ingenieur", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Ingenieurin", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Koch", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Köchin", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Lehrer", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Lehrerin", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Mechatroniker", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Mechatronikerin", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Polizist", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Polizistin", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Sänger", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Sängerin", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Taxifahrer", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Taxifahrerin", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Verkäufer", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Verkäuferin", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Busfahrer", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Busfahrerin", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Kellner", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Kellnerin", artikel: "die", plural: "", kategorie: "Berufe" },
+  { wort: "Beruf", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Auto", artikel: "das", plural: "", kategorie: "Berufe" },
+  { wort: "Heimatland", artikel: "das", plural: "", kategorie: "Berufe" },
+  { wort: "Kurs", artikel: "der", plural: "", kategorie: "Berufe" },
+  { wort: "Mann", artikel: "der", plural: "", kategorie: "Berufe" },
+
+  // --- Freizeit ---
+  { wort: "Buch", artikel: "das", plural: "Bücher", kategorie: "Freizeit" },
+  { wort: "Film", artikel: "der", plural: "Filme", kategorie: "Freizeit" },
+  { wort: "Tee", artikel: "der", plural: "", kategorie: "Freizeit" },
+
+  // --- Formular & Adresse ---
+  { wort: "Hilfe", artikel: "die", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "Problem", artikel: "das", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "Formular", artikel: "das", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "Vorname", artikel: "der", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "Nachname", artikel: "der", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "Adresse", artikel: "die", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "Straße", artikel: "die", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "Hausnummer", artikel: "die", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "Ort", artikel: "der", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "Postleitzahl", artikel: "die", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "Telefonnummer", artikel: "die", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "E-Mail-Adresse", artikel: "die", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "E-Mail", artikel: "die", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "Arbeit", artikel: "die", plural: "", kategorie: "Formular & Adresse" },
+  { wort: "Entschuldigung", artikel: "die", plural: "", kategorie: "Formular & Adresse" },
+
+  // --- Möbel & Zuhause ---
+  { wort: "Tasche", artikel: "die", plural: "Taschen", kategorie: "Möbel & Zuhause" },
+  { wort: "Tisch", artikel: "der", plural: "Tische", kategorie: "Möbel & Zuhause" },
+  { wort: "Stuhl", artikel: "der", plural: "Stühle", kategorie: "Möbel & Zuhause" },
+  { wort: "Bank", artikel: "die", plural: "Bänke", kategorie: "Möbel & Zuhause" },
+  { wort: "Sofa", artikel: "das", plural: "Sofas", kategorie: "Möbel & Zuhause" },
+  { wort: "Bett", artikel: "das", plural: "Betten", kategorie: "Möbel & Zuhause" },
+  { wort: "Regal", artikel: "das", plural: "Regale", kategorie: "Möbel & Zuhause" },
+  { wort: "Schrank", artikel: "der", plural: "Schränke", kategorie: "Möbel & Zuhause" },
+  { wort: "Herd", artikel: "der", plural: "Herde", kategorie: "Möbel & Zuhause" },
+  { wort: "Bleistift", artikel: "der", plural: "Bleistifte", kategorie: "Möbel & Zuhause" },
+  { wort: "Heft", artikel: "das", plural: "Hefte", kategorie: "Möbel & Zuhause" },
+  { wort: "Plakat", artikel: "das", plural: "Plakate", kategorie: "Möbel & Zuhause" },
+  { wort: "Handy", artikel: "das", plural: "Handys", kategorie: "Möbel & Zuhause" },
+  { wort: "Dialog", artikel: "der", plural: "Dialoge", kategorie: "Möbel & Zuhause" },
+  { wort: "Hausaufgabe", artikel: "die", plural: "Hausaufgaben", kategorie: "Möbel & Zuhause" },
+  { wort: "Kind", artikel: "das", plural: "Kinder", kategorie: "Möbel & Zuhause" },
+  { wort: "Foto", artikel: "das", plural: "Fotos", kategorie: "Möbel & Zuhause" },
+  { wort: "Kaffee", artikel: "der", plural: "", kategorie: "Möbel & Zuhause" },
+
+  // --- Technik & Büro ---
+  { wort: "Computer", artikel: "der", plural: "Computer", kategorie: "Technik & Büro" },
+  { wort: "Kaffeemaschine", artikel: "die", plural: "Kaffeemaschinen", kategorie: "Technik & Büro" },
+  { wort: "Kasse", artikel: "die", plural: "Kassen", kategorie: "Technik & Büro" },
+  { wort: "Laptop", artikel: "der", plural: "Laptops", kategorie: "Technik & Büro" },
+  { wort: "Kiosk", artikel: "der", plural: "Kioske", kategorie: "Technik & Büro" },
+  { wort: "Tür", artikel: "die", plural: "Türen", kategorie: "Technik & Büro" },
+  { wort: "Schlüssel", artikel: "der", plural: "Schlüssel", kategorie: "Technik & Büro" },
+  { wort: "Fenster", artikel: "das", plural: "Fenster", kategorie: "Technik & Büro" },
+  { wort: "Kühlschrank", artikel: "der", plural: "Kühlschränke", kategorie: "Technik & Büro" },
+  { wort: "Tafel", artikel: "die", plural: "Tafeln", kategorie: "Technik & Büro" },
+
+  // --- Maße & Preise ---
+  { wort: "Zentimeter", artikel: "der", plural: "Zentimeter", kategorie: "Maße & Preise" },
+  { wort: "Meter", artikel: "der", plural: "Meter", kategorie: "Maße & Preise" },
+  { wort: "Euro", artikel: "der", plural: "Euro", kategorie: "Maße & Preise" },
+  { wort: "Spülmaschine", artikel: "die", plural: "Spülmaschinen", kategorie: "Maße & Preise" },
+  { wort: "Waschmaschine", artikel: "die", plural: "Waschmaschinen", kategorie: "Maße & Preise" },
+  { wort: "Preis", artikel: "der", plural: "Preise", kategorie: "Maße & Preise" },
+
+  // --- Familie ---
+  { wort: "Freund", artikel: "der", plural: "Freunde", kategorie: "Familie" },
+  { wort: "Freundin", artikel: "die", plural: "Freundinnen", kategorie: "Familie" },
+  { wort: "Familie", artikel: "die", plural: "Familien", kategorie: "Familie" },
+  { wort: "Mutter", artikel: "die", plural: "Mütter", kategorie: "Familie" },
+  { wort: "Vater", artikel: "der", plural: "Väter", kategorie: "Familie" },
+  { wort: "Schwester", artikel: "die", plural: "Schwestern", kategorie: "Familie" },
+  { wort: "Bruder", artikel: "der", plural: "Brüder", kategorie: "Familie" },
+  { wort: "Großmutter", artikel: "die", plural: "Großmütter", kategorie: "Familie" },
+  { wort: "Oma", artikel: "die", plural: "Omas", kategorie: "Familie" },
+  { wort: "Großvater", artikel: "der", plural: "Großväter", kategorie: "Familie" },
+  { wort: "Opa", artikel: "der", plural: "Opas", kategorie: "Familie" },
+  { wort: "Tante", artikel: "die", plural: "Tanten", kategorie: "Familie" },
+  { wort: "Onkel", artikel: "der", plural: "Onkel", kategorie: "Familie" },
+  { wort: "Cousine", artikel: "die", plural: "Cousinen", kategorie: "Familie" },
+  { wort: "Cousin", artikel: "der", plural: "Cousins", kategorie: "Familie" },
+  { wort: "Sohn", artikel: "der", plural: "Söhne", kategorie: "Familie" },
+  { wort: "Tochter", artikel: "die", plural: "Töchter", kategorie: "Familie" }
+];
+
+// =====================================================================
+// LOGIK
+// =====================================================================
+var kategorien = [];
+(function buildKategorien() {
+  var seen = {};
+  for (var i = 0; i < nomen.length; i++) {
+    var k = nomen[i].kategorie;
+    if (!seen[k]) { seen[k] = true; kategorien.push(k); }
+  }
+})();
+
+var activeKats = {};
+for (var i = 0; i < kategorien.length; i++) { activeKats[kategorien[i]] = true; }
+
+var catButtonsEl = document.getElementById("catButtons");
+function renderCatButtons() {
+  catButtonsEl.innerHTML = "";
+  for (var i = 0; i < kategorien.length; i++) {
+    (function (kat) {
+      var btn = document.createElement("div");
+      btn.className = "cat-btn" + (activeKats[kat] ? " active" : "");
+      btn.textContent = kat;
+      btn.onclick = function () {
+        activeKats[kat] = !activeKats[kat];
+        renderCatButtons();
+        updateStartBtn();
+      };
+      catButtonsEl.appendChild(btn);
+    })(kategorien[i]);
+  }
+}
+renderCatButtons();
+
+document.getElementById("selAll").onclick = function () {
+  for (var i = 0; i < kategorien.length; i++) { activeKats[kategorien[i]] = true; }
+  renderCatButtons();
+  updateStartBtn();
+};
+document.getElementById("selNone").onclick = function () {
+  for (var i = 0; i < kategorien.length; i++) { activeKats[kategorien[i]] = false; }
+  renderCatButtons();
+  updateStartBtn();
+};
+
+var startBtn = document.getElementById("startBtn");
+function currentPool() {
+  var pool = [];
+  for (var i = 0; i < nomen.length; i++) {
+    if (activeKats[nomen[i].kategorie]) pool.push(nomen[i]);
+  }
+  return pool;
+}
+function updateStartBtn() {
+  var n = currentPool().length;
+  startBtn.disabled = n === 0;
+  startBtn.textContent = n === 0 ? "Bitte mindestens ein Thema wählen" : "Start (" + n + " Wörter)";
+}
+updateStartBtn();
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+var quizList = [];
+var quizIndex = 0;
+var correctCount = 0;
+var missed = [];
+var answered = false;
+
+var screenSetup = document.getElementById("screen-setup");
+var screenQuiz = document.getElementById("screen-quiz");
+var screenResult = document.getElementById("screen-result");
+
+var qWordEl = document.getElementById("qWord");
+var qCategoryEl = document.getElementById("qCategory");
+var feedbackEl = document.getElementById("feedback");
+var progressTextEl = document.getElementById("progressText");
+var scoreTextEl = document.getElementById("scoreText");
+var progressBarEl = document.getElementById("progressBar");
+var nextBtn = document.getElementById("nextBtn");
+var ansButtons = document.querySelectorAll(".ans-btn");
+
+startBtn.onclick = function () {
+  quizList = shuffle(currentPool());
+  quizIndex = 0;
+  correctCount = 0;
+  missed = [];
+  screenSetup.classList.add("hidden");
+  screenResult.classList.add("hidden");
+  screenQuiz.classList.remove("hidden");
+  showQuestion();
+};
+
+function showQuestion() {
+  answered = false;
+  var item = quizList[quizIndex];
+  qWordEl.textContent = item.wort;
+  qCategoryEl.textContent = item.kategorie;
+  feedbackEl.innerHTML = "";
+  nextBtn.classList.add("hidden");
+  progressTextEl.textContent = "Frage " + (quizIndex + 1) + " / " + quizList.length;
+  scoreTextEl.textContent = "Richtig: " + correctCount;
+  progressBarEl.style.width = ((quizIndex) / quizList.length * 100) + "%";
+  for (var i = 0; i < ansButtons.length; i++) {
+    ansButtons[i].disabled = false;
+    ansButtons[i].classList.remove("correct", "wrong");
+  }
+}
+
+for (var i = 0; i < ansButtons.length; i++) {
+  ansButtons[i].addEventListener("click", function (e) {
+    if (answered) return;
+    answered = true;
+    var chosen = e.currentTarget.getAttribute("data-a");
+    var item = quizList[quizIndex];
+    var isRight = chosen === item.artikel;
+
+    for (var j = 0; j < ansButtons.length; j++) {
+      ansButtons[j].disabled = true;
+      var a = ansButtons[j].getAttribute("data-a");
+      if (a === item.artikel) ansButtons[j].classList.add("correct");
+      else if (a === chosen) ansButtons[j].classList.add("wrong");
+    }
+
+    if (isRight) {
+      correctCount++;
+      feedbackEl.innerHTML = "Richtig! <b>" + item.artikel + " " + item.wort + "</b>" +
+        (item.plural ? "<span class='plural'>Plural: die " + item.plural + "</span>" : "");
+    } else {
+      missed.push(item);
+      feedbackEl.innerHTML = "Leider falsch. Richtig ist: <b>" + item.artikel + " " + item.wort + "</b>" +
+        (item.plural ? "<span class='plural'>Plural: die " + item.plural + "</span>" : "");
+    }
+    scoreTextEl.textContent = "Richtig: " + correctCount;
+    progressBarEl.style.width = ((quizIndex + 1) / quizList.length * 100) + "%";
+    nextBtn.classList.remove("hidden");
+  });
+}
+
+nextBtn.onclick = function () {
+  quizIndex++;
+  if (quizIndex >= quizList.length) {
+    showResult();
+  } else {
+    showQuestion();
+  }
+};
+
+function showResult() {
+  screenQuiz.classList.add("hidden");
+  screenResult.classList.remove("hidden");
+  var total = quizList.length;
+  var pct = Math.round((correctCount / total) * 100);
+  document.getElementById("resultScore").textContent = correctCount + " / " + total;
+  document.getElementById("resultText").textContent = pct + " % richtig";
+
+  var missWrap = document.getElementById("missWrap");
+  var missListEl = document.getElementById("missList");
+  missListEl.innerHTML = "";
+  if (missed.length > 0) {
+    missWrap.classList.remove("hidden");
+    for (var i = 0; i < missed.length; i++) {
+      var li = document.createElement("li");
+      li.textContent = missed[i].artikel + " " + missed[i].wort +
+        (missed[i].plural ? " (Plural: die " + missed[i].plural + ")" : "");
+      missListEl.appendChild(li);
+    }
+  } else {
+    missWrap.classList.add("hidden");
+  }
+}
+
+document.getElementById("restartBtn").onclick = function () {
+  screenResult.classList.add("hidden");
+  screenSetup.classList.remove("hidden");
+  updateStartBtn();
+};
+</script>
+</body>
+</html>
