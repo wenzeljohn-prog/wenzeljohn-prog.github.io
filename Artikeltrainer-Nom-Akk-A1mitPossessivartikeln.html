@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artikeltrainer: ein/eine/einen · kein/keine/keinen · der/die/das · mein/dein/sein/ihr/unser</title>
+<style>
+  :root{
+    --bg: #eef1f5;
+    --card: #ffffff;
+    --ink: #1f2933;
+    --ink-soft: #52606d;
+    --line: #d3dae3;
+    --accent: #2f6fa6;
+    --accent-dark: #234f79;
+    --good: #2e7d5b;
+    --good-bg: #e4f3ec;
+    --bad: #b23b3b;
+    --bad-bg: #faeaea;
+    --gap-fill: #fff6da;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans Arabic",sans-serif;
+    line-height:1.5;
+    padding:16px;
+  }
+  body[dir="rtl"]{ text-align:right; }
+  .wrap{ max-width:640px; margin:0 auto; }
+  header{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
+  h1{ font-size:1.3rem; margin:0 0 4px 0; color:var(--accent-dark); }
+  .subtitle{ margin:0; color:var(--ink-soft); font-size:0.92rem; }
+  select#langSelect{
+    padding:8px 10px; border-radius:8px; border:1px solid var(--line);
+    background:var(--card); color:var(--ink); font-size:0.92rem;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:14px;
+  }
+  .rules-toggle{
+    display:inline-block; margin-bottom:10px; cursor:pointer;
+    background:none; border:1px solid var(--accent); color:var(--accent-dark);
+    padding:8px 14px; border-radius:999px; font-size:0.9rem; font-weight:600;
+  }
+  .rules-body{ display:none; }
+  .rules-body.open{ display:block; }
+  .rules-body h2{ font-size:1.02rem; margin:14px 0 6px 0; color:var(--accent-dark); }
+  .rules-body p{ margin:6px 0; font-size:0.95rem; }
+  table.forms{
+    width:100%; border-collapse:collapse; margin:10px 0; font-size:0.88rem;
+  }
+  table.forms th, table.forms td{
+    border:1px solid var(--line); padding:6px 8px; text-align:center;
+  }
+  table.forms th{ background:#f4f7fa; }
+  .progress{ font-size:0.85rem; color:var(--ink-soft); margin-bottom:6px; }
+  .context{ font-size:0.95rem; color:var(--ink-soft); text-align:center; margin-bottom:4px; display:none; }
+  .sentence{
+    font-size:1.25rem; font-weight:600; margin:6px 0 18px 0; text-align:center;
+    line-height:1.7;
+  }
+  .gap{
+    display:inline-block; min-width:78px; padding:2px 6px; border-bottom:3px solid var(--accent);
+    color:var(--accent-dark);
+  }
+  .options{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px;
+  }
+  .opt-btn{
+    padding:14px 6px; font-size:1.05rem; font-weight:600;
+    border-radius:10px; border:2px solid var(--line); background:#fbfcfd; color:var(--ink);
+    cursor:pointer; min-height:48px;
+  }
+  .opt-btn:active{ transform:scale(0.98); }
+  .opt-btn.correct{ background:var(--good-bg); border-color:var(--good); color:var(--good); }
+  .opt-btn.incorrect{ background:var(--bad-bg); border-color:var(--bad); color:var(--bad); }
+  .opt-btn:disabled{ cursor:default; opacity:0.85; }
+  .feedback{
+    min-height:44px; font-size:0.95rem; padding:10px 12px; border-radius:10px;
+    margin-bottom:10px; display:none;
+  }
+  .feedback.show{ display:block; }
+  .feedback.good{ background:var(--good-bg); color:var(--good); }
+  .feedback.bad{ background:var(--bad-bg); color:var(--bad); }
+  .actions{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  .next-btn{
+    padding:11px 20px; border-radius:10px; border:none; background:var(--accent); color:#fff;
+    font-size:0.98rem; font-weight:600; cursor:pointer;
+  }
+  .next-btn:disabled{ background:#a9bfd1; cursor:default; }
+  .score{ font-size:0.92rem; color:var(--ink-soft); }
+  .restart-btn{
+    background:none; border:1px solid var(--line); color:var(--ink-soft);
+    padding:8px 12px; border-radius:8px; font-size:0.85rem; cursor:pointer;
+  }
+  footer{ text-align:center; font-size:0.78rem; color:var(--ink-soft); margin-top:18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1 id="titleText">Artikeltrainer</h1>
+      <p class="subtitle" id="subtitleText"></p>
+    </div>
+    <select id="langSelect" aria-label="Sprache">
+      <option value="de">Deutsch</option>
+      <option value="en">English</option>
+      <option value="ru">Русский</option>
+      <option value="ar">العربية</option>
+      <option value="tr">Türkçe</option>
+    </select>
+  </header>
+
+  <div class="card">
+    <button class="rules-toggle" id="rulesToggleBtn">Regeln anzeigen</button>
+    <div class="rules-body" id="rulesBody">
+      <div id="rulesText"></div>
+      <table class="forms">
+        <thead>
+          <tr><th></th><th>maskulin</th><th>feminin</th><th>neutral</th><th>Plural</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Nominativ</td><td>ein</td><td>eine</td><td>ein</td><td>–</td></tr>
+          <tr><td>Akkusativ</td><td>einen</td><td>eine</td><td>ein</td><td>–</td></tr>
+          <tr><td>Nominativ (Verneinung)</td><td>kein</td><td>keine</td><td>kein</td><td>keine</td></tr>
+          <tr><td>Akkusativ (Verneinung)</td><td>keinen</td><td>keine</td><td>kein</td><td>keine</td></tr>
+          <tr><td>Nominativ (bestimmt)</td><td>der</td><td>die</td><td>das</td><td>die</td></tr>
+          <tr><td>Akkusativ (bestimmt)</td><td>den</td><td>die</td><td>das</td><td>die</td></tr>
+          <tr><td>Nominativ (Possessiv, Bsp. „mein“)</td><td>mein</td><td>meine</td><td>mein</td><td>–</td></tr>
+          <tr><td>Akkusativ (Possessiv, Bsp. „mein“)</td><td>meinen</td><td>meine</td><td>mein</td><td>–</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.85rem; color:var(--ink-soft);">Possessivartikel (Singular): mein (ich) · dein (du) · sein (er) · ihr (sie) · unser (wir) — gleiche Endungen wie „kein“.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="progress" id="progressText"></div>
+    <div class="context" id="contextText"></div>
+    <div class="sentence" id="sentenceText"></div>
+    <div class="options" id="optionsGrid"></div>
+    <div class="feedback" id="feedbackBox"></div>
+    <div class="actions">
+      <button class="next-btn" id="nextBtn" disabled>Weiter</button>
+      <span class="score" id="scoreText"></span>
+    </div>
+  </div>
+
+  <div style="text-align:center;">
+    <button class="restart-btn" id="restartBtn">Neu starten</button>
+  </div>
+
+  <footer>Artikeltrainer · Nominativ &amp; Akkusativ · unbestimmt, Negation, bestimmt &amp; Possessiv · A1.1</footer>
+</div>
+
+<script>
+(function(){
+
+  // ---------- Datenbasis ----------
+  var NOUNS = [
+    {base:"Frau", gender:"f", plural:"Frauen", hasPlural:true, akkVerbs:[]},
+    {base:"Herr", gender:"m", plural:"Herren", hasPlural:true, akkVerbs:[]},
+    {base:"Mann", gender:"m", plural:"Männer", hasPlural:true, akkVerbs:[]},
+    {base:"Straße", gender:"f", plural:"Straßen", hasPlural:true, akkVerbs:[]},
+    {base:"Ort", gender:"m", plural:"Orte", hasPlural:true, akkVerbs:[]},
+    {base:"Café", gender:"n", plural:"Cafés", hasPlural:true, akkVerbs:[]},
+    {base:"Kiosk", gender:"m", plural:"Kioske", hasPlural:true, akkVerbs:[]},
+    {base:"Kasse", gender:"f", plural:"Kassen", hasPlural:true, akkVerbs:[]},
+    {base:"Tafel", gender:"f", plural:"Tafeln", hasPlural:true, akkVerbs:[]},
+    {base:"Bank", gender:"f", plural:"Bänke", hasPlural:true, akkVerbs:[]},
+
+    {base:"Bruder", gender:"m", plural:"Brüder", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Sohn", gender:"m", plural:"Söhne", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Vater", gender:"m", plural:"Väter", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Onkel", gender:"m", plural:"Onkel", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Cousin", gender:"m", plural:"Cousins", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Opa", gender:"m", plural:"Opas", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Großvater", gender:"m", plural:"Großväter", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Nachbar", gender:"m", plural:"Nachbarn", hasPlural:true, akkVerbs:["haben"], weakAkk:"Nachbarn"},
+    {base:"Freund", gender:"m", plural:"Freunde", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Ehemann", gender:"m", plural:"Ehemänner", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Enkel", gender:"m", plural:"Enkel", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Schwester", gender:"f", plural:"Schwestern", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Tochter", gender:"f", plural:"Töchter", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Mutter", gender:"f", plural:"Mütter", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Tante", gender:"f", plural:"Tanten", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Cousine", gender:"f", plural:"Cousinen", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Oma", gender:"f", plural:"Omas", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Großmutter", gender:"f", plural:"Großmütter", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Nachbarin", gender:"f", plural:"Nachbarinnen", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Freundin", gender:"f", plural:"Freundinnen", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Ehefrau", gender:"f", plural:"Ehefrauen", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Enkelin", gender:"f", plural:"Enkelinnen", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Kind", gender:"n", plural:"Kinder", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Geschwister", gender:"n", plural:"Geschwister", hasPlural:true, pluralOnly:true, akkVerbs:["haben"]},
+    {base:"Eltern", gender:"n", plural:"Eltern", hasPlural:true, pluralOnly:true, akkVerbs:["haben"], allowNegation:false},
+    {base:"Großeltern", gender:"n", plural:"Großeltern", hasPlural:true, pluralOnly:true, akkVerbs:["haben"], allowNegation:false},
+
+    {base:"Computer", gender:"m", plural:"Computer", hasPlural:true, akkVerbs:["haben","reparieren"]},
+    {base:"Laptop", gender:"m", plural:"Laptops", hasPlural:true, akkVerbs:["haben","reparieren"]},
+    {base:"Kühlschrank", gender:"m", plural:"Kühlschränke", hasPlural:true, akkVerbs:["haben","reparieren"]},
+    {base:"Schlüssel", gender:"m", plural:"Schlüssel", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Bleistift", gender:"m", plural:"Bleistifte", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Tisch", gender:"m", plural:"Tische", hasPlural:true, akkVerbs:["haben","reparieren"]},
+    {base:"Stuhl", gender:"m", plural:"Stühle", hasPlural:true, akkVerbs:["haben","reparieren"]},
+    {base:"Schrank", gender:"m", plural:"Schränke", hasPlural:true, akkVerbs:["haben","reparieren"]},
+    {base:"Garten", gender:"m", plural:"Gärten", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Kaffee", gender:"m", plural:null, hasPlural:false, akkVerbs:["trinken"]},
+    {base:"Tee", gender:"m", plural:null, hasPlural:false, akkVerbs:["trinken"]},
+    {base:"Job", gender:"m", plural:"Jobs", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Kurs", gender:"m", plural:"Kurse", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Dialog", gender:"m", plural:"Dialoge", hasPlural:true, akkVerbs:["schreiben","hören","verstehen"]},
+
+    {base:"Auto", gender:"n", plural:"Autos", hasPlural:true, akkVerbs:["haben","reparieren"]},
+    {base:"Handy", gender:"n", plural:"Handys", hasPlural:true, akkVerbs:["haben","reparieren"]},
+    {base:"Buch", gender:"n", plural:"Bücher", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Heft", gender:"n", plural:"Hefte", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Plakat", gender:"n", plural:"Plakate", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Regal", gender:"n", plural:"Regale", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Sofa", gender:"n", plural:"Sofas", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Bett", gender:"n", plural:"Betten", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Foto", gender:"n", plural:"Fotos", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Fenster", gender:"n", plural:"Fenster", hasPlural:true, akkVerbs:["reparieren"]},
+    {base:"Wörterbuch", gender:"n", plural:"Wörterbücher", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Formular", gender:"n", plural:"Formulare", hasPlural:true, akkVerbs:["haben","schreiben"]},
+    {base:"Problem", gender:"n", plural:"Probleme", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Gespräch", gender:"n", plural:"Gespräche", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Lied", gender:"n", plural:"Lieder", hasPlural:true, akkVerbs:["hören"]},
+
+    {base:"Waschmaschine", gender:"f", plural:"Waschmaschinen", hasPlural:true, akkVerbs:["haben","reparieren"]},
+    {base:"Spülmaschine", gender:"f", plural:"Spülmaschinen", hasPlural:true, akkVerbs:["haben","reparieren"]},
+    {base:"Kaffeemaschine", gender:"f", plural:"Kaffeemaschinen", hasPlural:true, akkVerbs:["haben","reparieren"]},
+    {base:"Tür", gender:"f", plural:"Türen", hasPlural:true, akkVerbs:["reparieren"]},
+    {base:"Tasche", gender:"f", plural:"Taschen", hasPlural:true, akkVerbs:["haben"]},
+    {base:"Adresse", gender:"f", plural:null, hasPlural:false, akkVerbs:["haben"]},
+    {base:"Hausnummer", gender:"f", plural:null, hasPlural:false, akkVerbs:["haben"]},
+    {base:"Postleitzahl", gender:"f", plural:null, hasPlural:false, akkVerbs:["haben"]},
+    {base:"Arbeit", gender:"f", plural:null, hasPlural:false, akkVerbs:["haben"]},
+    {base:"Hausaufgabe", gender:"f", plural:"Hausaufgaben", hasPlural:true, akkVerbs:["haben","schreiben"]},
+    {base:"Frage", gender:"f", plural:"Fragen", hasPlural:true, akkVerbs:["haben","verstehen","hören"]},
+    {base:"Familie", gender:"f", plural:null, hasPlural:false, akkVerbs:["haben"]},
+    {base:"Sprache", gender:"f", plural:"Sprachen", hasPlural:true, akkVerbs:["lernen","sprechen","verstehen"]}
+  ];
+
+  var AKK_NOUNS = [];
+  for(var i=0;i<NOUNS.length;i++){ if(NOUNS[i].akkVerbs.length>0){ AKK_NOUNS.push(NOUNS[i]); } }
+
+  var PRONOUNS = ["ich","du","er","sie","wir"];
+  var VERB_CONJ = {
+    haben:      {ich:"habe", du:"hast", er:"hat", sie:"hat", wir:"haben"},
+    lernen:     {ich:"lerne", du:"lernst", er:"lernt", sie:"lernt", wir:"lernen"},
+    verstehen:  {ich:"verstehe", du:"verstehst", er:"versteht", sie:"versteht", wir:"verstehen"},
+    "hören":    {ich:"höre", du:"hörst", er:"hört", sie:"hört", wir:"hören"},
+    trinken:    {ich:"trinke", du:"trinkst", er:"trinkt", sie:"trinkt", wir:"trinken"},
+    reparieren: {ich:"repariere", du:"reparierst", er:"repariert", sie:"repariert", wir:"reparieren"},
+    schreiben:  {ich:"schreibe", du:"schreibst", er:"schreibt", sie:"schreibt", wir:"schreiben"},
+    sprechen:   {ich:"spreche", du:"sprichst", er:"spricht", sie:"spricht", wir:"sprechen"}
+  };
+
+  var AFFIRM_OPTIONS = ["ein","eine","einen","–"];
+  var NEG_OPTIONS = ["kein","keine","keinen"];
+  var DEF_NOM_OPTIONS = ["der","die","das"];
+  var DEF_AKK_OPTIONS = ["den","die","das"];
+
+  function getDefiniteArticle(gender, isAkk, isPlural){
+    if(isPlural){ return "die"; }
+    if(!isAkk){ return gender==="m" ? "der" : (gender==="f" ? "die" : "das"); }
+    return gender==="m" ? "den" : (gender==="f" ? "die" : "das");
+  }
+
+  // ---------- Possessivartikel ----------
+  var POSS_STEMS = { ich:"mein", du:"dein", er:"sein", sie:"ihr", wir:"unser" };
+
+  function possForm(stem, gender, isAkk){
+    if(!isAkk){ return gender==="f" ? stem+"e" : stem; }
+    if(gender==="m"){ return stem+"en"; }
+    if(gender==="f"){ return stem+"e"; }
+    return stem;
+  }
+
+  var MALE_NAMES = ["Tom","Karim","Noah","Mo","Pierre","Wanja"];
+  var FEMALE_NAMES = ["Anna","Elif","Lena","Julia","Fatima","Irina"];
+  var NAME_POOL = MALE_NAMES.concat(FEMALE_NAMES);
+  var SURNAME_POOL = ["Gehrken","Schmidt","Yilmaz","Novak","Keller"];
+  var CITY_POOL = ["Erfurt","Jena","Weimar","Berlin","Bern"];
+
+  var PERSON_NOUNS = ["Frau","Herr","Mann","Bruder","Sohn","Vater","Onkel","Cousin","Opa","Großvater",
+    "Nachbar","Freund","Ehemann","Enkel","Schwester","Tochter","Mutter","Tante","Cousine","Oma",
+    "Großmutter","Nachbarin","Freundin","Ehefrau","Enkelin","Kind"];
+
+  var PERSON_PREDICATES = null; // ersetzt durch personPredicate(gender) — Name muss zum Genus passen
+  function personPredicate(gender){
+    var namePool = gender === "m" ? MALE_NAMES : (gender === "f" ? FEMALE_NAMES : NAME_POOL);
+    var options = [
+      "heißt " + pick(namePool) + ".",
+      "wohnt in " + pick(CITY_POOL) + ".",
+      "lernt Deutsch."
+    ];
+    return pick(options);
+  }
+
+  // Für Possessiv-Items im Nominativ: pro Sachnomen ein eigenes, semantisch
+  // passendes Prädikat (statt eines generischen "funktioniert/ist neu" für alles).
+  var POSS_PRED_BY_NOUN = {
+    "Straße": ["ist ruhig.", "ist sehr lang.", "ist neu."],
+    "Ort": ["ist sehr schön.", "ist ruhig.", "ist bekannt."],
+    "Café": ["ist neu.", "ist sehr schön.", "ist gemütlich."],
+    "Kiosk": ["ist neu.", "ist klein.", "ist praktisch."],
+    "Kasse": ["ist neu.", "ist kaputt.", "funktioniert nicht."],
+    "Tafel": ["ist neu.", "ist kaputt.", "ist sehr praktisch."],
+    "Bank": ["ist neu.", "ist kaputt.", "ist sehr praktisch."],
+    "Computer": ["ist neu.", "ist kaputt.", "funktioniert nicht."],
+    "Laptop": ["ist neu.", "ist kaputt.", "funktioniert nicht."],
+    "Kühlschrank": ["ist neu.", "ist kaputt.", "funktioniert nicht."],
+    "Schlüssel": ["ist neu.", "ist klein.", "ist praktisch."],
+    "Bleistift": ["ist neu.", "ist klein.", "ist kaputt."],
+    "Tisch": ["ist neu.", "ist kaputt.", "ist sehr praktisch."],
+    "Stuhl": ["ist neu.", "ist kaputt.", "ist bequem."],
+    "Schrank": ["ist neu.", "ist kaputt.", "ist sehr praktisch."],
+    "Garten": ["ist sehr schön.", "ist sehr groß.", "ist neu."],
+    "Kaffee": ["ist kalt.", "ist heiß.", "ist lecker."],
+    "Tee": ["ist kalt.", "ist heiß.", "ist lecker."],
+    "Job": ["ist neu.", "ist interessant.", "ist gut."],
+    "Kurs": ["ist neu.", "ist interessant.", "ist schwer."],
+    "Dialog": ["ist neu.", "ist interessant.", "ist lang."],
+    "Auto": ["ist neu.", "ist kaputt.", "funktioniert nicht."],
+    "Handy": ["ist neu.", "ist kaputt.", "funktioniert nicht."],
+    "Buch": ["ist neu.", "ist interessant.", "ist dick."],
+    "Heft": ["ist neu.", "ist klein.", "ist voll."],
+    "Plakat": ["ist neu.", "ist groß.", "ist bunt."],
+    "Regal": ["ist neu.", "ist kaputt.", "ist sehr praktisch."],
+    "Sofa": ["ist neu.", "ist kaputt.", "ist bequem."],
+    "Bett": ["ist neu.", "ist kaputt.", "ist bequem."],
+    "Foto": ["ist neu.", "ist schön.", "ist klein."],
+    "Fenster": ["ist neu.", "ist kaputt.", "funktioniert nicht."],
+    "Wörterbuch": ["ist neu.", "ist dick.", "ist sehr praktisch."],
+    "Formular": ["ist neu.", "ist lang.", "ist wichtig."],
+    "Problem": ["ist groß.", "ist klein.", "ist neu."],
+    "Gespräch": ["ist lang.", "ist wichtig.", "ist interessant."],
+    "Lied": ["ist schön.", "ist neu.", "ist sehr laut."],
+    "Waschmaschine": ["ist neu.", "ist kaputt.", "funktioniert nicht."],
+    "Spülmaschine": ["ist neu.", "ist kaputt.", "funktioniert nicht."],
+    "Kaffeemaschine": ["ist neu.", "ist kaputt.", "funktioniert nicht."],
+    "Tür": ["ist neu.", "ist kaputt.", "funktioniert nicht."],
+    "Tasche": ["ist neu.", "ist klein.", "ist praktisch."],
+    "Adresse": ["ist neu.", "ist richtig."],
+    "Hausnummer": ["ist richtig.", "ist neu."],
+    "Postleitzahl": ["ist richtig.", "ist neu."],
+    "Arbeit": ["ist interessant.", "ist schwer.", "ist neu."],
+    "Hausaufgabe": ["ist schwer.", "ist lang.", "ist fertig."],
+    "Frage": ["ist wichtig.", "ist schwer.", "ist einfach."],
+    "Familie": ["ist groß.", "ist klein.", "ist wichtig."],
+    "Sprache": ["ist schön.", "ist schwer."]
+  };
+
+  // Für Possessiv-Items im Akkusativ: wo nicht jedes Verb aus akkVerbs im
+  // Possessiv-Kontext sinnvoll ist (z.B. "ich lerne meine Sprache" ergibt
+  // keinen Sinn), eine engere Auswahl.
+  var POSS_AKK_VERBS_OVERRIDE = {
+    "Dialog": ["schreiben","hören"],
+    "Frage": ["haben"],
+    "Sprache": ["sprechen","verstehen"]
+  };
+
+  function pickTwoDistinct(pool){
+    var a = pick(pool), b = pick(pool);
+    var guard = 0;
+    while(b === a && guard < 10){ b = pick(pool); guard++; }
+    return [a, b];
+  }
+
+  // Liefert { person, contextHtml, forceNom } — der Kontextsatz benennt/adressiert
+  // die Bezugsperson (fett hervorgehoben), damit der Possessivartikel eindeutig
+  // aus dem Kontext erschließbar ist, statt nur denselben Satz zu wiederholen.
+  function pickPersonAndContext(){
+    var person = pick(PRONOUNS);
+    var forceNom = false;
+    var contextHtml;
+
+    if(person === "sie"){
+      var sub = pick(["sg","pl","formal"]);
+      if(sub === "sg"){
+        contextHtml = "Das ist <b>" + pick(FEMALE_NAMES) + "</b>.";
+      } else if(sub === "pl"){
+        var names = pickTwoDistinct(NAME_POOL);
+        contextHtml = "Das sind <b>" + names[0] + "</b> und <b>" + names[1] + "</b>.";
+        forceNom = true;
+      } else {
+        contextHtml = "Guten Tag, <b>" + pick(["Herr","Frau"]) + " " + pick(SURNAME_POOL) + "</b>.";
+        forceNom = true;
+      }
+    } else if(person === "er"){
+      contextHtml = "Das ist <b>" + pick(MALE_NAMES) + "</b>.";
+    } else if(person === "ich"){
+      contextHtml = "<b>Ich</b> heiße " + pick(NAME_POOL) + ".";
+    } else if(person === "du"){
+      contextHtml = "<b>Du</b> heißt " + pick(NAME_POOL) + ".";
+    } else {
+      var wirNames = pickTwoDistinct(NAME_POOL);
+      contextHtml = "<b>Wir</b> heißen " + wirNames[0] + " und " + wirNames[1] + ".";
+    }
+
+    return { person: person, contextHtml: contextHtml, forceNom: forceNom };
+  }
+
+  var POSS_NOUNS_ALL = [];
+  for(var pi=0; pi<NOUNS.length; pi++){
+    var pn = NOUNS[pi];
+    if(pn.pluralOnly) continue;
+    if(PERSON_NOUNS.indexOf(pn.base) !== -1 || POSS_PRED_BY_NOUN[pn.base]){ POSS_NOUNS_ALL.push(pn); }
+  }
+  var POSS_NOUNS_AKK = [];
+  for(var pj=0; pj<AKK_NOUNS.length; pj++){ if(!AKK_NOUNS[pj].pluralOnly){ POSS_NOUNS_AKK.push(AKK_NOUNS[pj]); } }
+
+  // ---------- Sprachtexte ----------
+  var STR = {
+    de: {
+      title: "Artikeltrainer",
+      subtitle: "ein/eine/einen · kein/keine/keinen · der/die/das · mein/dein/sein/ihr/unser",
+      rulesShow: "Regeln anzeigen", rulesHide: "Regeln verbergen",
+      rulesIntro: "<p>Jedes deutsche Nomen hat ein Genus: <b>maskulin</b> (der), <b>feminin</b> (die) oder <b>neutral</b> (das). Der unbestimmte Artikel (<b>ein/eine</b>) zeigt, dass etwas neu oder unbekannt ist.</p>" +
+        "<p><b>Nominativ</b> (Subjekt, z. B. nach „Das ist…“): ein Mann, eine Frau, ein Kind.</p>" +
+        "<p><b>Akkusativ</b> (direktes Objekt, z. B. nach „Ich habe…“): nur die maskuline Form ändert sich: ein → <b>einen</b>. Feminin und neutral bleiben gleich.</p>" +
+        "<p><b>Plural</b>: Es gibt keinen unbestimmten Artikel – man sagt nichts (Nullartikel): Das sind Kinder. / Ich habe Brüder.</p>" +
+        "<p><b>Verneinung</b>: „ein“ wird zu „kein“ (nicht „nicht ein“): kein Mann, keine Frau, kein Kind, einen Bruder → keinen Bruder. Im Plural: keine Kinder.</p>" +
+        "<p><b>Bestimmter Artikel</b> (der/die/das) wird benutzt, wenn etwas schon bekannt oder eindeutig ist – wie „the“ im Englischen: der Mann, die Frau, das Kind. Im Akkusativ ändert sich wieder nur Maskulin: der → den. Im Plural heißt es immer „die“.</p>" +
+        "<p><b>Possessivartikel</b> (mein/dein/sein/ihr/unser) zeigen, wem etwas gehört, und haben dieselben Endungen wie „kein“: mein Bruder, meine Schwester, mein Kind; Akkusativ Maskulin: meinen Bruder.</p>",
+      progress: "Frage {n}",
+      correct: "Richtig!",
+      incorrect: "Leider falsch.",
+      next: "Weiter",
+      score: "{correct} von {total} richtig",
+      restart: "Neu starten",
+      gender_m: "maskulin", gender_f: "feminin", gender_n: "neutral", pluralLabel: "Plural",
+      explAffix: function(noun, gender, caseLabel, verb, article){
+        var v = verb ? " (nach „" + verb + "“)" : "";
+        return "„" + noun + "“ ist " + gender + ". " + caseLabel + v + " → „" + article + "“.";
+      },
+      explPlural: function(noun, article){
+        return "„" + noun + "“ ist Plural → kein Artikel im Singular-Sinn: „" + article + "“.";
+      },
+      explDef: function(noun, gender, caseLabel, article){
+        return "„" + noun + "“ ist " + gender + ". " + caseLabel + " (bestimmter Artikel) → „" + article + "“.";
+      },
+      explDefPlural: function(noun, article){
+        return "„" + noun + "“ ist Plural → bestimmter Artikel: „" + article + "“.";
+      },
+      explPoss: function(pronoun, article){
+        return "Kontext: „" + pronoun + "“ → „" + article + "“.";
+      },
+      caseNom: "Nominativ", caseAkk: "Akkusativ"
+    },
+    en: {
+      title: "Article Trainer",
+      subtitle: "ein/eine/einen · kein/keine/keinen · der/die/das · mein/dein/sein/ihr/unser",
+      rulesShow: "Show rules", rulesHide: "Hide rules",
+      rulesIntro: "<p>Every German noun has a gender: <b>masculine</b> (der), <b>feminine</b> (die) or <b>neuter</b> (das). The indefinite article (<b>ein/eine</b>) marks something new or unknown — like English \"a/an\".</p>" +
+        "<p><b>Nominative</b> (subject, e.g. after \"Das ist…\" = \"This is…\"): ein Mann, eine Frau, ein Kind.</p>" +
+        "<p><b>Accusative</b> (direct object, e.g. after \"Ich habe…\" = \"I have…\"): only the masculine form changes: ein → <b>einen</b>. Feminine and neuter stay the same. Unlike English \"a\", which never changes, German ein does change by case for masculine nouns.</p>" +
+        "<p><b>Plural</b>: there is no indefinite article at all — you simply say nothing (just like English \"children\", not \"a children\"): Das sind Kinder. / Ich habe Brüder.</p>" +
+        "<p><b>Negation</b>: \"ein\" becomes \"kein\" (not \"nicht ein\"): kein Mann, keine Frau, kein Kind, einen Bruder → keinen Bruder. Plural: keine Kinder.</p>" +
+        "<p><b>Definite article</b> (der/die/das) is used when something is already known or specific — like English \"the\": der Mann, die Frau, das Kind. In the accusative, again only the masculine form changes: der → den. The plural is always \"die\".</p>" +
+        "<p><b>Possessive articles</b> (mein/dein/sein/ihr/unser = my/your/his/her/our) show ownership and take the same endings as \"kein\": mein Bruder, meine Schwester, mein Kind; masculine accusative: meinen Bruder.</p>",
+      progress: "Question {n}",
+      correct: "Correct!",
+      incorrect: "Not quite.",
+      next: "Next",
+      score: "{correct} of {total} correct",
+      restart: "Restart",
+      gender_m: "masculine", gender_f: "feminine", gender_n: "neuter", pluralLabel: "plural",
+      explAffix: function(noun, gender, caseLabel, verb, article){
+        var v = verb ? " (after \"" + verb + "\")" : "";
+        return "\"" + noun + "\" is " + gender + ". " + caseLabel + v + " → \"" + article + "\".";
+      },
+      explPlural: function(noun, article){
+        return "\"" + noun + "\" is plural → no article: \"" + article + "\".";
+      },
+      explDef: function(noun, gender, caseLabel, article){
+        return "\"" + noun + "\" is " + gender + ". " + caseLabel + " (definite article) → \"" + article + "\".";
+      },
+      explDefPlural: function(noun, article){
+        return "\"" + noun + "\" is plural → definite article: \"" + article + "\".";
+      },
+      explPoss: function(pronoun, article){
+        return "Context: \"" + pronoun + "\" → \"" + article + "\".";
+      },
+      caseNom: "Nominativ", caseAkk: "Akkusativ"
+    },
+    ru: {
+      title: "Тренажёр артиклей",
+      subtitle: "ein/eine/einen · kein/keine/keinen · der/die/das · mein/dein/sein/ihr/unser",
+      rulesShow: "Показать правила", rulesHide: "Скрыть правила",
+      rulesIntro: "<p>В русском языке артиклей нет вообще — ни определённых, ни неопределённых. В немецком же у каждого существительного есть род: <b>мужской</b> (der), <b>женский</b> (die) или <b>средний</b> (das), и перед ним почти всегда стоит отдельное слово-артикль. Неопределённый артикль (<b>ein/eine</b>) показывает, что речь идёт о чём-то новом или неизвестном.</p>" +
+        "<p><b>Nominativ</b> (подлежащее, напр. после „Das ist…“ = „Это…“): ein Mann, eine Frau, ein Kind.</p>" +
+        "<p><b>Akkusativ</b> (прямое дополнение, напр. после „Ich habe…“ = „У меня есть…“): меняется только форма мужского рода: ein → <b>einen</b>. Женский и средний род не меняются.</p>" +
+        "<p><b>Множественное число</b>: артикль вообще не используется — совсем как в русском: Das sind Kinder. / Ich habe Brüder.</p>" +
+        "<p><b>Отрицание</b>: „ein“ превращается в „kein“ (не „nicht ein“): kein Mann, keine Frau, kein Kind, einen Bruder → keinen Bruder. Множественное число: keine Kinder.</p>" +
+        "<p><b>Определённый артикль</b> (der/die/das) используется, когда речь идёт об уже известном, конкретном предмете: der Mann, die Frau, das Kind. В Akkusativ снова меняется только мужской род: der → den. Во множественном числе всегда „die“.</p>" +
+        "<p><b>Притяжательные артикли</b> (mein/dein/sein/ihr/unser = мой/твой/его/её/наш) показывают принадлежность и склоняются так же, как „kein“: mein Bruder, meine Schwester, mein Kind; винительный падеж, мужской род: meinen Bruder.</p>",
+      progress: "Вопрос {n}",
+      correct: "Правильно!",
+      incorrect: "Не совсем.",
+      next: "Дальше",
+      score: "{correct} из {total} правильно",
+      restart: "Начать заново",
+      gender_m: "мужской род", gender_f: "женский род", gender_n: "средний род", pluralLabel: "множественное число",
+      explAffix: function(noun, gender, caseLabel, verb, article){
+        var v = verb ? " (после «" + verb + "»)" : "";
+        return "«" + noun + "» — " + gender + ". " + caseLabel + v + " → «" + article + "».";
+      },
+      explPlural: function(noun, article){
+        return "«" + noun + "» — множественное число → без артикля: «" + article + "».";
+      },
+      explDef: function(noun, gender, caseLabel, article){
+        return "«" + noun + "» — " + gender + ". " + caseLabel + " (определённый артикль) → «" + article + "».";
+      },
+      explDefPlural: function(noun, article){
+        return "«" + noun + "» — множественное число → определённый артикль: «" + article + "».";
+      },
+      explPoss: function(pronoun, article){
+        return "Контекст: «" + pronoun + "» → «" + article + "».";
+      },
+      caseNom: "Nominativ", caseAkk: "Akkusativ"
+    },
+    ar: {
+      title: "متدرّب أدوات النكرة",
+      subtitle: "ein/eine/einen · kein/keine/keinen · der/die/das · mein/dein/sein/ihr/unser",
+      rulesShow: "إظهار القواعد", rulesHide: "إخفاء القواعد",
+      rulesIntro: "<p>في اللغة العربية لا توجد أداة نكرة منفصلة (لا مقابل لكلمة \"a/an\")؛ الاسم النكرة يُعرف عادة من غياب \"ال\" التعريف. في الألمانية لكل اسم جنس نحوي: <b>مذكر</b> (der)، <b>مؤنث</b> (die) أو <b>محايد</b> (das)، وتوجد أداة نكرة منفصلة (<b>ein/eine</b>) تدل على شيء جديد أو غير معروف.</p>" +
+        "<p><b>Nominativ</b> (الفاعل، مثلاً بعد \"Das ist…\" = \"هذا…\"): ein Mann, eine Frau, ein Kind.</p>" +
+        "<p><b>Akkusativ</b> (المفعول به، مثلاً بعد \"Ich habe…\" = \"لدي…\"): يتغيّر شكل المذكر فقط: ein → <b>einen</b>. المؤنث والمحايد لا يتغيّران.</p>" +
+        "<p><b>الجمع</b>: لا تُستخدم أداة نكرة على الإطلاق: Das sind Kinder. / Ich habe Brüder.</p>" +
+        "<p><b>النفي</b>: تتحول \"ein\" إلى \"kein\" (وليس \"nicht ein\"): kein Mann, keine Frau, kein Kind, einen Bruder → keinen Bruder. الجمع: keine Kinder.</p>" +
+        "<p><b>أداة التعريف</b> (der/die/das) تُستخدم عندما يكون الشيء معروفًا أو محددًا بالفعل — مثل \"the\" في الإنجليزية: der Mann, die Frau, das Kind. وفي حالة Akkusativ يتغيّر المذكر فقط: der ← den. الجمع دائمًا \"die\".</p>" +
+        "<p><b>ضمائر الملكية</b> (mein/dein/sein/ihr/unser = لي/لك/له/لها/لنا) تدل على الملكية، وتأخذ نفس نهايات \"kein\": mein Bruder, meine Schwester, mein Kind؛ المذكر في حالة Akkusativ: meinen Bruder.</p>",
+      progress: "السؤال {n}",
+      correct: "إجابة صحيحة!",
+      incorrect: "ليست صحيحة.",
+      next: "التالي",
+      score: "{correct} من {total} صحيحة",
+      restart: "إعادة البدء",
+      gender_m: "مذكر", gender_f: "مؤنث", gender_n: "محايد", pluralLabel: "جمع",
+      explAffix: function(noun, gender, caseLabel, verb, article){
+        var v = verb ? " (بعد \"" + verb + "\")" : "";
+        return "\"" + noun + "\" اسم " + gender + ". " + caseLabel + v + " ← \"" + article + "\".";
+      },
+      explPlural: function(noun, article){
+        return "\"" + noun + "\" جمع ← بدون أداة: \"" + article + "\".";
+      },
+      explDef: function(noun, gender, caseLabel, article){
+        return "\"" + noun + "\" اسم " + gender + ". " + caseLabel + " (أداة التعريف) ← \"" + article + "\".";
+      },
+      explDefPlural: function(noun, article){
+        return "\"" + noun + "\" جمع ← أداة التعريف: \"" + article + "\".";
+      },
+      explPoss: function(pronoun, article){
+        return "السياق: \"" + pronoun + "\" ← \"" + article + "\".";
+      },
+      caseNom: "Nominativ", caseAkk: "Akkusativ"
+    },
+    tr: {
+      title: "Artikel Antrenörü",
+      subtitle: "ein/eine/einen · kein/keine/keinen · der/die/das · mein/dein/sein/ihr/unser",
+      rulesShow: "Kuralları göster", rulesHide: "Kuralları gizle",
+      rulesIntro: "<p>Türkçede belirsiz artikel yoktur; \"bir\" bir sayı sıfatı gibi kullanılır ama zorunlu değildir ve hâllere göre değişmez. Almancada her ismin bir cinsiyeti vardır: <b>eril</b> (der), <b>dişil</b> (die) veya <b>nötr</b> (das), ve belirsiz artikel (<b>ein/eine</b>) bir şeyin yeni veya bilinmeyen olduğunu gösterir; her cümlede zorunludur.</p>" +
+        "<p><b>Nominativ</b> (özne, örn. \"Das ist…\" = \"Bu…\"'dan sonra): ein Mann, eine Frau, ein Kind.</p>" +
+        "<p><b>Akkusativ</b> (nesne durumu, örn. \"Ich habe…\" = \"Benim … var\"'dan sonra): sadece eril biçim değişir: ein → <b>einen</b>. Dişil ve nötr biçim aynı kalır.</p>" +
+        "<p><b>Çoğul</b>: hiçbir artikel kullanılmaz: Das sind Kinder. / Ich habe Brüder.</p>" +
+        "<p><b>Olumsuzluk</b>: \"ein\" yerine \"kein\" kullanılır (\"nicht ein\" değil): kein Mann, keine Frau, kein Kind, einen Bruder → keinen Bruder. Çoğul: keine Kinder.</p>" +
+        "<p><b>Belirli artikel</b> (der/die/das), bir şey zaten bilinen veya belirli olduğunda kullanılır — İngilizcedeki \"the\" gibi: der Mann, die Frau, das Kind. Akkusativ'de yine sadece eril biçim değişir: der → den. Çoğulda her zaman \"die\" kullanılır.</p>" +
+        "<p><b>İyelik artikelleri</b> (mein/dein/sein/ihr/unser = benim/senin/onun/onun/bizim) sahiplik gösterir ve \"kein\" ile aynı eklere sahiptir: mein Bruder, meine Schwester, mein Kind; eril Akkusativ: meinen Bruder.</p>",
+      progress: "Soru {n}",
+      correct: "Doğru!",
+      incorrect: "Maalesef yanlış.",
+      next: "İleri",
+      score: "{total} sorudan {correct} doğru",
+      restart: "Yeniden başla",
+      gender_m: "eril", gender_f: "dişil", gender_n: "nötr", pluralLabel: "çoğul",
+      explAffix: function(noun, gender, caseLabel, verb, article){
+        var v = verb ? " (\"" + verb + "\"dan sonra)" : "";
+        return "\"" + noun + "\" " + gender + ". " + caseLabel + v + " → \"" + article + "\".";
+      },
+      explPlural: function(noun, article){
+        return "\"" + noun + "\" çoğul → artikelsiz: \"" + article + "\".";
+      },
+      explDef: function(noun, gender, caseLabel, article){
+        return "\"" + noun + "\" " + gender + ". " + caseLabel + " (belirli artikel) → \"" + article + "\".";
+      },
+      explDefPlural: function(noun, article){
+        return "\"" + noun + "\" çoğul → belirli artikel: \"" + article + "\".";
+      },
+      explPoss: function(pronoun, article){
+        return "Bağlam: \"" + pronoun + "\" → \"" + article + "\".";
+      },
+      caseNom: "Nominativ", caseAkk: "Akkusativ"
+    }
+  };
+
+  var currentLang = "de";
+  var rtlLangs = {ar:true};
+
+  // ---------- Zustand ----------
+  var state = { correct:0, total:0, current:null, answered:false, questionNum:0 };
+
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+
+  function cap(w){ return w.charAt(0).toUpperCase() + w.slice(1); }
+
+  function getArticle(gender, isAkk, isPlural, isNeg){
+    if(isPlural){ return isNeg ? "keine" : "–"; }
+    if(!isAkk){
+      if(isNeg){ return gender==="m" ? "kein" : (gender==="f" ? "keine" : "kein"); }
+      return gender==="m" ? "ein" : (gender==="f" ? "eine" : "ein");
+    } else {
+      if(isNeg){ return gender==="m" ? "keinen" : (gender==="f" ? "keine" : "kein"); }
+      return gender==="m" ? "einen" : (gender==="f" ? "eine" : "ein");
+    }
+  }
+
+  function buildIndefNegQuestion(wantNeg){
+    var isAkk = Math.random() < 0.5;
+    var noun, verb=null, pronoun=null;
+
+    if(isAkk){
+      noun = pick(AKK_NOUNS);
+      verb = pick(noun.akkVerbs);
+      pronoun = pick(PRONOUNS);
+    } else {
+      noun = pick(NOUNS);
+    }
+
+    var isPlural;
+    if(noun.pluralOnly){ isPlural = true; }
+    else { isPlural = noun.hasPlural && Math.random() < 0.3; }
+
+    var allowNeg = noun.allowNegation !== false;
+    var isNeg = wantNeg && allowNeg;
+
+    var article = getArticle(noun.gender, isAkk, isPlural, isNeg);
+
+    var nounForm;
+    if(isPlural){ nounForm = noun.plural || noun.base; }
+    else { nounForm = (isAkk && noun.weakAkk) ? noun.weakAkk : noun.base; }
+
+    var sentenceParts;
+    if(isAkk){
+      var verbForm = VERB_CONJ[verb][pronoun];
+      sentenceParts = [cap(pronoun), verbForm, "__GAP__", nounForm + "."];
+    } else {
+      var copula = isPlural ? "sind" : "ist";
+      sentenceParts = ["Das", copula, "__GAP__", nounForm + "."];
+    }
+
+    return {
+      type: isNeg ? "neg" : "indef",
+      isAkk: isAkk, isPlural: isPlural, isNeg: isNeg,
+      noun: noun, verb: verb, pronoun: pronoun,
+      article: article, sentenceParts: sentenceParts, contextHtml: null,
+      nounDisplay: nounForm, nounBase: noun.base
+    };
+  }
+
+  function buildDefQuestion(){
+    var isAkk = Math.random() < 0.5;
+    var noun, verb=null, pronoun=null, contextHtml=null;
+    var isPlural, article, nounForm, sentenceParts;
+
+    if(isAkk){
+      // Kontext führt das Nomen über "Das ist ein/eine .../Das sind ..."
+      // ein (Nominativ, unbestimmt) — der Zielsatz testet dann Akkusativ +
+      // bestimmter Artikel mit einem Verb aus der Nomen-Liste. Context und
+      // Zielsatz nutzen dadurch immer unterschiedliche Verben (sein vs.
+      // ein Aktionsverb), nie dieselbe Struktur zweimal.
+      noun = pick(AKK_NOUNS);
+      pronoun = pick(PRONOUNS);
+      isPlural = noun.pluralOnly ? true : (noun.hasPlural && Math.random() < 0.3);
+
+      if(isPlural){
+        var ctxNounPl = noun.plural || noun.base;
+        contextHtml = "Das sind " + ctxNounPl + ".";
+      } else {
+        var ctxArticleNom = getArticle(noun.gender, false, false, false);
+        contextHtml = "Das ist " + ctxArticleNom + " " + noun.base + ".";
+      }
+
+      article = getDefiniteArticle(noun.gender, true, isPlural);
+      nounForm = isPlural ? (noun.plural || noun.base) : (noun.weakAkk || noun.base);
+
+      verb = pick(noun.akkVerbs);
+      var verbForm = VERB_CONJ[verb][pronoun];
+      var isPersonNoun = PERSON_NOUNS.indexOf(noun.base) !== -1;
+      if(verb === "haben" && isPersonNoun){
+        sentenceParts = [cap(pronoun), verbForm, "__GAP__", nounForm, "gern."];
+      } else {
+        sentenceParts = [cap(pronoun), verbForm, "__GAP__", nounForm + "."];
+      }
+    } else {
+      // Nominativ: "Das ist/sind ..." ist hinweisend (wie beim Zeigen auf
+      // etwas/jemanden) und braucht daher keinen zusätzlichen Kontextsatz.
+      noun = pick(NOUNS);
+      isPlural = noun.pluralOnly ? true : (noun.hasPlural && Math.random() < 0.3);
+      article = getDefiniteArticle(noun.gender, false, isPlural);
+      nounForm = isPlural ? (noun.plural || noun.base) : noun.base;
+      var copula = isPlural ? "sind" : "ist";
+      sentenceParts = ["Das", copula, "__GAP__", nounForm + "."];
+    }
+
+    return {
+      type: "def",
+      isAkk: isAkk, isPlural: isPlural, isNeg: false,
+      noun: noun, verb: verb, pronoun: pronoun,
+      article: article, sentenceParts: sentenceParts, contextHtml: contextHtml,
+      nounDisplay: nounForm, nounBase: noun.base
+    };
+  }
+
+  function buildPossQuestion(){
+    var pc = pickPersonAndContext();
+    var person = pc.person;
+    var isAkk = pc.forceNom ? false : (Math.random() < 0.5);
+    var pool = isAkk ? POSS_NOUNS_AKK : POSS_NOUNS_ALL;
+    var noun = pick(pool);
+    var stem = POSS_STEMS[person];
+
+    var article = possForm(stem, noun.gender, isAkk);
+    var sentenceParts, verb = null;
+
+    if(isAkk){
+      var possVerbs = POSS_AKK_VERBS_OVERRIDE[noun.base] || noun.akkVerbs;
+      verb = pick(possVerbs);
+      var verbForm = VERB_CONJ[verb][person];
+      var targetNounForm = noun.weakAkk || noun.base;
+      var isPersonNoun = PERSON_NOUNS.indexOf(noun.base) !== -1;
+      if(verb === "haben" && isPersonNoun){
+        sentenceParts = [cap(person), verbForm, "__GAP__", targetNounForm, "gern."];
+      } else {
+        sentenceParts = [cap(person), verbForm, "__GAP__", targetNounForm + "."];
+      }
+    } else {
+      var isPersonNounNom = PERSON_NOUNS.indexOf(noun.base) !== -1;
+      var predicate = isPersonNounNom ? personPredicate(noun.gender) : pick(POSS_PRED_BY_NOUN[noun.base]);
+      sentenceParts = ["__GAP__", noun.base, predicate];
+    }
+
+    var possOptions = [];
+    for(var i=0;i<PRONOUNS.length;i++){
+      possOptions.push(possForm(POSS_STEMS[PRONOUNS[i]], noun.gender, isAkk));
+    }
+
+    return {
+      type: "poss",
+      isAkk: isAkk, isPlural: false, isNeg: false,
+      noun: noun, verb: verb, pronoun: person,
+      article: article, sentenceParts: sentenceParts, contextHtml: pc.contextHtml,
+      nounDisplay: (isAkk ? (noun.weakAkk || noun.base) : noun.base), nounBase: noun.base,
+      possOptions: possOptions
+    };
+  }
+
+  function generateQuestion(){
+    var cat = pick(["indef","neg","def","poss"]);
+    if(cat === "indef"){ return buildIndefNegQuestion(false); }
+    if(cat === "neg"){ return buildIndefNegQuestion(true); }
+    if(cat === "def"){ return buildDefQuestion(); }
+    return buildPossQuestion();
+  }
+
+  // ---------- Rendering ----------
+  function applyLang(){
+    var s = STR[currentLang];
+    document.getElementById("langSelect").value = currentLang;
+    document.body.setAttribute("dir", rtlLangs[currentLang] ? "rtl" : "ltr");
+    document.getElementById("titleText").textContent = s.title;
+    document.getElementById("subtitleText").textContent = s.subtitle;
+    document.getElementById("rulesText").innerHTML = s.rulesIntro;
+    var open = document.getElementById("rulesBody").classList.contains("open");
+    document.getElementById("rulesToggleBtn").textContent = open ? s.rulesHide : s.rulesShow;
+    document.getElementById("nextBtn").textContent = s.next;
+    document.getElementById("restartBtn").textContent = s.restart;
+    renderQuestion();
+    updateScore();
+  }
+
+  function renderQuestion(){
+    var s = STR[currentLang];
+    state.questionNum++;
+    state.current = generateQuestion();
+    state.answered = false;
+
+    document.getElementById("progressText").textContent = s.progress.replace("{n}", state.questionNum);
+
+    var ctxEl = document.getElementById("contextText");
+    if(state.current.contextHtml){
+      ctxEl.innerHTML = state.current.contextHtml;
+      ctxEl.style.display = "block";
+    } else {
+      ctxEl.innerHTML = "";
+      ctxEl.style.display = "none";
+    }
+
+    var p = state.current.sentenceParts;
+    var html = "";
+    for(var i=0;i<p.length;i++){
+      if(p[i] === "__GAP__"){
+        html += ' <span class="gap" id="gapSpan">?</span> ';
+      } else {
+        html += (i>0 && p[i-1] !== "__GAP__" ? " " : "") + p[i];
+      }
+    }
+    document.getElementById("sentenceText").innerHTML = html.replace(/\s+/g," ").trim();
+
+    var grid = document.getElementById("optionsGrid");
+    grid.innerHTML = "";
+    var baseOpts;
+    if(state.current.type === "neg"){ baseOpts = NEG_OPTIONS; }
+    else if(state.current.type === "def"){ baseOpts = state.current.isAkk ? DEF_AKK_OPTIONS : DEF_NOM_OPTIONS; }
+    else if(state.current.type === "poss"){ baseOpts = state.current.possOptions; }
+    else { baseOpts = AFFIRM_OPTIONS; }
+    var opts = shuffle(baseOpts);
+    for(var j=0;j<opts.length;j++){
+      var btn = document.createElement("button");
+      btn.className = "opt-btn";
+      btn.textContent = opts[j];
+      btn.setAttribute("data-value", opts[j]);
+      btn.onclick = (function(val, el){ return function(){ handleAnswer(val, el); }; })(opts[j], btn);
+      grid.appendChild(btn);
+    }
+
+    var fb = document.getElementById("feedbackBox");
+    fb.className = "feedback";
+    fb.textContent = "";
+    document.getElementById("nextBtn").disabled = true;
+  }
+
+  function handleAnswer(val, el){
+    if(state.answered) return;
+    state.answered = true;
+    var s = STR[currentLang];
+    var q = state.current;
+    var correct = (val === q.article);
+
+    state.total++;
+    if(correct){ state.correct++; }
+
+    document.getElementById("gapSpan").textContent = q.article;
+
+    var buttons = document.querySelectorAll(".opt-btn");
+    for(var i=0;i<buttons.length;i++){
+      buttons[i].disabled = true;
+      var v = buttons[i].getAttribute("data-value");
+      if(v === q.article){ buttons[i].classList.add("correct"); }
+      else if(v === val && !correct){ buttons[i].classList.add("incorrect"); }
+    }
+
+    var explanation;
+    var genderLabel = q.noun.gender==="m" ? s.gender_m : (q.noun.gender==="f" ? s.gender_f : s.gender_n);
+    var caseLabel = q.isAkk ? s.caseAkk : s.caseNom;
+
+    if(q.type === "poss"){
+      explanation = s.explPoss(q.pronoun, q.article);
+    } else if(q.type === "def"){
+      explanation = q.isPlural ? s.explDefPlural(q.nounDisplay, q.article) : s.explDef(q.nounBase, genderLabel, caseLabel, q.article);
+    } else if(q.isPlural){
+      explanation = s.explPlural(q.nounDisplay, q.article);
+    } else {
+      explanation = s.explAffix(q.nounBase, genderLabel, caseLabel, q.verb, q.article);
+    }
+
+    var fb = document.getElementById("feedbackBox");
+    fb.className = "feedback show " + (correct ? "good" : "bad");
+    fb.textContent = (correct ? s.correct : s.incorrect) + " " + explanation;
+
+    document.getElementById("nextBtn").disabled = false;
+    updateScore();
+  }
+
+  function updateScore(){
+    var s = STR[currentLang];
+    document.getElementById("scoreText").textContent =
+      s.score.replace("{correct}", state.correct).replace("{total}", state.total);
+  }
+
+  function restart(){
+    state = { correct:0, total:0, current:null, answered:false, questionNum:0 };
+    renderQuestion();
+    updateScore();
+  }
+
+  // ---------- Events ----------
+  document.getElementById("langSelect").addEventListener("change", function(e){
+    currentLang = e.target.value;
+    applyLang();
+  });
+
+  document.getElementById("rulesToggleBtn").addEventListener("click", function(){
+    var body = document.getElementById("rulesBody");
+    var s = STR[currentLang];
+    if(body.classList.contains("open")){
+      body.classList.remove("open");
+      this.textContent = s.rulesShow;
+    } else {
+      body.classList.add("open");
+      this.textContent = s.rulesHide;
+    }
+  });
+
+  document.getElementById("nextBtn").addEventListener("click", function(){
+    if(!this.disabled){ renderQuestion(); }
+  });
+
+  document.getElementById("restartBtn").addEventListener("click", restart);
+
+  // ---------- Start ----------
+  applyLang();
+
+})();
+</script>
+</body>
+</html>
