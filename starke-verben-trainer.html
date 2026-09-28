@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starke Verben – Vokalwechsel</title>
+<style>
+  :root{
+    --paper:#FAF9F4;
+    --ink:#20302E;
+    --ink-soft:#4A5957;
+    --line:#DCD8C8;
+    --margin-red:#B7534A;
+    --ich:#B6892A;
+    --ich-bg:#FBF3DE;
+    --du:#2E7D6B;
+    --du-bg:#E4F1EC;
+    --er:#3B6EA5;
+    --er-bg:#E4ECF6;
+    --sief:#B15C6B;
+    --sief-bg:#F7E9EC;
+    --wir:#C1652E;
+    --wir-bg:#F7E6DA;
+    --ihr:#1E8A8C;
+    --ihr-bg:#DFF1F1;
+    --siepl:#4C7A3B;
+    --siepl-bg:#E9F1E4;
+    --formal:#6B4E71;
+    --formal-bg:#F0E7F1;
+    --ok:#2E7D4F;
+    --ok-bg:#E5F3EA;
+    --err:#B7534A;
+    --err-bg:#FBEAE8;
+    --hint-bg:#FBF3DE;
+    --hint:#7A5A12;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body{
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body{
+    margin:0;
+    background:#E9E6DA;
+    color:var(--ink);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height:1.5;
+    padding:24px 12px 60px;
+  }
+
+  .sheet{
+    max-width:680px;
+    margin:0 auto;
+    background:
+      repeating-linear-gradient(
+        var(--paper) 0px, var(--paper) 35px,
+        var(--line) 35px, var(--line) 36px
+      );
+    border-left:3px solid var(--margin-red);
+    box-shadow:0 1px 3px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
+    padding:32px 28px 40px 40px;
+  }
+
+  @media (max-width:480px){
+    .sheet{ padding:24px 16px 32px 28px; }
+    body{ padding:14px 6px 40px; }
+  }
+
+  header h1{
+    font-family:Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-size:26px;
+    margin:0 0 4px;
+    letter-spacing:0.2px;
+  }
+  header p.sub{
+    margin:0 0 20px;
+    color:var(--ink-soft);
+    font-size:15px;
+  }
+
+  .pill-row{ display:flex; margin-bottom:18px; flex-wrap:wrap; }
+  .pill{
+    font-size:12.5px;
+    padding:4px 11px;
+    border-radius:999px;
+    font-weight:600;
+    margin:0 7px 7px 0;
+  }
+  .pill.ich{ background:var(--ich-bg); color:var(--ich); }
+  .pill.du{ background:var(--du-bg); color:var(--du); }
+  .pill.er{ background:var(--er-bg); color:var(--er); }
+  .pill.sief{ background:var(--sief-bg); color:var(--sief); }
+  .pill.wir{ background:var(--wir-bg); color:var(--wir); }
+  .pill.ihr{ background:var(--ihr-bg); color:var(--ihr); }
+  .pill.siepl{ background:var(--siepl-bg); color:var(--siepl); }
+  .pill.formal{ background:var(--formal-bg); color:var(--formal); }
+
+  .lang-row{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:26px;
+    padding-bottom:16px;
+    border-bottom:1px dashed var(--line);
+  }
+  .lang-label{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin:0 6px 6px 0;
+  }
+  .lang-btn{
+    font-family:inherit;
+    font-size:12px;
+    font-weight:600;
+    padding:5px 11px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--ink-soft);
+    cursor:pointer;
+    margin:0 6px 6px 0;
+    -webkit-appearance:none;
+    appearance:none;
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  .lang-btn.active{
+    background:var(--ink);
+    border-color:var(--ink);
+    color:var(--paper);
+  }
+
+  .i18n{
+    display:none;
+    font-size:0.92em;
+    color:var(--ink-soft);
+    font-style:italic;
+    margin-top:2px;
+  }
+  .i18n.show{ display:block; }
+  .i18n[dir="rtl"]{ font-style:normal; }
+  span.i18n{ display:none; margin-top:0; margin-left:6px; }
+  span.i18n.show{ display:inline; }
+
+  section{ margin-bottom:30px; }
+
+  h2{
+    font-family:Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-size:19px;
+    margin:0 0 12px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:6px;
+  }
+  h3{
+    font-family:Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-size:15.5px;
+    margin:0 0 4px;
+  }
+
+  .example-verb{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin:0 0 14px;
+  }
+  .example-verb b{ color:var(--ink); }
+
+  .conj-grid{
+    display:flex;
+    flex-wrap:wrap;
+    margin-bottom:6px;
+  }
+  .conj-row{
+    display:flex;
+    align-items:baseline;
+    padding:9px 12px;
+    margin:0 8px 8px 0;
+    border-left:4px solid transparent;
+    background:rgba(255,255,255,0.5);
+    border-radius:2px;
+    flex:1 1 auto;
+    min-width:150px;
+  }
+  .conj-row.ich{ border-left-color:var(--ich); }
+  .conj-row.du{ border-left-color:var(--du); }
+  .conj-row.er{ border-left-color:var(--er); }
+  .conj-row.sief{ border-left-color:var(--sief); }
+  .conj-row.wir{ border-left-color:var(--wir); }
+  .conj-row.ihr{ border-left-color:var(--ihr); }
+  .conj-row.siepl{ border-left-color:var(--siepl); }
+  .conj-row.formal{ border-left-color:var(--formal); }
+  .conj-row .pron{
+    width:66px;
+    font-weight:700;
+    margin-right:10px;
+    flex-shrink:0;
+  }
+  .conj-row .pron small{ font-weight:600; opacity:0.75; font-size:11px; display:block; }
+  .conj-row.ich .pron{ color:var(--ich); }
+  .conj-row.du .pron{ color:var(--du); }
+  .conj-row.er .pron{ color:var(--er); }
+  .conj-row.sief .pron{ color:var(--sief); }
+  .conj-row.wir .pron{ color:var(--wir); }
+  .conj-row.ihr .pron{ color:var(--ihr); }
+  .conj-row.siepl .pron{ color:var(--siepl); }
+  .conj-row.formal .pron{ color:var(--formal); }
+  .conj-row .word{ font-size:16px; }
+  .conj-row .stem{ color:var(--ink); }
+  .conj-row .ending{ font-weight:800; }
+  .conj-row.ich .ending{ color:var(--ich); }
+  .conj-row.du .ending{ color:var(--du); }
+  .conj-row.er .ending{ color:var(--er); }
+  .conj-row.sief .ending{ color:var(--sief); }
+  .conj-row.wir .ending{ color:var(--wir); }
+  .conj-row.ihr .ending{ color:var(--ihr); }
+  .conj-row.siepl .ending{ color:var(--siepl); }
+  .conj-row.formal .ending{ color:var(--formal); }
+
+  .note{
+    font-size:14px;
+    color:var(--ink-soft);
+    background:rgba(255,255,255,0.55);
+    border-left:4px solid var(--line);
+    padding:10px 14px;
+    margin-top:14px;
+    border-radius:2px;
+  }
+  .note b{ color:var(--ink); }
+
+  .rule-card{
+    font-size:14px;
+    color:var(--ink-soft);
+    background:rgba(255,255,255,0.6);
+    border-left:4px solid var(--hint);
+    padding:10px 14px;
+    margin-top:12px;
+    border-radius:2px;
+  }
+  .rule-card b{ color:var(--ink); }
+  .rule-card h3{ color:var(--hint); margin-bottom:4px; }
+
+  .divider{
+    text-align:center;
+    margin:34px 0 26px;
+    position:relative;
+    font-family:Georgia, serif;
+    font-style:italic;
+    color:var(--ink-soft);
+    font-size:15px;
+  }
+  .divider::before, .divider::after{
+    content:"";
+    position:absolute;
+    top:50%;
+    width:38%;
+    border-top:1px solid var(--line);
+  }
+  .divider::before{ left:0; }
+  .divider::after{ right:0; }
+
+  /* Practice card */
+  #practice-card{
+    background:rgba(255,255,255,0.65);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:20px 20px 22px;
+  }
+  .progress-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:14px;
+  }
+  .progress-bar{
+    height:4px;
+    background:var(--line);
+    border-radius:2px;
+    overflow:hidden;
+    margin-bottom:18px;
+  }
+  .progress-bar-fill{
+    height:100%;
+    background:var(--du);
+    width:0%;
+    transition:width 0.25s ease;
+  }
+
+  .pron-badge{
+    display:inline-block;
+    font-weight:800;
+    font-size:15px;
+    padding:5px 14px;
+    border-radius:999px;
+    margin-bottom:14px;
+    text-align:center;
+  }
+  .pron-badge .badge-sub{
+    display:block;
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:0.3px;
+    opacity:0.8;
+    margin-top:1px;
+  }
+  .pron-badge.ich{ background:var(--ich-bg); color:var(--ich); }
+  .pron-badge.du{ background:var(--du-bg); color:var(--du); }
+  .pron-badge.er{ background:var(--er-bg); color:var(--er); }
+  .pron-badge.sief{ background:var(--sief-bg); color:var(--sief); }
+  .pron-badge.wir{ background:var(--wir-bg); color:var(--wir); }
+  .pron-badge.ihr{ background:var(--ihr-bg); color:var(--ihr); }
+  .pron-badge.siepl{ background:var(--siepl-bg); color:var(--siepl); }
+  .pron-badge.formal{ background:var(--formal-bg); color:var(--formal); }
+
+  .sentence{
+    font-size:20px;
+    margin:0 0 4px;
+    font-family:Georgia, "Iowan Old Style", "Times New Roman", serif;
+  }
+  .infinitive-hint{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 18px;
+  }
+  .infinitive-hint span{ font-weight:700; color:var(--ink); }
+
+  .answer-row{
+    display:flex;
+    flex-wrap:wrap;
+  }
+  input#answer{
+    flex:1 1 160px;
+    font-size:18px;
+    padding:10px 12px;
+    border:2px solid var(--line);
+    border-radius:4px;
+    font-family:inherit;
+    color:var(--ink);
+    background:#fff;
+    margin:0 10px 10px 0;
+    -webkit-appearance:none;
+    appearance:none;
+  }
+  input#answer:focus{
+    outline:none;
+    border-color:var(--du);
+  }
+
+  button{
+    font-family:inherit;
+    font-size:16px;
+    font-weight:700;
+    padding:10px 20px;
+    border-radius:4px;
+    border:none;
+    cursor:pointer;
+    transition:transform 0.05s ease, opacity 0.15s ease;
+    -webkit-appearance:none;
+    appearance:none;
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    user-select:none;
+    margin-bottom:10px;
+  }
+  button:active{ transform:scale(0.97); }
+  button.primary{ background:var(--ink); color:var(--paper); }
+  button.primary:disabled{ opacity:0.45; cursor:default; }
+  button.ghost{ background:transparent; color:var(--ink-soft); border:1px solid var(--line); }
+
+  #feedback{
+    margin-top:16px;
+    padding:12px 14px;
+    border-radius:4px;
+    font-size:15px;
+    display:none;
+  }
+  #feedback.show{ display:block; }
+  #feedback.ok{ background:var(--ok-bg); color:var(--ok); }
+  #feedback.err{ background:var(--err-bg); color:var(--err); }
+  #feedback b{ font-weight:800; }
+
+  #hint-box{
+    margin-top:10px;
+    padding:10px 14px;
+    border-radius:4px;
+    font-size:13.5px;
+    background:var(--hint-bg);
+    color:var(--hint);
+    border-left:4px solid var(--hint);
+    display:none;
+  }
+  #hint-box.show{ display:block; }
+  #hint-box b{ color:var(--hint); }
+
+  .next-row{ margin-top:14px; text-align:right; display:none; }
+  .next-row.show{ display:block; }
+
+  /* Result screen */
+  #result-card{ display:none; text-align:center; padding:30px 16px; }
+  #result-card.show{ display:block; }
+  #result-card .score{
+    font-family:Georgia, serif;
+    font-size:44px;
+    font-weight:700;
+    margin:6px 0;
+  }
+  #result-card .msg{ font-size:16px; color:var(--ink-soft); margin-bottom:22px; }
+  #result-mistakes{
+    text-align:left;
+    font-size:14px;
+    color:var(--ink-soft);
+    background:rgba(255,255,255,0.6);
+    border-left:4px solid var(--line);
+    padding:12px 14px;
+    margin-bottom:20px;
+    display:none;
+  }
+  #result-mistakes.show{ display:block; }
+  #result-mistakes div{ margin-bottom:4px; }
+  #result-mistakes b{ color:var(--ink); }
+
+  footer{
+    text-align:center;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <header>
+    <h1>Starke Verben – Vokalwechsel</h1>
+    <div class="i18n" id="i18n-title"></div>
+    <p class="sub">ich · du · er · sie · wir · ihr · sie · Sie</p>
+    <div class="i18n" id="i18n-subtitle"></div>
+    <div class="pill-row">
+      <span class="pill ich">ich</span>
+      <span class="pill du">du</span>
+      <span class="pill er">er</span>
+      <span class="pill sief">sie (Sg.)</span>
+      <span class="pill wir">wir</span>
+      <span class="pill ihr">ihr</span>
+      <span class="pill siepl">sie (Pl.)</span>
+      <span class="pill formal">Sie</span>
+    </div>
+    <div class="lang-row">
+      <span class="lang-label">Übersetzung:</span>
+      <button type="button" class="lang-btn active" data-lang="off">Aus</button>
+      <button type="button" class="lang-btn" data-lang="en">English</button>
+      <button type="button" class="lang-btn" data-lang="ru">Русский</button>
+      <button type="button" class="lang-btn" data-lang="uk">Українська</button>
+      <button type="button" class="lang-btn" data-lang="tr">Türkçe</button>
+      <button type="button" class="lang-btn" data-lang="ar">العربية</button>
+    </div>
+  </header>
+
+  <section id="erklaerung">
+    <h2>So funktioniert es</h2>
+    <div class="i18n" id="i18n-sectionHeading"></div>
+    <p class="example-verb">Beispiel: <b>sprechen</b> → Stamm: <b>sprech</b>, verändert: <b>sprich</b></p>
+    <div class="i18n" id="i18n-exampleLine"></div>
+
+    <div class="conj-grid">
+      <div class="conj-row ich">
+        <span class="pron">ich</span>
+        <span class="word"><span class="stem">sprech</span><span class="ending">e</span></span>
+      </div>
+      <div class="conj-row du">
+        <span class="pron">du</span>
+        <span class="word"><span class="stem">sprich</span><span class="ending">st</span></span>
+      </div>
+      <div class="conj-row er">
+        <span class="pron">er</span>
+        <span class="word"><span class="stem">sprich</span><span class="ending">t</span></span>
+      </div>
+      <div class="conj-row sief">
+        <span class="pron">sie<small>Einzahl</small></span>
+        <span class="word"><span class="stem">sprich</span><span class="ending">t</span></span>
+      </div>
+      <div class="conj-row wir">
+        <span class="pron">wir</span>
+        <span class="word"><span class="stem">sprech</span><span class="ending">en</span></span>
+      </div>
+      <div class="conj-row ihr">
+        <span class="pron">ihr</span>
+        <span class="word"><span class="stem">sprech</span><span class="ending">t</span></span>
+      </div>
+      <div class="conj-row siepl">
+        <span class="pron">sie<small>Plural</small></span>
+        <span class="word"><span class="stem">sprech</span><span class="ending">en</span></span>
+      </div>
+      <div class="conj-row formal">
+        <span class="pron">Sie<small>Anrede</small></span>
+        <span class="word"><span class="stem">sprech</span><span class="ending">en</span></span>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>ich</b> → <b>-e</b> &nbsp;·&nbsp; <b>du</b> → <b>-st</b> &nbsp;·&nbsp; <b>er / sie</b> (Einzahl) → <b>-t</b> &nbsp;·&nbsp; <b>wir</b> → <b>-en</b> &nbsp;·&nbsp; <b>ihr</b> → <b>-t</b> &nbsp;·&nbsp; <b>sie</b> (Plural) / <b>Sie</b> → <b>-en</b>
+      <div class="i18n" id="i18n-note1"></div>
+    </div>
+    <div class="note">
+      <b>Starke Verben</b> haben genau diese gleichen Endungen. Nur der <b>Stammvokal</b> ändert sich bei <b>du</b> und <b>er/sie</b> (Einzahl) – bei ich, wir, ihr, sie (Plural) und Sie bleibt der Stamm unverändert.
+      <div class="i18n" id="i18n-ruleStrongVerbs"></div>
+    </div>
+
+    <h2 style="margin-top:24px;">Vier Vokalwechsel-Muster</h2>
+    <div class="i18n" id="i18n-patternsHeading"></div>
+
+    <div class="rule-card">
+      <h3>e → i</h3>
+      <div class="i18n" id="i18n-patternEI"></div>
+      <b>sprechen</b> (du sprichst) · <b>essen</b> (du isst) · <b>helfen</b> (du hilfst) · <b>treffen</b> (du triffst)
+    </div>
+
+    <div class="rule-card">
+      <h3>e → ie</h3>
+      <div class="i18n" id="i18n-patternEIE"></div>
+      <b>lesen</b> (du liest) · <b>sehen</b> (du siehst)
+    </div>
+
+    <div class="rule-card">
+      <h3>a → ä</h3>
+      <div class="i18n" id="i18n-patternAAE"></div>
+      <b>schlafen</b> (du schläfst) · <b>fahren</b> (du fährst)
+    </div>
+
+    <div class="rule-card">
+      <h3>au → äu</h3>
+      <div class="i18n" id="i18n-patternAUAEU"></div>
+      <b>laufen</b> (du läufst)
+    </div>
+
+    <div class="rule-card">
+      <h3>Sonderfall: essen, lesen</h3>
+      <div class="i18n" id="i18n-sStemTitle"></div>
+      Der veränderte Stamm endet schon auf <b>-s</b> (iss-/lies-). Deshalb bekommt <b>du</b> kein zusätzliches -st, sondern nur <b>-t</b>: <b>du isst</b> (nicht issst), <b>du liest</b> (nicht liesst).
+      <div class="i18n" id="i18n-sStemText"></div>
+    </div>
+
+    <div class="note">
+      Das Wörtchen <b>sie</b> hat drei Bedeutungen: <b>Sie</b> groß geschrieben = die höfliche Anrede „you“ (Endung <b>-en</b>, wie im Plural) · <b>sie</b> klein, Einzahl = „she“ (Endung <b>-t</b>, mit Vokalwechsel wie bei <b>er</b>) · <b>sie</b> klein, Plural = „they“ (Endung <b>-en</b>, ohne Vokalwechsel, wie bei <b>Sie</b>). Nur der Satzzusammenhang zeigt, welche Bedeutung gemeint ist.
+      <div class="i18n" id="i18n-note2"></div>
+    </div>
+    <div class="note">
+      Deshalb – und für einen einheitlichen Satzbau – steht das Pronomen in den Übungssätzen nicht am Satzanfang, sondern direkt nach dem Verb (z. B. „Heute spricht <b>sie</b> Deutsch.“ / „Heute sprechen <b>Sie</b> Deutsch.“). So bleibt die Groß-/Kleinschreibung erhalten, und du erkennst im Satz selbst, wer gemeint ist – zusätzlich zeigt dir die farbige Markierung oben, welche Person gefragt ist.
+      <div class="i18n" id="i18n-note3"></div>
+    </div>
+  </section>
+
+  <div class="divider">Jetzt üben</div>
+  <div class="i18n" id="i18n-dividerText" style="text-align:center; margin:-20px 0 26px;"></div>
+
+  <section id="practice">
+    <div id="practice-card">
+      <div class="progress-row">
+        <span id="progress-label">Frage 1 von 16</span>
+        <span id="score-label">✓ 0</span>
+      </div>
+      <div class="i18n" id="i18n-progress" style="margin:-10px 0 10px; font-size:12px;"></div>
+      <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill"></div></div>
+
+      <div id="pron-badge" class="pron-badge ich"><span id="badge-main">ich</span><span id="badge-sub" class="badge-sub"></span></div>
+      <p class="sentence" id="sentence-text">Heute ____ ich Deutsch.</p>
+      <p class="infinitive-hint">Verb: <span id="infinitive-text">sprechen</span></p>
+      <div class="i18n" id="i18n-verbLabel" style="margin:-14px 0 14px;"></div>
+
+      <div class="answer-row">
+        <input type="text" id="answer" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Antwort eingeben …">
+        <button class="primary" id="check-btn">Prüfen</button>
+      </div>
+      <div class="i18n" id="i18n-checkBtn" style="text-align:right;"></div>
+
+      <div id="feedback"></div>
+      <div class="i18n" id="i18n-feedback"></div>
+      <div id="hint-box"></div>
+      <div class="next-row" id="next-row">
+        <button class="ghost" id="next-btn">Weiter →</button>
+        <div class="i18n" id="i18n-nextBtn"></div>
+      </div>
+    </div>
+
+    <div id="result-card">
+      <p style="color:var(--ink-soft); margin-bottom:0;">Ergebnis</p>
+      <div class="i18n" id="i18n-resultHeading" style="text-align:center;"></div>
+      <div class="score" id="result-score">0 / 16</div>
+      <p class="msg" id="result-msg">—</p>
+      <div class="i18n" id="i18n-resultMsg" style="text-align:center; margin-top:-16px; margin-bottom:20px;"></div>
+      <div id="result-mistakes"></div>
+      <button class="primary" id="restart-btn">Noch einmal üben</button>
+      <div class="i18n" id="i18n-restartBtn" style="text-align:center; margin-top:8px;"></div>
+    </div>
+  </section>
+
+  <footer>Starke Verben im Präsens · alle Personen außer es</footer>
+  <div class="i18n" id="i18n-footer" style="text-align:center;"></div>
+</div>
+
+<script>
+(function(){
+
+  var verbForms = {
+    sprechen: { vowelPattern:"e → i",  sStemContraction:false,
+      forms:{ich:"spreche",du:"sprichst",er:"spricht",sieF:"spricht",wir:"sprechen",ihr:"sprecht",siePl:"sprechen",Sie:"sprechen"} },
+    essen:    { vowelPattern:"e → i",  sStemContraction:true,
+      forms:{ich:"esse",du:"isst",er:"isst",sieF:"isst",wir:"essen",ihr:"esst",siePl:"essen",Sie:"essen"} },
+    lesen:    { vowelPattern:"e → ie", sStemContraction:true,
+      forms:{ich:"lese",du:"liest",er:"liest",sieF:"liest",wir:"lesen",ihr:"lest",siePl:"lesen",Sie:"lesen"} },
+    sehen:    { vowelPattern:"e → ie", sStemContraction:false,
+      forms:{ich:"sehe",du:"siehst",er:"sieht",sieF:"sieht",wir:"sehen",ihr:"seht",siePl:"sehen",Sie:"sehen"} },
+    laufen:   { vowelPattern:"au → äu",sStemContraction:false,
+      forms:{ich:"laufe",du:"läufst",er:"läuft",sieF:"läuft",wir:"laufen",ihr:"lauft",siePl:"laufen",Sie:"laufen"} },
+    helfen:   { vowelPattern:"e → i",  sStemContraction:false,
+      forms:{ich:"helfe",du:"hilfst",er:"hilft",sieF:"hilft",wir:"helfen",ihr:"helft",siePl:"helfen",Sie:"helfen"} },
+    treffen:  { vowelPattern:"e → i",  sStemContraction:false,
+      forms:{ich:"treffe",du:"triffst",er:"trifft",sieF:"trifft",wir:"treffen",ihr:"trefft",siePl:"treffen",Sie:"treffen"} },
+    schlafen: { vowelPattern:"a → ä",  sStemContraction:false,
+      forms:{ich:"schlafe",du:"schläfst",er:"schläft",sieF:"schläft",wir:"schlafen",ihr:"schlaft",siePl:"schlafen",Sie:"schlafen"} },
+    fahren:   { vowelPattern:"a → ä",  sStemContraction:false,
+      forms:{ich:"fahre",du:"fährst",er:"fährt",sieF:"fährt",wir:"fahren",ihr:"fahrt",siePl:"fahren",Sie:"fahren"} }
+  };
+
+  var items = [
+    { inf:"sprechen", text:"Deutsch.",        openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"sprechen", text:"leise.",          openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"sprechen", text:"am Telefon.",     openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"sprechen", text:"über die Arbeit.", openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"essen",    text:"einen Apfel.",    openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"essen",    text:"zu Mittag.",      openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"essen",    text:"im Restaurant.",  openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"essen",    text:"Suppe.",          openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"lesen",    text:"ein Buch.",       openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"lesen",    text:"die Zeitung.",    openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"lesen",    text:"einen Roman.",    openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"lesen",    text:"langsam.",        openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"sehen",    text:"einen Film.",     openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"sehen",    text:"die Berge.",      openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"sehen",    text:"ein Foto.",       openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"sehen",    text:"die Nachbarn.",   openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"laufen",   text:"schnell.",        openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"laufen",   text:"im Park.",        openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"laufen",   text:"zur Schule.",     openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"laufen",   text:"durch den Wald.", openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"helfen",   text:"der Kollegin.",   openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"helfen",   text:"in der Küche.",   openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"helfen",   text:"dem Nachbarn.",   openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"helfen",   text:"der Familie.",    openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"treffen",  text:"einen Freund.",   openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"treffen",  text:"die Familie.",    openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"treffen",  text:"ihre Chefin.",    openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"treffen",  text:"die Nachbarn.",   openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"schlafen", text:"lange.",          openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"schlafen", text:"schlecht.",       openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"schlafen", text:"im Auto.",        openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"fahren",   text:"nach Berlin.",    openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"fahren",   text:"zu schnell.",     openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] },
+    { inf:"fahren",   text:"mit dem Bus.",    openers:["Jetzt","Heute","Morgen","Am Montag","Oft"] }
+  ];
+
+  var pronounDefs = [
+    { key:"ich",   display:"ich", cls:"ich",   sub:"" },
+    { key:"du",    display:"du",  cls:"du",    sub:"" },
+    { key:"er",    display:"er",  cls:"er",    sub:"" },
+    { key:"sieF",  display:"sie", cls:"sief",  sub:"Einzahl" },
+    { key:"wir",   display:"wir", cls:"wir",   sub:"" },
+    { key:"ihr",   display:"ihr", cls:"ihr",   sub:"" },
+    { key:"siePl", display:"sie", cls:"siepl", sub:"Plural" },
+    { key:"Sie",   display:"Sie", cls:"formal",sub:"Anrede" }
+  ];
+
+  // Practice weighting: du/er/sie(Einzahl) are where the vowel actually changes,
+  // so together they should appear about as often as all five other persons combined.
+  var vowelChangeGroupKeys = ["du", "er", "sieF"];
+  var otherGroupKeys = ["ich", "wir", "ihr", "siePl", "Sie"];
+
+  function pickWeightedPronDef(){
+    var useVowelGroup = Math.random() < 0.5;
+    var keys = useVowelGroup ? vowelChangeGroupKeys : otherGroupKeys;
+    var key = keys[Math.floor(Math.random() * keys.length)];
+    for (var i = 0; i < pronounDefs.length; i++){
+      if (pronounDefs[i].key === key) return pronounDefs[i];
+    }
+    return pronounDefs[0];
+  }
+
+  var subjectNames = {
+    er:    ["Tom", "Ben", "Herr Klein", "der Lehrer"],
+    sieF:  ["Anna", "Lea", "Frau Klein", "die Lehrerin"],
+    siePl: ["die Kinder", "Tom und Anna", "die Studenten", "meine Freunde"]
+  };
+
+  var TOTAL = 16;
+  var queue = [];
+  var current = 0;
+  var score = 0;
+  var mistakes = [];
+  var answered = false;
+  var currentLang = "off";
+  var rtlLangs = { "ar": true };
+
+  var translations = {
+    en: {
+      title: "Strong Verbs Trainer",
+      subtitle: "ich · du · er · sie · wir · ihr · sie · Sie",
+      sectionHeading: "How it works",
+      exampleLine: "Example: sprechen → stem: sprech, changed: sprich",
+      note1: "ich → -e · du → -st · er / sie (singular) → -t · wir → -en · ihr → -t · sie (plural) / Sie → -en",
+      ruleStrongVerbs: "Strong verbs use exactly the same endings. Only the stem vowel changes for du and er/sie (singular) — for ich, wir, ihr, sie (plural) and Sie the stem stays the same.",
+      patternsHeading: "Four vowel-change patterns",
+      patternEI: "sprechen (du sprichst) · essen (du isst) · helfen (du hilfst) · treffen (du triffst)",
+      patternEIE: "lesen (du liest) · sehen (du siehst)",
+      patternAAE: "schlafen (du schläfst) · fahren (du fährst)",
+      patternAUAEU: "laufen (du läufst)",
+      sStemTitle: "Special case: essen, lesen",
+      sStemText: "The changed stem already ends in -s (iss-/lies-). So du gets no extra -st, just -t: du isst (not issst), du liest (not liesst).",
+      note2: "The word sie has three meanings: Sie capitalized = the polite “you” (ending -en, like the plural) · sie lowercase, singular = “she” (ending -t, with the vowel change, like er) · sie lowercase, plural = “they” (ending -en, no vowel change, like Sie). Only the context shows which one is meant.",
+      note3: "That's why the pronoun in the exercise sentences never stands at the very start, but right after the verb (e.g. “Heute spricht sie Deutsch.” / “Heute sprechen Sie Deutsch.”). This keeps the capitalization intact, so the sentence itself shows who is meant — the coloured label above also tells you which person is being asked.",
+      dividerText: "Now practice",
+      progress: "Question {n} of {total}",
+      verbLabel: "Verb:",
+      placeholder: "Enter your answer …",
+      checkBtn: "Check",
+      nextBtn: "Next →",
+      feedbackCorrect: "Correct!",
+      feedbackIncorrect: "Not quite. The correct answer is:",
+      resultHeading: "Result",
+      resultMsgPerfect: "Perfect! All forms correct.",
+      resultMsgGood: "Very good! You've almost got the vowel changes down.",
+      resultMsgOk: "Good start. A bit more practice and it will click.",
+      resultMsgLow: "No problem — go back to the explanation above and try again.",
+      reviewHeading: "To review:",
+      restartBtn: "Practice again",
+      footer: "Strong verbs in the present tense · every person except es",
+      hintVowelChange: "For du and er/sie (singular) the stem vowel changes ({pattern}): <b>{form}</b>.",
+      hintSStem: "The changed stem already ends in -s, so du gets no extra -st — just -t: <b>{form}</b>.",
+      hintCaseConfusion: "Watch out: this is about sie/Sie — only the capitalization tells them apart: sie lowercase, singular (“she”) → vowel change + -t · sie lowercase, plural (“they”) and Sie capitalized (polite address) → unchanged stem + -en."
+    },
+    ru: {
+      title: "Тренажёр сильных глаголов",
+      subtitle: "ich · du · er · sie · wir · ihr · sie · Sie",
+      sectionHeading: "Как это работает",
+      exampleLine: "Пример: sprechen → основа: sprech, изменённая: sprich",
+      note1: "ich → -e · du → -st · er / sie (ед. ч.) → -t · wir → -en · ihr → -t · sie (мн. ч.) / Sie → -en",
+      ruleStrongVerbs: "У сильных глаголов те же окончания. Меняется только гласная основы у du и er/sie (ед. ч.) — у ich, wir, ihr, sie (мн. ч.) и Sie основа остаётся прежней.",
+      patternsHeading: "Четыре модели чередования гласной",
+      patternEI: "sprechen (du sprichst) · essen (du isst) · helfen (du hilfst) · treffen (du triffst)",
+      patternEIE: "lesen (du liest) · sehen (du siehst)",
+      patternAAE: "schlafen (du schläfst) · fahren (du fährst)",
+      patternAUAEU: "laufen (du läufst)",
+      sStemTitle: "Особый случай: essen, lesen",
+      sStemText: "Изменённая основа уже оканчивается на -s (iss-/lies-). Поэтому у du нет лишнего -st, только -t: du isst (не issst), du liest (не liesst).",
+      note2: "У слова sie есть три значения: Sie с большой буквы = вежливое «вы» (окончание -en, как во множественном числе) · sie с маленькой буквы, единственное число = «она» (окончание -t, с чередованием гласной, как у er) · sie с маленькой буквы, множественное число = «они» (окончание -en, без чередования, как у Sie). Только контекст показывает, какое значение имеется в виду.",
+      note3: "Поэтому в тренировочных предложениях местоимение стоит не в начале, а сразу после глагола (например: «Heute spricht sie Deutsch.» / «Heute sprechen Sie Deutsch.»). Так сохраняется написание с большой или маленькой буквы, и уже само предложение показывает, кто имеется в виду — а цветная метка сверху дополнительно подсказывает, о каком лице идёт речь.",
+      dividerText: "Теперь потренируемся",
+      progress: "Вопрос {n} из {total}",
+      verbLabel: "Глагол:",
+      placeholder: "Введите ответ …",
+      checkBtn: "Проверить",
+      nextBtn: "Далее →",
+      feedbackCorrect: "Правильно!",
+      feedbackIncorrect: "Не совсем. Правильный ответ:",
+      resultHeading: "Результат",
+      resultMsgPerfect: "Отлично! Все формы верны.",
+      resultMsgGood: "Очень хорошо! Чередования гласных почти усвоены.",
+      resultMsgOk: "Хорошее начало. Ещё немного практики — и получится.",
+      resultMsgLow: "Ничего страшного — повторите объяснение выше и попробуйте ещё раз.",
+      reviewHeading: "Повторить:",
+      restartBtn: "Тренироваться снова",
+      footer: "Сильные глаголы в настоящем времени · все лица, кроме es",
+      hintVowelChange: "У du и er/sie (ед. ч.) гласная основы меняется ({pattern}): <b>{form}</b>.",
+      hintSStem: "Изменённая основа уже оканчивается на -s, поэтому у du нет лишнего -st — только -t: <b>{form}</b>.",
+      hintCaseConfusion: "Внимание: здесь речь о sie/Sie — только написание с большой или маленькой буквы их различает: sie с маленькой буквы, единственное число («она») → чередование гласной + окончание -t · sie с маленькой буквы, множественное число («они») и Sie с большой буквы (вежливое обращение) → основа без изменений + окончание -en."
+    },
+    uk: {
+      title: "Тренажер сильних дієслів",
+      subtitle: "ich · du · er · sie · wir · ihr · sie · Sie",
+      sectionHeading: "Як це працює",
+      exampleLine: "Приклад: sprechen → основа: sprech, змінена: sprich",
+      note1: "ich → -e · du → -st · er / sie (одн.) → -t · wir → -en · ihr → -t · sie (мн.) / Sie → -en",
+      ruleStrongVerbs: "У сильних дієслів ті самі закінчення. Змінюється лише голосна основи у du та er/sie (одн.) — у ich, wir, ihr, sie (мн.) та Sie основа лишається незмінною.",
+      patternsHeading: "Чотири моделі чергування голосної",
+      patternEI: "sprechen (du sprichst) · essen (du isst) · helfen (du hilfst) · treffen (du triffst)",
+      patternEIE: "lesen (du liest) · sehen (du siehst)",
+      patternAAE: "schlafen (du schläfst) · fahren (du fährst)",
+      patternAUAEU: "laufen (du läufst)",
+      sStemTitle: "Особливий випадок: essen, lesen",
+      sStemText: "Змінена основа вже закінчується на -s (iss-/lies-). Тому у du немає зайвої -st, лише -t: du isst (не issst), du liest (не liesst).",
+      note2: "Слово sie має три значення: Sie з великої літери = ввічливе «ви» (закінчення -en, як у множині) · sie з малої літери, однина = «вона» (закінчення -t, із чергуванням голосної, як у er) · sie з малої літери, множина = «вони» (закінчення -en, без чергування, як у Sie). Лише контекст показує, яке значення мається на увазі.",
+      note3: "Тому в тренувальних реченнях займенник стоїть не на початку, а одразу після дієслова (наприклад: «Heute spricht sie Deutsch.» / «Heute sprechen Sie Deutsch.»). Так зберігається написання з великої чи малої літери, і саме речення показує, кого мають на увазі — а кольорова позначка вгорі додатково підказує, про яку особу йдеться.",
+      dividerText: "А тепер потренуймося",
+      progress: "Питання {n} з {total}",
+      verbLabel: "Дієслово:",
+      placeholder: "Введіть відповідь …",
+      checkBtn: "Перевірити",
+      nextBtn: "Далі →",
+      feedbackCorrect: "Правильно!",
+      feedbackIncorrect: "Не зовсім. Правильна відповідь:",
+      resultHeading: "Результат",
+      resultMsgPerfect: "Чудово! Усі форми правильні.",
+      resultMsgGood: "Дуже добре! Чергування голосних майже засвоєні.",
+      resultMsgOk: "Гарний початок. Ще трохи практики — і вийде.",
+      resultMsgLow: "Нічого страшного — повторіть пояснення вище і спробуйте ще раз.",
+      reviewHeading: "Повторити:",
+      restartBtn: "Тренуватися ще раз",
+      footer: "Сильні дієслова в теперішньому часі · усі особи, крім es",
+      hintVowelChange: "У du та er/sie (одн.) голосна основи змінюється ({pattern}): <b>{form}</b>.",
+      hintSStem: "Змінена основа вже закінчується на -s, тому у du немає зайвої -st — лише -t: <b>{form}</b>.",
+      hintCaseConfusion: "Увага: тут ідеться про sie/Sie — лише велика чи мала літера їх розрізняє: sie з малої літери, однина («вона») → чергування голосної + закінчення -t · sie з малої літери, множина («вони») та Sie з великої літери (ввічливе звертання) → основа без змін + закінчення -en."
+    },
+    tr: {
+      title: "Güçlü Fiiller Antrenörü",
+      subtitle: "ich · du · er · sie · wir · ihr · sie · Sie",
+      sectionHeading: "Nasıl çalışır",
+      exampleLine: "Örnek: sprechen → gövde: sprech, değişmiş: sprich",
+      note1: "ich → -e · du → -st · er / sie (tekil) → -t · wir → -en · ihr → -t · sie (çoğul) / Sie → -en",
+      ruleStrongVerbs: "Güçlü fiiller tam olarak aynı ekleri kullanır. Sadece du ve er/sie (tekil) için gövde ünlüsü değişir — ich, wir, ihr, sie (çoğul) ve Sie'de gövde aynı kalır.",
+      patternsHeading: "Dört ünlü değişim modeli",
+      patternEI: "sprechen (du sprichst) · essen (du isst) · helfen (du hilfst) · treffen (du triffst)",
+      patternEIE: "lesen (du liest) · sehen (du siehst)",
+      patternAAE: "schlafen (du schläfst) · fahren (du fährst)",
+      patternAUAEU: "laufen (du läufst)",
+      sStemTitle: "Özel durum: essen, lesen",
+      sStemText: "Değişmiş gövde zaten -s ile biter (iss-/lies-). Bu yüzden du'da ekstra -st yoktur, sadece -t: du isst (issst değil), du liest (liesst değil).",
+      note2: "sie kelimesinin üç anlamı vardır: büyük harfle Sie = resmi “siz” hitabı (-en eki, çoğul gibi) · küçük harfle sie, tekil = “o” (kadın, ünlü değişimiyle -t eki, er gibi) · küçük harfle sie, çoğul = “onlar” (ünlü değişimi olmadan -en eki, Sie gibi). Hangi anlamın kastedildiği yalnızca bağlamdan anlaşılır.",
+      note3: "Bu yüzden alıştırma cümlelerinde zamir cümlenin başında değil, fiilden hemen sonra yer alır (örn. “Heute spricht sie Deutsch.” / “Heute sprechen Sie Deutsch.”). Böylece büyük/küçük harf yazımı korunur ve kimin kastedildiği cümlenin kendisinden anlaşılır — üstteki renkli etiket de hangi kişinin sorulduğunu ayrıca gösterir.",
+      dividerText: "Şimdi alıştırma yapalım",
+      progress: "Soru {n} / {total}",
+      verbLabel: "Fiil:",
+      placeholder: "Cevabınızı yazın …",
+      checkBtn: "Kontrol et",
+      nextBtn: "İleri →",
+      feedbackCorrect: "Doğru!",
+      feedbackIncorrect: "Tam değil. Doğru cevap:",
+      resultHeading: "Sonuç",
+      resultMsgPerfect: "Mükemmel! Tüm formlar doğru.",
+      resultMsgGood: "Çok iyi! Ünlü değişimlerini neredeyse öğrendiniz.",
+      resultMsgOk: "İyi bir başlangıç. Biraz daha pratikle tam oturacak.",
+      resultMsgLow: "Sorun değil — yukarıdaki açıklamayı tekrar okuyun ve yeniden deneyin.",
+      reviewHeading: "Tekrar edilecekler:",
+      restartBtn: "Tekrar alıştırma yap",
+      footer: "Şimdiki zamanda güçlü fiiller · es dışındaki tüm şahıslar",
+      hintVowelChange: "du ve er/sie (tekil) için gövde ünlüsü değişir ({pattern}): <b>{form}</b>.",
+      hintSStem: "Değişmiş gövde zaten -s ile biter, bu yüzden du'da ekstra -st yoktur — sadece -t: <b>{form}</b>.",
+      hintCaseConfusion: "Dikkat: burada sie/Sie söz konusu — sadece büyük/küçük harf ayrımı bunları birbirinden ayırır: küçük harfle sie, tekil (“o”, kadın) → ünlü değişimi + -t eki · küçük harfle sie, çoğul (“onlar”) ve büyük harfle Sie (nazik hitap) → değişmemiş gövde + -en eki."
+    },
+    ar: {
+      title: "مدرّب الأفعال القوية",
+      subtitle: "ich · du · er · sie · wir · ihr · sie · Sie",
+      sectionHeading: "كيف يعمل ذلك",
+      exampleLine: "مثال: sprechen ← الجذر: sprech، المتغيّر: sprich",
+      note1: "ich ← -e · du ← -st · er / sie (مفرد) ← -t · wir ← -en · ihr ← -t · sie (جمع) / Sie ← -en",
+      ruleStrongVerbs: "تستخدم الأفعال القوية اللواحق نفسها تمامًا. يتغيّر فقط حرف العلة في الجذر مع du وer/sie (المفرد) — أما مع ich وwir وihr وsie (جمع) وSie فيبقى الجذر كما هو.",
+      patternsHeading: "أربعة أنماط لتغيّر حرف العلة",
+      patternEI: "sprechen (du sprichst) · essen (du isst) · helfen (du hilfst) · treffen (du triffst)",
+      patternEIE: "lesen (du liest) · sehen (du siehst)",
+      patternAAE: "schlafen (du schläfst) · fahren (du fährst)",
+      patternAUAEU: "laufen (du läufst)",
+      sStemTitle: "حالة خاصة: essen، lesen",
+      sStemText: "ينتهي الجذر المتغيّر أصلًا بـ -s (iss-/lies-). لذلك لا تُضاف -st إضافية مع du، بل -t فقط: du isst (وليس issst)، du liest (وليس liesst).",
+      note2: "لكلمة sie ثلاثة معانٍ: Sie بحرف كبير = صيغة المخاطبة الرسمية «أنتم/حضرتك» (اللاحقة -en، مثل الجمع) · sie بحرف صغير للمفرد = «هي» (اللاحقة -t مع تغيّر حرف العلة، مثل er) · sie بحرف صغير للجمع = «هم» (اللاحقة -en دون تغيّر حرف العلة، مثل Sie). يوضح السياق فقط أي معنى مقصود.",
+      note3: "لهذا السبب لا يأتي الضمير في جمل التمرين في بداية الجملة، بل مباشرة بعد الفعل (مثال: «Heute spricht sie Deutsch.» / «Heute sprechen Sie Deutsch.»). بهذه الطريقة تبقى طريقة كتابة الحرف كبيرًا أو صغيرًا كما هي، فتوضح الجملة نفسها المقصود — كما يوضح لك الوسم الملوّن أعلاه أيضًا عن أي شخص يدور السؤال.",
+      dividerText: "والآن لنتدرّب",
+      progress: "السؤال {n} من {total}",
+      verbLabel: "الفعل:",
+      placeholder: "أدخل إجابتك …",
+      checkBtn: "تحقّق",
+      nextBtn: "التالي ←",
+      feedbackCorrect: "إجابة صحيحة!",
+      feedbackIncorrect: "ليست صحيحة تمامًا. الإجابة الصحيحة هي:",
+      resultHeading: "النتيجة",
+      resultMsgPerfect: "ممتاز! جميع الصيغ صحيحة.",
+      resultMsgGood: "جيد جدًا! أصبحتَ شبه متقن لتغيّرات حرف العلة.",
+      resultMsgOk: "بداية جيدة. مزيد من التدريب وستُتقنها.",
+      resultMsgLow: "لا بأس — راجع الشرح أعلاه وحاول مرة أخرى.",
+      reviewHeading: "للمراجعة:",
+      restartBtn: "تدرّب مرة أخرى",
+      footer: "الأفعال القوية في زمن المضارع · جميع الأشخاص عدا es",
+      hintVowelChange: "مع du وer/sie (المفرد) يتغيّر حرف العلة في الجذر ({pattern}): <b>{form}</b>.",
+      hintSStem: "ينتهي الجذر المتغيّر أصلًا بـ -s، لذلك لا تُضاف -st إضافية مع du — بل -t فقط: <b>{form}</b>.",
+      hintCaseConfusion: "تنبيه: الأمر هنا يتعلق بـ sie/Sie — فقط كتابة الحرف كبيرًا أو صغيرًا تميّز بينهما: sie بحرف صغير للمفرد («هي») ← تغيّر حرف العلة + اللاحقة -t · sie بحرف صغير للجمع («هم») وSie بحرف كبير (صيغة المخاطبة الرسمية) ← جذر دون تغيير + اللاحقة -en."
+    }
+  };
+
+  function t(key, vars){
+    if (currentLang === "off") return "";
+    var dict = translations[currentLang];
+    if (!dict || !dict[key]) return "";
+    var str = dict[key];
+    if (vars) {
+      for (var k in vars) {
+        str = str.replace("{" + k + "}", vars[k]);
+      }
+    }
+    return str;
+  }
+
+  function setI18nEl(id, text){
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (currentLang === "off" || !text) {
+      el.className = "i18n";
+      el.textContent = "";
+      el.removeAttribute("dir");
+    } else {
+      el.className = "i18n show";
+      el.innerHTML = text;
+      if (rtlLangs[currentLang]) { el.setAttribute("dir", "rtl"); }
+      else { el.removeAttribute("dir"); }
+    }
+  }
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function buildQueue(){
+    var pool = [];
+    var shuffledItems = shuffle(items);
+    var vi = 0;
+    while (pool.length < TOTAL) {
+      var tmpl = shuffledItems[vi % shuffledItems.length];
+      var vf = verbForms[tmpl.inf];
+      var pronDef = pickWeightedPronDef();
+      var item = {
+        verb: { inf: tmpl.inf, text: tmpl.text, forms: vf.forms, vowelPattern: vf.vowelPattern, sStemContraction: vf.sStemContraction },
+        pronDef: pronDef
+      };
+      item.adverb = tmpl.openers[Math.floor(Math.random() * tmpl.openers.length)];
+      var nameList = subjectNames[pronDef.key];
+      if (nameList) {
+        item.name = nameList[Math.floor(Math.random() * nameList.length)];
+      }
+      pool.push(item);
+      vi++;
+    }
+    // avoid same verb twice in a row when possible
+    for (var i = 1; i < pool.length; i++){
+      if (pool[i].verb.inf === pool[i-1].verb.inf) {
+        for (var k = i+1; k < pool.length; k++){
+          if (pool[k].verb.inf !== pool[i-1].verb.inf) {
+            var tmp = pool[i]; pool[i] = pool[k]; pool[k] = tmp;
+            break;
+          }
+        }
+      }
+    }
+    return pool;
+  }
+
+  function correctForm(item){
+    return item.verb.forms[item.pronDef.key];
+  }
+
+  function subjectPhrase(item){
+    var disp = item.pronDef.display;
+    return item.name ? (disp + " (" + item.name + ")") : disp;
+  }
+
+  var vowelChangePersons = ["du", "er", "sieF"];
+
+  function buildVowelHint(item){
+    if (vowelChangePersons.indexOf(item.pronDef.key) === -1) return null;
+    var correct = correctForm(item);
+    var deText = "Bei du und er/sie (Einzahl) ändert sich der Stammvokal (" + item.verb.vowelPattern + "): <b>" + correct + "</b>.";
+    var translated = t("hintVowelChange", { form: correct, pattern: item.verb.vowelPattern });
+    return { de: deText, translated: translated };
+  }
+
+  function buildSStemHint(item){
+    if (item.pronDef.key !== "du") return null;
+    if (!item.verb.sStemContraction) return null;
+    var correct = correctForm(item);
+    var deText = "Der veränderte Stamm endet schon auf -s, deshalb bekommt du kein zusätzliches -st — nur -t: <b>" + correct + "</b>.";
+    var translated = t("hintSStem", { form: correct });
+    return { de: deText, translated: translated };
+  }
+
+  var germanCaseConfusionHint = "Achtung: Hier geht es um <b>sie</b>/<b>Sie</b> – nur die Groß-/Kleinschreibung unterscheidet die Bedeutung: <b>sie</b> klein, Einzahl („she“) → Vokalwechsel + Endung <b>-t</b> · <b>sie</b> klein, Plural („they“) und <b>Sie</b> groß (Anrede) → unveränderter Stamm + Endung <b>-en</b>.";
+
+  function buildConfusionHint(item){
+    var famKeys = ["sieF", "siePl", "Sie"];
+    if (famKeys.indexOf(item.pronDef.key) === -1) return null;
+    if (!item.given) return null;
+    var otherKeys = famKeys.filter(function(k){ return k !== item.pronDef.key; });
+    var matched = false;
+    for (var i = 0; i < otherKeys.length; i++){
+      if (item.verb.forms[otherKeys[i]].toLowerCase() === item.given) { matched = true; break; }
+    }
+    if (!matched) return null;
+    return { de: germanCaseConfusionHint, translated: t("hintCaseConfusion") };
+  }
+
+  function renderHintBox(item){
+    var hints = [buildVowelHint(item), buildSStemHint(item), buildConfusionHint(item)].filter(function(h){ return h; });
+    var hb = els["hint-box"];
+    if (hints.length === 0) {
+      hb.className = "";
+      hb.innerHTML = "";
+      return;
+    }
+    var dir = rtlLangs[currentLang] ? " dir=\"rtl\"" : "";
+    var html = hints.map(function(h){
+      var block = h.de;
+      if (h.translated) {
+        block += "<div class=\"i18n show\" style=\"margin-top:6px;\"" + dir + ">" + h.translated + "</div>";
+      }
+      return block;
+    }).join("<hr style=\"border:none;border-top:1px solid rgba(122,90,18,0.25);margin:8px 0;\">");
+    hb.innerHTML = html;
+    hb.className = "show";
+  }
+
+  var els = {};
+  function cacheEls(){
+    ["progress-label","score-label","progress-fill","pron-badge","sentence-text",
+     "infinitive-text","answer","check-btn","feedback","next-row","next-btn","hint-box",
+     "result-card","result-score","result-msg","result-mistakes","restart-btn","practice-card"]
+    .forEach(function(id){ els[id] = document.getElementById(id); });
+  }
+
+  function applyStaticTranslations(){
+    setI18nEl("i18n-title", t("title"));
+    setI18nEl("i18n-subtitle", t("subtitle"));
+    setI18nEl("i18n-sectionHeading", t("sectionHeading"));
+    setI18nEl("i18n-exampleLine", t("exampleLine"));
+    setI18nEl("i18n-note1", t("note1"));
+    setI18nEl("i18n-ruleStrongVerbs", t("ruleStrongVerbs"));
+    setI18nEl("i18n-patternsHeading", t("patternsHeading"));
+    setI18nEl("i18n-patternEI", t("patternEI"));
+    setI18nEl("i18n-patternEIE", t("patternEIE"));
+    setI18nEl("i18n-patternAAE", t("patternAAE"));
+    setI18nEl("i18n-patternAUAEU", t("patternAUAEU"));
+    setI18nEl("i18n-sStemTitle", t("sStemTitle"));
+    setI18nEl("i18n-sStemText", t("sStemText"));
+    setI18nEl("i18n-note2", t("note2"));
+    setI18nEl("i18n-note3", t("note3"));
+    setI18nEl("i18n-dividerText", t("dividerText"));
+    setI18nEl("i18n-verbLabel", t("verbLabel"));
+    setI18nEl("i18n-checkBtn", t("checkBtn"));
+    setI18nEl("i18n-nextBtn", t("nextBtn"));
+    setI18nEl("i18n-resultHeading", t("resultHeading"));
+    setI18nEl("i18n-restartBtn", t("restartBtn"));
+    setI18nEl("i18n-footer", t("footer"));
+
+    var placeholder = t("placeholder");
+    els["answer"].placeholder = placeholder || "Antwort eingeben …";
+
+    var langBtns = document.querySelectorAll(".lang-btn");
+    for (var i = 0; i < langBtns.length; i++) {
+      var btn = langBtns[i];
+      btn.className = "lang-btn" + (btn.getAttribute("data-lang") === currentLang ? " active" : "");
+    }
+
+    updateProgressTranslation();
+    updateResultMsgTranslation();
+  }
+
+  function updateProgressTranslation(){
+    setI18nEl("i18n-progress", t("progress", { n: current + 1, total: TOTAL }));
+  }
+
+  function updateResultMsgTranslation(){
+    var pct = TOTAL > 0 ? score / TOTAL : 0;
+    var key;
+    if (pct === 1) key = "resultMsgPerfect";
+    else if (pct >= 0.8) key = "resultMsgGood";
+    else if (pct >= 0.5) key = "resultMsgOk";
+    else key = "resultMsgLow";
+    setI18nEl("i18n-resultMsg", t(key));
+  }
+
+  function renderQuestion(){
+    answered = false;
+    var item = queue[current];
+    els["progress-label"].textContent = "Frage " + (current + 1) + " von " + TOTAL;
+    els["score-label"].textContent = "✓ " + score;
+    els["progress-fill"].style.width = ((current) / TOTAL * 100) + "%";
+
+    document.getElementById("badge-main").textContent = item.pronDef.display;
+    var subEl = document.getElementById("badge-sub");
+    subEl.textContent = item.pronDef.sub || "";
+    els["pron-badge"].className = "pron-badge " + item.pronDef.cls;
+
+    els["sentence-text"].textContent = item.adverb + " ____ " + subjectPhrase(item) + " " + item.verb.text;
+    els["infinitive-text"].textContent = item.verb.inf;
+
+    els["answer"].value = "";
+    els["answer"].disabled = false;
+    els["check-btn"].disabled = false;
+    els["check-btn"].textContent = "Prüfen";
+    els["feedback"].className = "";
+    els["feedback"].textContent = "";
+    setI18nEl("i18n-feedback", "");
+    els["hint-box"].className = "";
+    els["hint-box"].innerHTML = "";
+    els["next-row"].className = "next-row";
+    updateProgressTranslation();
+    els["answer"].focus();
+  }
+
+  function checkAnswer(){
+    if (answered) return;
+    var item = queue[current];
+    var correct = correctForm(item);
+    var given = els["answer"].value.trim().toLowerCase();
+    var isCorrect = given === correct.toLowerCase();
+    item.given = given;
+
+    answered = true;
+    els["answer"].disabled = true;
+    els["check-btn"].disabled = true;
+
+    var fb = els["feedback"];
+    fb.className = "show " + (isCorrect ? "ok" : "err");
+    if (isCorrect) {
+      score++;
+      fb.innerHTML = "Richtig! <b>" + subjectPhrase(item) + " " + correct + "</b>";
+      setI18nEl("i18n-feedback", t("feedbackCorrect"));
+    } else {
+      fb.innerHTML = "Nicht ganz. Richtig ist: <b>" + subjectPhrase(item) + " " + correct + "</b>";
+      setI18nEl("i18n-feedback", t("feedbackIncorrect") ? (t("feedbackIncorrect") + " " + subjectPhrase(item) + " " + correct) : "");
+      mistakes.push({ subject: subjectPhrase(item), correct: correct, inf: item.verb.inf, given: given });
+    }
+
+    renderHintBox(item);
+
+    els["next-row"].className = "next-row show";
+  }
+
+  function nextQuestion(){
+    current++;
+    if (current >= TOTAL) {
+      showResult();
+    } else {
+      renderQuestion();
+    }
+  }
+
+  function showResult(){
+    els["practice-card"].style.display = "none";
+    var rc = els["result-card"];
+    rc.className = "show";
+    els["result-score"].textContent = score + " / " + TOTAL;
+
+    var pct = score / TOTAL;
+    var msg;
+    if (pct === 1) msg = "Perfekt! Alle Formen richtig.";
+    else if (pct >= 0.8) msg = "Sehr gut! Die Vokalwechsel sitzen fast sicher.";
+    else if (pct >= 0.5) msg = "Guter Start. Noch ein bisschen üben, dann sitzt es.";
+    else msg = "Kein Problem – wiederhole die Erklärung oben und versuche es noch einmal.";
+    els["result-msg"].textContent = msg;
+    updateResultMsgTranslation();
+
+    var mBox = els["result-mistakes"];
+    if (mistakes.length > 0) {
+      mBox.className = "show";
+      var reviewLabel = t("reviewHeading");
+      var reviewDir = rtlLangs[currentLang] ? " dir=\"rtl\"" : "";
+      var heading = "Zum Wiederholen:" + (reviewLabel ? " <span class=\"i18n show\" style=\"display:inline;\"" + reviewDir + ">(" + reviewLabel + ")</span>" : "");
+      var html = "<div><b>" + heading + "</b></div>";
+      mistakes.forEach(function(m){
+        html += "<div>" + m.subject + " " + m.inf + " → <b>" + m.correct + "</b></div>";
+      });
+      mBox.innerHTML = html;
+    } else {
+      mBox.className = "";
+      mBox.innerHTML = "";
+    }
+  }
+
+  function restart(){
+    queue = buildQueue();
+    current = 0;
+    score = 0;
+    mistakes = [];
+    els["practice-card"].style.display = "";
+    els["result-card"].className = "";
+    renderQuestion();
+  }
+
+  function setLanguage(lang){
+    currentLang = lang;
+    applyStaticTranslations();
+    if (answered) {
+      var item = queue[current];
+      var correct = correctForm(item);
+      var wasCorrect = els["feedback"].className.indexOf("ok") !== -1;
+      if (wasCorrect) {
+        setI18nEl("i18n-feedback", t("feedbackCorrect"));
+      } else {
+        var incorrectText = t("feedbackIncorrect");
+        setI18nEl("i18n-feedback", incorrectText ? (incorrectText + " " + subjectPhrase(item) + " " + correct) : "");
+      }
+      renderHintBox(item);
+    }
+    if (els["result-card"].className.indexOf("show") !== -1) {
+      showResult();
+    }
+  }
+
+  function init(){
+    cacheEls();
+    els["check-btn"].addEventListener("click", checkAnswer);
+    els["next-btn"].addEventListener("click", nextQuestion);
+    els["restart-btn"].addEventListener("click", restart);
+    els["answer"].addEventListener("keydown", function(e){
+      if (e.key === "Enter") {
+        if (!answered) checkAnswer();
+        else nextQuestion();
+      }
+    });
+    var langBtnsInit = document.querySelectorAll(".lang-btn");
+    for (var i = 0; i < langBtnsInit.length; i++) {
+      (function(btn){
+        btn.addEventListener("click", function(){
+          setLanguage(btn.getAttribute("data-lang"));
+        });
+      })(langBtnsInit[i]);
+    }
+    restart();
+    applyStaticTranslations();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
+})();
+</script>
+
+</body>
+</html>
