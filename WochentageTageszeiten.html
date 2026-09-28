@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wochentage &amp; Tageszeiten</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#eaeff3;color:#14213d;-webkit-text-size-adjust:100%;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans","Noto Sans Bengali","Nirmala UI","Noto Sans Arabic",Tahoma,Arial,sans-serif;
+ line-height:1.35}
+button{font-family:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:pointer}
+button:focus,input:focus{outline:3px solid #f2b705;outline-offset:2px}
+#app{max-width:640px;margin:0 auto;padding:12px 12px 40px}
+
+/* Kopf */
+.top{display:flex;align-items:center;justify-content:space-between;margin:2px 0 12px}
+.top h1{font-size:1.2rem;margin:0;font-weight:700;letter-spacing:.2px}
+.langbtn{border:2px solid #14213d;background:#fff;color:#14213d;border-radius:999px;padding:6px 14px;font-size:.95rem;font-weight:600;margin-left:8px}
+
+/* Startseite */
+#start{text-align:center;padding-top:24px}
+#start h1{font-size:1.7rem;margin:0 0 6px}
+#start p{margin:0 0 20px;color:#44506a}
+.langgrid{display:flex;flex-wrap:wrap;justify-content:center}
+.langgrid button{flex:0 0 46%;margin:5px 2%;padding:16px 8px;font-size:1.15rem;font-weight:600;background:#fff;border:2px solid #14213d;border-radius:14px;color:#14213d}
+.langgrid button:active{background:#14213d;color:#fff}
+
+/* Reiter, Filter */
+.tabs{display:flex;flex-wrap:wrap;margin:0 -3px 6px}
+.tab{flex:1 1 auto;margin:3px;padding:10px 8px;border:0;border-radius:10px;background:#d5dde6;color:#14213d;font-size:.98rem;font-weight:600}
+.tab.on{background:#14213d;color:#fff}
+.seg{display:flex;flex-wrap:wrap;margin:0 -3px 6px}
+.seg button{flex:1 1 auto;margin:3px;padding:8px 10px;border:2px solid #b9c4d1;border-radius:10px;background:transparent;color:#14213d;font-size:.9rem}
+.seg button.on{border-color:#14213d;background:#fff;font-weight:700}
+.seg button.w.on{border-color:#0f766e;color:#0f766e}
+.seg button.t.on{border-color:#b45309;color:#b45309}
+
+/* Karte */
+.card{position:relative;background:#fff;border-radius:18px;min-height:270px;margin:12px 0;padding:22px 16px 18px;text-align:center;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;border-bottom:8px solid #0f766e;cursor:pointer;user-select:none;-webkit-user-select:none}
+.card.gt{border-bottom-color:#e8a317}
+.card .big{font-size:2.3rem;font-weight:700;line-height:1.15;word-break:break-word}
+.card .sub{margin-top:8px;font-size:1.05rem;color:#44506a}
+.card .flipnote{position:absolute;bottom:10px;left:0;right:0;font-size:.78rem;color:#7b8798}
+.de .art{font-weight:400;color:#6b7688}
+.icon{font-size:1.8rem;margin-bottom:6px}
+.nav{display:flex;align-items:center;justify-content:space-between}
+.nav button,.act{border:0;border-radius:12px;background:#14213d;color:#fff;padding:12px 18px;font-size:1rem;font-weight:600}
+.nav .cnt{font-size:.95rem;color:#44506a}
+.nav .sh{background:#d5dde6;color:#14213d;padding:12px 14px}
+.act{display:block;width:100%;margin-top:12px}
+.act.alt{background:#d5dde6;color:#14213d}
+
+/* Wochen- und Tagesleiste */
+.week{display:flex;margin-top:16px}
+.week span{width:34px;height:30px;line-height:30px;margin:0 2px;border-radius:7px;background:#e5eaf0;color:#6b7688;font-size:.82rem;font-weight:600}
+.week span.we{background:#dff1ee}
+.week span.on{background:#0f766e;color:#fff}
+.day{margin-top:16px;width:100%;max-width:300px}
+.day .trk{position:relative;height:16px;border-radius:8px;background:#e5eaf0;overflow:hidden}
+.day .seg1{position:absolute;top:0;bottom:0;background:#e8a317}
+.day .lbl{position:relative;height:16px;margin-top:3px;font-size:.72rem;color:#6b7688}
+.day .lbl i{position:absolute;font-style:normal;transform:translateX(-50%)}
+.day .hrs{margin-top:2px;font-size:.95rem;font-weight:600;color:#b45309}
+
+/* Aufgaben */
+.bar{height:6px;border-radius:3px;background:#d5dde6;margin:10px 0}
+.bar div{height:6px;border-radius:3px;background:#14213d}
+.q{background:#fff;border-radius:18px;padding:22px 16px;text-align:center;margin:10px 0;border-bottom:8px solid #0f766e}
+.q.gt{border-bottom-color:#e8a317}
+.q .prompt{font-size:.95rem;color:#44506a;margin-bottom:8px}
+.q .big{font-size:2rem;font-weight:700;line-height:1.2;word-break:break-word}
+.q .sent{font-size:1.35rem;line-height:1.5}
+.q .gap{display:inline-block;min-width:54px;border-bottom:3px solid #14213d;margin:0 4px}
+.opt{display:block;width:100%;margin:8px 0;padding:14px;font-size:1.15rem;font-weight:600;border-radius:12px;border:2px solid #b9c4d1;background:#fff;color:#14213d}
+.opt.ok{background:#d9f2df;border-color:#2e9e4f}
+.opt.bad{background:#fde0e0;border-color:#d64545}
+.opts3{display:flex;margin:0 -4px}
+.opts3 .opt{flex:1 1 0;margin:8px 4px}
+.fb{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:1.05rem;text-align:center}
+.fb.ok{background:#d9f2df;color:#14532d}
+.fb.bad{background:#fde0e0;color:#7f1d1d}
+input.wi{display:block;width:100%;margin:14px 0 4px;padding:14px;font-size:1.3rem;text-align:center;border:2px solid #b9c4d1;border-radius:12px;background:#fff;color:#14213d}
+.hint{margin-top:8px;font-size:1.2rem;letter-spacing:3px;color:#6b7688}
+.rule{margin-top:14px;padding:10px 12px;background:#fff;border-radius:12px;text-align:center;font-size:1.05rem;color:#14213d}
+.slots{display:flex;flex-wrap:wrap;margin:6px -3px}
+.slot{flex:1 1 44%;margin:3px;padding:10px 8px;border-radius:10px;border:2px dashed #b9c4d1;background:transparent;text-align:center;font-size:1.05rem;min-height:46px;color:#8a95a6}
+.slot.f{border:2px solid #0f766e;background:#fff;color:#14213d;font-weight:700}
+.slot.gt.f{border-color:#e8a317}
+.chips{display:flex;flex-wrap:wrap;margin:8px -3px}
+.chip{flex:1 1 44%;margin:3px;padding:12px 8px;border:2px solid #b9c4d1;border-radius:12px;background:#fff;color:#14213d;text-align:center}
+.chip b{display:block;font-size:1.15rem}
+.chip small{display:block;margin-top:2px;font-size:.85rem;color:#6b7688;font-weight:400}
+.chip.shake{border-color:#d64545;background:#fde0e0;-webkit-animation:shake .35s;animation:shake .35s}
+.res{background:#fff;border-radius:18px;padding:30px 16px;text-align:center;margin:12px 0}
+.res .em{font-size:3rem}
+.res .sc{font-size:1.6rem;font-weight:700;margin-top:6px}
+@-webkit-keyframes shake{0%,100%{-webkit-transform:translateX(0)}25%{-webkit-transform:translateX(-6px)}75%{-webkit-transform:translateX(6px)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media (prefers-reduced-motion:reduce){.chip.shake{-webkit-animation:none;animation:none}}
+@media (max-width:380px){.card .big{font-size:1.9rem}.week span{width:30px}}
+</style>
+</head>
+<body>
+<div id="app">
+ <div id="start" style="display:none">
+  <h1>Wochentage &amp; Tageszeiten</h1>
+  <p>Wähle deine Sprache · Choose your language</p>
+  <div class="langgrid" id="langs"></div>
+ </div>
+ <div id="main" style="display:none">
+  <div class="top"><h1 id="ttl"></h1><button type="button" class="langbtn" id="langbtn" onclick="showStart()"></button></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="seg" id="filters"></div>
+  <div class="seg" id="dirs"></div>
+  <div id="panel"></div>
+ </div>
+</div>
+
+<script>
+(function () {
+'use strict';
+
+/* ---------- Sprachen ---------- */
+var LANGS = [
+ {c:'uk', n:'Українська'},
+ {c:'ru', n:'Русский'},
+ {c:'en', n:'English'},
+ {c:'be', n:'Беларуская'},
+ {c:'bn', n:'বাংলা'},
+ {c:'tr', n:'Türkçe'},
+ {c:'fr', n:'Français'},
+ {c:'ar', n:'العربية (سوريا)'}
+];
+
+/* ---------- Oberfläche ---------- */
+var UI = {
+ title:{uk:'Дні тижня та пори доби', ru:'Дни недели и время суток', en:'Weekdays & times of day', be:'Дні тыдня і часткі сутак', bn:'সপ্তাহের দিন ও দিনের সময়', tr:'Haftanın günleri ve günün bölümleri', fr:'Jours de la semaine et moments de la journée', ar:'أيام الأسبوع وأوقات اليوم'},
+ cards:{uk:'Картки', ru:'Карточки', en:'Cards', be:'Карткі', bn:'কার্ড', tr:'Kartlar', fr:'Cartes', ar:'بطاقات'},
+ quiz:{uk:'Тест', ru:'Тест', en:'Quiz', be:'Тэст', bn:'কুইজ', tr:'Test', fr:'Quiz', ar:'اختبار'},
+ write:{uk:'Письмо', ru:'Письмо', en:'Writing', be:'Пісьмо', bn:'লেখা', tr:'Yazma', fr:'Écriture', ar:'كتابة'},
+ order:{uk:'Порядок', ru:'Порядок', en:'Order', be:'Парадак', bn:'ক্রম', tr:'Sıralama', fr:'Ordre', ar:'ترتيب'},
+ week:{uk:'Дні тижня', ru:'Дни недели', en:'Weekdays', be:'Дні тыдня', bn:'সপ্তাহের দিন', tr:'Haftanın günleri', fr:'Jours de la semaine', ar:'أيام الأسبوع'},
+ time:{uk:'Пори доби', ru:'Время суток', en:'Times of day', be:'Часткі сутак', bn:'দিনের সময়', tr:'Günün bölümleri', fr:'Moments de la journée', ar:'أوقات اليوم'},
+ all:{uk:'Усе', ru:'Всё', en:'All', be:'Усё', bn:'সব', tr:'Hepsi', fr:'Tout', ar:'الكل'},
+ flip:{uk:'Натисніть, щоб перевернути', ru:'Нажмите, чтобы перевернуть', en:'Tap to flip', be:'Націсніце, каб перагарнуць', bn:'উল্টাতে ট্যাপ করুন', tr:'Çevirmek için dokunun', fr:'Touchez pour retourner', ar:'اضغط للقلب'},
+ back:{uk:'Назад', ru:'Назад', en:'Back', be:'Назад', bn:'পেছনে', tr:'Geri', fr:'Retour', ar:'رجوع'},
+ next:{uk:'Далі', ru:'Далее', en:'Next', be:'Далей', bn:'পরবর্তী', tr:'İleri', fr:'Suivant', ar:'التالي'},
+ check:{uk:'Перевірити', ru:'Проверить', en:'Check', be:'Праверыць', bn:'যাচাই করুন', tr:'Kontrol et', fr:'Vérifier', ar:'تحقق'},
+ correct:{uk:'Правильно!', ru:'Верно!', en:'Correct!', be:'Правільна!', bn:'সঠিক!', tr:'Doğru!', fr:'Correct !', ar:'صحيح!'},
+ wrong:{uk:'Неправильно. Правильно:', ru:'Неверно. Правильно:', en:'Not quite. Correct:', be:'Няправільна. Правільна:', bn:'ভুল হয়েছে। সঠিক উত্তর:', tr:'Yanlış. Doğrusu:', fr:'Pas tout à fait. Réponse :', ar:'غير صحيح. الصحيح:'},
+ score:{uk:'Результат', ru:'Результат', en:'Score', be:'Вынік', bn:'স্কোর', tr:'Puan', fr:'Score', ar:'النتيجة'},
+ again:{uk:'Ще раз', ru:'Ещё раз', en:'Try again', be:'Яшчэ раз', bn:'আবার', tr:'Tekrar', fr:'Recommencer', ar:'من جديد'},
+ hint:{uk:'Підказка', ru:'Подсказка', en:'Hint', be:'Падказка', bn:'ইঙ্গিত', tr:'İpucu', fr:'Indice', ar:'تلميح'},
+ mistakes:{uk:'Помилки', ru:'Ошибки', en:'Mistakes', be:'Памылкі', bn:'ভুল', tr:'Hata', fr:'Erreurs', ar:'أخطاء'},
+ qWrite:{uk:'Напишіть слово німецькою.', ru:'Напишите слово по-немецки.', en:'Write the German word.', be:'Напішыце слова па-нямецку.', bn:'জার্মান শব্দটি লিখুন।', tr:'Almanca kelimeyi yazın.', fr:'Écrivez le mot allemand.', ar:'اكتب الكلمة الألمانية.'},
+ qOrder:{uk:'Натискайте слова в правильному порядку.', ru:'Нажимайте слова в правильном порядке.', en:'Tap the words in the correct order.', be:'Націскайце словы ў правільным парадку.', bn:'শব্দগুলো সঠিক ক্রমে ট্যাপ করুন।', tr:'Kelimelere doğru sırayla dokunun.', fr:'Touchez les mots dans le bon ordre.', ar:'اضغط على الكلمات بالترتيب الصحيح.'},
+ qPrep:{uk:'Виберіть правильну форму.', ru:'Выберите правильную форму.', en:'Choose the correct form.', be:'Выберыце правільную форму.', bn:'সঠিক রূপটি বেছে নিন।', tr:'Doğru biçimi seçin.', fr:'Choisissez la bonne forme.', ar:'اختر الصيغة الصحيحة.'}
+};
+
+/* ---------- Wortschatz ---------- */
+/* Zeiten: [Start, Ende] in Stunden; Nacht geht über Mitternacht (22-6). */
+var ITEMS = [
+ {id:'mo',g:'w',n:0,art:'',de:'Montag',adv:'montags',alt:[],prep:'am',s:'Ich habe ___ Montag Deutschkurs.',
+  tr:{en:'Monday',ru:'понедельник',uk:'понеділок',be:'панядзелак',bn:'সোমবার',tr:'Pazartesi',fr:'lundi',ar:'الاثنين'}},
+ {id:'di',g:'w',n:1,art:'',de:'Dienstag',adv:'dienstags',alt:[],prep:'am',s:'Wir gehen ___ Dienstag einkaufen.',
+  tr:{en:'Tuesday',ru:'вторник',uk:'вівторок',be:'аўторак',bn:'মঙ্গলবার',tr:'Salı',fr:'mardi',ar:'الثلاثاء'}},
+ {id:'mi',g:'w',n:2,art:'',de:'Mittwoch',adv:'mittwochs',alt:[],prep:'am',s:'Ich arbeite ___ Mittwoch nicht.',
+  tr:{en:'Wednesday',ru:'среда',uk:'середа',be:'серада',bn:'বুধবার',tr:'Çarşamba',fr:'mercredi',ar:'الأربعاء'}},
+ {id:'do',g:'w',n:3,art:'',de:'Donnerstag',adv:'donnerstags',alt:[],prep:'am',s:'Ich besuche ___ Donnerstag meine Freunde.',
+  tr:{en:'Thursday',ru:'четверг',uk:'четвер',be:'чацвер',bn:'বৃহস্পতিবার',tr:'Perşembe',fr:'jeudi',ar:'الخميس'}},
+ {id:'fr',g:'w',n:4,art:'',de:'Freitag',adv:'freitags',alt:[],prep:'am',s:'Wir haben ___ Freitag Prüfung.',
+  tr:{en:'Friday',ru:'пятница',uk:'п’ятниця',be:'пятніца',bn:'শুক্রবার',tr:'Cuma',fr:'vendredi',ar:'الجمعة'}},
+ {id:'sa',g:'w',n:5,art:'',de:'Samstag',adv:'samstags',alt:['sonnabend'],prep:'am',s:'Ich schlafe ___ Samstag lange.',
+  tr:{en:'Saturday',ru:'суббота',uk:'субота',be:'субота',bn:'শনিবার',tr:'Cumartesi',fr:'samedi',ar:'السبت'}},
+ {id:'so',g:'w',n:6,art:'',de:'Sonntag',adv:'sonntags',alt:[],prep:'am',s:'Meine Familie kommt ___ Sonntag.',
+  tr:{en:'Sunday',ru:'воскресенье',uk:'неділя',be:'нядзеля',bn:'রবিবার',tr:'Pazar',fr:'dimanche',ar:'الأحد'}},
+
+ {id:'morgen',g:'t',n:0,art:'der',de:'Morgen',adv:'morgens',alt:[],prep:'am',icon:'\uD83C\uDF05',from:6,to:9,hours:'ca. 6–9 Uhr',greet:'Guten Morgen!',s:'Ich trinke ___ Morgen Kaffee.',
+  tr:{en:'morning',ru:'утро',uk:'ранок',be:'раніца',bn:'সকাল',tr:'sabah',fr:'le matin',ar:'الصباح'}},
+ {id:'vormittag',g:'t',n:1,art:'der',de:'Vormittag',adv:'vormittags',alt:[],prep:'am',icon:'\uD83C\uDF24\uFE0F',from:9,to:12,hours:'ca. 9–12 Uhr',greet:'Guten Tag!',s:'Ich habe ___ Vormittag Unterricht.',
+  tr:{en:'late morning',ru:'до обеда',uk:'до обіду',be:'да абеду',bn:'দুপুরের আগে',tr:'öğleden önce',fr:'la matinée',ar:'قبل الظهر'}},
+ {id:'mittag',g:'t',n:2,art:'der',de:'Mittag',adv:'mittags',alt:[],prep:'am',icon:'\u2600\uFE0F',from:12,to:14,hours:'ca. 12–14 Uhr',greet:'Guten Tag!',s:'Wir essen ___ Mittag zusammen.',
+  tr:{en:'noon / midday',ru:'полдень',uk:'полудень',be:'поўдзень',bn:'দুপুর',tr:'öğle',fr:'midi',ar:'الظهر'}},
+ {id:'nachmittag',g:'t',n:3,art:'der',de:'Nachmittag',adv:'nachmittags',alt:[],prep:'am',icon:'\u26C5',from:14,to:18,hours:'ca. 14–18 Uhr',greet:'Guten Tag!',s:'Ich mache ___ Nachmittag Hausaufgaben.',
+  tr:{en:'afternoon',ru:'после обеда',uk:'після обіду',be:'пасля абеду',bn:'বিকেল',tr:'öğleden sonra',fr:'l’après-midi',ar:'بعد الظهر'}},
+ {id:'abend',g:'t',n:4,art:'der',de:'Abend',adv:'abends',alt:[],prep:'am',icon:'\uD83C\uDF06',from:18,to:22,hours:'ca. 18–22 Uhr',greet:'Guten Abend!',s:'Ich sehe ___ Abend fern.',
+  tr:{en:'evening',ru:'вечер',uk:'вечір',be:'вечар',bn:'সন্ধ্যা',tr:'akşam',fr:'le soir',ar:'المساء'}},
+ {id:'nacht',g:'t',n:5,art:'die',de:'Nacht',adv:'nachts',alt:[],prep:'in der',icon:'\uD83C\uDF19',from:22,to:6,hours:'ca. 22–6 Uhr',greet:'Gute Nacht!',s:'Ich schlafe ___ Nacht.',
+  tr:{en:'night',ru:'ночь',uk:'ніч',be:'ноч',bn:'রাত',tr:'gece',fr:'la nuit',ar:'الليل'}}
+];
+var WD = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+
+/* ---------- Zustand ---------- */
+var S = {lang:null, mode:'cards', filter:'all', dir:'d2l', c:null, q:null, w:null, o:null, p:null};
+
+/* ---------- Helfer ---------- */
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function t(k){var e=UI[k];return e[S.lang]||e.en;}
+function shuffle(a){var b=a.slice(),i,j,x;for(i=b.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));x=b[i];b[i]=b[j];b[j]=x;}return b;}
+function pool(){var r=[],i;for(i=0;i<ITEMS.length;i++){if(S.filter==='all'||ITEMS[i].g===S.filter){r.push(ITEMS[i]);}}return r;}
+function group(g){var r=[],i;for(i=0;i<ITEMS.length;i++){if(ITEMS[i].g===g){r.push(ITEMS[i]);}}return r;}
+function isRtl(){return S.lang==='ar';}
+function langName(){var i;for(i=0;i<LANGS.length;i++){if(LANGS[i].c===S.lang){return LANGS[i].n;}}return '';}
+function deText(it){return (it.art?it.art+' ':'')+it.de;}
+function phrase(it){return it.prep+' '+it.de;}
+function deSpan(txt){return '<span class="de" lang="de" dir="ltr">'+esc(txt)+'</span>';}
+function trSpan(it){return '<span class="tr" lang="'+S.lang+'" dir="'+(isRtl()?'rtl':'ltr')+'">'+esc(it.tr[S.lang])+'</span>';}
+function uiSpan(k){return '<span lang="'+S.lang+'">'+esc(t(k))+'</span>';}
+function gcls(it){return it.g==='t'?' gt':'';}
+function saveLang(){try{window.localStorage.setItem('wtLang',S.lang);}catch(e){}}
+function loadLang(){try{return window.localStorage.getItem('wtLang');}catch(e){return null;}}
+
+/* Grafiken: Wochenleiste und 24-Stunden-Leiste */
+function weekStrip(n){
+ var h='<div class="week" dir="ltr">',i;
+ for(i=0;i<7;i++){h+='<span class="'+(i===n?'on':(i>4?'we':''))+'">'+WD[i]+'</span>';}
+ return h+'</div>';
+}
+function dayBar(it){
+ var h='<div class="day" dir="ltr"><div class="trk">',a=it.from,b=it.to;
+ if(a<b){h+='<div class="seg1" style="left:'+(a/24*100)+'%;width:'+((b-a)/24*100)+'%"></div>';}
+ else{h+='<div class="seg1" style="left:'+(a/24*100)+'%;width:'+((24-a)/24*100)+'%"></div><div class="seg1" style="left:0;width:'+(b/24*100)+'%"></div>';}
+ h+='</div><div class="lbl"><i style="left:0%;transform:none">0</i><i style="left:25%">6</i><i style="left:50%">12</i><i style="left:75%">18</i><i style="left:100%;transform:translateX(-100%)">24</i></div>';
+ h+='<div class="hrs" lang="de">'+esc(it.hours)+'</div></div>';
+ return h;
+}
+function visual(it){return it.g==='w'?weekStrip(it.n):'<div class="icon">'+it.icon+'</div>'+dayBar(it);}
+
+/* ---------- Start / Sprache ---------- */
+function buildLangs(){
+ var h='',i;
+ for(i=0;i<LANGS.length;i++){h+='<button type="button" lang="'+LANGS[i].c+'" onclick="WT.pick(\''+LANGS[i].c+'\')">'+esc(LANGS[i].n)+'</button>';}
+ $('langs').innerHTML=h;
+}
+function showStart(){$('main').style.display='none';$('start').style.display='block';}
+function pick(c){S.lang=c;saveLang();initMode();render();}
+
+/* ---------- Modi starten ---------- */
+function initMode(){
+ if(S.mode==='cards'){S.c={list:pool(),i:0,flip:false};}
+ else if(S.mode==='quiz'){S.q={list:shuffle(pool()),i:0,score:0,answered:false,sel:null,opts:null,done:false};}
+ else if(S.mode==='write'){S.w={list:shuffle(pool()),i:0,score:0,state:0,hint:false,val:'',done:false};}
+ else if(S.mode==='order'){
+  var kind=S.filter==='all'?(Math.random()<0.5?'w':'t'):S.filter;
+  var items=group(kind);
+  S.o={kind:kind,items:items,chips:shuffle(items),next:0,mistakes:0,bad:null};
+ }
+ else if(S.mode==='prep'){S.p={list:shuffle(pool()),i:0,score:0,answered:false,sel:null,done:false};}
+}
+function setMode(m){S.mode=m;initMode();render();}
+function setFilter(f){S.filter=f;initMode();render();}
+function setDir(d){S.dir=d;initMode();render();}
+
+/* ---------- Rendern ---------- */
+function render(){
+ if(!S.lang){showStart();return;}
+ $('start').style.display='none';
+ $('main').style.display='block';
+ $('app').setAttribute('dir',isRtl()?'rtl':'ltr');
+ $('ttl').innerHTML='<span lang="'+S.lang+'">'+esc(t('title'))+'</span>';
+ $('langbtn').innerHTML='<span lang="'+S.lang+'">'+esc(langName())+'</span>';
+
+ var modes=[['cards','cards'],['quiz','quiz'],['write','write'],['order','order'],['prep',null]],i,h='';
+ for(i=0;i<modes.length;i++){
+  h+='<button type="button" class="tab'+(S.mode===modes[i][0]?' on':'')+'" onclick="WT.mode(\''+modes[i][0]+'\')">'+
+     (modes[i][1]?uiSpan(modes[i][1]):'<span lang="de" dir="ltr">am / in der</span>')+'</button>';
+ }
+ $('tabs').innerHTML=h;
+
+ var fl=[['all','all',''],['w','week','w'],['t','time','t']];h='';
+ for(i=0;i<fl.length;i++){
+  h+='<button type="button" class="'+fl[i][2]+(S.filter===fl[i][0]?' on':'')+'" onclick="WT.filter(\''+fl[i][0]+'\')">'+uiSpan(fl[i][1])+'</button>';
+ }
+ $('filters').innerHTML=h;
+
+ if(S.mode==='cards'||S.mode==='quiz'){
+  $('dirs').style.display='flex';
+  $('dirs').innerHTML='<button type="button" dir="ltr" class="'+(S.dir==='d2l'?'on':'')+'" onclick="WT.dir(\'d2l\')"><span lang="de">Deutsch</span> → <span lang="'+S.lang+'">'+esc(langName())+'</span></button>'+
+   '<button type="button" dir="ltr" class="'+(S.dir==='l2d'?'on':'')+'" onclick="WT.dir(\'l2d\')"><span lang="'+S.lang+'">'+esc(langName())+'</span> → <span lang="de">Deutsch</span></button>';
+ }else{$('dirs').style.display='none';$('dirs').innerHTML='';}
+
+ var p='';
+ if(S.mode==='cards'){p=rCards();}
+ else if(S.mode==='quiz'){p=rQuiz();}
+ else if(S.mode==='write'){p=rWrite();}
+ else if(S.mode==='order'){p=rOrder();}
+ else{p=rPrep();}
+ $('panel').innerHTML=p;
+ if(S.mode==='write'&&S.w&&!S.w.done&&!S.w.state){setTimeout(function(){var e=$('wi');if(e){e.focus();}},60);}
+}
+
+function bar(i,n){return '<div class="bar"><div style="width:'+Math.round(i/n*100)+'%"></div></div>';}
+function result(score,n){
+ return '<div class="res"><div class="em">'+(score===n?'\uD83C\uDF89':'\uD83D\uDC4D')+'</div><div class="sc">'+uiSpan('score')+': '+score+' / '+n+'</div>'+
+  '<button type="button" class="act" onclick="WT.restart()">'+uiSpan('again')+'</button></div>';
+}
+function restart(){initMode();render();}
+
+/* ---------- Karten ---------- */
+function rCards(){
+ var c=S.c,it=c.list[c.i],front=(S.dir==='d2l'),showDe=(front!==c.flip),h;
+ h='<div class="card'+gcls(it)+'" onclick="WT.flip()">';
+ if(showDe){
+  h+='<div class="big">'+deSpan(deText(it))+'</div>';
+  h+='<div class="sub" dir="ltr" lang="de">'+esc(phrase(it))+' · '+esc(it.adv)+'</div>';
+  if(it.g==='t'){h+='<div class="sub" dir="ltr" lang="de">'+esc(it.greet)+'</div>';}
+ }else{
+  h+='<div class="big">'+trSpan(it)+'</div>';
+ }
+ h+=visual(it);
+ h+='<div class="flipnote">'+uiSpan('flip')+'</div></div>';
+ h+='<div class="nav"><button type="button" onclick="WT.cprev()">'+uiSpan('back')+'</button>'+
+    '<span class="cnt" dir="ltr">'+(c.i+1)+' / '+c.list.length+'</span>'+
+    '<button type="button" class="sh" onclick="WT.cshuf()" aria-label="Shuffle">\uD83D\uDD00</button>'+
+    '<button type="button" onclick="WT.cnext()">'+uiSpan('next')+'</button></div>';
+ return h;
+}
+function flipCard(){S.c.flip=!S.c.flip;render();}
+function cNext(){var c=S.c;c.i=(c.i+1)%c.list.length;c.flip=false;render();}
+function cPrev(){var c=S.c;c.i=(c.i+c.list.length-1)%c.list.length;c.flip=false;render();}
+function cShuf(){S.c.list=shuffle(S.c.list);S.c.i=0;S.c.flip=false;render();}
+
+/* ---------- Quiz ---------- */
+function makeOpts(it){
+ var same=group(it.g),others=[],i;
+ for(i=0;i<same.length;i++){if(same[i].id!==it.id){others.push(same[i]);}}
+ var o=shuffle(others).slice(0,3);o.push(it);
+ return shuffle(o);
+}
+function rQuiz(){
+ var q=S.q;
+ if(q.done){return result(q.score,q.list.length);}
+ var it=q.list[q.i],d2l=(S.dir==='d2l'),h,i;
+ if(!q.opts){q.opts=makeOpts(it);}
+ h=bar(q.i,q.list.length);
+ h+='<div class="q'+gcls(it)+'"><div class="big">'+(d2l?deSpan(deText(it)):trSpan(it))+'</div></div>';
+ for(i=0;i<q.opts.length;i++){
+  var cls='';
+  if(q.answered){if(q.opts[i].id===it.id){cls=' ok';}else if(q.sel===i){cls=' bad';}}
+  h+='<button type="button" class="opt'+cls+'" onclick="WT.qans('+i+')">'+(d2l?trSpan(q.opts[i]):deSpan(deText(q.opts[i])))+'</button>';
+ }
+ if(q.answered){
+  h+='<button type="button" class="act" onclick="WT.qnext()">'+uiSpan('next')+'</button>';
+ }
+ return h;
+}
+function qAns(k){var q=S.q;if(q.answered){return;}q.answered=true;q.sel=k;if(q.opts[k].id===q.list[q.i].id){q.score++;}render();}
+function qNext(){var q=S.q;q.i++;q.answered=false;q.sel=null;q.opts=null;if(q.i>=q.list.length){q.done=true;}render();}
+
+/* ---------- Schreiben ---------- */
+function norm(s){s=String(s).toLowerCase().replace(/^\s+|\s+$/g,'').replace(/\s+/g,' ');return s.replace(/^(der|die|das) /,'');}
+function rWrite(){
+ var w=S.w;
+ if(w.done){return result(w.score,w.list.length);}
+ var it=w.list[w.i],h,dots='',k;
+ h=bar(w.i,w.list.length);
+ h+='<div class="q'+gcls(it)+'"><div class="prompt">'+uiSpan('qWrite')+'</div><div class="big">'+trSpan(it)+'</div>';
+ if(it.g==='t'){h+='<div class="day" style="margin:12px auto 0">'+'<div class="icon">'+it.icon+'</div><div class="hrs" lang="de" dir="ltr">'+esc(it.hours)+'</div></div>';}
+ h+='</div>';
+ h+='<input id="wi" class="wi" type="text" dir="ltr" lang="de" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value="'+esc(w.val)+'"'+(w.state?' readonly':'')+
+    ' oninput="WT.wval(this.value)" onkeydown="WT.wkey(event)">';
+ if(w.hint&&!w.state){
+  for(k=1;k<it.de.length;k++){dots+=' ·';}
+  h+='<div class="hint" dir="ltr" lang="de">'+(it.art?esc(it.art)+' ':'')+esc(it.de.charAt(0))+dots+'</div>';
+ }
+ if(w.state===1){h+='<div class="fb ok">'+uiSpan('correct')+' <b lang="de" dir="ltr">'+esc(deText(it))+'</b></div>';}
+ if(w.state===2){h+='<div class="fb bad">'+uiSpan('wrong')+' <b lang="de" dir="ltr">'+esc(deText(it))+'</b></div>';}
+ if(w.state){h+='<button type="button" class="act" onclick="WT.wnext()">'+uiSpan('next')+'</button>';}
+ else{
+  h+='<button type="button" class="act" onclick="WT.wcheck()">'+uiSpan('check')+'</button>'+
+     '<button type="button" class="act alt" onclick="WT.whint()">'+uiSpan('hint')+'</button>';
+ }
+ return h;
+}
+function wCheck(){
+ var w=S.w,it=w.list[w.i],v=norm(w.val),ans=[it.de].concat(it.alt||[]),ok=false,k;
+ if(w.state||!v){return;}
+ for(k=0;k<ans.length;k++){if(norm(ans[k])===v){ok=true;}}
+ w.state=ok?1:2;if(ok){w.score++;}
+ render();
+}
+function wNext(){var w=S.w;w.i++;w.val='';w.state=0;w.hint=false;if(w.i>=w.list.length){w.done=true;}render();}
+function wKey(e){var k=e.key||e.keyCode;if(k==='Enter'||k===13){if(S.w.state){wNext();}else{wCheck();}}}
+function wHint(){S.w.hint=true;render();}
+
+/* ---------- Reihenfolge ---------- */
+function rOrder(){
+ var o=S.o,h='',i,n=o.items.length,done=(o.next>=n),cls=(o.kind==='t'?' gt':'');
+ h+=bar(o.next,n);
+ h+='<div class="prompt" style="text-align:center;color:#44506a;margin:6px 0">'+uiSpan('qOrder')+'</div>';
+ h+='<div class="slots" dir="ltr">';
+ for(i=0;i<n;i++){
+  if(i<o.next){h+='<div class="slot f'+cls+'" lang="de">'+esc(deText(o.items[i]))+'</div>';}
+  else{h+='<div class="slot">'+(i+1)+'</div>';}
+ }
+ h+='</div>';
+ if(done){
+  h+='<div class="fb ok">'+uiSpan('correct')+' · '+uiSpan('mistakes')+': '+o.mistakes+'</div>';
+  h+='<button type="button" class="act" onclick="WT.restart()">'+uiSpan('again')+'</button>';
+  return h;
+ }
+ h+='<div class="chips">';
+ for(i=0;i<o.chips.length;i++){
+  var it=o.chips[i],placed=false,j;
+  for(j=0;j<o.next;j++){if(o.items[j].id===it.id){placed=true;}}
+  if(placed){continue;}
+  h+='<button type="button" class="chip'+(o.bad===it.id?' shake':'')+'" onclick="WT.opick(\''+it.id+'\')"><b lang="de" dir="ltr">'+esc(deText(it))+'</b><small>'+trSpan(it)+'</small></button>';
+ }
+ h+='</div>';
+ o.bad=null;
+ return h;
+}
+function oPick(id){
+ var o=S.o;
+ if(o.next>=o.items.length){return;}
+ if(o.items[o.next].id===id){o.next++;}else{o.mistakes++;o.bad=id;}
+ render();
+}
+
+/* ---------- am / in der ---------- */
+function rPrep(){
+ var p=S.p;
+ if(p.done){return result(p.score,p.list.length);}
+ var it=p.list[p.i],opts=['am','im','in der'],h,i,cls,parts=it.s.split('___');
+ h=bar(p.i,p.list.length);
+ h+='<div class="q'+gcls(it)+'"><div class="prompt">'+uiSpan('qPrep')+'</div><div class="sent" lang="de" dir="ltr">'+esc(parts[0])+
+    (p.answered?'<b>'+esc(it.prep)+'</b>':'<span class="gap"></span>')+esc(parts[1])+'</div></div>';
+ h+='<div class="opts3" dir="ltr">';
+ for(i=0;i<opts.length;i++){
+  cls='';
+  if(p.answered){if(opts[i]===it.prep){cls=' ok';}else if(p.sel===i){cls=' bad';}}
+  h+='<button type="button" class="opt'+cls+'" lang="de" onclick="WT.pans('+i+')">'+opts[i]+'</button>';
+ }
+ h+='</div>';
+ h+='<div class="rule" lang="de" dir="ltr">am Montag · am Morgen · am Abend<br>in der Nacht</div>';
+ if(p.answered){h+='<button type="button" class="act" onclick="WT.pnext()">'+uiSpan('next')+'</button>';}
+ return h;
+}
+function pAns(k){
+ var p=S.p,opts=['am','im','in der'];
+ if(p.answered){return;}
+ p.answered=true;p.sel=k;if(opts[k]===p.list[p.i].prep){p.score++;}
+ render();
+}
+function pNext(){var p=S.p;p.i++;p.answered=false;p.sel=null;if(p.i>=p.list.length){p.done=true;}render();}
+
+/* ---------- Öffentliche Schnittstelle für onclick ---------- */
+window.showStart=showStart;
+window.WT={
+ pick:pick,mode:setMode,filter:setFilter,dir:setDir,restart:restart,
+ flip:flipCard,cnext:cNext,cprev:cPrev,cshuf:cShuf,
+ qans:qAns,qnext:qNext,
+ wval:function(v){S.w.val=v;},wkey:wKey,wcheck:wCheck,wnext:wNext,whint:wHint,
+ opick:oPick,pans:pAns,pnext:pNext
+};
+
+/* ---------- Start ---------- */
+buildLangs();
+var saved=loadLang(),i,ok=false;
+for(i=0;i<LANGS.length;i++){if(LANGS[i].c===saved){ok=true;}}
+if(ok){S.lang=saved;initMode();render();}else{showStart();}
+})();
+</script>
+</body>
+</html>
