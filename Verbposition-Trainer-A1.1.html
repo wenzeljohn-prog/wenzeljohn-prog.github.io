@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Verbposition-Trainer A1.1</title>
+<style>
+  :root{
+    --blue:#2563eb; --blue-light:#dbeafe;
+    --purple:#7c3aed; --purple-light:#ede9fe;
+    --orange:#ea580c; --orange-light:#ffedd5;
+    --green:#16a34a; --green-light:#dcfce7;
+    --red:#dc2626; --red-light:#fee2e2;
+    --gray:#475569; --gray-light:#f1f5f9;
+    --bg:#f8fafc; --card:#ffffff; --text:#1e293b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--text); padding:16px; -webkit-tap-highlight-color:transparent;
+  }
+  .wrap{max-width:640px;margin:0 auto;}
+  h1{font-size:1.35rem;text-align:center;margin:8px 0 4px;}
+  .subtitle{text-align:center;color:var(--gray);font-size:0.95rem;margin-bottom:20px;}
+  .card{
+    background:var(--card); border-radius:16px; padding:20px;
+    box-shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+    margin-bottom:16px;
+  }
+  label{display:block;font-weight:600;margin-bottom:8px;font-size:0.95rem;}
+  select{
+    width:100%; padding:12px; border-radius:10px; border:1px solid #cbd5e1;
+    font-size:1rem; background:#fff; color:var(--text);
+  }
+  button{
+    font-family:inherit; cursor:pointer; border:none; border-radius:10px;
+  }
+  .btn-primary{
+    display:block; width:100%; padding:14px; font-size:1.05rem; font-weight:700;
+    background:var(--blue); color:#fff; margin-top:18px;
+  }
+  .btn-primary:active{opacity:.85;}
+  .btn-secondary{
+    display:block; width:100%; padding:12px; font-size:1rem; font-weight:600;
+    background:var(--gray-light); color:var(--text); margin-top:10px;
+  }
+  .hidden{display:none !important;}
+
+  .top-row{display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; color:var(--gray); margin-bottom:10px;}
+  .badge{
+    display:inline-block; padding:5px 12px; border-radius:999px; font-weight:700; font-size:0.82rem;
+  }
+  .badge.aussage{background:var(--blue-light); color:var(--blue);}
+  .badge.wfrage{background:var(--purple-light); color:var(--purple);}
+  .badge.janein{background:var(--orange-light); color:var(--orange);}
+
+  .instruction{font-size:0.92rem; color:var(--gray); margin-bottom:14px; line-height:1.4;}
+
+  .verb-card{
+    text-align:center; background:var(--gray-light); border:2px dashed #94a3b8;
+    border-radius:12px; padding:12px; margin-bottom:18px;
+  }
+  .verb-card .lbl{font-size:0.78rem; text-transform:uppercase; letter-spacing:.04em; color:var(--gray); margin-bottom:4px;}
+  .verb-card .verb-word{font-size:1.6rem; font-weight:800; color:var(--blue);}
+
+  .sentence-row{
+    display:flex; flex-wrap:wrap; align-items:center; gap:4px;
+    font-size:1.25rem; line-height:2.4; justify-content:center; margin-bottom:16px;
+  }
+  .word{padding:2px 4px; font-weight:500;}
+  .word.verb-inserted{color:var(--green); font-weight:800;}
+  .gap{
+    min-width:26px; height:38px; padding:0 6px; border-radius:8px;
+    background:#eef2f7; border:2px dashed #94a3b8; color:#94a3b8; font-size:1.1rem;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .gap:active{transform:scale(0.95);}
+  .gap.correct{background:var(--green-light); border-color:var(--green); color:var(--green);}
+  .gap.wrong{background:var(--red-light); border-color:var(--red); color:var(--red); animation:shake .35s;}
+  .gap[disabled]{opacity:.35;}
+  @keyframes shake{
+    0%,100%{transform:translateX(0);} 25%{transform:translateX(-4px);} 75%{transform:translateX(4px);}
+  }
+
+  .feedback{
+    text-align:center; font-weight:700; font-size:1.05rem; min-height:1.4rem; margin-bottom:6px;
+  }
+  .feedback.ok{color:var(--green);}
+  .feedback.bad{color:var(--red);}
+
+  .rule-box{
+    background:var(--red-light); border-left:4px solid var(--red); border-radius:8px;
+    padding:12px 14px; margin-top:6px; font-size:0.9rem; line-height:1.5;
+  }
+  .rule-box .rule-de{font-weight:600;}
+  .rule-box .rule-tr{margin-top:6px; color:var(--gray);}
+  .rtl{direction:rtl; text-align:right;}
+
+  .progress-bar{height:6px; background:#e2e8f0; border-radius:999px; overflow:hidden; margin-bottom:14px;}
+  .progress-fill{height:100%; background:var(--blue); transition:width .25s;}
+
+  .score-row{display:flex; justify-content:space-between; font-size:0.85rem; color:var(--gray); margin-bottom:2px;}
+
+  .finish-emoji{font-size:2.6rem; text-align:center; margin-bottom:4px;}
+  .finish-title{text-align:center; font-size:1.3rem; font-weight:800; margin-bottom:10px;}
+  .finish-stats{background:var(--gray-light); border-radius:12px; padding:14px; margin-bottom:6px;}
+  .finish-stats div{display:flex; justify-content:space-between; padding:4px 0; font-size:0.95rem;}
+  .translated-line{font-size:0.85rem; color:var(--gray); margin-top:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🧩 Verbposition-Trainer</h1>
+  <div class="subtitle">A1.1 — Wo steht das Verb?</div>
+
+  <!-- START SCREEN -->
+  <div id="screen-start" class="card">
+    <label id="lbl-lang" for="langSelect">Zusätzliche Sprache für Erklärungen und Menü:</label>
+    <select id="langSelect">
+      <option value="none">Nur Deutsch</option>
+      <option value="en">Deutsch + English</option>
+      <option value="ru">Deutsch + Русский</option>
+      <option value="uk">Deutsch + Українська</option>
+      <option value="tr">Deutsch + Türkçe</option>
+      <option value="ar">Deutsch + العربية</option>
+    </select>
+    <p id="start-instruction" class="instruction" style="margin-top:16px;"></p>
+    <div id="pos-info-box" class="rule-box" style="background:var(--blue-light);border-left-color:var(--blue);margin-top:14px;"></div>
+    <button class="btn-primary" id="btn-start"></button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="screen-quiz" class="card hidden">
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="top-row">
+      <span id="badge-holder"></span>
+      <span id="progress-text"></span>
+    </div>
+    <p class="instruction" id="quiz-instruction"></p>
+
+    <div class="verb-card">
+      <div class="lbl" id="verb-label"></div>
+      <div class="verb-word" id="verb-word"></div>
+    </div>
+
+    <div class="sentence-row" id="sentence-row"></div>
+
+    <div class="feedback" id="feedback"></div>
+    <div id="rule-box-holder"></div>
+
+    <button class="btn-primary hidden" id="btn-next"></button>
+  </div>
+
+  <!-- FINISH SCREEN -->
+  <div id="screen-finish" class="card hidden">
+    <div class="finish-emoji">🎉</div>
+    <div class="finish-title" id="finish-title"></div>
+    <div class="finish-stats" id="finish-stats"></div>
+    <button class="btn-primary" id="btn-restart"></button>
+  </div>
+</div>
+
+<script>
+(function(){
+
+/* ---------------- DATA ---------------- */
+
+var SENTENCES = [
+  // Aussagesätze
+  {type:'aussage', tokens:["Ich","wohne","in","Jena."], verbIndex:1},
+  {type:'aussage', tokens:["Er","kommt","aus","Syrien."], verbIndex:1},
+  {type:'aussage', tokens:["Wir","lernen","Deutsch."], verbIndex:1},
+  {type:'aussage', tokens:["Mein","Bruder","lebt","in","Berlin."], verbIndex:2},
+  {type:'aussage', tokens:["Heute","arbeite","ich","lange."], verbIndex:1},
+  {type:'aussage', tokens:["Meine","Familie","wohnt","in","Bern."], verbIndex:2},
+  {type:'aussage', tokens:["Am","Abend","koche","ich","gern."], verbIndex:2},
+  {type:'aussage', tokens:["Du","sprichst","gut","Deutsch."], verbIndex:1},
+  {type:'aussage', tokens:["Die","Kinder","spielen","im","Garten."], verbIndex:2},
+  {type:'aussage', tokens:["Morgen","fahre","ich","nach","Hause."], verbIndex:1},
+  // W-Fragen
+  {type:'wfrage', tokens:["Wo","wohnst","du?"], verbIndex:1},
+  {type:'wfrage', tokens:["Was","machst","du","heute?"], verbIndex:1},
+  {type:'wfrage', tokens:["Wann","kommt","der","Bus?"], verbIndex:1},
+  {type:'wfrage', tokens:["Wie","heißt","du?"], verbIndex:1},
+  {type:'wfrage', tokens:["Wer","wohnt","hier?"], verbIndex:1},
+  {type:'wfrage', tokens:["Woher","kommst","du?"], verbIndex:1},
+  {type:'wfrage', tokens:["Warum","lernst","du","Deutsch?"], verbIndex:1},
+  {type:'wfrage', tokens:["Wie","viel","kostet","das","Brot?"], verbIndex:2},
+  {type:'wfrage', tokens:["Was","trinkt","deine","Schwester?"], verbIndex:1},
+  {type:'wfrage', tokens:["Wann","beginnt","der","Kurs?"], verbIndex:1},
+  // Ja/Nein-Fragen
+  {type:'janein', tokens:["Wohnst","du","in","Erfurt?"], verbIndex:0},
+  {type:'janein', tokens:["Kommst","du","aus","Polen?"], verbIndex:0},
+  {type:'janein', tokens:["Sprichst","du","Englisch?"], verbIndex:0},
+  {type:'janein', tokens:["Arbeitet","dein","Vater","hier?"], verbIndex:0},
+  {type:'janein', tokens:["Wohnt","deine","Schwester","in","Bern?"], verbIndex:0},
+  {type:'janein', tokens:["Lernt","ihr","Deutsch?"], verbIndex:0},
+  {type:'janein', tokens:["Kommt","der","Bus","bald?"], verbIndex:0},
+  {type:'janein', tokens:["Trinkst","du","Kaffee?"], verbIndex:0},
+  {type:'janein', tokens:["Isst","du","gern","Pizza?"], verbIndex:0},
+  {type:'janein', tokens:["Braucht","ihr","Hilfe?"], verbIndex:0}
+];
+
+var POS_INFO = {
+  title: {de:"💡 Was bedeutet „Position 2\"?", en:"💡 What does \"position 2\" mean?", ru:"💡 Что значит «позиция 2»?", uk:"💡 Що означає «позиція 2»?", tr:"💡 \"2. konum\" ne demek?", ar:"💡 ماذا يعني \"الموضع 2\"؟"},
+  text: {
+    de:"„Position 2\" ist nicht zwangsläufig das 2. Wort, sondern die 2. Information (das 2. Satzglied) im Satz. Ein Satzglied kann aus mehreren Wörtern bestehen, die zusammengehören und nicht getrennt werden. Beispiel: „Mein Bruder\" ist eine Information (Satzglied 1) – deshalb steht das Verb erst nach beiden Wörtern: „Mein Bruder lebt in Berlin.\" Genauso bei „Am Abend\": eine Zeitangabe, ein zusammengehöriges Satzglied – das Verb folgt direkt danach: „Am Abend koche ich gern.\"",
+    en:"\"Position 2\" doesn't necessarily mean the 2nd word, but the 2nd piece of information (the 2nd sentence element). An element can consist of several words that belong together and aren't split up. Example: \"Mein Bruder\" (my brother) is one piece of information (element 1) – so the verb only comes after both words: \"Mein Bruder lebt in Berlin.\" The same goes for \"Am Abend\" (in the evening): a time expression, one connected element – the verb follows right after it: \"Am Abend koche ich gern.\"",
+    ru:"«Позиция 2» — это не обязательно 2-е слово, а 2-й смысловой блок (член предложения). Один член предложения может состоять из нескольких слов, которые относятся друг к другу и не разделяются. Пример: «Mein Bruder» (мой брат) — это один смысловой блок (блок 1), поэтому глагол стоит только после обоих слов: «Mein Bruder lebt in Berlin.» То же самое с «Am Abend» (вечером): обстоятельство времени, единый блок — глагол следует сразу после него: «Am Abend koche ich gern.»",
+    uk:"«Позиція 2» — це не обов'язково 2-ге слово, а 2-й змістовий блок (член речення). Один член речення може складатися з кількох слів, які належать одне до одного і не розділяються. Приклад: «Mein Bruder» (мій брат) — один змістовий блок (блок 1), тому дієслово стоїть лише після обох слів: «Mein Bruder lebt in Berlin.» Так само з «Am Abend» (увечері): обставина часу, єдиний блок — дієслово йде одразу після нього: «Am Abend koche ich gern.»",
+    tr:"\"2. konum\", cümledeki 2. kelime anlamına gelmek zorunda değildir; 2. bilgi birimi (cümle ögesi) anlamına gelir. Bir öge, birbirine ait olan ve ayrılmayan birden fazla kelimeden oluşabilir. Örnek: \"Mein Bruder\" (kardeşim) tek bir bilgi birimidir (öge 1) – bu yüzden fiil ancak her iki kelimeden sonra gelir: \"Mein Bruder lebt in Berlin.\" Aynı durum \"Am Abend\" (akşamları) için de geçerlidir: bir zaman ifadesi, tek parça bir öge – fiil hemen ardından gelir: \"Am Abend koche ich gern.\"",
+    ar:"\"الموضع 2\" لا يعني بالضرورة الكلمة الثانية، بل المعلومة الثانية (العنصر الثاني في الجملة). يمكن أن يتكوّن العنصر من عدة كلمات مرتبطة ببعضها ولا تُفصل. مثال: \"Mein Bruder\" (أخي) معلومة واحدة (العنصر 1) - لذلك يأتي الفعل فقط بعد الكلمتين معًا: \"Mein Bruder lebt in Berlin.\" وينطبق الأمر نفسه على \"Am Abend\" (في المساء): ظرف زمان، عنصر واحد متماسك - يأتي الفعل مباشرة بعده: \"Am Abend koche ich gern.\""
+  }
+};
+
+var TYPE_LABEL = {
+  aussage: {de:"Aussagesatz", en:"Statement", ru:"Повествовательное предложение", uk:"Розповідне речення", tr:"Düz cümle", ar:"جملة خبرية"},
+  wfrage:  {de:"W-Frage", en:"W-question", ru:"Вопрос с вопросительным словом", uk:"Питання з питальним словом", tr:"Soru kelimeli soru", ar:"سؤال بأداة استفهام"},
+  janein:  {de:"Ja/Nein-Frage", en:"Yes/No question", ru:"Общий вопрос (да/нет)", uk:"Загальне питання (так/ні)", tr:"Evet/Hayır sorusu", ar:"سؤال نعم/لا"}
+};
+
+var RULES = {
+  aussage: {
+    de:"Regel: Im Aussagesatz steht das konjugierte Verb an Position 2 – egal, was am Satzanfang steht (Subjekt oder z. B. eine Zeitangabe). Wichtig: Position 2 heißt 2. Information (Satzglied), nicht zwangsläufig 2. Wort – ein Satzglied wie „Mein Bruder\" oder „Am Abend\" kann aus mehreren Wörtern bestehen.",
+    en:"Rule: In a statement, the conjugated verb is in position 2 – no matter what comes first (the subject or, e.g., a time expression). Important: position 2 means the 2nd piece of information (sentence element), not necessarily the 2nd word – an element like \"Mein Bruder\" or \"Am Abend\" can consist of several words.",
+    ru:"Правило: В повествовательном предложении спрягаемый глагол стоит на второй позиции – независимо от того, что стоит в начале (подлежащее или, например, обстоятельство времени). Важно: позиция 2 – это 2-й смысловой блок (член предложения), а не обязательно 2-е слово – такой блок, как «Mein Bruder» или «Am Abend», может состоять из нескольких слов.",
+    uk:"Правило: У розповідному реченні дієслово в особовій формі стоїть на другій позиції – незалежно від того, що на початку (підмет чи, наприклад, обставина часу). Важливо: позиція 2 – це 2-й змістовий блок (член речення), а не обов'язково 2-ге слово – такий блок, як «Mein Bruder» або «Am Abend», може складатися з кількох слів.",
+    tr:"Kural: Düz cümlede çekimli fiil 2. konumda bulunur – cümle başında ne olursa olsun (özne ya da örneğin bir zaman ifadesi). Önemli: 2. konum, 2. bilgi birimi (cümle ögesi) demektir, mutlaka 2. kelime değil – \"Mein Bruder\" veya \"Am Abend\" gibi bir öge birden fazla kelimeden oluşabilir.",
+    ar:"القاعدة: في الجملة الخبرية يقع الفعل المصرَّف في الموضع الثاني - بغضّ النظر عمّا يبدأ به الجملة (الفاعل أو مثلاً ظرف زمان). مهم: الموضع 2 يعني المعلومة الثانية (العنصر) وليس بالضرورة الكلمة الثانية - عنصر مثل \"Mein Bruder\" أو \"Am Abend\" يمكن أن يتكوّن من عدة كلمات."
+  },
+  wfrage: {
+    de:"Regel: In der W-Frage steht das konjugierte Verb direkt nach dem Fragewort, also an Position 2.",
+    en:"Rule: In a W-question, the conjugated verb comes directly after the question word, i.e. in position 2.",
+    ru:"Правило: В вопросе с вопросительным словом спрягаемый глагол стоит сразу после вопросительного слова, то есть на второй позиции.",
+    uk:"Правило: У питанні з питальним словом дієслово стоїть одразу після питального слова, тобто на другій позиції.",
+    tr:"Kural: Soru kelimeli sorularda çekimli fiil, soru kelimesinden hemen sonra, yani 2. konumda gelir.",
+    ar:"القاعدة: في سؤال بأداة استفهام يأتي الفعل المصرَّف مباشرة بعد أداة الاستفهام، أي في الموضع الثاني."
+  },
+  janein: {
+    de:"Regel: In der Ja/Nein-Frage steht das konjugierte Verb ganz am Satzanfang, an Position 1.",
+    en:"Rule: In a yes/no question, the conjugated verb stands right at the beginning of the sentence, in position 1.",
+    ru:"Правило: В общем вопросе (да/нет) спрягаемый глагол стоит в самом начале предложения, на первой позиции.",
+    uk:"Правило: У загальному питанні (так/ні) дієслово стоїть на самому початку речення, на першій позиції.",
+    tr:"Kural: Evet/hayır sorularında çekimli fiil cümlenin en başında, 1. konumda bulunur.",
+    ar:"القاعدة: في سؤال نعم/لا يقع الفعل المصرَّف في بداية الجملة تمامًا، في الموضع الأول."
+  }
+};
+
+var UI = {
+  langLabel: {de:"Zusätzliche Sprache für Erklärungen und Menü:", en:"Additional language for explanations and menu:", ru:"Дополнительный язык для объяснений и меню:", uk:"Додаткова мова для пояснень і меню:", tr:"Açıklamalar ve menü için ek dil:", ar:"لغة إضافية للشروحات والقائمة:"},
+  startInstruction: {
+    de:"Du siehst einen Satz ohne Verb und das passende Verb. Tippe auf die Lücke, an der das Verb stehen muss.",
+    en:"You'll see a sentence without its verb, plus the matching verb. Tap the gap where the verb belongs.",
+    ru:"Ты увидишь предложение без глагола и сам глагол. Нажми на пропуск, куда нужно поставить глагол.",
+    uk:"Ти побачиш речення без дієслова та саме дієслово. Натисни на пропуск, куди потрібно поставити дієслово.",
+    tr:"Fiili olmayan bir cümle ve o cümleye ait fiili göreceksin. Fiilin gelmesi gereken boşluğa dokun.",
+    ar:"سترى جملة بدون الفعل، والفعل المناسب لها. اضغط على الفراغ الذي يجب أن يقع فيه الفعل."
+  },
+  startBtn: {de:"Start", en:"Start", ru:"Начать", uk:"Почати", tr:"Başla", ar:"ابدأ"},
+  quizInstruction: {
+    de:"Tippe auf die Lücke, an der das Verb stehen muss.",
+    en:"Tap the gap where the verb belongs.",
+    ru:"Нажми на пропуск, куда нужно поставить глагол.",
+    uk:"Натисни на пропуск, куди потрібно поставити дієслово.",
+    tr:"Fiilin gelmesi gereken boşluğa dokun.",
+    ar:"اضغط على الفراغ الذي يجب أن يقع فيه الفعل."
+  },
+  verbLabel: {de:"Verb", en:"Verb", ru:"Глагол", uk:"Дієслово", tr:"Fiil", ar:"الفعل"},
+  correct: {de:"Richtig! ✓", en:"Correct! ✓", ru:"Правильно! ✓", uk:"Правильно! ✓", tr:"Doğru! ✓", ar:"صحيح! ✓"},
+  wrong: {de:"Leider falsch. Versuch's noch einmal.", en:"Not quite. Try again.", ru:"К сожалению, неверно. Попробуй ещё раз.", uk:"На жаль, неправильно. Спробуй ще раз.", tr:"Maalesef yanlış. Tekrar dene.", ar:"للأسف غير صحيح. حاول مرة أخرى."},
+  next: {de:"Weiter →", en:"Next →", ru:"Далее →", uk:"Далі →", tr:"İleri →", ar:"التالي ←"},
+  progress: {de:"Satz {n} von {total}", en:"Sentence {n} of {total}", ru:"Предложение {n} из {total}", uk:"Речення {n} із {total}", tr:"Cümle {n} / {total}", ar:"الجملة {n} من {total}"},
+  finishTitle: {de:"Super gemacht!", en:"Well done!", ru:"Отлично!", uk:"Чудово!", tr:"Harika!", ar:"أحسنت!"},
+  statCorrect: {de:"Beim ersten Versuch richtig", en:"Correct on first try", ru:"Правильно с первой попытки", uk:"Правильно з першої спроби", tr:"İlk denemede doğru", ar:"صحيح من أول محاولة"},
+  statMistakes: {de:"Fehlversuche gesamt", en:"Total mistakes", ru:"Всего ошибок", uk:"Всього помилок", tr:"Toplam yanlış deneme", ar:"إجمالي المحاولات الخاطئة"},
+  restart: {de:"Neu starten", en:"Restart", ru:"Начать заново", uk:"Почати заново", tr:"Yeniden başla", ar:"إعادة البدء"}
+};
+
+/* ---------------- STATE ---------------- */
+var lang = "none";
+var order = [];
+var idx = 0;
+var correctFirstTry = 0;
+var totalMistakes = 0;
+var currentWrongAlready = false;
+var answered = false;
+
+/* ---------------- HELPERS ---------------- */
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var t=a[i]; a[i]=a[j]; a[j]=t;
+  }
+  return a;
+}
+
+function bilingual(dict, wrapTag){
+  var de = dict.de;
+  var html = '<span class="de-line">'+de+'</span>';
+  if(lang !== "none" && dict[lang]){
+    var rtlClass = (lang === "ar") ? " rtl" : "";
+    html += '<div class="translated-line'+rtlClass+'">'+dict[lang]+'</div>';
+  }
+  return html;
+}
+
+function plainBilingual(dict){
+  // for places where we just need a short inline string (buttons), German + " / Translation"
+  if(lang !== "none" && dict[lang]){
+    return de_dash(dict.de, dict[lang]);
+  }
+  return dict.de;
+}
+function de_dash(de, tr){
+  return de + "  /  " + tr;
+}
+
+function fmt(str, params){
+  return str.replace(/\{(\w+)\}/g, function(_, k){ return params[k]; });
+}
+
+/* ---------------- DOM refs ---------------- */
+var elLangSelect = document.getElementById('langSelect');
+var elLblLang = document.getElementById('lbl-lang');
+var elStartInstruction = document.getElementById('start-instruction');
+var elPosInfoBox = document.getElementById('pos-info-box');
+var elBtnStart = document.getElementById('btn-start');
+
+var elScreenStart = document.getElementById('screen-start');
+var elScreenQuiz = document.getElementById('screen-quiz');
+var elScreenFinish = document.getElementById('screen-finish');
+
+var elBadgeHolder = document.getElementById('badge-holder');
+var elProgressText = document.getElementById('progress-text');
+var elProgressFill = document.getElementById('progress-fill');
+var elQuizInstruction = document.getElementById('quiz-instruction');
+var elVerbLabel = document.getElementById('verb-label');
+var elVerbWord = document.getElementById('verb-word');
+var elSentenceRow = document.getElementById('sentence-row');
+var elFeedback = document.getElementById('feedback');
+var elRuleBoxHolder = document.getElementById('rule-box-holder');
+var elBtnNext = document.getElementById('btn-next');
+
+var elFinishTitle = document.getElementById('finish-title');
+var elFinishStats = document.getElementById('finish-stats');
+var elBtnRestart = document.getElementById('btn-restart');
+
+/* ---------------- RENDER: start screen texts ---------------- */
+function renderStartScreen(){
+  elLblLang.innerHTML = bilingual(UI.langLabel);
+  elStartInstruction.innerHTML = bilingual(UI.startInstruction);
+  elBtnStart.innerHTML = plainBilingual(UI.startBtn);
+  elBtnRestart.innerHTML = plainBilingual(UI.restart);
+
+  var rtlClass = (lang === "ar") ? " rtl" : "";
+  var posHtml = '<div class="rule-de" style="color:var(--blue);">'+POS_INFO.title.de+'</div>';
+  posHtml += '<div style="margin-top:4px;">'+POS_INFO.text.de+'</div>';
+  if(lang !== "none" && POS_INFO.text[lang]){
+    posHtml += '<div class="rule-tr'+rtlClass+'" style="margin-top:8px;"><strong>'+POS_INFO.title[lang]+'</strong><br>'+POS_INFO.text[lang]+'</div>';
+  }
+  elPosInfoBox.className = 'rule-box'+rtlClass;
+  elPosInfoBox.style.background = 'var(--blue-light)';
+  elPosInfoBox.style.borderLeftColor = 'var(--blue)';
+  elPosInfoBox.style.marginTop = '14px';
+  elPosInfoBox.innerHTML = posHtml;
+}
+
+/* ---------------- QUIZ LOGIC ---------------- */
+function startTrainer(){
+  order = shuffle(SENTENCES);
+  idx = 0;
+  correctFirstTry = 0;
+  totalMistakes = 0;
+  elScreenStart.classList.add('hidden');
+  elScreenFinish.classList.add('hidden');
+  elScreenQuiz.classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  currentWrongAlready = false;
+  var item = order[idx];
+
+  // progress
+  elProgressFill.style.width = Math.round((idx/order.length)*100) + "%";
+  elProgressText.textContent = fmt(plainBilingual(UI.progress), {n: idx+1, total: order.length});
+
+  // badge
+  var badgeText = plainBilingual(TYPE_LABEL[item.type]);
+  elBadgeHolder.innerHTML = '<span class="badge '+item.type+'">'+badgeText+'</span>';
+
+  elQuizInstruction.innerHTML = bilingual(UI.quizInstruction);
+  elVerbLabel.textContent = plainBilingual(UI.verbLabel);
+  elVerbWord.textContent = item.tokens[item.verbIndex];
+
+  // build words without verb
+  var words = [];
+  for(var i=0;i<item.tokens.length;i++){
+    if(i !== item.verbIndex) words.push(item.tokens[i]);
+  }
+
+  elSentenceRow.innerHTML = "";
+  for(var g=0; g<=words.length; g++){
+    var gapBtn = document.createElement('button');
+    gapBtn.className = 'gap';
+    gapBtn.setAttribute('data-index', g);
+    gapBtn.textContent = '⎵';
+    gapBtn.addEventListener('click', (function(gapIndex){
+      return function(){ handleGapClick(gapIndex); };
+    })(g));
+    elSentenceRow.appendChild(gapBtn);
+
+    if(g < words.length){
+      var w = document.createElement('span');
+      w.className = 'word';
+      w.textContent = words[g];
+      elSentenceRow.appendChild(w);
+    }
+  }
+
+  elFeedback.textContent = "";
+  elFeedback.className = "feedback";
+  elRuleBoxHolder.innerHTML = "";
+  elBtnNext.classList.add('hidden');
+  elBtnNext.innerHTML = plainBilingual(UI.next);
+}
+
+function handleGapClick(gapIndex){
+  if(answered) return;
+  var item = order[idx];
+  var gaps = elSentenceRow.querySelectorAll('.gap');
+  var clicked = gaps[gapIndex];
+
+  if(gapIndex === item.verbIndex){
+    // correct
+    answered = true;
+    clicked.classList.add('correct');
+    clicked.textContent = '✓';
+    for(var i=0;i<gaps.length;i++){ gaps[i].disabled = true; }
+
+    // insert verb visually into sentence
+    var verbSpan = document.createElement('span');
+    verbSpan.className = 'word verb-inserted';
+    verbSpan.textContent = item.tokens[item.verbIndex];
+    clicked.parentNode.insertBefore(verbSpan, clicked.nextSibling);
+
+    elFeedback.textContent = plainBilingual(UI.correct);
+    elFeedback.className = "feedback ok";
+    elRuleBoxHolder.innerHTML = "";
+
+    if(!currentWrongAlready) correctFirstTry++;
+
+    elBtnNext.classList.remove('hidden');
+  } else {
+    // wrong
+    currentWrongAlready = true;
+    totalMistakes++;
+    clicked.classList.add('wrong');
+    setTimeout(function(){ clicked.classList.remove('wrong'); }, 400);
+
+    elFeedback.textContent = plainBilingual(UI.wrong);
+    elFeedback.className = "feedback bad";
+
+    var rule = RULES[item.type];
+    var rtlClass = (lang === "ar") ? " rtl" : "";
+    var html = '<div class="rule-box'+rtlClass+'"><div class="rule-de">'+rule.de+'</div>';
+    if(lang !== "none" && rule[lang]){
+      html += '<div class="rule-tr">'+rule[lang]+'</div>';
+    }
+    html += '</div>';
+    elRuleBoxHolder.innerHTML = html;
+  }
+}
+
+function nextQuestion(){
+  idx++;
+  if(idx >= order.length){
+    showFinish();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showFinish(){
+  elScreenQuiz.classList.add('hidden');
+  elScreenFinish.classList.remove('hidden');
+  elFinishTitle.textContent = plainBilingual(UI.finishTitle);
+  var statCorrectLabel = plainBilingual(UI.statCorrect);
+  var statMistakesLabel = plainBilingual(UI.statMistakes);
+  elFinishStats.innerHTML =
+    '<div><span>'+statCorrectLabel+'</span><strong>'+correctFirstTry+' / '+order.length+'</strong></div>' +
+    '<div><span>'+statMistakesLabel+'</span><strong>'+totalMistakes+'</strong></div>';
+}
+
+/* ---------------- EVENTS ---------------- */
+elLangSelect.addEventListener('change', function(){
+  lang = elLangSelect.value;
+  renderStartScreen();
+});
+elBtnStart.addEventListener('click', startTrainer);
+elBtnNext.addEventListener('click', nextQuestion);
+elBtnRestart.addEventListener('click', function(){
+  elScreenFinish.classList.add('hidden');
+  elScreenStart.classList.remove('hidden');
+});
+
+/* ---------------- INIT ---------------- */
+renderStartScreen();
+
+})();
+</script>
+</body>
+</html>
