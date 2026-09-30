@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trennbare Verben – Trainer</title>
+<style>
+:root{
+  --bg:#F4F5F9;--surface:#FFFFFF;--ink:#172033;--muted:#586278;--line:#D8DDE7;
+  --stem:#2A3AB8;--stem-t:#E4E8FB;--pre:#9E4308;--pre-t:#FCE9D0;
+  --ok:#17724A;--ok-t:#DDF2E6;--bad:#B3261E;--bad-t:#FBE3E0;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1320;--surface:#161D2E;--ink:#E7EBF4;--muted:#9AA5BC;--line:#2A3450;
+    --stem:#93A3FF;--stem-t:#232B58;--pre:#F4A75E;--pre-t:#3C2A15;
+    --ok:#5FD198;--ok-t:#15382A;--bad:#FF8F86;--bad-t:#40201E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1320;--surface:#161D2E;--ink:#E7EBF4;--muted:#9AA5BC;--line:#2A3450;
+  --stem:#93A3FF;--stem-t:#232B58;--pre:#F4A75E;--pre-t:#3C2A15;
+  --ok:#5FD198;--ok-t:#15382A;--bad:#FF8F86;--bad-t:#40201E;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Naskh Arabic",Arial,sans-serif}
+.serif,.sent,.chip,.sent2,.ex1,.vw{font-family:Charter,"Bitstream Charter","Sitka Text",Cambria,"Iowan Old Style",Georgia,"Noto Naskh Arabic",serif}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--stem);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding:14px 16px 56px}
+
+/* Kopfzeile */
+.top{display:flex;flex-direction:column;gap:10px;padding-bottom:6px}
+.brand{display:flex;align-items:baseline;gap:10px}
+.bt{font-family:Charter,Cambria,Georgia,serif;font-size:22px;font-weight:700}
+.bs{color:var(--muted);font-size:15px}
+.langs{display:flex;flex-wrap:wrap;gap:6px}
+.lang{border:1px solid var(--line);background:var(--surface);padding:6px 12px;border-radius:999px;font-size:14px;min-height:38px;cursor:pointer}
+.lang[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* Wortteile */
+.stem{color:var(--stem);border-bottom:3px solid var(--stem);padding-bottom:1px}
+.pre{color:var(--pre);border-bottom:3px dashed var(--pre);padding-bottom:1px}
+.bar{color:var(--muted);padding:0 2px}
+.de{display:block}
+.aux{display:block;font-size:.84em;color:var(--muted);unicode-bidi:isolate;font-weight:400}
+.aux[dir="rtl"]{text-align:right}
+.btn .aux,.lang .aux{color:inherit;opacity:.85;text-align:center!important}
+
+/* Hero */
+.hero{padding:18px 0 10px}
+.hcap{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:18px;margin-bottom:8px}
+.hcap .vw{font-size:20px}
+.replay{border:1px solid var(--line);background:var(--surface);border-radius:999px;width:38px;height:38px;cursor:pointer;font-size:18px;line-height:1}
+.sent{display:flex;flex-wrap:nowrap;align-items:baseline;white-space:nowrap;font-size:clamp(22px,6.6vw,44px);line-height:1.25;direction:ltr;overflow:visible}
+.tk{display:inline-block;margin-right:.3em;will-change:transform}
+.tk.joined{margin-right:0}
+.tk.stem,.tk.pre{border-bottom-width:4px}
+
+/* Menü */
+.menu{margin-top:8px;border-top:1px solid var(--line)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;padding:14px 2px;background:none;border:0;border-bottom:1px solid var(--line);text-align:start;cursor:pointer}
+.row:hover .rt .de{color:var(--stem)}
+.rt .de{font-size:19px;font-weight:650}
+.rt .aux{font-size:15px}
+.rd .de{font-size:14px;color:var(--muted)}
+.rd .aux{font-size:13px}
+.chev{font-size:26px;color:var(--muted)}
+.opts{margin-top:26px}
+.opts h3{margin:0 0 8px;font-size:15px;color:var(--muted);font-weight:600}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.pill{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;cursor:pointer;min-height:44px;text-align:start}
+.pill[aria-pressed="true"]{border-color:var(--stem);background:var(--stem-t);color:var(--ink);box-shadow:inset 0 0 0 1px var(--stem)}
+details.sel>summary{cursor:pointer;padding:10px 0;font-weight:600}
+.vsel{display:flex;flex-wrap:wrap;gap:6px;padding:6px 0 4px}
+.vsel .pill{font-family:Charter,Cambria,Georgia,serif;font-size:17px;min-height:42px;padding:6px 10px}
+
+/* Lernen */
+h2.pg{font-size:24px;margin:14px 0 6px;font-family:Charter,Cambria,Georgia,serif}
+h2.pg .aux{font-family:system-ui,sans-serif;font-size:15px}
+.rule{padding:14px 0;border-bottom:1px solid var(--line)}
+.rule h3{margin:0 0 6px;font-size:17px}
+.rule h3 .aux{font-size:14px}
+.rule p{margin:0 0 10px}
+.exrow{display:flex;flex-wrap:wrap;gap:8px 12px;margin:8px 0}
+.cell{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.cell small{color:var(--muted);font-size:12px;min-height:16px}
+.cell span.w{font-size:20px}
+.split{display:flex;gap:16px;align-items:flex-end;margin:8px 0;font-size:30px}
+.split small{display:block;font-size:12px;color:var(--muted)}
+details.vd{border-bottom:1px solid var(--line)}
+details.vd>summary{display:flex;align-items:center;gap:12px;padding:12px 2px;cursor:pointer;list-style:none;min-height:56px}
+details.vd>summary::-webkit-details-marker{display:none}
+details.vd>summary::after{content:"+";margin-inline-start:auto;font-size:22px;color:var(--muted)}
+details.vd[open]>summary::after{content:"–"}
+.ic{font-size:26px;width:38px;text-align:center;flex:none}
+.vw{font-size:22px}
+.vm .de{font-size:14px;color:var(--muted)}
+.vm .aux{font-size:13px}
+.vb{padding:0 2px 16px 50px}
+.ex1{font-size:19px}
+.tbl{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin:12px 0;font-family:Charter,Cambria,Georgia,serif;font-size:18px}
+.ln{margin:6px 0;font-family:Charter,Cambria,Georgia,serif;font-size:18px}
+.ln b{font-family:system-ui,sans-serif;font-size:13px;font-weight:600;color:var(--muted);display:inline-block;min-width:88px}
+.note{margin-top:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:14px}
+.pl{margin:8px 0;font-family:Charter,Cambria,Georgia,serif;font-size:18px}
+
+/* Übung */
+.qbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 8px}
+.link{display:flex;align-items:flex-start;gap:6px;background:none;border:0;padding:8px 4px;cursor:pointer;color:var(--muted);min-height:44px;text-align:start}
+.cnt .de{font-size:14px}
+.cnt .aux{font-size:12px;text-align:end}
+.prog{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:16px}
+.prog i{display:block;height:100%;background:var(--stem);transition:width .3s}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 16px}
+.instr{color:var(--muted);margin-bottom:10px;font-size:15px}
+.instr .aux{font-size:13px}
+.prompt{display:flex;align-items:center;gap:14px;margin:6px 0 14px}
+.prompt .big{font-size:clamp(26px,7vw,36px);line-height:1.2}
+.prompt .ico{font-size:40px}
+.sent2{font-size:clamp(20px,5.4vw,26px);line-height:1.9;margin:6px 0 14px}
+.blank{display:inline-block;min-width:3em;border-bottom:2px solid var(--muted);text-align:center;color:var(--muted);line-height:1.2}
+.blank.fill{color:var(--ink);border-bottom-color:var(--ink)}
+.blank.ok{color:var(--ok);border-bottom-color:var(--ok)}
+.blank.bad{color:var(--bad);border-bottom-color:var(--bad)}
+.opts-l{display:grid;gap:8px}
+.opt{display:block;width:100%;text-align:start;padding:12px 14px;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;cursor:pointer;min-height:54px;font-size:18px}
+.opt:hover:not([disabled]){border-color:var(--stem)}
+.opt[disabled]{cursor:default}
+.opt.ok{border-color:var(--ok);background:var(--ok-t)}
+.opt.bad{border-color:var(--bad);background:var(--bad-t)}
+.opt.sel{border-color:var(--stem);background:var(--stem-t)}
+.opt.sm{display:inline-block;width:auto;min-width:64px;text-align:center;font-family:Charter,Cambria,Georgia,serif;font-size:19px;padding:8px 14px;min-height:46px}
+.grp{margin:12px 0 4px;font-size:14px;color:var(--muted)}
+.grp .aux{font-size:12px}
+.optrow{display:flex;flex-wrap:wrap;gap:8px}
+.answer{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:64px;padding:10px;border:2px dashed var(--line);border-radius:12px;margin-bottom:12px}
+.answer.empty::before{content:"…";color:var(--muted);font-size:22px}
+.answer .pun{font-size:26px}
+.bank{display:flex;flex-wrap:wrap;gap:8px;min-height:56px;margin-bottom:8px}
+.chip{border:1.5px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:10px;min-height:46px;font-size:20px;cursor:pointer}
+.chip:hover:not([disabled]){border-color:var(--stem)}
+.chip.ok{border-color:var(--ok);background:var(--ok-t)}
+.chip.bad{border-color:var(--bad);background:var(--bad-t)}
+.chip[disabled]{cursor:default}
+.mhint{display:flex;gap:10px;align-items:center;padding:8px 12px;background:var(--stem-t);border-radius:10px;margin-bottom:10px;font-size:15px}
+.mhint .ico{font-size:24px}
+.acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.btn{min-height:50px;padding:10px 22px;border-radius:12px;border:1.5px solid var(--ink);background:var(--ink);color:var(--bg);font-weight:650;cursor:pointer;text-align:center}
+.btn.sec{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn[disabled]{opacity:.4;cursor:default}
+.fb{margin-top:16px;padding:12px 14px;border-left:5px solid var(--line);border-radius:0 12px 12px 0;background:var(--surface);border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.fb.ok{border-left-color:var(--ok)}
+.fb.bad{border-left-color:var(--bad)}
+.fb .h{font-weight:700;margin-bottom:6px}
+.fb.ok .h{color:var(--ok)}
+.fb.bad .h{color:var(--bad)}
+.fb .h .aux{font-weight:400}
+.fb .sol{font-family:Charter,Cambria,Georgia,serif;font-size:21px;line-height:1.6;margin:4px 0 8px}
+.fb .lbl{font-size:13px;color:var(--muted)}
+.rulebox{margin-top:10px;padding:10px 12px;background:var(--bg);border-radius:10px;font-size:14px}
+.rulebox strong{display:block}
+.hintbox{margin-top:12px;padding:10px 12px;background:var(--bg);border-radius:10px;font-size:15px}
+.hl{margin:4px 0}
+.res{text-align:center;padding:20px 0}
+.res .big{font-size:56px;font-family:Charter,Cambria,Georgia,serif;font-weight:700}
+.res .msg .de{font-size:22px;font-weight:650}
+.wl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0}
+.wl span.w{padding:6px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-family:Charter,Cambria,Georgia,serif;font-size:19px}
+@media (max-width:420px){.vb{padding-left:2px}.tbl{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><noscript>Bitte JavaScript aktivieren.</noscript></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= Sprachen ================= */
+var LANGS=['de','en','tr','ru','uk','ar'];
+var LI={de:0,en:1,tr:2,ru:3,uk:4,ar:5};
+var LN=['nur Deutsch','+ English','+ Türkçe','+ Русский','+ Українська','+ العربية'];
+
+/* ================= Texte (de,en,tr,ru,uk,ar) ================= */
+var TT={
+ menu:['Menü','Menu','Menü','Меню','Меню','القائمة'],
+ check:['Prüfen','Check','Kontrol et','Проверить','Перевірити','تحقّق'],
+ next:['Weiter','Next','Devam','Далее','Далі','التالي'],
+ hint:['Tipp','Hint','İpucu','Подсказка','Підказка','تلميح'],
+ reset:['Zurücksetzen','Reset','Sıfırla','Сбросить','Скинути','إعادة'],
+ ok:['Richtig!','Correct!','Doğru!','Правильно!','Правильно!','صحيح!'],
+ bad:['Nicht ganz.','Not quite.','Tam değil.','Не совсем.','Не зовсім.','ليس تمامًا.'],
+ sol:['Richtig ist:','Correct:','Doğrusu:','Правильно:','Правильно:','الصحيح:'],
+ q:['Frage','Question','Soru','Вопрос','Питання','السؤال'],
+ score:['Ergebnis','Result','Sonuç','Результат','Результат','النتيجة'],
+ again:['Nochmal','Again','Tekrar','Ещё раз','Ще раз','مرة أخرى'],
+ mist:['Fehler üben','Practise mistakes','Hataları çalış','Повторить ошибки','Повторити помилки','التدرّب على الأخطاء'],
+ great:['Sehr gut!','Very good!','Çok iyi!','Очень хорошо!','Дуже добре!','ممتاز!'],
+ good:['Gut gemacht!','Well done!','Aferin!','Молодец!','Молодець!','أحسنت!'],
+ more:['Weiter üben!','Keep practising!','Çalışmaya devam!','Продолжай тренироваться!','Продовжуй тренуватися!','واصل التدريب!'],
+ rule:['Regel','Rule','Kural','Правило','Правило','القاعدة'],
+ sets:['Einstellungen','Settings','Ayarlar','Настройки','Налаштування','الإعدادات'],
+ dirL:['Richtung (Bedeutung)','Direction (meaning)','Yön (anlam)','Направление (значение)','Напрямок (значення)','الاتجاه (المعنى)'],
+ dA:['Verb → Bedeutung','Verb → meaning','Fiil → anlam','Глагол → значение','Дієслово → значення','الفعل ← المعنى'],
+ dB:['Bedeutung → Verb','Meaning → verb','Anlam → fiil','Значение → глагол','Значення → дієслово','المعنى ← الفعل'],
+ dM:['Gemischt','Mixed','Karışık','Вперемешку','Впереміш','مختلط'],
+ selV:['Verben auswählen','Choose verbs','Fiilleri seç','Выбрать глаголы','Вибрати дієслова','اختر الأفعال'],
+ all:['Alle','All','Hepsi','Все','Усі','الكل'],
+ learn:['Lernen','Learn','Öğren','Учить','Вчити','تعلّم'],
+ verbs:['Die Verben','The verbs','Fiiller','Глаголы','Дієслова','الأفعال'],
+ opp:['Gegenteile','Opposites','Zıt anlamlılar','Антонимы','Антоніми','الأضداد'],
+ pfx:['Präfixe','Prefixes','Ön ekler','Приставки','Префікси','البوادئ'],
+ prefix:['Präfix','Prefix','Ön ek','Приставка','Префікс','البادئة'],
+ base:['Stammverb','Base verb','Kök fiil','Основной глагол','Основне дієслово','الفعل الأساسي'],
+ end:['Ende','End','Son','Конец','Кінець','النهاية'],
+ pres:['Präsens','Present','Şimdiki zaman','Настоящее время','Теперішній час','المضارع'],
+ imp:['Imperativ','Imperative','Emir kipi','Повелительное','Наказовий спосіб','الأمر'],
+ perf:['Perfekt','Perfect','Perfekt','Perfekt','Perfekt','Perfekt'],
+ modal:['Modalverb','Modal verb','Modal fiil','Модальный глагол','Модальне дієслово','فعل ناقص'],
+ sub:['Nebensatz','Subordinate clause','Yan cümle','Придаточное','Підрядне','جملة فرعية'],
+ meaningL:['Bedeutung','Meaning','Anlam','Значение','Значення','المعنى'],
+ stemLbl:['Stammverb (Position 2)','Base verb (position 2)','Kök fiil (2. sıra)','Основной глагол (2-е место)','Основне дієслово (2-ге місце)','الفعل الأساسي (المرتبة 2)'],
+ preLbl:['Präfix (Satzende)','Prefix (end of sentence)','Ön ek (cümle sonu)','Приставка (конец предложения)','Префікс (кінець речення)','البادئة (نهاية الجملة)'],
+ iMeaning:['Was bedeutet das Verb?','What does the verb mean?','Fiil ne anlama geliyor?','Что означает глагол?','Що означає дієслово?','ماذا يعني الفعل؟'],
+ iMeaningB:['Welches Verb hat diese Bedeutung?','Which verb has this meaning?','Hangi fiil bu anlama geliyor?','Какой глагол имеет это значение?','Яке дієслово має це значення?','أي فعل له هذا المعنى؟'],
+ iGap:['Wähle Stammverb (Position 2) und Präfix (Satzende).','Choose the base verb (position 2) and the prefix (end of sentence).','Kök fiili (2. sıra) ve ön eki (cümle sonu) seç.','Выбери основной глагол (2-е место) и приставку (конец предложения).','Вибери основне дієслово (2-ге місце) і префікс (кінець речення).','اختر الفعل الأساسي (المرتبة 2) والبادئة (نهاية الجملة).'],
+ iOrder:['Tippe die Wörter in der richtigen Reihenfolge an.','Tap the words in the correct order.','Kelimelere doğru sırayla dokun.','Нажимай на слова в правильном порядке.','Натискай на слова в правильному порядку.','اضغط على الكلمات بالترتيب الصحيح.'],
+ iPres:['Ergänze die richtige Form des Stammverbs.','Complete with the correct form of the base verb.','Kök fiilin doğru biçimini tamamla.','Вставь правильную форму основного глагола.','Встав правильну форму основного дієслова.','أكمل بالصيغة الصحيحة للفعل الأساسي.'],
+ iPart:['Wähle das richtige Partizip II.','Choose the correct past participle.','Doğru Partizip II’yi seç.','Выбери правильное Partizip II.','Вибери правильне Partizip II.','اختر Partizip II الصحيح.'],
+ iAux:['haben oder sein?','haben or sein?','haben mı sein mi?','haben или sein?','haben чи sein?','haben أم sein؟'],
+ iUse:['Welches Verb passt in die Lücken?','Which verb fits the gaps?','Hangi fiil boşluklara uyuyor?','Какой глагол подходит в пропуски?','Яке дієслово підходить у пропуски?','أي فعل يناسب الفراغات؟']
+};
+
+var TILES=[
+ {id:'learn',t:TT.learn,d:['Verben, Regeln und Beispiele ansehen','View verbs, rules and examples','Fiillere, kurallara ve örneklere bak','Смотреть глаголы, правила и примеры','Переглянути дієслова, правила й приклади','عرض الأفعال والقواعد والأمثلة']},
+ {id:'meaning',t:TT.meaningL,d:['Was bedeutet das Verb?','What does the verb mean?','Fiil ne anlama geliyor?','Что означает глагол?','Що означає дієслово?','ماذا يعني الفعل؟']},
+ {id:'gap',t:['Stamm & Präfix','Stem & prefix','Kök ve ön ek','Основа и приставка','Основа і префікс','الجذر والبادئة'],d:['Stammverb und Präfix richtig einsetzen','Insert base verb and prefix correctly','Kök fiili ve ön eki doğru yerleştir','Правильно вставить основной глагол и приставку','Правильно вставити основне дієслово й префікс','أدخل الفعل الأساسي والبادئة بشكل صحيح']},
+ {id:'order',t:['Satzbau','Sentence order','Cümle sırası','Порядок слов','Порядок слів','ترتيب الجملة'],d:['Wörter in die richtige Reihenfolge bringen','Put the words in the right order','Kelimeleri doğru sıraya koy','Расставить слова в правильном порядке','Розставити слова в правильному порядку','رتّب الكلمات بالترتيب الصحيح']},
+ {id:'grammar',t:['Grammatik','Grammar','Dilbilgisi','Грамматика','Граматика','القواعد'],d:['Präsens, Partizip II, haben/sein','Present tense, past participle, haben/sein','Şimdiki zaman, Partizip II, haben/sein','Настоящее время, Partizip II, haben/sein','Теперішній час, Partizip II, haben/sein','المضارع، Partizip II، haben/sein']},
+ {id:'use',t:['Verwendung','Usage','Kullanım','Употребление','Вживання','الاستخدام'],d:['Welches Verb passt in die Situation?','Which verb fits the situation?','Hangi fiil duruma uyuyor?','Какой глагол подходит к ситуации?','Яке дієслово підходить до ситуації?','أي فعل يناسب الموقف؟']},
+ {id:'mixed',t:TT.dM,d:['Alle Übungen zusammen','All exercises together','Tüm alıştırmalar bir arada','Все упражнения вместе','Усі вправи разом','جميع التمارين معًا']}
+];
+
+/* ================= Regeln ================= */
+var R={
+ r1:{h:['Was sind trennbare Verben?','What are separable verbs?','Ayrılabilen fiiller nedir?','Что такое отделяемые глаголы?','Що таке відокремлювані дієслова?','ما هي الأفعال المنفصلة؟'],
+  t:['Trennbare Verben bestehen aus Präfix + Stammverb: auf|machen. Das Präfix ist betont: AUFmachen.',
+     'Separable verbs consist of a prefix + base verb: auf|machen. The prefix is stressed: AUFmachen.',
+     'Ayrılabilen fiiller ön ek + kök fiilden oluşur: auf|machen. Vurgu ön ektedir: AUFmachen.',
+     'Отделяемые глаголы состоят из приставки и основного глагола: auf|machen. Ударение падает на приставку: AUFmachen.',
+     'Відокремлювані дієслова складаються з префікса й основного дієслова: auf|machen. Наголос падає на префікс: AUFmachen.',
+     'الأفعال المنفصلة تتكوّن من بادئة + فعل أساسي: auf|machen. النبرة تقع على البادئة: AUFmachen.']},
+ r2:{h:['Aussagesatz','Statement','Bildirim cümlesi','Повествовательное предложение','Розповідне речення','الجملة الخبرية'],
+  t:['Das Stammverb (konjugiert) steht auf Position 2, das Präfix am Satzende: Ich mache die Tür auf.',
+     'The conjugated base verb is in position 2, the prefix goes to the end of the sentence: Ich mache die Tür auf.',
+     'Çekimli kök fiil 2. sırada, ön ek cümlenin sonunda yer alır: Ich mache die Tür auf.',
+     'Спрягаемый основной глагол стоит на 2-м месте, а приставка — в конце предложения: Ich mache die Tür auf.',
+     'Дієвідмінюване основне дієслово стоїть на 2-му місці, а префікс — у кінці речення: Ich mache die Tür auf.',
+     'يقع الفعل الأساسي المصرَّف في المرتبة الثانية وتذهب البادئة إلى نهاية الجملة: Ich mache die Tür auf.']},
+ r3:{h:['Frage und Imperativ','Question and imperative','Soru ve emir','Вопрос и повелительное наклонение','Запитання й наказовий спосіб','السؤال والأمر'],
+  t:['Ja/Nein-Frage und Imperativ: Das Verb steht auf Position 1, das Präfix am Ende: Machst du die Tür auf? – Mach die Tür auf!',
+     'Yes/no questions and imperative: the verb is in position 1, the prefix at the end: Machst du die Tür auf? – Mach die Tür auf!',
+     'Evet/hayır soruları ve emir kipi: fiil 1. sırada, ön ek sonda: Machst du die Tür auf? – Mach die Tür auf!',
+     'Общий вопрос и повелительное наклонение: глагол на 1-м месте, приставка в конце: Machst du die Tür auf? – Mach die Tür auf!',
+     'Загальне запитання й наказовий спосіб: дієслово на 1-му місці, префікс — у кінці: Machst du die Tür auf? – Mach die Tür auf!',
+     'سؤال نعم/لا وصيغة الأمر: الفعل في المرتبة الأولى والبادئة في النهاية: Machst du die Tür auf? – Mach die Tür auf!']},
+ r4:{h:TT.modal,
+  t:['Mit Modalverb (können, wollen, müssen …) bleibt das Verb zusammen und steht am Ende: Ich will die Tür aufmachen.',
+     'With a modal verb (können, wollen, müssen …) the verb stays together at the end: Ich will die Tür aufmachen.',
+     'Modal fiille (können, wollen, müssen …) fiil birleşik kalır ve sonda durur: Ich will die Tür aufmachen.',
+     'С модальным глаголом (können, wollen, müssen …) глагол остаётся цельным и стоит в конце: Ich will die Tür aufmachen.',
+     'З модальним дієсловом (können, wollen, müssen …) дієслово залишається цілим і стоїть у кінці: Ich will die Tür aufmachen.',
+     'مع الفعل الناقص (können, wollen, müssen …) يبقى الفعل متصلًا ويقع في نهاية الجملة: Ich will die Tür aufmachen.']},
+ r5:{h:TT.perf,
+  t:['Perfekt: haben + Partizip II. Das -ge- steht zwischen Präfix und Stamm: aufgemacht, eingekauft, angerufen.',
+     'Perfect: haben + past participle. The -ge- goes between prefix and stem: aufgemacht, eingekauft, angerufen.',
+     'Perfekt: haben + Partizip II. -ge- ön ek ile kök arasına girer: aufgemacht, eingekauft, angerufen.',
+     'Perfekt: haben + Partizip II. Частица -ge- ставится между приставкой и основой: aufgemacht, eingekauft, angerufen.',
+     'Perfekt: haben + Partizip II. Частка -ge- стоїть між префіксом і основою: aufgemacht, eingekauft, angerufen.',
+     'الماضي التام (Perfekt): haben + Partizip II. يقع المقطع -ge- بين البادئة والجذر: aufgemacht, eingekauft, angerufen.']},
+ r6:{h:TT.sub,
+  t:['Im Nebensatz bleibt das Verb zusammen und steht am Ende: …, weil ich die Tür aufmache. …, dass er um neun anfängt.',
+     'In a subordinate clause the verb stays together at the end: …, weil ich die Tür aufmache. …, dass er um neun anfängt.',
+     'Yan cümlede fiil birleşik kalır ve sonda yer alır: …, weil ich die Tür aufmache. …, dass er um neun anfängt.',
+     'В придаточном предложении глагол остаётся цельным и стоит в конце: …, weil ich die Tür aufmache. …, dass er um neun anfängt.',
+     'У підрядному реченні дієслово залишається цілим і стоїть у кінці: …, weil ich die Tür aufmache. …, dass er um neun anfängt.',
+     'في الجملة الفرعية يبقى الفعل متصلًا ويقع في النهاية: …, weil ich die Tür aufmache. …, dass er um neun anfängt.']}
+};
+
+/* ================= Verben ================= */
+var N_ONOFF=['Sehr häufig im Alltag: anmachen = einschalten, ausmachen = ausschalten (Licht, Fernseher, Radio, Heizung).',
+ 'Very common in everyday German: anmachen = einschalten, ausmachen = ausschalten (light, TV, radio, heating).',
+ 'Günlük dilde çok yaygın: anmachen = einschalten, ausmachen = ausschalten (ışık, TV, radyo, kalorifer).',
+ 'Очень часто в повседневной речи: anmachen = einschalten, ausmachen = ausschalten (свет, телевизор, радио, отопление).',
+ 'Дуже поширено в повсякденній мові: anmachen = einschalten, ausmachen = ausschalten (світло, телевізор, радіо, опалення).',
+ 'شائع جدًا في الحياة اليومية: anmachen = einschalten، ausmachen = ausschalten (الضوء، التلفاز، الراديو، التدفئة).'];
+
+var VERBS=[
+{id:'aufmachen',pre:'auf',stem:'mach',ic:'🔓',opp:'zumachen',part:'aufgemacht',pd:['geaufmacht','aufmacht','aufmachen'],
+ objs:['die Tür','das Fenster','die Flasche','das Paket'],
+ m:['öffnen','to open (door, window)','açmak (kapı, pencere)','открывать (дверь, окно)','відчиняти (двері, вікно)','يفتح (الباب، النافذة)'],
+ x:['Ich mache die Tür auf.','I open the door.','Kapıyı açıyorum.','Я открываю дверь.','Я відчиняю двері.','أفتح الباب.']},
+{id:'zumachen',pre:'zu',stem:'mach',ic:'🔒',opp:'aufmachen',part:'zugemacht',pd:['gezumacht','zumacht','zumachen'],
+ objs:['die Tür','das Fenster','die Flasche','den Koffer'],
+ m:['schließen','to close (door, window)','kapatmak (kapı, pencere)','закрывать (дверь, окно)','зачиняти (двері, вікно)','يغلق (الباب، النافذة)'],
+ x:['Bitte mach das Fenster zu!','Please close the window!','Lütfen pencereyi kapat!','Пожалуйста, закрой окно!','Будь ласка, зачини вікно!','من فضلك أغلق النافذة!']},
+{id:'anmachen',pre:'an',stem:'mach',ic:'💡',opp:'ausmachen',part:'angemacht',pd:['geanmacht','anmacht','anmachen'],
+ objs:['das Licht','den Fernseher','die Heizung','das Radio'],
+ m:['einschalten','to turn on (light, TV)','açmak / yakmak (ışık, TV)','включать (свет, ТВ)','вмикати (світло, ТБ)','يشغّل / يُشعل (الضوء، التلفاز)'],
+ x:['Es ist dunkel. Ich mache das Licht an.','It is dark. I turn on the light.','Karanlık. Işığı açıyorum.','Темно. Я включаю свет.','Темно. Я вмикаю світло.','الجو مظلم. أُشعل الضوء.'],n:N_ONOFF},
+{id:'ausmachen',pre:'aus',stem:'mach',ic:'🌑',opp:'anmachen',part:'ausgemacht',pd:['geausmacht','ausmacht','ausmachen'],
+ objs:['das Licht','den Fernseher','die Heizung','das Radio'],
+ m:['ausschalten','to turn off (light, TV)','kapatmak / söndürmek (ışık, TV)','выключать (свет, ТВ)','вимикати (світло, ТБ)','يُطفئ (الضوء، التلفاز)'],
+ x:['Er macht den Fernseher aus.','He turns off the TV.','Televizyonu kapatıyor.','Он выключает телевизор.','Він вимикає телевізор.','يُطفئ التلفاز.'],n:N_ONOFF},
+{id:'anziehen',pre:'an',stem:'zieh',ic:'👕',opp:'ausziehen',part:'angezogen',pd:['geanzogen','angezieht','anziehen'],
+ objs:['die Jacke','die Schuhe','den Mantel','die Mütze'],
+ m:['Kleidung anlegen','to put on (clothes)','giymek (giysi)','надевать (одежду)','одягати (одяг)','يرتدي (الملابس)'],
+ x:['Es ist kalt. Ich ziehe eine Jacke an.','It is cold. I put on a jacket.','Hava soğuk. Bir ceket giyiyorum.','Холодно. Я надеваю куртку.','Холодно. Я одягаю куртку.','الجو بارد. أرتدي سترة.'],
+ n:['Auch reflexiv: sich anziehen (Ich ziehe mich an). Gegenteil: ausziehen.',
+    'Also reflexive: sich anziehen (Ich ziehe mich an = I get dressed). Opposite: ausziehen.',
+    'Dönüşlü de kullanılır: sich anziehen (Ich ziehe mich an = giyiniyorum). Zıt anlamlısı: ausziehen.',
+    'Также возвратный: sich anziehen (Ich ziehe mich an = я одеваюсь). Антоним: ausziehen.',
+    'Також зворотний: sich anziehen (Ich ziehe mich an = я одягаюся). Антонім: ausziehen.',
+    'يُستخدم أيضًا بصيغة انعكاسية: sich anziehen (Ich ziehe mich an = أرتدي ملابسي). عكسه: ausziehen.']},
+{id:'ausziehen',pre:'aus',stem:'zieh',ic:'🧦',opp:'anziehen',part:'ausgezogen',pd:['geausgezogen','ausgezieht','ausziehen'],
+ objs:['die Jacke','die Schuhe','den Mantel','die Mütze'],
+ m:['Kleidung ablegen; aus der Wohnung gehen','to take off (clothes); to move out','çıkarmak (giysi); taşınmak (evden)','снимать (одежду); съезжать (с квартиры)','знімати (одяг); виїжджати (з квартири)','يخلع (الملابس)؛ ينتقل من (الشقة)'],
+ x:['Sie zieht die Schuhe aus.','She takes off her shoes.','Ayakkabılarını çıkarıyor.','Она снимает обувь.','Вона знімає взуття.','تخلع حذاءها.'],
+ n:['Zwei Bedeutungen: Kleidung ausziehen (Perfekt mit haben) und aus der Wohnung ausziehen (Perfekt mit sein: ist ausgezogen). Reflexiv: sich ausziehen.',
+    'Two meanings: to take off clothes (perfect with haben) and to move out of a home (perfect with sein: ist ausgezogen). Reflexive: sich ausziehen.',
+    'İki anlamı var: giysi çıkarmak (Perfekt: haben) ve evden taşınmak (Perfekt: sein → ist ausgezogen). Dönüşlü: sich ausziehen.',
+    'Два значения: снимать одежду (Perfekt с haben) и съезжать с квартиры (Perfekt с sein: ist ausgezogen). Возвратная форма: sich ausziehen.',
+    'Два значення: знімати одяг (Perfekt з haben) і виїжджати з квартири (Perfekt з sein: ist ausgezogen). Зворотна форма: sich ausziehen.',
+    'له معنيان: خلع الملابس (الماضي التام مع haben) والانتقال من الشقة (الماضي التام مع sein: ist ausgezogen). صيغة انعكاسية: sich ausziehen.']},
+{id:'anfangen',pre:'an',stem:'fang',ic:'▶️',opp:'aufhören',part:'angefangen',pd:['geanfangen','angefangt','anfangen'],irr:{du:'fängst',er:'fängt',imp:'fang'},
+ objs:['jetzt','um acht Uhr','mit dem Kurs','heute'],
+ m:['beginnen','to begin, to start','başlamak','начинать, начинаться','починати, починатися','يبدأ'],
+ x:['Der Kurs fängt um neun Uhr an.','The course starts at nine o’clock.','Kurs saat dokuzda başlıyor.','Курс начинается в девять часов.','Курс починається о дев’ятій.','تبدأ الدورة في الساعة التاسعة.'],
+ n:['Unregelmäßig: du fängst an, er fängt an (a → ä). Perfekt: hat angefangen. Mit Dativ: mit dem Kurs anfangen.',
+    'Irregular: du fängst an, er fängt an (a → ä). Perfect: hat angefangen. With dative: mit dem Kurs anfangen.',
+    'Düzensiz: du fängst an, er fängt an (a → ä). Perfekt: hat angefangen. Datif ile: mit dem Kurs anfangen (kursa başlamak).',
+    'Неправильный глагол: du fängst an, er fängt an (a → ä). Perfekt: hat angefangen. С дативом: mit dem Kurs anfangen (начинать курс).',
+    'Неправильне дієслово: du fängst an, er fängt an (a → ä). Perfekt: hat angefangen. З давальним відмінком: mit dem Kurs anfangen (починати курс).',
+    'فعل شاذّ: du fängst an, er fängt an (تغيّر a إلى ä). الماضي التام: hat angefangen. مع حالة Dativ: mit dem Kurs anfangen (البدء بالدورة).']},
+{id:'aufhören',pre:'auf',stem:'hör',ic:'⏹️',opp:'anfangen',part:'aufgehört',pd:['geaufhört','aufhört','aufhören'],
+ objs:['jetzt','um zehn Uhr','mit dem Rauchen','mit der Arbeit'],
+ m:['nicht mehr weitermachen','to stop, to finish','bırakmak, durmak, bitmek','прекращать, заканчиваться','припиняти, закінчуватися','يتوقف، ينتهي'],
+ x:['Der Unterricht hört um zwölf Uhr auf.','The class ends at twelve o’clock.','Ders saat on ikide bitiyor.','Урок заканчивается в двенадцать часов.','Урок закінчується о дванадцятій.','ينتهي الدرس في الساعة الثانية عشرة.'],
+ n:['aufhören + mit + Dativ: Ich höre mit der Arbeit auf. Gegenteil: anfangen.',
+    'aufhören + mit + dative: Ich höre mit der Arbeit auf. Opposite: anfangen.',
+    'aufhören + mit + Dativ: Ich höre mit der Arbeit auf (işi bırakıyorum). Zıt anlamlısı: anfangen.',
+    'aufhören + mit + датив: Ich höre mit der Arbeit auf (я прекращаю работу). Антоним: anfangen.',
+    'aufhören + mit + давальний: Ich höre mit der Arbeit auf (я припиняю роботу). Антонім: anfangen.',
+    'aufhören + mit + Dativ: Ich höre mit der Arbeit auf (أتوقف عن العمل). عكسه: anfangen.']},
+{id:'einkaufen',pre:'ein',stem:'kauf',ic:'🛒',opp:null,part:'eingekauft',pd:['geeinkauft','einkauft','einkaufen'],
+ objs:['im Supermarkt','heute','für die Party','am Samstag'],
+ m:['Waren kaufen','to shop (buy groceries etc.)','alışveriş yapmak','делать покупки','робити покупки','يتسوّق'],
+ x:['Wir kaufen im Supermarkt ein.','We shop at the supermarket.','Süpermarkette alışveriş yapıyoruz.','Мы делаем покупки в супермаркете.','Ми робимо покупки в супермаркеті.','نتسوّق في السوبرماركت.'],
+ n:['Ohne Objekt möglich: Ich kaufe ein. Häufig: einkaufen gehen (Ich gehe einkaufen). Vergleiche: etwas kaufen.',
+    'Works without an object: Ich kaufe ein. Common: einkaufen gehen (Ich gehe einkaufen). Compare: etwas kaufen (to buy something).',
+    'Nesnesiz kullanılabilir: Ich kaufe ein. Sık kullanım: einkaufen gehen (alışverişe gitmek). Karşılaştır: etwas kaufen (bir şey satın almak).',
+    'Можно без дополнения: Ich kaufe ein. Часто: einkaufen gehen (идти за покупками). Сравните: etwas kaufen (купить что-то).',
+    'Можна без додатка: Ich kaufe ein. Часто: einkaufen gehen (іти за покупками). Порівняйте: etwas kaufen (купити щось).',
+    'يمكن استخدامه بدون مفعول: Ich kaufe ein. شائع: einkaufen gehen (الذهاب للتسوّق). قارن: etwas kaufen (شراء شيء).']},
+{id:'aufräumen',pre:'auf',stem:'räum',ic:'🧹',opp:null,part:'aufgeräumt',pd:['geaufräumt','aufräumt','aufräumen'],
+ objs:['das Zimmer','die Küche','den Tisch','die Wohnung'],
+ m:['Ordnung machen','to tidy up','ortalığı toplamak, düzenlemek','убирать, наводить порядок','прибирати','يرتّب (الغرفة)'],
+ x:['Wir räumen das Zimmer auf.','We tidy up the room.','Odayı topluyoruz.','Мы убираем комнату.','Ми прибираємо кімнату.','نرتّب الغرفة.']},
+{id:'vorbereiten',pre:'vor',stem:'bereit',ic:'🥕',opp:null,part:'vorbereitet',pd:['gevorbereitet','vorgebereitet','vorbereiten'],
+ objs:['das Essen','die Party','den Unterricht','das Frühstück'],
+ m:['etwas vorher fertig machen','to prepare','hazırlamak','готовить, подготавливать','готувати, підготувати','يحضّر'],
+ x:['Ich bereite das Essen vor.','I prepare the meal.','Yemeği hazırlıyorum.','Я готовлю еду.','Я готую їжу.','أحضّر الطعام.'],
+ n:['Partizip II ohne ge-: vorbereitet (be- ist nicht trennbar). Stamm auf -t: du bereitest vor, er bereitet vor. Auch: sich auf etwas vorbereiten.',
+    'Participle without ge-: vorbereitet (be- is inseparable). Stem ending in -t: du bereitest vor, er bereitet vor. Also: sich auf etwas vorbereiten (to prepare for something).',
+    'Partizip II “ge-” almaz: vorbereitet (be- ayrılmaz). Gövde -t ile biterse: du bereitest vor, er bereitet vor. Ayrıca: sich auf etwas vorbereiten (bir şeye hazırlanmak).',
+    'Partizip II без ge-: vorbereitet (be- — неотделяемая приставка). Основа на -t: du bereitest vor, er bereitet vor. Также: sich auf etwas vorbereiten (готовиться к чему-то).',
+    'Partizip II без ge-: vorbereitet (be- — нероздільний префікс). Основа на -t: du bereitest vor, er bereitet vor. Також: sich auf etwas vorbereiten (готуватися до чогось).',
+    'اسم المفعول (Partizip II) بدون ge-: vorbereitet (المقطع be- غير منفصل). الجذر المنتهي بـ t: du bereitest vor, er bereitet vor. وأيضًا: sich auf etwas vorbereiten (الاستعداد لشيء ما).']},
+{id:'anrufen',pre:'an',stem:'ruf',ic:'📱',opp:null,part:'angerufen',pd:['geanrufen','angeruft','anrufen'],
+ objs:['den Arzt','meine Mutter','die Schule','deinen Bruder'],
+ m:['telefonieren','to call, to phone','aramak (telefonla)','звонить','телефонувати, дзвонити','يتصل (هاتفيًا)'],
+ x:['Ich rufe meine Mutter an.','I call my mother.','Annemi arıyorum.','Я звоню маме.','Я телефоную мамі.','أتصل بأمي.'],
+ n:['anrufen + Akkusativ, ohne Präposition: Ich rufe dich an.',
+    'anrufen + accusative, no preposition: Ich rufe dich an (I call you).',
+    'anrufen + Akkusativ, edatsız: Ich rufe dich an (seni arıyorum).',
+    'anrufen + аккузатив, без предлога: Ich rufe dich an (я звоню тебе).',
+    'anrufen + акузатив, без прийменника: Ich rufe dich an (я телефоную тобі).',
+    'anrufen + Akkusativ بدون حرف جر: Ich rufe dich an (أتصل بك).']}
+];
+
+var ORDER=['aufmachen','zumachen','anmachen','ausmachen','anziehen','ausziehen','anfangen','aufhören','einkaufen','aufräumen','vorbereiten','anrufen'];
+var PRE=['an','auf','aus','ein','vor','zu'];
+var SUBJ=[{p:'ich',i:0,h:'habe'},{p:'du',i:1,h:'hast'},{p:'er',i:2,h:'hat'},{p:'wir',i:3,h:'haben'},{p:'ihr',i:4,h:'habt'}];
+var MODAL=[['kann','kannst','kann','können','könnt'],['will','willst','will','wollen','wollt'],['muss','musst','muss','müssen','müsst'],['möchte','möchtest','möchte','möchten','möchtet']];
+
+var USEQ=[
+{v:'aufmachen',s:'Es ist heiß im Zimmer. Ich {F} das Fenster {P}.',f:'mache'},
+{v:'aufmachen',s:'Das Paket ist da! Ich {F} es sofort {P}.',f:'mache'},
+{v:'zumachen',s:'Es ist kalt. Bitte {F} das Fenster {P}!',f:'mach'},
+{v:'zumachen',s:'Das Geschäft öffnet um 8 Uhr und {F} um 18 Uhr {P}.',f:'macht'},
+{v:'anmachen',s:'Es ist dunkel. Ich {F} das Licht {P}.',f:'mache'},
+{v:'anmachen',s:'Ich möchte die Nachrichten sehen. Ich {F} den Fernseher {P}.',f:'mache'},
+{v:'ausmachen',s:'Ich gehe schlafen. Ich {F} das Licht {P}.',f:'mache'},
+{v:'ausmachen',s:'Der Film ist zu Ende. Er {F} den Fernseher {P}.',f:'macht'},
+{v:'anziehen',s:'Draußen regnet es. Ich {F} meine Jacke {P}.',f:'ziehe'},
+{v:'anziehen',s:'Die Kinder gehen in den Kindergarten. Die Mutter {F} die Kinder {P}.',f:'zieht'},
+{v:'ausziehen',s:'Im Flur stehen viele Schuhe. Bitte {F} die Schuhe {P}!',f:'zieh'},
+{v:'ausziehen',s:'Vor dem Schlafen {F} ich mich {P}.',f:'ziehe'},
+{v:'anfangen',s:'Der Deutschkurs beginnt um 9 Uhr. Er {F} um 9 Uhr {P}.',f:'fängt'},
+{v:'anfangen',s:'Jetzt geht es los! Wir {F} mit dem Unterricht {P}.',f:'fangen'},
+{v:'aufhören',s:'Es ist 12 Uhr. Der Unterricht {F} um 12 Uhr {P}.',f:'hört'},
+{v:'aufhören',s:'Ich rauche nicht mehr. Ich {F} mit dem Rauchen {P}.',f:'höre'},
+{v:'einkaufen',s:'Der Kühlschrank ist leer. Ich muss im Supermarkt {I}.'},
+{v:'einkaufen',s:'Am Samstag {F} wir Obst und Gemüse {P}.',f:'kaufen'},
+{v:'aufräumen',s:'Das Zimmer ist unordentlich. Ich {F} es {P}.',f:'räume'},
+{v:'aufräumen',s:'Bevor die Gäste kommen, {F} wir die Wohnung {P}.',f:'räumen'},
+{v:'vorbereiten',s:'Morgen ist die Prüfung. Ich {F} mich gut {P}.',f:'bereite'},
+{v:'vorbereiten',s:'Am Abend kommen Gäste. Ich {F} das Essen {P}.',f:'bereite'},
+{v:'anrufen',s:'Meine Mutter hat Geburtstag. Ich {F} sie {P}.',f:'rufe'},
+{v:'anrufen',s:'Ich bin krank. Ich {F} den Arzt {P}.',f:'rufe'}
+];
+
+var AUXQ=[
+{s:'Maria {_} gestern aus der Wohnung ausgezogen.',ans:'ist',o:['ist','hat']},
+{s:'Maria {_} ihre Jacke ausgezogen.',ans:'hat',o:['ist','hat']},
+{s:'Wir {_} im Mai aus der Wohnung ausgezogen.',ans:'sind',o:['sind','haben']},
+{s:'Ich {_} die Schuhe ausgezogen.',ans:'habe',o:['habe','bin']},
+{s:'Er {_} das Kind ausgezogen.',ans:'hat',o:['hat','ist']},
+{s:'Mein Bruder {_} nach der Hochzeit ausgezogen.',ans:'ist',o:['ist','hat']}
+];
+
+/* ================= Zustand ================= */
+var state={lang:'de',dir:'a',sel:{},open:{},screen:'menu',mode:null,qs:[],qi:0,score:0,wrong:[],answered:false,heroDone:false,focus:null};
+var i0;for(i0=0;i0<VERBS.length;i0++){state.sel[VERBS[i0].id]=true;}
+
+function save(){try{localStorage.setItem('trv1',JSON.stringify({lang:state.lang,dir:state.dir,sel:state.sel}));}catch(e){}}
+function load(){try{var s=localStorage.getItem('trv1');if(!s)return;var o=JSON.parse(s);
+ if(o&&LI.hasOwnProperty(o.lang))state.lang=o.lang;
+ if(o&&(o.dir==='a'||o.dir==='b'||o.dir==='m'))state.dir=o.dir;
+ if(o&&o.sel){var any=false,k;for(k in o.sel){if(o.sel[k])any=true;}
+  if(any){for(k in state.sel){state.sel[k]=!!o.sel[k];}}}
+}catch(e){}}
+
+/* ================= Helfer ================= */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function rnd(n){return Math.floor(Math.random()*n);}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=rnd(i+1);var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function pick(a){return a[rnd(a.length)];}
+function sample(a,n){return shuffle(a.slice()).slice(0,n);}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+function uniq(a){var o=[],i;for(i=0;i<a.length;i++){if(o.indexOf(a[i])<0)o.push(a[i]);}return o;}
+function byId(id){for(var i=0;i<VERBS.length;i++){if(VERBS[i].id===id)return VERBS[i];}return null;}
+function li(){return LI[state.lang];}
+function dirAttr(){return state.lang==='ar'?' dir="rtl"':' dir="ltr"';}
+var LATIN=/([A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß0-9\s|\/\-–—\.,!?'’…:=()+]*[A-Za-zÄÖÜäöüß0-9!?.)])/g;
+function auxHtml(s){
+ if(state.lang==='de'||s==null)return '';
+ var t=esc(s);
+ if(state.lang==='ar')t=t.replace(LATIN,'<bdi dir="ltr">$1</bdi>');
+ return '<span class="aux" lang="'+state.lang+'"'+dirAttr()+'>'+t+'</span>';
+}
+function bi(arr){return '<span class="de">'+esc(arr[0])+'</span>'+auxHtml(arr[li()]);}
+function biRaw(deHtml,auxText){return '<span class="de">'+deHtml+'</span>'+auxHtml(auxText);}
+function L(s){return '<span lang="'+(state.lang==='de'?'de':state.lang)+'"'+(state.lang==='ar'?' dir="rtl"':'')+'>'+esc(s)+'</span>';}
+function inf(v){return v.pre+v.stem+'en';}
+function vd(v,bar){return '<span class="pre">'+v.pre+'</span>'+(bar?'<span class="bar">|</span>':'')+'<span class="stem">'+v.stem+'en</span>';}
+function conj(v){
+ var s=v.stem,ext=/[td]$/.test(s);
+ var f=[s+'e',s+(ext?'est':'st'),s+(ext?'et':'t'),s+'en',s+(ext?'et':'t'),s+'en',s+'en'];
+ if(v.irr){f[1]=v.irr.du;f[2]=v.irr.er;}
+ return f;
+}
+function impf(v){if(v.irr)return v.irr.imp;return /[td]$/.test(v.stem)?v.stem+'e':v.stem;}
+function selected(){var a=[],i;for(i=0;i<VERBS.length;i++){if(state.sel[VERBS[i].id])a.push(VERBS[i]);}return a.length?a:VERBS.slice();}
+function selCount(){var n=0,i;for(i=0;i<VERBS.length;i++){if(state.sel[VERBS[i].id])n++;}return n;}
+
+function colorItem(it,v){
+ var t=esc(it.t);
+ if(it.r==='f')return '<span class="stem">'+t+'</span>';
+ if(it.r==='p')return '<span class="pre">'+t+'</span>';
+ if(it.r==='i')return '<span class="pre">'+esc(v.pre)+'</span><span class="stem">'+esc(it.t.substr(v.pre.length))+'</span>';
+ return t;
+}
+function sentHtml(items,v,punct){
+ var out=[],i,it;
+ for(i=0;i<items.length;i++){
+  it=items[i];
+  if(i===0){it={t:cap(it.t),r:it.r};}
+  out.push(colorItem(it,v));
+ }
+ return out.join(' ')+(punct||'');
+}
+function ruleBox(k){return '<div class="rulebox"><strong>'+bi(R[k].h)+'</strong><div>'+bi(R[k].t)+'</div></div>';}
+
+/* ================= Fragen erzeugen ================= */
+function genOrder(v){
+ var S=pick(SUBJ),o=pick(v.objs),f=conj(v),ty=pick(['stmt','yn','imp','modal','perf']);
+ var Sx={t:S.p,r:'s'},Ox={t:o,r:'o'},Px={t:v.pre,r:'p'},items,vars,punct,rule,Fx;
+ if(ty==='stmt'){Fx={t:f[S.i],r:'f'};items=[Sx,Fx,Ox,Px];vars=[items,[Ox,Fx,Sx,Px]];punct='.';rule='r2';}
+ else if(ty==='yn'){items=[{t:f[S.i],r:'f'},Sx,Ox,Px];vars=[items];punct='?';rule='r3';}
+ else if(ty==='imp'){items=[{t:impf(v),r:'f'},Ox,Px];vars=[items];punct='!';rule='r3';}
+ else if(ty==='modal'){var mo={t:pick(MODAL)[S.i],r:'m'},Ix={t:inf(v),r:'i'};items=[Sx,mo,Ox,Ix];vars=[items,[Ox,mo,Sx,Ix]];punct='.';rule='r4';}
+ else{var au={t:S.h,r:'m'},Pp={t:v.part,r:'i'};items=[Sx,au,Ox,Pp];vars=[items,[Ox,au,Sx,Pp]];punct='.';rule='r5';}
+ var bank,tries=0,ident,k;
+ do{bank=[];for(k=0;k<items.length;k++)bank.push(k);shuffle(bank);ident=true;for(k=0;k<bank.length;k++){if(bank[k]!==k)ident=false;}tries++;}while(ident&&tries<20);
+ return {kind:'order',v:v,ty:ty,items:items,vars:vars,punct:punct,rule:rule,bank:bank,picked:[],done:false,okv:false,hint:false};
+}
+function forms4(v,S){
+ var f=conj(v),correct=f[S.i];
+ var pool=uniq([f[0],f[1],f[2],f[3],f[4]]),d=[],i;
+ for(i=0;i<pool.length;i++){if(pool[i]!==correct)d.push(pool[i]);}
+ return {correct:correct,opts:shuffle([correct].concat(sample(d,3)))};
+}
+function genGap(v){
+ var S=pick(SUBJ),o=pick(v.objs),fm=forms4(v,S);
+ var pres=sample(PRE.filter(function(p){return p!==v.pre;}),3);
+ return {kind:'gap',v:v,S:S,o:o,f:fm.correct,o1:fm.opts,o2:shuffle([v.pre].concat(pres)),sel1:null,sel2:null,done:false,ok1:false,ok2:false,rule:'r2',hint:false};
+}
+function genPres(v){
+ var S=pick(SUBJ),o=pick(v.objs),fm=forms4(v,S),opts=[],i;
+ for(i=0;i<fm.opts.length;i++){opts.push({h:'<span class="serif">'+esc(fm.opts[i])+'</span>',ok:fm.opts[i]===fm.correct});}
+ return {kind:'pres',v:v,S:S,o:o,f:fm.correct,opts:opts,picked:null,rule:'r2',hint:false};
+}
+function genPart(v){
+ var S=pick(SUBJ),o=pick(v.objs),arr=shuffle([v.part].concat(v.pd)),opts=[],i;
+ for(i=0;i<arr.length;i++){opts.push({h:'<span class="serif">'+esc(arr[i])+'</span>',ok:arr[i]===v.part});}
+ return {kind:'part',v:v,S:S,o:o,opts:opts,picked:null,rule:'r5',hint:false};
+}
+function genAux(){
+ var it=pick(AUXQ),opts=[],arr=shuffle(it.o.slice()),i;
+ for(i=0;i<arr.length;i++){opts.push({h:'<span class="serif">'+esc(arr[i])+'</span>',ok:arr[i]===it.ans});}
+ return {kind:'aux',v:byId('ausziehen'),it:it,opts:opts,picked:null,hint:false};
+}
+function distractVerbs(v,n){
+ var res=[],i,pool=[];
+ if(v.opp)res.push(byId(v.opp));
+ for(i=0;i<VERBS.length;i++){if(VERBS[i]!==v&&res.indexOf(VERBS[i])<0)pool.push(VERBS[i]);}
+ shuffle(pool);
+ while(res.length<n&&pool.length)res.push(pool.shift());
+ return res;
+}
+function genMeaning(v){
+ var d=state.dir,toL=(d==='a')||(d==='m'&&rnd(2)===0),idx=li(),ds=distractVerbs(v,3),opts=[],i,all;
+ if(toL){
+  all=[v].concat(ds);
+  var seen={};
+  for(i=0;i<all.length;i++){var s=all[i].m[idx];if(seen[s])continue;seen[s]=1;opts.push({h:L(s),ok:all[i]===v});}
+  shuffle(opts);
+  return {kind:'meaning',dirL:true,v:v,opts:opts,picked:null,hint:false};
+ }
+ all=[v].concat(ds);
+ for(i=0;i<all.length;i++){opts.push({h:'<span class="serif">'+vd(all[i],true)+'</span>',ok:all[i]===v});}
+ shuffle(opts);
+ return {kind:'meaning',dirL:false,v:v,opts:opts,picked:null,hint:false};
+}
+var useIdx={};
+function genUse(v){
+ var list=[],i;
+ for(i=0;i<USEQ.length;i++){if(USEQ[i].v===v.id)list.push(USEQ[i]);}
+ useIdx[v.id]=((useIdx[v.id]||0)+1+rnd(2))%list.length;
+ var it=list[useIdx[v.id]],ds=distractVerbs(v,3),all=[v].concat(ds),opts=[];
+ for(i=0;i<all.length;i++){opts.push({h:'<span class="serif">'+vd(all[i],true)+'</span>',ok:all[i]===v,vid:all[i].id});}
+ shuffle(opts);
+ return {kind:'use',v:v,it:it,opts:opts,picked:null,hint:false};
+}
+function gen(kind,v){
+ switch(kind){
+  case 'meaning':return genMeaning(v);
+  case 'gap':return genGap(v);
+  case 'order':return genOrder(v);
+  case 'pres':return genPres(v);
+  case 'part':return genPart(v);
+  case 'aux':return genAux();
+  case 'use':return genUse(v);
+ }
+ return genMeaning(v);
+}
+function buildQuestions(mode,n){
+ var pool=selected(),order=[],qs=[],i,kinds,hasAus=false;
+ while(order.length<n){order=order.concat(shuffle(pool.slice()));}
+ for(i=0;i<pool.length;i++){if(pool[i].id==='ausziehen')hasAus=true;}
+ if(mode==='meaning')kinds=['meaning'];
+ else if(mode==='gap')kinds=['gap'];
+ else if(mode==='order')kinds=['order'];
+ else if(mode==='use')kinds=['use'];
+ else if(mode==='grammar')kinds=['pres','part'];
+ else kinds=shuffle(['meaning','gap','order','pres','part','use']);
+ for(i=0;i<n;i++){
+  var k=kinds[i%kinds.length];
+  if(mode==='grammar'&&hasAus&&(i===5||i===11))k='aux';
+  qs.push(gen(k,order[i]));
+ }
+ return qs;
+}
+
+/* ================= Rendering ================= */
+function topbar(){
+ var h='<header class="top"><div class="brand"><span class="bt">Trennbare Verben</span><span class="bs">Trainer</span></div>';
+ h+='<div class="langs" role="group" aria-label="Sprache / Language / Dil / Язык / Мова / اللغة">';
+ for(var i=0;i<LANGS.length;i++){
+  h+='<button class="lang" data-act="lang" data-v="'+LANGS[i]+'" aria-pressed="'+(state.lang===LANGS[i])+'">'+LN[i]+'</button>';
+ }
+ return h+'</div></header>';
+}
+function detailsOpen(key){return state.open[key]?' open':'';}
+
+function heroHtml(){
+ return '<section class="hero"><div class="hcap"><span class="vw">'+vd(byId('aufmachen'),true)+'</span>'+
+ '<button class="replay" data-act="replay" aria-label="Animation wiederholen">↻</button></div>'+
+ '<div class="sent" id="hs" role="img" aria-label="Ich mache die Tür auf."><span class="tk">Ich</span><span class="tk stem">mache</span><span class="tk">die Tür</span><span class="tk pre">auf</span></div></section>';
+}
+function screenMenu(){
+ var h=topbar()+heroHtml()+'<nav class="menu" aria-label="Menü">',i,t;
+ for(i=0;i<TILES.length;i++){
+  t=TILES[i];
+  h+='<button class="row" data-act="mode" data-v="'+t.id+'"><span><span class="rt">'+bi(t.t)+'</span><span class="rd">'+bi(t.d)+'</span></span><span class="chev" aria-hidden="true">›</span></button>';
+ }
+ h+='</nav><section class="opts"><h3>'+bi(TT.sets)+'</h3>';
+ h+='<div class="grp">'+bi(TT.dirL)+'</div><div class="seg" role="group">';
+ var ds=[['a',TT.dA],['b',TT.dB],['m',TT.dM]];
+ for(i=0;i<ds.length;i++){h+='<button class="pill" data-act="dir" data-v="'+ds[i][0]+'" aria-pressed="'+(state.dir===ds[i][0])+'">'+bi(ds[i][1])+'</button>';}
+ h+='</div><details class="sel" data-key="sel"'+detailsOpen('sel')+'><summary>'+bi(TT.selV)+' ('+selCount()+'/'+VERBS.length+')</summary><div class="vsel">';
+ h+='<button class="pill" data-act="vall" aria-pressed="'+(selCount()===VERBS.length)+'">'+bi(TT.all)+'</button>';
+ for(i=0;i<ORDER.length;i++){var v=byId(ORDER[i]);h+='<button class="pill" data-act="vtog" data-v="'+v.id+'" aria-pressed="'+(!!state.sel[v.id])+'">'+esc(inf(v))+'</button>';}
+ return h+'</div></details></section>';
+}
+
+function exRow(items,labels){
+ var h='<div class="exrow">',i,v=byId('aufmachen');
+ for(i=0;i<items.length;i++){
+  h+='<div class="cell"><small>'+(labels?labels[i]:'')+'</small><span class="w">'+colorItem(items[i],v)+'</span></div>';
+ }
+ return h+'</div>';
+}
+function conjTable(v){
+ var f=conj(v),P=[['ich',0],['du',1],['er/sie/es',2],['wir',3],['ihr',4],['sie/Sie',5]],h='<div class="tbl">',i;
+ for(i=0;i<P.length;i++){h+='<div>'+esc(P[i][0])+' <span class="stem">'+esc(f[P[i][1]])+'</span> … <span class="pre">'+esc(v.pre)+'</span></div>';}
+ return h+'</div>';
+}
+function verbDetails(v){
+ var f=conj(v),idx=li(),h='<details class="vd" data-key="v_'+v.id+'"'+detailsOpen('v_'+v.id)+'><summary><span class="ic" aria-hidden="true">'+v.ic+'</span><span class="vw">'+vd(v,true)+'</span><span class="vm">'+bi(v.m)+'</span></summary><div class="vb">';
+ h+='<div class="ex1">'+esc(v.x[0])+'</div>'+auxHtml(v.x[idx]);
+ h+='<div class="grp">'+bi(TT.pres)+'</div>'+conjTable(v);
+ h+='<div class="ln"><b>'+bi(TT.imp)+'</b> <span class="stem">'+esc(cap(impf(v)))+'</span> … <span class="pre">'+esc(v.pre)+'</span>!</div>';
+ var pf='hat … '+colorItem({t:v.part,r:'i'},v);
+ if(v.id==='ausziehen')pf+=' &nbsp;/&nbsp; ist … '+colorItem({t:v.part,r:'i'},v);
+ h+='<div class="ln"><b>'+bi(TT.perf)+'</b> '+pf+'</div>';
+ h+='<div class="ln"><b>'+bi(TT.modal)+'</b> will … '+colorItem({t:inf(v),r:'i'},v)+'</div>';
+ h+='<div class="ln"><b>'+bi(TT.sub)+'</b> …, dass er … '+colorItem({t:v.pre+f[2],r:'i'},v)+'</div>';
+ if(v.n)h+='<div class="note">'+bi(v.n)+'</div>';
+ return h+'</div></details>';
+}
+function screenLearn(){
+ var h=topbar()+'<div class="qbar"><button class="link" data-act="menu">‹ '+bi(TT.menu)+'</button></div>';
+ h+='<h2 class="pg">'+bi(TT.learn)+'</h2>';
+ var ds=byId('aufmachen');
+ h+='<section class="rule"><h3>'+bi(R.r1.h)+'</h3><p>'+bi(R.r1.t)+'</p><div class="split"><div><span class="pre">auf</span><small>'+esc(TT.prefix[0])+(state.lang==='de'?'':' · '+esc(TT.prefix[li()]))+'</small></div><div><span class="stem">machen</span><small>'+esc(TT.base[0])+(state.lang==='de'?'':' · '+esc(TT.base[li()]))+'</small></div></div></section>';
+ var endL=esc(TT.end[0])+(state.lang==='de'?'':' · '+esc(TT.end[li()]));
+ h+='<section class="rule"><h3>'+bi(R.r2.h)+'</h3><p>'+bi(R.r2.t)+'</p>'+exRow([{t:'Ich',r:'s'},{t:'mache',r:'f'},{t:'die Tür',r:'o'},{t:'auf',r:'p'}],['1','2','…',endL])+'</section>';
+ h+='<section class="rule"><h3>'+bi(R.r3.h)+'</h3><p>'+bi(R.r3.t)+'</p>'+exRow([{t:'Machst',r:'f'},{t:'du',r:'s'},{t:'die Tür',r:'o'},{t:'auf',r:'p'}],['1','2','…',endL])+exRow([{t:'Mach',r:'f'},{t:'die Tür',r:'o'},{t:'auf',r:'p'}],['1','…',endL])+'</section>';
+ h+='<section class="rule"><h3>'+bi(R.r4.h)+'</h3><p>'+bi(R.r4.t)+'</p>'+exRow([{t:'Ich',r:'s'},{t:'will',r:'m'},{t:'die Tür',r:'o'},{t:'aufmachen',r:'i'}],['1','2','…',endL])+'</section>';
+ h+='<section class="rule"><h3>'+bi(R.r5.h)+'</h3><p>'+bi(R.r5.t)+'</p>'+exRow([{t:'Ich',r:'s'},{t:'habe',r:'m'},{t:'die Tür',r:'o'},{t:'aufgemacht',r:'i'}],['1','2','…',endL])+'</section>';
+ h+='<section class="rule"><h3>'+bi(R.r6.h)+'</h3><p>'+bi(R.r6.t)+'</p>'+exRow([{t:'…, weil',r:'n'},{t:'ich',r:'s'},{t:'die Tür',r:'o'},{t:'aufmache',r:'i'}])+'</section>';
+ h+='<section class="rule"><h3>'+bi(TT.pfx)+'</h3><div class="pl">'+
+  '<span class="pre">an</span>: anmachen, anziehen, anrufen, anfangen<br><span class="pre">auf</span>: aufmachen, aufräumen, aufhören<br><span class="pre">aus</span>: ausmachen, ausziehen<br><span class="pre">ein</span>: einkaufen &nbsp; <span class="pre">vor</span>: vorbereiten &nbsp; <span class="pre">zu</span>: zumachen</div></section>';
+ h+='<section class="rule"><h3>'+bi(TT.opp)+'</h3><div class="pl">aufmachen ↔ zumachen<br>anmachen ↔ ausmachen<br>anziehen ↔ ausziehen<br>anfangen ↔ aufhören</div></section>';
+ h+='<h2 class="pg">'+bi(TT.verbs)+'</h2>';
+ for(var i=0;i<ORDER.length;i++){h+=verbDetails(byId(ORDER[i]));}
+ return h;
+}
+
+function fbHead(ok){return '<div class="h">'+(ok?'✓ ':'✗ ')+bi(ok?TT.ok:TT.bad)+'</div>';}
+function explain(q,ok){
+ var v=q.v,h='',idx=li();
+ if(q.kind==='meaning'){
+  h='<div class="lbl">'+vd(v,true)+' = '+esc(v.m[0])+'</div>'+auxHtml(v.m[idx])+'<div class="sol">'+esc(v.x[0])+'</div>'+auxHtml(v.x[idx]);
+  if(v.n)h+='<div class="rulebox">'+bi(v.n)+'</div>';
+ }else if(q.kind==='pres'){
+  h='<div class="sol">'+sentHtml([{t:q.S.p,r:'s'},{t:q.f,r:'f'},{t:q.o,r:'o'},{t:v.pre,r:'p'}],v,'.')+'</div>'+ruleBox('r2');
+ }else if(q.kind==='part'){
+  h='<div class="sol">'+sentHtml([{t:q.S.p,r:'s'},{t:q.S.h,r:'m'},{t:q.o,r:'o'},{t:v.part,r:'i'}],v,'.')+'</div>'+ruleBox('r5');
+  if(v.id==='vorbereiten'||v.id==='anfangen'||v.id==='anziehen'||v.id==='ausziehen'||v.id==='anrufen'){if(v.n)h+='<div class="rulebox">'+bi(v.n)+'</div>';}
+ }else if(q.kind==='aux'){
+  h='<div class="sol">'+esc(q.it.s.replace('{_}',q.it.ans))+'</div><div class="rulebox">'+bi(byId('ausziehen').n)+'</div>';
+ }else if(q.kind==='use'){
+  h='<div class="sol">'+useSentence(q.it,false)+'</div><div class="lbl">'+vd(v,true)+' = '+esc(v.m[0])+'</div>'+auxHtml(v.m[idx]);
+ }
+ return h;
+}
+function useSentence(it,blank){
+ var v=byId(it.v),s=esc(it.s);
+ if(blank){
+  s=s.replace('{F}','<span class="blank">___</span>').replace('{P}','<span class="blank">___</span>').replace('{I}','<span class="blank">______</span>');
+ }else{
+  s=s.replace('{F}','<span class="stem">'+esc(it.f||'')+'</span>').replace('{P}','<span class="pre">'+esc(v.pre)+'</span>').replace('{I}','<span class="pre">'+esc(v.pre)+'</span><span class="stem">'+esc(v.stem+'en')+'</span>');
+ }
+ return s;
+}
+function hintHtml(q){
+ var idx=li(),h='',i;
+ if(q.kind==='meaning'||q.kind==='aux'&&false){h='<div class="serif">'+esc(q.v.x[0])+'</div>'+auxHtml(q.v.x[idx]);}
+ else if(q.kind==='use'){
+  for(i=0;i<q.opts.length;i++){var ov=byId(q.opts[i].vid);h+='<div class="hl"><span class="serif">'+vd(ov,true)+'</span> = '+esc(ov.m[0])+auxHtml(ov.m[idx])+'</div>';}
+ }else if(q.kind==='aux'){h=bi(byId('ausziehen').n);}
+ else h=ruleBox(q.rule);
+ return '<div class="hintbox">'+h+'</div>';
+}
+
+function bodySingle(q){
+ var v=q.v,h='',i;
+ if(q.kind==='meaning'){
+  if(q.dirL){
+   h+='<div class="instr">'+bi(TT.iMeaning)+'</div><div class="prompt"><span class="ico" aria-hidden="true">'+v.ic+'</span><span class="big serif">'+vd(v,true)+'</span></div>';
+  }else{
+   h+='<div class="instr">'+bi(TT.iMeaningB)+'</div><div class="prompt"><span class="ico" aria-hidden="true">'+v.ic+'</span><span class="big">'+L(v.m[li()])+'</span></div>';
+  }
+ }else if(q.kind==='pres'){
+  h+='<div class="instr">'+bi(TT.iPres)+'</div><div class="lbl grp">'+vd(v,true)+'</div><div class="sent2">'+esc(q.S.p)+' <span class="blank'+(state.answered?' fill':'')+'">'+(state.answered?esc(q.f):'___')+'</span> '+esc(q.o)+' <span class="pre">'+esc(v.pre)+'</span>.</div>';
+ }else if(q.kind==='part'){
+  h+='<div class="instr">'+bi(TT.iPart)+'</div><div class="lbl grp">'+vd(v,true)+'</div><div class="sent2">'+esc(cap(q.S.p))+' '+esc(q.S.h)+' '+esc(q.o)+' <span class="blank">'+(state.answered?sentHtml([{t:v.part,r:'i'}],v,''):'___')+'</span>.</div>';
+ }else if(q.kind==='aux'){
+  h+='<div class="instr">'+bi(TT.iAux)+'</div><div class="sent2">'+esc(q.it.s).replace('{_}','<span class="blank">'+(state.answered?esc(q.it.ans):'___')+'</span>')+'</div>';
+ }else if(q.kind==='use'){
+  h+='<div class="instr">'+bi(TT.iUse)+'</div><div class="sent2">'+useSentence(q.it,true)+'</div>';
+ }
+ h+='<div class="opts-l">';
+ for(i=0;i<q.opts.length;i++){
+  var cls='opt';
+  if(state.answered){if(q.opts[i].ok)cls+=' ok';else if(q.picked===i)cls+=' bad';}
+  h+='<button class="'+cls+'" data-act="opt" data-v="'+i+'"'+(state.answered?' disabled':'')+'>'+q.opts[i].h+'</button>';
+ }
+ h+='</div>';
+ if(q.hint&&!state.answered)h+=hintHtml(q);
+ if(state.answered){
+  var ok=q.opts[q.picked].ok;
+  h+='<div class="fb '+(ok?'ok':'bad')+'" role="status">'+fbHead(ok)+explain(q,ok)+'</div>';
+ }
+ return h;
+}
+function bodyGap(q){
+ var v=q.v,idx=li(),h='<div class="instr">'+bi(TT.iGap)+'</div>';
+ h+='<div class="mhint"><span class="ico" aria-hidden="true">'+v.ic+'</span><span><b class="serif">'+esc(v.m[0])+'</b>'+auxHtml(v.m[idx])+'</span></div>';
+ var c1=q.sel1!==null?q.o1[q.sel1]:'___',c2=q.sel2!==null?q.o2[q.sel2]:'___';
+ var k1=q.done?(q.ok1?' ok':' bad'):(q.sel1!==null?' fill':''),k2=q.done?(q.ok2?' ok':' bad'):(q.sel2!==null?' fill':'');
+ h+='<div class="sent2">'+esc(cap(q.S.p))+' <span class="blank'+k1+'">'+esc(c1)+'</span> '+esc(q.o)+' <span class="blank'+k2+'">'+esc(c2)+'</span>.</div>';
+ h+='<div class="grp">'+bi(TT.stemLbl)+'</div><div class="optrow">';
+ var i;
+ for(i=0;i<q.o1.length;i++){
+  var c='opt sm'+(q.sel1===i?' sel':'');
+  if(q.done){if(q.o1[i]===q.f)c='opt sm ok';else if(q.sel1===i)c='opt sm bad';else c='opt sm';}
+  h+='<button class="'+c+'" data-act="gap1" data-v="'+i+'"'+(q.done?' disabled':'')+'>'+esc(q.o1[i])+'</button>';
+ }
+ h+='</div><div class="grp">'+bi(TT.preLbl)+'</div><div class="optrow">';
+ for(i=0;i<q.o2.length;i++){
+  var d='opt sm'+(q.sel2===i?' sel':'');
+  if(q.done){if(q.o2[i]===v.pre)d='opt sm ok';else if(q.sel2===i)d='opt sm bad';else d='opt sm';}
+  h+='<button class="'+d+'" data-act="gap2" data-v="'+i+'"'+(q.done?' disabled':'')+'>'+esc(q.o2[i])+'</button>';
+ }
+ h+='</div>';
+ if(q.hint&&!q.done)h+=hintHtml(q);
+ if(q.done){
+  var ok=q.ok1&&q.ok2;
+  h+='<div class="fb '+(ok?'ok':'bad')+'" role="status">'+fbHead(ok)+'<div class="sol">'+sentHtml([{t:q.S.p,r:'s'},{t:q.f,r:'f'},{t:q.o,r:'o'},{t:v.pre,r:'p'}],v,'.')+'</div><div class="lbl">'+vd(v,true)+' → '+esc(q.f)+' … '+esc(v.pre)+'</div>'+ruleBox('r2')+'</div>';
+ }
+ return h;
+}
+function bodyOrder(q){
+ var h='<div class="instr">'+bi(TT.iOrder)+'</div>',i,id,it;
+ h+='<div class="answer'+(q.picked.length?'':' empty')+'">';
+ for(i=0;i<q.picked.length;i++){
+  id=q.picked[i];it=q.items[id];
+  var t=(i===0)?cap(it.t):it.t;
+  h+='<button class="chip'+(q.done?(q.okv?' ok':' bad'):'')+'" data-act="unpick" data-v="'+id+'"'+(q.done?' disabled':'')+'>'+esc(t)+'</button>';
+ }
+ if(q.picked.length)h+='<span class="pun">'+q.punct+'</span>';
+ h+='</div><div class="bank">';
+ for(i=0;i<q.bank.length;i++){
+  id=q.bank[i];
+  if(q.picked.indexOf(id)>-1)continue;
+  h+='<button class="chip" data-act="pick" data-v="'+id+'"'+(q.done?' disabled':'')+'>'+esc(q.items[id].t)+'</button>';
+ }
+ h+='</div>';
+ if(q.hint&&!q.done)h+=hintHtml(q);
+ if(q.done){
+  var shown=q.items,j;
+  if(q.okv){shown=[];for(j=0;j<q.picked.length;j++)shown.push(q.items[q.picked[j]]);}
+  h+='<div class="fb '+(q.okv?'ok':'bad')+'" role="status">'+fbHead(q.okv)+
+   (q.okv?'':'<div class="lbl">'+bi(TT.sol)+'</div>')+
+   '<div class="sol">'+sentHtml(shown,q.v,q.punct)+'</div>'+ruleBox(q.rule)+'</div>';
+ }
+ return h;
+}
+function quizActs(q){
+ var h='<div class="acts">',done,canCheck=false;
+ if(q.kind==='order'){done=q.done;canCheck=q.picked.length===q.items.length;}
+ else if(q.kind==='gap'){done=q.done;canCheck=(q.sel1!==null&&q.sel2!==null);}
+ else{done=state.answered;}
+ if(!done){
+  if(q.kind==='order'||q.kind==='gap'){
+   h+='<button class="btn" data-act="check"'+(canCheck?'':' disabled')+'>'+bi(TT.check)+'</button>';
+   if(q.kind==='order')h+='<button class="btn sec" data-act="reset"'+(q.picked.length?'':' disabled')+'>'+bi(TT.reset)+'</button>';
+  }
+  h+='<button class="btn sec" data-act="hint"'+(q.hint?' disabled':'')+'>'+bi(TT.hint)+'</button>';
+ }else{
+  h+='<button class="btn" data-act="next" data-focus="1">'+bi(TT.next)+'</button>';
+ }
+ return h+'</div>';
+}
+function screenQuiz(){
+ var q=state.qs[state.qi],n=state.qs.length,i=state.qi+1;
+ var h=topbar()+'<div class="qbar"><button class="link" data-act="menu">‹ '+bi(TT.menu)+'</button><span class="cnt"><span class="de">'+esc(TT.q[0])+' '+i+' / '+n+'</span>'+auxHtml(TT.q[li()]+' '+i+' / '+n)+'</span></div>';
+ h+='<div class="prog" aria-hidden="true"><i style="width:'+Math.round((state.qi/n)*100)+'%"></i></div><div class="panel">';
+ h+=(q.kind==='order')?bodyOrder(q):(q.kind==='gap')?bodyGap(q):bodySingle(q);
+ return h+quizActs(q)+'</div>';
+}
+function screenResult(){
+ var n=state.qs.length,pct=Math.round(state.score/n*100),msg=pct>=90?TT.great:(pct>=60?TT.good:TT.more);
+ var h=topbar()+'<div class="res"><div class="lbl">'+bi(TT.score)+'</div><div class="big">'+state.score+' / '+n+'</div><div class="msg">'+bi(msg)+'</div>';
+ if(state.wrong.length){
+  var seen={},w='',i;
+  for(i=0;i<state.wrong.length;i++){var v=state.wrong[i].v;if(seen[v.id])continue;seen[v.id]=1;w+='<span class="w">'+vd(v,true)+'</span>';}
+  h+='<div class="wl">'+w+'</div>';
+ }
+ h+='<div class="acts" style="justify-content:center">';
+ if(state.wrong.length)h+='<button class="btn" data-act="retry">'+bi(TT.mist)+'</button>';
+ h+='<button class="btn'+(state.wrong.length?' sec':'')+'" data-act="again">'+bi(TT.again)+'</button><button class="btn sec" data-act="menu">'+bi(TT.menu)+'</button></div></div>';
+ return h;
+}
+
+function render(){
+ var app=document.getElementById('app'),h;
+ if(state.screen==='menu')h=screenMenu();
+ else if(state.screen==='learn')h=screenLearn();
+ else if(state.screen==='quiz')h=screenQuiz();
+ else h=screenResult();
+ app.innerHTML=h;
+ if(state.screen==='menu'&&!state.heroDone){state.heroDone=true;setTimeout(heroPlay,250);}
+ if(state.focus){var el=app.querySelector('[data-focus]');if(el){try{el.focus();}catch(e){}}state.focus=null;}
+}
+
+/* ================= Hero-Animation (FLIP) ================= */
+function heroPlay(){
+ var box=document.getElementById('hs');if(!box)return;
+ if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ var toks=box.querySelectorAll('.tk'),arr=[],i;
+ for(i=0;i<toks.length;i++){arr.push(toks[i]);}
+ var stem=arr[1],pre=arr[3],first=[],last=[];
+ box.insertBefore(pre,stem);pre.className='tk pre joined';
+ for(i=0;i<arr.length;i++){first.push(arr[i].getBoundingClientRect());}
+ box.appendChild(pre);pre.className='tk pre';
+ for(i=0;i<arr.length;i++){last.push(arr[i].getBoundingClientRect());}
+ for(i=0;i<arr.length;i++){arr[i].style.transition='none';arr[i].style.transform='translate('+(first[i].left-last[i].left)+'px,0)';}
+ void box.offsetWidth;
+ setTimeout(function(){
+  for(var j=0;j<arr.length;j++){arr[j].style.transition='transform 1s cubic-bezier(.3,.7,.2,1)';arr[j].style.transform='';}
+ },900);
+}
+
+/* ================= Ablauf ================= */
+function start(mode){
+ state.mode=mode;state.qs=buildQuestions(mode,12);state.qi=0;state.score=0;state.wrong=[];state.answered=false;state.screen='quiz';
+ render();window.scrollTo(0,0);
+}
+function retry(){
+ var qs=[],i;
+ for(i=0;i<state.wrong.length;i++){qs.push(gen(state.wrong[i].kind,state.wrong[i].v));}
+ if(!qs.length)return;
+ state.qs=qs;state.qi=0;state.score=0;state.wrong=[];state.answered=false;state.screen='quiz';
+ render();window.scrollTo(0,0);
+}
+function cur(){return state.qs[state.qi];}
+function finish(q,ok){
+ if(ok)state.score++;else state.wrong.push({kind:q.kind,v:q.v});
+}
+function handle(a,v){
+ var q,i;
+ if(a==='lang'){state.lang=v;save();render();return;}
+ if(a==='dir'){state.dir=v;save();render();return;}
+ if(a==='vtog'){
+  if(state.sel[v]&&selCount()<=1)return;
+  state.sel[v]=!state.sel[v];state.open.sel=true;save();render();return;
+ }
+ if(a==='vall'){for(i=0;i<VERBS.length;i++)state.sel[VERBS[i].id]=true;state.open.sel=true;save();render();return;}
+ if(a==='mode'){if(v==='learn'){state.screen='learn';render();window.scrollTo(0,0);}else start(v);return;}
+ if(a==='menu'){state.screen='menu';render();window.scrollTo(0,0);return;}
+ if(a==='replay'){heroPlay();return;}
+ if(a==='again'){start(state.mode);return;}
+ if(a==='retry'){retry();return;}
+ if(state.screen!=='quiz')return;
+ q=cur();
+ if(a==='opt'){
+  if(state.answered)return;
+  q.picked=parseInt(v,10);state.answered=true;finish(q,q.opts[q.picked].ok);state.focus=true;render();return;
+ }
+ if(a==='gap1'){if(!q.done){q.sel1=parseInt(v,10);render();}return;}
+ if(a==='gap2'){if(!q.done){q.sel2=parseInt(v,10);render();}return;}
+ if(a==='pick'){if(!q.done){q.picked.push(parseInt(v,10));render();}return;}
+ if(a==='unpick'){if(!q.done){var id=parseInt(v,10),p=q.picked.indexOf(id);if(p>-1)q.picked.splice(p,1);render();}return;}
+ if(a==='reset'){if(!q.done){q.picked=[];render();}return;}
+ if(a==='hint'){q.hint=true;render();return;}
+ if(a==='check'){
+  if(q.kind==='gap'){
+   if(q.sel1===null||q.sel2===null||q.done)return;
+   q.ok1=(q.o1[q.sel1]===q.f);q.ok2=(q.o2[q.sel2]===q.v.pre);q.done=true;
+   finish(q,q.ok1&&q.ok2);
+  }else if(q.kind==='order'){
+   if(q.done||q.picked.length!==q.items.length)return;
+   var seq=[],j,k,ok=false;
+   for(j=0;j<q.picked.length;j++)seq.push(q.items[q.picked[j]].t);
+   for(j=0;j<q.vars.length;j++){var arr=[];for(k=0;k<q.vars[j].length;k++)arr.push(q.vars[j][k].t);if(arr.join('|')===seq.join('|'))ok=true;}
+   q.done=true;q.okv=ok;finish(q,ok);
+  }
+  state.focus=true;render();return;
+ }
+ if(a==='next'){
+  state.qi++;state.answered=false;
+  if(state.qi>=state.qs.length)state.screen='result';
+  render();window.scrollTo(0,0);return;
+ }
+}
+
+document.addEventListener('click',function(e){
+ var el=e.target;
+ while(el&&el!==document&&!(el.getAttribute&&el.getAttribute('data-act')))el=el.parentNode;
+ if(!el||el===document)return;
+ handle(el.getAttribute('data-act'),el.getAttribute('data-v'));
+});
+document.addEventListener('toggle',function(e){
+ var t=e.target;
+ if(t&&t.getAttribute&&t.getAttribute('data-key')){state.open[t.getAttribute('data-key')]=t.open;}
+},true);
+
+load();
+render();
+})();
+</script>
+</body>
+</html>
