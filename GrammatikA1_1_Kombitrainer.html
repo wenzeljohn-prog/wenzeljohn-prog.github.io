@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grammatik A1.1 – Kombitrainer</title>
+<style>
+:root{
+  --paper:#fbfcfe; --grid:rgba(70,110,170,.10); --ink:#1d2b4f; --soft:#5a6787; --line:#c9d3e6;
+  --hi:#ffe680; --ok:#1e7f4f; --okbg:#e3f4ea; --bad:#c23b2f; --badbg:#fbe6e3; --margin:#e7a9a9;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.45;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+#app{max-width:820px;margin:0 auto;padding:14px 14px 60px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;margin:0}
+h1{font-size:1.65rem;line-height:1.15}
+h2{font-size:1.2rem;margin:22px 0 8px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #3b6fd8;outline-offset:2px}
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px;border-bottom:3px solid var(--ink);padding-bottom:10px;margin-bottom:6px}
+.top p{margin:4px 0 0;color:var(--soft);font-size:.92rem}
+.tabs{display:flex;gap:6px}
+.tab{border:2px solid var(--ink);background:#fff;border-radius:8px;padding:6px 14px;font-weight:600}
+.tab.on{background:var(--ink);color:#fff}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:2px solid var(--line);background:#fff;border-radius:8px;min-width:44px;padding:7px 10px;font-weight:600}
+.seg button.on{border-color:var(--ink);background:var(--ink);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:.93rem;display:inline-flex;align-items:center;gap:7px}
+.chip .dot{width:10px;height:10px;border-radius:50%;flex:none}
+.chip small{color:var(--soft);font-size:.78rem}
+.chip.on{border-color:var(--ink);background:#eef3ff}
+.chip.off{opacity:.38;cursor:default}
+.grp{margin:12px 0 4px;font-weight:700;font-size:.95rem}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
+.lnk{background:none;border:none;color:#2b5fbf;text-decoration:underline;padding:4px 6px;font-size:.9rem}
+.btn{border:2px solid var(--ink);background:var(--ink);color:#fff;border-radius:10px;padding:10px 20px;font-weight:700;font-size:1rem}
+.btn.sec{background:#fff;color:var(--ink)}
+.btn[disabled]{opacity:.4;cursor:default}
+.cnt{color:var(--soft);font-size:.95rem}
+.card{background:#fff;border:2px solid var(--ink);border-left:10px solid var(--margin);border-radius:12px;padding:16px 16px 14px;margin:12px 0}
+.meta{font-size:.85rem;color:var(--soft);font-weight:600;margin-bottom:2px}
+.ti{font-family:Georgia,serif;font-weight:700;font-size:1.1rem;margin-bottom:2px}
+.instr{color:var(--soft);font-size:.92rem;margin-bottom:10px}
+.sent{font-size:1.16rem;line-height:2.35;white-space:normal}
+.gsel{font:inherit;font-size:1.05rem;color:var(--ink);border:none;border-bottom:2px solid var(--ink);background:#fff8d4;border-radius:4px 4px 0 0;padding:3px 2px;max-width:100%}
+.gsel.ok,.gin.ok,.gap.ok{background:var(--okbg);border-bottom-color:var(--ok);color:var(--ok);font-weight:700}
+.gsel.bad,.gin.bad,.gap.bad{background:var(--badbg);border-bottom-color:var(--bad);color:var(--bad);font-weight:700}
+.gin{font:inherit;font-size:1.05rem;color:var(--ink);border:none;border-bottom:2px solid var(--ink);background:#fff8d4;border-radius:4px 4px 0 0;padding:3px 4px;text-align:center}
+.ghint{color:var(--soft);font-size:.85rem;margin-left:3px}
+.gap{display:inline-block;min-width:74px;text-align:center;border:none;border-bottom:2px solid var(--ink);background:#fff8d4;border-radius:4px 4px 0 0;padding:1px 6px;font-size:1.05rem;min-height:1.8em;vertical-align:baseline}
+.gap.act{background:var(--hi);box-shadow:0 0 0 2px var(--ink)}
+.fix{color:var(--bad);font-weight:700;font-size:.95rem;margin:0 4px}
+.locked{border-bottom:2px dotted var(--soft);padding:0 3px}
+.opts,.box,.pool,.ans{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.opt,.wchip{border:2px solid var(--ink);background:#fff;border-radius:8px;padding:7px 13px;font-size:1.02rem}
+.opt.sel,.wchip.sel{background:var(--hi)}
+.wchip.used{opacity:.25;cursor:default}
+.box{padding:10px;border:2px dashed var(--line);border-radius:10px;background:#f6f8fd}
+.ans{min-height:52px;border-bottom:2px solid var(--ink);align-items:center;margin-top:6px;padding-bottom:6px}
+.ans:empty:before{content:"Hier entsteht dein Satz …";color:var(--soft);font-size:.95rem}
+.endp{font-size:1.25rem;font-weight:700;margin-left:2px}
+.sline{display:flex;align-items:flex-end;gap:2px}
+.sline .ans{flex:1}
+.choice{display:block;width:100%;text-align:left;margin:8px 0;border:2px solid var(--line);background:#fff;border-radius:10px;padding:10px 14px;font-size:1.05rem}
+.choice.sel{border-color:var(--ink);background:#fff8d4}
+.choice.ok{border-color:var(--ok);background:var(--okbg)}
+.choice.bad{border-color:var(--bad);background:var(--badbg)}
+.fb{margin-top:12px;border-radius:10px;padding:0}
+.fb .hd{font-weight:700;padding:8px 12px;border-radius:10px}
+.fb.ok .hd{background:var(--okbg);color:var(--ok)}
+.fb.bad .hd{background:var(--badbg);color:var(--bad)}
+.fb.warn .hd{background:#fff3cd;color:#7a5b00}
+.fb .ln{padding:6px 12px 0;font-size:.97rem}
+.fb .rule{padding:6px 12px;font-size:.92rem;border-left:4px solid var(--line);margin:8px 0 0 4px;background:#f6f8fd;border-radius:0 8px 8px 0}
+.prog{height:10px;background:#e3e9f5;border-radius:6px;overflow:hidden;margin:10px 0 4px}
+.prog i{display:block;height:100%;background:var(--ink)}
+.pinfo{display:flex;justify-content:space-between;color:var(--soft);font-size:.9rem}
+.big{font-family:Georgia,serif;font-size:3rem;font-weight:700;line-height:1}
+.tr{display:grid;grid-template-columns:minmax(120px,1.3fr) 2fr auto;gap:10px;align-items:center;margin:8px 0;font-size:.95rem}
+.bar{height:14px;background:#e3e9f5;border-radius:7px;overflow:hidden}
+.bar i{display:block;height:100%}
+details{background:#fff;border:2px solid var(--line);border-radius:10px;margin:8px 0;padding:0}
+details[open]{border-color:var(--ink)}
+summary{padding:10px 14px;cursor:pointer;font-weight:600;list-style:none;display:flex;gap:8px;align-items:center}
+summary::-webkit-details-marker{display:none}
+.rb{padding:2px 16px 14px;font-size:.96rem}
+.rb ul{margin:6px 0;padding-left:20px}
+table.ct{border-collapse:collapse;margin:8px 0;font-size:.93rem;max-width:100%}
+table.ct th,table.ct td{border:1px solid var(--line);padding:5px 9px;text-align:left}
+table.ct th{background:#eef3ff}
+.tw{overflow-x:auto}
+.note{color:var(--soft);font-size:.85rem;margin-top:18px}
+@media (max-width:520px){.sent{font-size:1.08rem}.tr{grid-template-columns:1fr auto}.tr .bar{grid-column:1/3;order:3}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+'use strict';
+
+/* ================= Themen ================= */
+var GROUPS={
+  v:{n:'Verben',c:'#2b5fbf'},
+  s:{n:'Satzbau',c:'#7a4fbf'},
+  n:{n:'Nomen und Artikel',c:'#138d90'},
+  p:{n:'Pronomen',c:'#d9822b'},
+  z:{n:'Präpositionen',c:'#b0428a'}
+};
+var PERS=['ich','du','er/sie/es','wir','ihr','sie/Sie'];
+function ctab(heads,cols){
+  var h='<div class="tw"><table class="ct"><thead><tr><th></th>';
+  heads.forEach(function(x){h+='<th>'+x+'</th>';});
+  h+='</tr></thead><tbody>';
+  for(var i=0;i<6;i++){h+='<tr><th>'+PERS[i]+'</th>';cols.forEach(function(c){h+='<td>'+c[i]+'</td>';});h+='</tr>';}
+  return h+'</tbody></table></div>';
+}
+function rtab(heads,rows){
+  var h='<div class="tw"><table class="ct"><thead><tr>';
+  heads.forEach(function(x){h+='<th>'+x+'</th>';});
+  h+='</tr></thead><tbody>';
+  rows.forEach(function(r){h+='<tr>';r.forEach(function(c,i){h+=(i===0?'<th>':'<td>')+c+(i===0?'</th>':'</td>');});h+='</tr>';});
+  return h+'</tbody></table></div>';
+}
+function ul(a){return '<ul><li>'+a.join('</li><li>')+'</li></ul>';}
+
+var TOPICS=[
+ {id:'pr',l:1,g:'v',n:'Präsens: regelmäßige Verben',r:'ich -e · du -st · er/sie/es -t · wir -en · ihr -t · sie/Sie -en. Bei Stamm auf -t/-d: e-Erweiterung (du arbeitest, er arbeitet).',
+  h:ctab(['kommen','arbeiten','heißen'],[['komme','kommst','kommt','kommen','kommt','kommen'],['arbeite','arbeitest','arbeitet','arbeiten','arbeitet','arbeiten'],['heiße','heißt','heißt','heißen','heißt','heißen']])},
+ {id:'sh',l:1,g:'v',n:'sein und haben',r:'sein: ich bin, du bist, er/sie/es ist, wir sind, ihr seid, sie/Sie sind. haben: ich habe, du hast, er/sie/es hat, wir haben, ihr habt, sie/Sie haben.',
+  h:ctab(['sein','haben'],[['bin','bist','ist','sind','seid','sind'],['habe','hast','hat','haben','habt','haben']])},
+ {id:'un',l:5,g:'v',n:'unregelmäßige Verben',r:'Bei du und er/sie/es ändert sich der Vokal: sprechen → du sprichst, er spricht · essen → isst · lesen → liest · sehen → siehst, sieht · fahren → fährst, fährt · schlafen → schläfst, schläft · nehmen → nimmst, nimmt. Bei ich, wir, ihr, sie/Sie bleibt der Vokal.',
+  h:rtab(['Infinitiv','ich','du','er/sie/es'],[['sprechen','spreche','sprichst','spricht'],['essen','esse','isst','isst'],['lesen','lese','liest','liest'],['sehen','sehe','siehst','sieht'],['fahren','fahre','fährst','fährt'],['schlafen','schlafe','schläfst','schläft'],['nehmen','nehme','nimmst','nimmt'],['treffen','treffe','triffst','trifft'],['helfen','helfe','hilfst','hilft'],['laufen','laufe','läufst','läuft']])},
+ {id:'tr',l:6,g:'v',n:'trennbare Verben',r:'Das Präfix steht am Satzende: Ich stehe um 6 Uhr auf. Mit Modalverb bleibt das Verb zusammen: Ich muss früh aufstehen. Betont wird das Präfix: AUFstehen.',
+  h:rtab(['Infinitiv','Satz'],[['aufstehen','Ich stehe um 6 Uhr auf.'],['anfangen','Der Kurs fängt um 9 Uhr an.'],['einkaufen','Wir kaufen heute ein.'],['anrufen','Ich rufe dich an.'],['ausmachen','Machst du das Licht aus?'],['mitbringen','Kannst du Kuchen mitbringen?']])},
+ {id:'mo',l:7,g:'v',n:'möchte / mögen',r:'möchte: ich möchte, du möchtest, er/sie/es möchte, wir möchten, ihr möchtet, sie/Sie möchten. mögen: ich mag, du magst, er mag, wir mögen. Das zweite Verb steht als Infinitiv am Ende: Ich möchte einen Kaffee trinken.',
+  h:ctab(['möchte','mögen'],[['möchte','möchtest','möchte','möchten','möchtet','möchten'],['mag','magst','mag','mögen','mögt','mögen']])},
+ {id:'kn',l:8,g:'v',n:'Modalverb können',r:'ich kann, du kannst, er/sie/es kann, wir können, ihr könnt, sie/Sie können. Das zweite Verb steht als Infinitiv am Ende: Ich kann gut schwimmen.',
+  h:ctab(['können'],[['kann','kannst','kann','können','könnt','können']])},
+ {id:'mu',l:9,g:'v',n:'Modalverb müssen',r:'ich muss, du musst, er/sie/es muss, wir müssen, ihr müsst, sie/Sie müssen. Das zweite Verb steht als Infinitiv am Ende: Ich muss heute arbeiten.',
+  h:ctab(['müssen'],[['muss','musst','muss','müssen','müsst','müssen']])},
+ {id:'du',l:10,g:'v',n:'Modalverb dürfen',r:'ich darf, du darfst, er/sie/es darf, wir dürfen, ihr dürft, sie/Sie dürfen. „nicht dürfen“ = Verbot: Hier darf man nicht rauchen.',
+  h:ctab(['dürfen'],[['darf','darfst','darf','dürfen','dürft','dürfen']])},
+ {id:'sa',l:1,g:'s',n:'Verbposition: Aussage und W-Frage',r:'In Aussagesätzen und W-Fragen steht das konjugierte Verb auf Position 2: Ich komme aus Polen. Woher kommst du?',
+  h:ul(['Ich <b>komme</b> aus Polen.','Woher <b>kommst</b> du?','Wie <b>heißen</b> Sie?'])},
+ {id:'jn',l:5,g:'s',n:'Ja-/Nein-Fragen',r:'In Ja-/Nein-Fragen steht das Verb auf Position 1: Kommst du aus Polen? – Ja./Nein.',
+  h:ul(['<b>Sprichst</b> du Deutsch?','<b>Möchten</b> Sie einen Kaffee?','<b>Kannst</b> du mich anrufen?'])},
+ {id:'p1',l:10,g:'s',n:'Position 1 im Satz',r:'Auf Position 1 kann auch eine Zeit- oder Ortsangabe stehen. Das Verb bleibt auf Position 2, das Subjekt steht danach: Heute arbeite ich. / Ich arbeite heute.',
+  h:ul(['Ich <b>fahre</b> morgen mit dem Zug.','Morgen <b>fahre</b> ich mit dem Zug.','Mit dem Zug <b>fahre</b> ich morgen.'])},
+ {id:'ar',l:3,g:'n',n:'Artikel: der / die / das',r:'Nomen haben einen Artikel: der (maskulin), das (neutral), die (feminin), die (Plural). unbestimmt: ein / ein / eine. Lerne jedes Nomen mit Artikel.',
+  h:rtab(['','maskulin','neutral','feminin','Plural'],[['bestimmt','der Tisch','das Bett','die Lampe','die Tische'],['unbestimmt','ein Tisch','ein Bett','eine Lampe','–'],['Negation','kein Tisch','kein Bett','keine Lampe','keine Tische']])},
+ {id:'nu',l:7,g:'n',n:'Nullartikel',r:'Kein Artikel bei Plural (unbestimmt) und bei allgemeinen Aussagen: Ich esse gern Äpfel. Ich habe Hunger. Ich habe Durst.',
+  h:ul(['Ich esse <b>Äpfel</b>. (nicht: eine Äpfel)','Wir haben <b>Hunger</b>. (nicht: einen Hunger)','Er trinkt gern <b>Tee</b>.'])},
+ {id:'pl',l:4,g:'n',n:'Plural',r:'Plural-Endungen: -e (Tag → Tage), -e + Umlaut (Stuhl → Stühle), -n/-en (Frau → Frauen), -er (Kind → Kinder), -s (Auto → Autos), keine Endung (Lehrer → Lehrer). Artikel im Plural: immer „die“.',
+  h:rtab(['Endung','Beispiel'],[['-e','der Tag → die Tage'],['-e + Umlaut','der Stuhl → die Stühle'],['-n / -en','die Frau → die Frauen · die Tasche → die Taschen'],['-er (+ Umlaut)','das Kind → die Kinder · der Mann → die Männer'],['-s','das Auto → die Autos'],['keine / nur Umlaut','der Lehrer → die Lehrer · der Bruder → die Brüder']])},
+ {id:'ak',l:4,g:'n',n:'Akkusativ (Nomen und Artikel)',r:'Im Akkusativ ändert sich nur der maskuline Artikel: der → den, ein → einen, kein → keinen, mein → meinen. Neutrum, Femininum und Plural bleiben gleich. Akkusativ steht z. B. nach haben, brauchen, kaufen, sehen.',
+  h:rtab(['Nominativ','Akkusativ'],[['der Hund / ein Hund','Ich sehe den Hund. / Ich habe einen Hund.'],['das Kind / ein Kind','Ich sehe das Kind. / Ich habe ein Kind.'],['die Lampe / eine Lampe','Ich sehe die Lampe. / Ich habe eine Lampe.'],['die Kinder','Ich sehe die Kinder.']])},
+ {id:'da',l:10,g:'n',n:'Dativ (Nomen und Artikel)',r:'Nach mit, bei, zu und in (Wo?) steht der Dativ: maskulin/neutral dem (einem), feminin der (einer), Plural den + -n. Kurzformen: zu dem = zum, zu der = zur, in dem = im, bei dem = beim.',
+  h:rtab(['Nominativ','Dativ'],[['der Bus','mit dem Bus'],['das Auto','mit dem Auto'],['die Straßenbahn','mit der Straßenbahn'],['die Kinder','mit den Kindern'],['der Arzt','Ich gehe zum Arzt.'],['die Ärztin','Ich gehe zur Ärztin.']])},
+ {id:'ko',l:8,g:'n',n:'Komposita',r:'Nomen + Nomen = ein Wort. Das letzte Wort (Grundwort) bestimmt den Artikel: der Kaffee + die Tasse = die Kaffeetasse. Der Wortakzent liegt auf dem ersten Teil: KAFfeetasse.',
+  h:ul(['der Apfel + der Saft = <b>der</b> Apfelsaft','das Telefon + die Nummer = <b>die</b> Telefonnummer','die Hand + die Tasche = <b>die</b> Handtasche','der Bus + der Fahrer = <b>der</b> Busfahrer'])},
+ {id:'in',l:2,g:'n',n:'Berufe: weibliche Form auf -in',r:'Weibliche Berufsbezeichnung: Nomen + -in. Manche Nomen bekommen einen Umlaut: der Arzt → die Ärztin, der Koch → die Köchin. Plural: Lehrerinnen.',
+  h:rtab(['männlich','weiblich'],[['der Lehrer','die Lehrerin'],['der Verkäufer','die Verkäuferin'],['der Student','die Studentin'],['der Arzt','die Ärztin'],['der Koch','die Köchin']])},
+ {id:'p3',l:3,g:'p',n:'Personalpronomen er / sie / es',r:'er = der-Nomen, sie = die-Nomen, es = das-Nomen, sie = Plural. Der Tisch → er. Die Lampe → sie. Das Bett → es. Die Bücher → sie.',
+  h:ul(['Das ist <b>der</b> Stuhl. <b>Er</b> ist neu.','Das ist <b>die</b> Lampe. <b>Sie</b> ist alt.','Das ist <b>das</b> Bett. <b>Es</b> ist groß.','Das sind <b>die</b> Bücher. <b>Sie</b> sind teuer.'])},
+ {id:'ps',l:4,g:'p',n:'Possessivartikel',r:'mein, dein, sein (er), ihr (sie) stehen wie „ein“: maskulin/neutral mein, feminin/Plural meine. Akkusativ maskulin: meinen. Beispiel: Das ist meine Mutter. Ich sehe meinen Vater.',
+  h:rtab(['Person','der / das','die / Plural'],[['ich','mein','meine'],['du','dein','deine'],['er / es','sein','seine'],['sie','ihr','ihre']])+'<p>Akkusativ maskulin: mein<b>en</b>, dein<b>en</b>, sein<b>en</b>, ihr<b>en</b>.</p>'},
+ {id:'pa',l:9,g:'p',n:'Personalpronomen im Akkusativ',r:'mich, dich, ihn, sie, es, uns, euch, sie, Sie. Ich kenne ihn. Er ruft mich an. Nur „er“ ändert sich zu „ihn“ – wie der → den.',
+  h:rtab(['Nominativ','Akkusativ'],[['ich','mich'],['du','dich'],['er','ihn'],['sie','sie'],['es','es'],['wir','uns'],['ihr','euch'],['sie / Sie','sie / Sie']])},
+ {id:'av',l:1,g:'z',n:'aus, von',r:'aus + Land/Stadt (Herkunft): Ich komme aus Polen. von + Person (Zugehörigkeit): Das ist die Tasche von Anna. Der Sohn von Tom.',
+  h:ul(['Ich komme <b>aus</b> Syrien.','Das ist die Tasche <b>von</b> Anna.','Er ist der Bruder <b>von</b> Tom.'])},
+ {id:'ze',l:5,g:'z',n:'Zeit: am, um, von … bis, ab, bis, zwischen',r:'am + Tag/Tageszeit (am Montag, am Abend) · um + Uhrzeit (um 8 Uhr) · von … bis … (von 8 bis 12 Uhr) · ab + Beginn (ab 9 Uhr) · bis + Ende (bis 17 Uhr) · zwischen … und … (zwischen 8 und 10 Uhr).',
+  h:rtab(['Präposition','Bedeutung','Beispiel'],[['am','Tag, Tageszeit','am Montag, am Abend'],['um','Uhrzeit','um 8 Uhr'],['von … bis','Zeitraum','von 8 bis 12 Uhr'],['ab','Beginn','ab 9 Uhr'],['bis','Ende','bis 17 Uhr'],['zwischen … und','Zeitraum','zwischen 8 und 10 Uhr']])},
+ {id:'mi',l:7,g:'z',n:'mit, ohne',r:'mit = zusammen/dabei, ohne = nicht dabei: Kaffee mit Milch, Tee ohne Zucker. Mit Artikel: mit + Dativ (mit dem Bus), ohne + Akkusativ (ohne den Zucker).',
+  h:ul(['Ich trinke Kaffee <b>mit</b> Milch.','Ich trinke Tee <b>ohne</b> Zucker.','Ich fahre <b>mit</b> dem Bus.'])}
+];
+var TM={};TOPICS.forEach(function(t){TM[t.id]=t;});
+
+/* ================= Aufgaben-Helfer ================= */
+function S(t,a,d,w){return {k:'s',t:t,a:a,o:[a].concat(d),w:w};}
+function I(t,a,h){return {k:'i',t:t,a:(a instanceof Array)?a:[a],h:h};}
+function B(t,a){return {k:'b',t:t,a:a};}
+function T(lv,ti,p){return {f:'text',lv:lv,ti:ti,p:p};}
+function W(lv,ti,p,extra){return {f:'bank',lv:lv,ti:ti,p:p,extra:extra};}
+function Y(lv,ti,p){return {f:'type',lv:lv,ti:ti,p:p};}
+function M(lv,t,b,a,d,af){return {f:'mc',lv:lv,p:[b,S(t,a,d),af]};}
+function O(lv,tp,s,p,alts){return {f:'order',lv:lv,tp:tp,a:s.split(' '),p:p,alt:(alts||[]).map(function(x){return x.split(' ');})};}
+function C(lv,t,opts,w){return {f:'choice',lv:lv,tp:[t],o:opts,w:w};}
+
+var EX=[];
+
+/* ---------- Lückentexte (Sprachbausteine) ---------- */
+EX.push(
+T(1,'Dialog: Kennenlernen',[
+ 'Guten Tag, ich ',S('sh','bin',['ist','bist']),' Tom Braun. Wie ',S('pr','heißen',['heißt','heiße']),' Sie?\n– Ich ',S('pr','heiße',['heißt','heißen']),
+ ' Olga Petrowa.\n– Woher ',S('sa','kommen Sie',['Sie kommen','kommt Sie']),'?\n– Ich ',S('pr','komme',['kommst','kommt']),' ',S('av','aus',['von','in']),' Russland. Und Sie?']),
+T(1,'Dialog: Wo wohnst du?',[
+ '– Hallo Ali! Wo ',S('pr','wohnst',['wohne','wohnt']),' du?\n– Ich ',S('pr','wohne',['wohnst','wohnen']),' in Jena. Und du? Was ',S('pr','machst',['macht','mache']),
+ ' du?\n– Ich ',S('pr','arbeite',['arbeitest','arbeiten']),' in Erfurt. Ich ',S('sh','bin',['ist','bist']),' Elektriker. Ich ',S('pr','lerne',['lernst','lernen']),' auch Deutsch.']),
+T(2,'Kurzporträt',[
+ 'Das ist Ali. ',S('p3','Er',['Sie','Es']),' ',S('pr','kommt',['komme','kommst']),' aus Syrien. Ali ist Koch. Das ist Nora. ',S('p3','Sie',['Er','Es']),' ',
+ S('pr','arbeitet',['arbeite','arbeitest']),' in Erfurt. Nora ist ',S('in','Ärztin',['Arzt','Ärztinn']),'. Ali und Nora ',S('pr','lernen',['lernt','lerne']),' Deutsch.']),
+T(3,'Im Zimmer',[
+ 'Das ist ',S('ar','ein',['eine','einen']),' Tisch. ',S('ar','Der',['Die','Das']),' Tisch ist neu. ',S('p3','Er',['Sie','Es']),' ist braun.\nDas ist ',
+ S('ar','eine',['ein','einer']),' Lampe. ',S('ar','Die',['Der','Das']),' Lampe ist gelb. ',S('p3','Sie',['Er','Es']),' ist alt.\nDas ist ',S('ar','ein',['eine','einen']),' Bett. ',
+ S('ar','Das',['Der','Die']),' Bett ist groß. ',S('p3','Es',['Er','Sie']),' ist weiß.']),
+T(4,'Meine Familie',[
+ 'Das ist meine Familie. Ich ',S('sh','habe',['hat','habt']),' zwei ',S('pl','Brüder',['Bruder','Brüdern']),' und eine Schwester. ',S('ps','Mein',['Meine','Meinen']),
+ ' Vater heißt Karl und ',S('ps','meine',['mein','meinen']),' Mutter heißt Eva. Mein Bruder Tim ',S('sh','hat',['habe','haben']),' ',S('ak','einen',['ein','eine']),
+ ' Sohn. Leo ist der Sohn ',S('av','von',['aus','mit']),' Tim. Und ich? Ich habe ',S('ak','einen',['ein','eine']),' Hund. Er heißt Rex.']),
+T(5,'Sonntag',[
+ 'Tom hat am Sonntag frei. Er ',S('un','schläft',['schlafst','schlaft']),' lange. Dann ',S('un','isst',['esst','esse']),' er Brot und ',S('un','liest',['lest','liesst']),
+ ' die Zeitung. ',S('ze','Am',['Um','Im']),' Nachmittag ',S('un','trifft',['triffst','treffe']),' er Anna.\n– ',S('jn','Fährst du',['Du fährst','Fährst']),
+ ' auch nach Erfurt?\n– Nein, ich ',S('un','fahre',['fähre','fährt']),' nicht. Ich ',S('pr','bleibe',['bleibst','bleibt']),' zu Hause.']),
+T(6,'Mein Tag',[
+ 'Mein Tag: Ich ',S('tr','stehe',['aufstehe','stehst']),' um 6 Uhr ',S('tr','auf',['an','ein']),'. ',S('ze','Um',['Am','Von']),' 8 Uhr ',S('tr','fange',['fängt','anfange']),' ich ',
+ S('tr','an',['auf','ab']),'. Ich arbeite ',S('ze','von',['um','am']),' 8 ',S('ze','bis',['um','ab']),' 16 Uhr. Dann ',S('tr','kaufe',['kaufen','kauft']),' ich ',S('tr','ein',['an','auf']),
+ '. Am Abend ',S('tr','sehe',['sehen','siehe']),' ich ',S('tr','fern',['an','auf']),'.']),
+T(7,'Im Café',[
+ '– Guten Tag. Was ',S('mo','möchten',['möchte','möchtet']),' Sie?\n– Ich ',S('mo','möchte',['möchten','möchtest']),' einen Kaffee ',S('mi','mit',['ohne','bei']),
+ ' Milch, aber ',S('mi','ohne',['mit','für']),' Zucker. Mein Sohn ',S('sh','hat',['habe','hast']),' ',S('nu','Hunger',['einen Hunger','der Hunger']),'. Er ',S('un','isst',['esst','esse']),
+ ' gern ',S('nu','Äpfel',['eine Äpfel','ein Äpfel']),'.']),
+T(7,'Einkaufen',[
+ 'Ich gehe einkaufen. Ich brauche ',S('ak','einen',['ein','eine']),' Salat, ',S('ak','eine',['ein','einen']),' Gurke und ',S('nu','Äpfel',['eine Äpfel','ein Äpfel']),
+ '. Ich mag keinen Zucker, darum trinke ich Tee ',S('mi','ohne',['mit','für']),' Zucker. Mein Sohn ',S('sh','hat',['habe','hast']),' ',S('nu','Hunger',['einen Hunger','der Hunger']),
+ '. Er ',S('mo','möchte',['möchten','möchtest']),' ',S('nu','Brötchen',['eine Brötchen','einen Brötchen']),'.']),
+T(8,'Einladung',[
+ 'Liebe Anna,\nam Samstag mache ich eine Feier. ',S('kn','Kannst',['Kann','Könnt']),' du kommen? Die Feier beginnt ',S('ze','um',['am','von']),' 18 Uhr. Tom und Mia ',
+ S('kn','können',['kann','könnt']),' auch kommen. Ich ',S('kn','kann',['kannst','können']),' gut kochen, aber ich habe keinen Kuchen. ',S('kn','Kannst',['Kann','Könnt']),
+ ' du einen Kuchen ',S('tr','mitbringen',['mitbringst','mit bringen']),'?\nBis Samstag!\n',S('ps','Deine',['Dein','Deinen']),' Eva']),
+T(9,'Anruf in der Praxis',[
+ '– Praxis Dr. Braun, guten Tag.\n– Guten Tag, ich ',S('mo','möchte',['möchten','möchtet']),' einen Termin.\n– ',S('ze','Zwischen',['Ab','Bis']),' 8 und 10 Uhr ',
+ S('kn','können',['kann','könnt']),' Sie kommen.\n– Das geht nicht, ich ',S('mu','muss',['musst','müssen']),' arbeiten. ',S('ze','Ab',['Zwischen','Am']),
+ ' 16 Uhr habe ich Zeit.\n– Die Praxis ist von 8 ',S('ze','bis',['ab','zwischen']),' 18 Uhr offen. Dr. Braun sieht ',S('pa','Sie',['Ihnen','Ihr']),' um 16:30 Uhr.\n– Gut, danke. Ich komme ',
+ S('da','zur',['zum','zu']),' Praxis.']),
+T(10,'Verkehr und Regeln',[
+ '– Wie ',S('pr','kommst',['kommt','komme']),' du zur Arbeit?\n– Ich fahre ',S('mi','mit',['ohne','bei']),' ',S('da','dem',['der','den']),' Bus. Und du?\n– Ich fahre mit ',
+ S('da','der',['dem','den']),' Straßenbahn. Mein Bruder arbeitet ',S('da','bei',['in','mit']),' Siemens.\n– ',S('du','Darf',['Dürfen','Darfst']),' man im Bus essen?\n– Nein, das ',
+ S('du','darf',['dürfen','darfst']),' man nicht. Morgen ',S('p1','fahre ich',['ich fahre','fahren ich']),' mit dem Zug.'])
+);
+
+/* ---------- Wortbank ---------- */
+EX.push(
+W(2,'Wortbank: Kennenlernen',[
+ 'Hallo! Ich ',B('pr','heiße'),' Mia. Ich ',B('pr','komme'),' aus Spanien. Jetzt ',B('pr','wohne'),' ich in Erfurt und ',B('pr','lerne'),' Deutsch.\n– Und du? Wie ',B('pr','heißt'),' du? Woher ',B('pr','kommst'),' du?'],
+ ['heißen','wohnt','kommt']),
+W(6,'Wortbank: Tagesablauf',[
+ 'Jeden Morgen ',B('tr','steht'),' Tom um 6 Uhr ',B('tr','auf'),'. ',B('ze','Um'),' 7 Uhr ',B('un','isst'),' er Brötchen und ',B('un','liest'),' die Zeitung. ',B('ze','Um'),
+ ' 8 Uhr ',B('un','fährt'),' er mit dem Bus zur Arbeit. Er arbeitet ',B('ze','von'),' 9 ',B('ze','bis'),' 17 Uhr.'],
+ ['schläft','an','ab']),
+W(8,'Wortbank: Modalverben',[
+ 'Anna ',B('kn','kann'),' sehr gut kochen. Das Essen ist immer lecker. Morgen ',B('mu','muss'),' sie früh aufstehen, denn sie arbeitet um 6 Uhr. Hier ',B('du','darf'),
+ ' man nicht rauchen, das ist verboten.\n– Guten Tag, ich ',B('mo','möchte'),' einen Tee, bitte.\n– Entschuldigung, ',B('kn','können'),' Sie das bitte noch einmal sagen?'],
+ ['kannst','musst','dürfen','möchten']),
+W(10,'Wortbank: Präpositionen',[
+ 'Ich komme ',B('av','aus'),' Spanien. Mein Bruder arbeitet ',B('da','bei'),' Siemens. Der Sprachkurs dauert ',B('ze','von'),' 9 ',B('ze','bis'),' 12 Uhr. ',B('ze','Am'),
+ ' Samstag habe ich frei. Dann fahre ich ',B('mi','mit'),' dem Zug nach Berlin. Der Zug fährt ',B('ze','um'),' 10 Uhr ab. Im Zug trinke ich Kaffee ',B('mi','ohne'),' Zucker, denn ich mag keinen Zucker.'],
+ ['zu','ab','für'])
+);
+
+/* ---------- Tippen ---------- */
+EX.push(
+Y(2,'Tippen: Präsens',[
+ 'Ich ',I('pr','heiße','heißen'),' Ali. Du ',I('pr','kommst','kommen'),' aus Syrien. Wie ',I('pr','heißen','heißen'),' Sie? Wir ',I('pr','wohnen','wohnen'),' in Erfurt. Ihr ',
+ I('pr','lernt','lernen'),' Deutsch. Mia ',I('pr','arbeitet','arbeiten'),' in Jena. Du ',I('pr','arbeitest','arbeiten'),' auch dort?']),
+Y(4,'Tippen: sein und haben',[
+ 'Ich ',I('sh','habe','haben'),' zwei Kinder. Er ',I('sh','ist','sein'),' 30 Jahre alt. Du ',I('sh','hast','haben'),' einen Bruder. Wir ',I('sh','sind','sein'),' in Erfurt. Anna und Tom ',
+ I('sh','haben','haben'),' keine Zeit. Ihr ',I('sh','seid','sein'),' nett.']),
+Y(4,'Tippen: Plural',[
+ 'Ich habe zwei ',I('pl','Kinder','das Kind'),'. In der Stadt sehe ich viele ',I('pl','Autos','das Auto'),'. Im Kurs sind zehn ',I('pl','Frauen','die Frau'),' und acht ',I('pl','Männer','der Mann'),
+ '. Anna hat drei ',I('pl','Brüder','der Bruder'),' und zwei ',I('pl','Schwestern','die Schwester'),'. Im Zimmer sind zwei ',I('pl','Tische','der Tisch'),' und vier ',I('pl','Stühle','der Stuhl'),'.']),
+Y(4,'Tippen: er, sie, es',[
+ 'Das ist der Stuhl. ',I('p3','Er'),' ist neu.\nDas ist die Lampe. ',I('p3','Sie'),' ist alt.\nDas ist das Bett. ',I('p3','Es'),' ist groß.\nDas sind die Bücher. ',I('p3','Sie'),' sind teuer.']),
+Y(2,'Tippen: Berufe',[
+ 'Mein Vater ist Arzt. Meine Mutter ist ',I('in','Ärztin','Arzt'),'. Mein Bruder ist Koch. Meine Schwester ist ',I('in','Köchin','Koch'),'. Herr Braun ist Lehrer. Frau Braun ist ',
+ I('in','Lehrerin','Lehrer'),'. Ali ist Verkäufer. Nora ist ',I('in','Verkäuferin','Verkäufer'),'. Tom ist Student. Mia ist ',I('in','Studentin','Student'),'.']),
+Y(5,'Tippen: unregelmäßige Verben',[
+ 'Er ',I('un','spricht','sprechen'),' gut Deutsch. Du ',I('un','liest','lesen'),' viel. Anna ',I('un','fährt','fahren'),' nach Jena. Ich ',I('un','esse','essen'),' gern Obst. Was ',
+ I('un','siehst','sehen'),' du? Mia ',I('un','schläft','schlafen'),' lange. Er ',I('un','nimmt','nehmen'),' den Bus. Was ',I('un','isst','essen'),' du?']),
+Y(6,'Tippen: trennbare Verben',[
+ 'Ich ',I('tr','stehe','aufstehen'),' um 6 Uhr ',I('tr','auf'),'.\nAnna ',I('tr','kauft','einkaufen'),' heute ',I('tr','ein'),'.\nWann ',I('tr','fängt','anfangen'),' der Kurs ',I('tr','an'),'?\n',
+ I('tr','Machst','ausmachen'),' du das Licht ',I('tr','aus'),'?\nWir ',I('tr','rufen','anrufen'),' Tom ',I('tr','an'),'.\nDer Zug ',I('tr','fährt','abfahren'),' um 9 Uhr ',I('tr','ab'),'.']),
+Y(8,'Tippen: Komposita',[
+ 'der Kaffee + die Tasse = die ',I('ko','Kaffeetasse'),'\ndas Telefon + die Nummer = die ',I('ko','Telefonnummer'),'\nder Apfel + der Saft = der ',I('ko','Apfelsaft'),
+ '\nder Bus + der Fahrer = der ',I('ko','Busfahrer'),'\ndas Haus + die Tür = die ',I('ko','Haustür'),'\ndie Hand + die Tasche = die ',I('ko','Handtasche')]),
+Y(8,'Tippen: Akkusativ',[
+ 'Ich habe ',I('ak','einen','ein – der Hund'),' Hund. Ich sehe ',I('ak','den','der – der Mann'),' Mann. Wir kaufen ',I('ak','einen','ein – der Tisch'),' Tisch und ',I('ak','eine','ein – die Lampe'),
+ ' Lampe. Hast du ',I('ak','keinen','kein – der Kugelschreiber'),' Kugelschreiber? Er braucht ',I('ak','ein','ein – das Buch'),' Buch. Ich liebe ',I('ak','meine','mein – die Familie'),' Familie.']),
+Y(9,'Tippen: Pronomen im Akkusativ',[
+ '– Kennst du Tom?\n– Ja, ich kenne ',I('pa','ihn','er'),' gut.\n– Und Anna? Siehst du ',I('pa','sie','sie'),'?\n– Nein, ich sehe ',I('pa','sie','sie'),' nicht.\n– Ich brauche ',
+ I('pa','dich','du'),' morgen. Kannst du ',I('pa','mich','ich'),' anrufen?']),
+Y(10,'Tippen: Dativ',[
+ 'Ich fahre mit ',I('da','dem','der Bus'),' Bus. Ich wohne bei ',I('da','einer','eine – die Freundin'),' Freundin. Wir gehen zu ',I('da','der','die Ärztin'),' Ärztin. Ich gehe ',
+ I('da','zum','zu + der Arzt'),' Arzt. Wir sind in ',I('da','der','die Schule'),' Schule. Ich spreche mit ',I('da','meiner','mein – die Mutter'),' Mutter.'])
+);
+
+/* ---------- Satzbau ---------- */
+EX.push(
+O(1,['sa','pr'],'ich heiße Anna','.'),
+O(1,['sa'],'woher kommen Sie','?'),
+O(1,['sa'],'wie heißt du','?'),
+O(1,['sa','pr','av'],'ich komme aus Polen','.',['aus Polen komme ich']),
+O(1,['sa','pr'],'wo wohnst du','?'),
+O(1,['sa','pr'],'ich wohne in Erfurt','.'),
+O(2,['sa','pr','av'],'er kommt aus Syrien','.',['aus Syrien kommt er']),
+O(4,['sa','ak','sh'],'ich habe einen Bruder','.'),
+O(4,['sh','ps','pl'],'meine Schwester hat zwei Kinder','.'),
+O(4,['av','sa'],'der Bruder von Anna arbeitet in Jena','.'),
+O(5,['jn','pr'],'kommst du aus Spanien','?'),
+O(5,['jn','un'],'sprichst du Deutsch','?'),
+O(5,['jn','pr'],'arbeitet Anna in Jena','?'),
+O(5,['ze','sh','p1'],'am Montag habe ich Deutschkurs','.',['ich habe am Montag Deutschkurs']),
+O(5,['p1','pr','sa'],'heute lerne ich Deutsch','.',['ich lerne heute Deutsch']),
+O(5,['in','un','ak'],'die Lehrerin liest ein Buch','.'),
+O(6,['tr','ze','p1'],'ich stehe um 6 Uhr auf','.',['um 6 Uhr stehe ich auf']),
+O(6,['tr','un','sa'],'wann fängt der Kurs an','?'),
+O(6,['tr','jn'],'kaufst du heute ein','?'),
+O(6,['ze','p1','pr'],'um acht Uhr frühstücke ich','.',['ich frühstücke um acht Uhr']),
+O(7,['mo','sa'],'ich möchte einen Kaffee trinken','.'),
+O(7,['mo','jn','nu'],'möchten Sie Milch','?'),
+O(7,['mi','nu'],'ich trinke Kaffee ohne Zucker','.'),
+O(8,['kn','sa'],'ich kann gut schwimmen','.'),
+O(8,['sa','ko'],'wo ist das Wörterbuch','?'),
+O(9,['kn','pa','tr','jn'],'kannst du mich anrufen','?'),
+O(9,['mu','p1'],'ich muss heute arbeiten','.',['heute muss ich arbeiten']),
+O(9,['mu','tr','p1','ze'],'am Samstag muss ich früh aufstehen','.',['ich muss am Samstag früh aufstehen']),
+O(9,['pa','p1'],'ich brauche dich morgen','.',['morgen brauche ich dich']),
+O(10,['du','p1'],'hier darf man nicht rauchen','.',['man darf hier nicht rauchen']),
+O(10,['da','p1','mi'],'ich fahre mit dem Bus zur Arbeit','.',['mit dem Bus fahre ich zur Arbeit']),
+O(10,['da','ps'],'wir wohnen bei meiner Tante','.')
+);
+
+/* ---------- Satzwahl ---------- */
+EX.push(
+C(1,'pr',['Du kommst aus Syrien.','Du komme aus Syrien.','Du kommt aus Syrien.'],'Nach „du“ endet das Verb auf -st.'),
+C(1,'sa',['Woher kommst du?','Woher du kommst?','Kommst woher du?'],'In der W-Frage steht das Verb auf Position 2.'),
+C(1,'sh',['Ich bin Mia.','Ich bist Mia.','Ich habe Mia.'],'sein: ich bin.'),
+C(1,'av',['Ich komme aus Polen.','Ich komme von Polen.','Ich komme in Polen.'],'Herkunft: aus + Land.'),
+C(2,'in',['Sie ist Lehrerin.','Sie ist Lehrer.','Sie ist Lehrerinn.'],'Weibliche Form: -in (nur ein n).'),
+C(3,'ar',['Das Buch ist neu.','Der Buch ist neu.','Die Buch ist neu.'],'Es heißt: das Buch.'),
+C(3,'p3',['Das ist die Lampe. Sie ist neu.','Das ist die Lampe. Er ist neu.','Das ist die Lampe. Es ist neu.'],'die Lampe → sie.'),
+C(4,'pl',['Ich habe zwei Brüder.','Ich habe zwei Bruder.','Ich habe zwei Brudere.'],'Plural von Bruder: Brüder (Umlaut).'),
+C(4,'ak',['Ich habe einen Bruder.','Ich habe ein Bruder.','Ich habe einer Bruder.'],'Akkusativ maskulin: einen.'),
+C(4,'ps',['Das ist meine Mutter.','Das ist mein Mutter.','Das ist meinen Mutter.'],'die Mutter → meine Mutter.'),
+C(4,'ak',['Ich sehe meinen Vater.','Ich sehe mein Vater.','Ich sehe meine Vater.'],'Akkusativ maskulin: meinen.'),
+C(4,'sh',['Du hast einen Hund.','Du hat einen Hund.','Du habst einen Hund.'],'haben: du hast.'),
+C(4,'av',['Das ist die Tasche von Anna.','Das ist die Tasche aus Anna.','Das ist die Tasche mit Anna.'],'Zugehörigkeit: von + Person.'),
+C(5,'un',['Er isst Brot.','Er esst Brot.','Er esset Brot.'],'essen: er isst.'),
+C(5,'un',['Anna fährt nach Berlin.','Anna fahrt nach Berlin.','Anna fahre nach Berlin.'],'fahren: sie fährt (a → ä).'),
+C(5,'jn',['Sprichst du Deutsch?','Sprichst Deutsch du?','Du Deutsch sprichst?'],'In der Ja-/Nein-Frage steht das Verb auf Position 1.'),
+C(5,'ze',['Der Kurs ist am Montag.','Der Kurs ist um Montag.','Der Kurs ist im Montag.'],'am + Tag.'),
+C(6,'ze',['Der Kurs beginnt um 9 Uhr.','Der Kurs beginnt am 9 Uhr.','Der Kurs beginnt in 9 Uhr.'],'um + Uhrzeit.'),
+C(6,'tr',['Ich stehe um 6 Uhr auf.','Ich aufstehe um 6 Uhr.','Ich stehe auf 6 Uhr um.'],'Das Präfix „auf“ steht am Satzende.'),
+C(6,'tr',['Wir kaufen heute ein.','Wir einkaufen heute.','Wir kaufen heute an.'],'einkaufen → Wir kaufen … ein.'),
+C(7,'mo',['Ich möchte einen Tee.','Ich möchten einen Tee.','Ich möchtest einen Tee.'],'ich möchte.'),
+C(7,'nu',['Ich esse gern Äpfel.','Ich esse gern eine Äpfel.','Ich esse gern einen Äpfel.'],'Plural ohne Artikel: Äpfel.'),
+C(7,'mi',['Ich trinke Tee mit Milch.','Ich trinke Tee bei Milch.','Ich trinke Tee von Milch.'],'mit = dabei.'),
+C(8,'kn',['Ich kann Deutsch sprechen.','Ich kann sprechen Deutsch.','Ich kann Deutsch spreche.'],'Modalverb auf Position 2, Infinitiv am Ende.'),
+C(8,'kn',['Kannst du bitte langsam sprechen?','Kannst du bitte langsam sprichst?','Kann du bitte langsam sprechen?'],'du kannst + Infinitiv am Ende.'),
+C(8,'ko',['Die Kaffeetasse ist neu.','Der Kaffeetasse ist neu.','Das Kaffeetasse ist neu.'],'Das Grundwort (Tasse) bestimmt den Artikel: die Tasse → die Kaffeetasse.'),
+C(9,'mu',['Ich muss heute arbeiten.','Ich muss heute arbeite.','Ich müssen heute arbeiten.'],'ich muss + Infinitiv am Ende.'),
+C(9,'pa',['Das ist Tom. Ich kenne ihn gut.','Das ist Tom. Ich kenne er gut.','Das ist Tom. Ich kenne ihm gut.'],'Akkusativ: er → ihn.'),
+C(9,'pa',['Anna ist nett. Ich mag sie.','Anna ist nett. Ich mag ihn.','Anna ist nett. Ich mag es.'],'Anna ist eine Frau → sie.'),
+C(9,'ze',['Die Praxis ist von 8 bis 12 Uhr offen.','Die Praxis ist von 8 zu 12 Uhr offen.','Die Praxis ist von 8 ab 12 Uhr offen.'],'von … bis …'),
+C(10,'da',['Ich fahre mit dem Bus.','Ich fahre mit den Bus.','Ich fahre mit der Bus.'],'mit + Dativ: dem Bus.'),
+C(10,'da',['Wir gehen zur Ärztin.','Wir gehen zu Ärztin.','Wir gehen zum Ärztin.'],'zu + der = zur (die Ärztin).'),
+C(10,'du',['Hier darf man nicht parken.','Hier dürfen man nicht parken.','Hier darfst man nicht parken.'],'man darf.'),
+C(10,'p1',['Heute fahre ich mit dem Zug.','Heute ich fahre mit dem Zug.','Heute fahren ich mit dem Zug.'],'Das Verb steht immer auf Position 2.')
+);
+
+/* ---------- Blitzfragen ---------- */
+EX.push(
+M(1,'pr','Ich ','wohne',['wohnst','wohnt'],' in Jena.'),
+M(1,'pr','Du ','arbeitest',['arbeitst','arbeitet'],' in Erfurt.'),
+M(2,'pr','Mia ','lernt',['lerne','lernen'],' Deutsch.'),
+M(2,'pr','Wir ','wohnen',['wohnt','wohne'],' in Jena.'),
+M(2,'pr','Ihr ','kommt',['kommen','komme'],' aus Indien.'),
+M(1,'sh','Wir ','sind',['seid','bist'],' im Kurs.'),
+M(4,'sh','Er ','hat',['haben','hast'],' eine Tochter.'),
+M(1,'sa','Was ','machst du',['du machst','machst'],' heute?'),
+M(5,'jn','','Trinkst',['Trinkt','Trinke'],' du Kaffee?'),
+M(5,'un','Du ','liest',['lest','liesst'],' ein Buch.'),
+M(5,'un','Sie ','spricht',['sprecht','sprechst'],' gut Englisch.'),
+M(5,'un','Er ','sieht',['sehen','siehst'],' den Film.'),
+M(5,'un','Ich ','fahre',['fähre','fahrt'],' nach Hause.'),
+M(5,'ze','','Am',['Um','Im'],' Sonntag schlafe ich lange.'),
+M(6,'ze','Ich arbeite von 8 ','bis',['um','am'],' 16 Uhr.'),
+M(9,'ze','Zwischen 10 ','und',['bis','mit'],' 12 Uhr bin ich zu Hause.'),
+M(6,'tr','Der Zug fährt um 9 Uhr ','ab',['auf','aus'],'.'),
+M(6,'tr','Wann ','stehst',['aufstehst','stehen'],' du auf?'),
+M(7,'mo','Was ','möchtest',['möchte','möchten'],' du trinken?'),
+M(7,'mo','Mia ','mag',['mögen','magst'],' keinen Fisch.'),
+M(7,'nu','Ich habe ','Hunger',['einen Hunger','der Hunger'],'.'),
+M(7,'mi','Ich mag keinen Zucker. Ich trinke den Tee ','ohne',['mit','für'],' Zucker.'),
+M(8,'kn','Anna ','kann',['kannst','können'],' gut singen.'),
+M(8,'kn','Wir ','können',['kann','könnt'],' heute Abend kommen.'),
+M(8,'ko','Haus + Tür = ','die',['der','das'],' Haustür'),
+M(8,'ko','Apfel + Saft = ','der',['die','das'],' Apfelsaft'),
+M(8,'ak','Ich kaufe ','einen',['ein','eine'],' Tisch.'),
+M(8,'ak','Wir brauchen ','eine',['einen','ein'],' Lampe.'),
+M(8,'ak','Er hat ','ein',['einen','eine'],' Kind.'),
+M(9,'mu','Du ','musst',['muss','müssen'],' heute arbeiten.'),
+M(9,'mu','Ihr ','müsst',['müssen','muss'],' leise sein.'),
+M(9,'pa','Das ist Anna. Ich kenne ','sie',['ihn','es'],' gut.'),
+M(9,'pa','Ich rufe ','dich',['du','dir'],' an.'),
+M(10,'da','Ich wohne bei ','meiner',['meinem','meinen'],' Tante.'),
+M(10,'da','Wir fahren mit ','dem',['den','der'],' Auto.'),
+M(10,'da','Ich gehe ','zum',['zu','zur'],' Arzt.'),
+M(10,'du','Kinder ','dürfen',['darf','darfst'],' hier nicht rauchen.'),
+M(10,'p1','Am Abend ','koche ich',['ich koche','kochen ich'],' Suppe.'),
+M(2,'in','Meine Schwester ist ','Ärztin',['Arzt','Ärztinn'],'.'),
+M(1,'av','Wir kommen ','aus',['von','bei'],' Indien.'),
+M(4,'av','Das ist der Bruder ','von',['aus','mit'],' Tom.'),
+M(4,'ps','Ist das ','dein',['deine','deinen'],' Handy?'),
+M(4,'ps','Das ist Tom. ','Seine',['Sein','Seinen'],' Frau heißt Mia.'),
+M(4,'pl','Ich habe drei ','Kinder',['Kind','Kinders'],'.'),
+M(3,'ar','Das ist ','ein',['eine','einen'],' Haus.'),
+M(3,'p3','Das ist mein Auto. ','Es',['Er','Sie'],' ist neu.'),
+M(3,'p3','Das ist der Stuhl. ','Er',['Sie','Es'],' ist alt.'),
+M(3,'ar','Das ist ','eine',['ein','einen'],' Tasche.'),
+M(3,'ar','','Der',['Die','Das'],' Kugelschreiber ist neu.'),
+M(3,'ar','','Die',['Der','Das'],' Tür ist offen.'),
+M(3,'ar','Ich habe ','ein',['eine','einen'],' Handy.'),
+M(10,'du','Hier ','darf',['dürfen','darfst'],' man nicht essen.'),
+M(10,'du','Du ','darfst',['darf','dürfen'],' hier nicht parken.'),
+C(3,'ar',['Der Stuhl ist alt.','Die Stuhl ist alt.','Das Stuhl ist alt.'],'Es heißt: der Stuhl.'),
+C(3,'ar',['Das ist eine Tasche.','Das ist ein Tasche.','Das ist einen Tasche.'],'die Tasche → eine Tasche.'),
+C(10,'du',['Ihr dürft hier nicht rauchen.','Ihr darf hier nicht rauchen.','Ihr dürfen hier nicht rauchen.'],'ihr dürft.'),
+C(10,'du',['Darf ich hier sitzen?','Darf hier ich sitzen?','Dürfen ich hier sitzen?'],'Modalverb in der Ja-/Nein-Frage auf Position 1.')
+);
+
+/* ---------- Vorbereitung ---------- */
+EX.forEach(function(ex,i){
+  ex.id=i;
+  var t=[];
+  if(ex.p instanceof Array){ex.p.forEach(function(x){if(typeof x==='object'&&t.indexOf(x.t)<0)t.push(x.t);});}
+  else{t=ex.tp.slice();}
+  ex.topics=t;
+});
+var FORMATS=[['text','Lückentext'],['bank','Wortbank'],['type','Tippen'],['order','Satzbau'],['choice','Satzwahl'],['mc','Blitzfrage']];
+var FNAME={};FORMATS.forEach(function(f){FNAME[f[0]]=f[1];});
+var INSTR={
+ text:'Wähle in jeder Lücke die passende Form.',
+ bank:'Tippe auf eine Lücke und dann auf ein Wort. Nicht alle Wörter passen.',
+ type:'Schreibe die passende Form in die Lücke. Die Klammer hilft. (ä = ae ist okay, Groß-/Kleinschreibung egal)',
+ order:'Tippe die Wörter in der richtigen Reihenfolge.',
+ choice:'Welcher Satz ist richtig?',
+ mc:'Wähle das richtige Wort.'
+};
+
+/* ================= Hilfsfunktionen ================= */
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined&&txt!==null)e.textContent=txt;return e;}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function norm(s){return String(s).toLowerCase().replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss');}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+function sentence(tokens,p){return cap(tokens.join(' '))+p;}
+function clear(n){while(n.firstChild)n.removeChild(n.firstChild);}
+function addText(root,str){
+  var lines=str.split('\n');
+  lines.forEach(function(l,i){if(i>0)root.appendChild(document.createElement('br'));if(l)root.appendChild(document.createTextNode(l));});
+}
+
+/* ================= Zustand ================= */
+var st={view:'home',level:10,topics:{},formats:{},count:20};
+var SS=null;
+function setLevel(n){st.level=n;st.topics={};TOPICS.forEach(function(t){if(t.l<=n)st.topics[t.id]=true;});}
+setLevel(10);FORMATS.forEach(function(f){st.formats[f[0]]=true;});
+
+function pool(){
+  return EX.filter(function(ex){
+    if(ex.lv>st.level)return false;
+    if(!st.formats[ex.f])return false;
+    return ex.topics.some(function(t){return st.topics[t];});
+  });
+}
+
+var app=document.getElementById('app');
+
+/* ================= Startseite ================= */
+function header(){
+  var top=el('div','top');
+  var l=el('div');
+  l.appendChild(el('h1',null,'Grammatik A1.1'));
+  l.appendChild(el('p',null,'Kombitrainer zu den Grammatikthemen der Lektionen 1–10'));
+  top.appendChild(l);
+  var tabs=el('div','tabs');
+  [['home','Üben'],['rules','Regeln']].forEach(function(t){
+    var b=el('button','tab'+(st.view===t[0]?' on':''),t[1]);
+    b.onclick=function(){st.view=t[0];render();};
+    tabs.appendChild(b);
+  });
+  top.appendChild(tabs);
+  return top;
+}
+
+function renderHome(){
+  clear(app);app.appendChild(header());
+  app.appendChild(el('h2',null,'1. Bis zu welcher Lektion?'));
+  var seg=el('div','seg');
+  for(var i=1;i<=10;i++){(function(n){
+    var b=el('button',st.level===n?'on':'','L'+n);
+    b.setAttribute('aria-label','bis Lektion '+n);
+    b.onclick=function(){setLevel(n);renderHome();};
+    seg.appendChild(b);
+  })(i);}
+  app.appendChild(seg);
+
+  app.appendChild(el('h2',null,'2. Welche Themen?'));
+  var ctl=el('div','row');
+  var a1=el('button','lnk','alle wählen');a1.onclick=function(){TOPICS.forEach(function(t){if(t.l<=st.level)st.topics[t.id]=true;});renderHome();};
+  var a2=el('button','lnk','alle abwählen');a2.onclick=function(){st.topics={};renderHome();};
+  ctl.appendChild(a1);ctl.appendChild(a2);app.appendChild(ctl);
+  ['v','s','n','p','z'].forEach(function(g){
+    app.appendChild(el('div','grp',GROUPS[g].n));
+    var cs=el('div','chips');
+    TOPICS.filter(function(t){return t.g===g;}).forEach(function(t){
+      var locked=t.l>st.level;
+      var c=el('button','chip'+(st.topics[t.id]&&!locked?' on':'')+(locked?' off':''));
+      var d=el('span','dot');d.style.background=GROUPS[g].c;c.appendChild(d);
+      c.appendChild(document.createTextNode(t.n));
+      c.appendChild(el('small',null,'L'+t.l));
+      c.setAttribute('aria-pressed',st.topics[t.id]&&!locked?'true':'false');
+      if(locked){c.disabled=true;}
+      c.onclick=function(){st.topics[t.id]=!st.topics[t.id];renderHome();};
+      cs.appendChild(c);
+    });
+    app.appendChild(cs);
+  });
+
+  app.appendChild(el('h2',null,'3. Welche Aufgabenformate?'));
+  var fc=el('div','chips');
+  FORMATS.forEach(function(f){
+    var c=el('button','chip'+(st.formats[f[0]]?' on':''),f[1]);
+    c.setAttribute('aria-pressed',st.formats[f[0]]?'true':'false');
+    c.onclick=function(){st.formats[f[0]]=!st.formats[f[0]];renderHome();};
+    fc.appendChild(c);
+  });
+  app.appendChild(fc);
+
+  app.appendChild(el('h2',null,'4. Wie viele Aufgaben?'));
+  var cseg=el('div','seg');
+  [[10,'10'],[20,'20'],[30,'30'],[999,'alle']].forEach(function(o){
+    var b=el('button',st.count===o[0]?'on':'',o[1]);
+    b.onclick=function(){st.count=o[0];renderHome();};
+    cseg.appendChild(b);
+  });
+  app.appendChild(cseg);
+
+  var n=pool().length;
+  var row=el('div','row');row.style.marginTop='22px';
+  var go=el('button','btn','Los geht\u2019s');
+  go.disabled=n===0;
+  go.onclick=function(){startSession();};
+  row.appendChild(go);
+  row.appendChild(el('span','cnt',n===0?'Keine passenden Aufgaben – bitte Auswahl erweitern.':n+' passende Aufgaben'));
+  app.appendChild(row);
+  app.appendChild(el('p','note','In jedem Lückentext sind nur Lücken zu den gewählten Themen offen; die übrigen Lücken sind schon ausgefüllt. Falsch gelöste Aufgaben kommen später noch einmal.'));
+}
+
+/* ================= Regeln ================= */
+function renderRules(){
+  clear(app);app.appendChild(header());
+  app.appendChild(el('p','instr','Kurzübersicht zu allen Themen. Tippe auf ein Thema, um es zu öffnen.'));
+  ['v','s','n','p','z'].forEach(function(g){
+    app.appendChild(el('div','grp',GROUPS[g].n));
+    TOPICS.filter(function(t){return t.g===g;}).forEach(function(t){
+      var d=document.createElement('details');
+      var s=document.createElement('summary');
+      var dot=el('span','dot');dot.style.cssText='width:10px;height:10px;border-radius:50%;flex:none;background:'+GROUPS[g].c;
+      s.appendChild(dot);s.appendChild(document.createTextNode(t.n));
+      var sm=el('small',null,'L'+t.l);sm.style.cssText='color:#5a6787;margin-left:auto';s.appendChild(sm);
+      d.appendChild(s);
+      var b=el('div','rb');
+      b.appendChild(el('p',null,t.r));
+      if(t.h){var w=el('div');w.innerHTML=t.h;b.appendChild(w);}
+      d.appendChild(b);
+      app.appendChild(d);
+    });
+  });
+}
+
+/* ================= Session ================= */
+function startSession(topicsOverride){
+  var list=pool();
+  list=shuffle(list);
+  if(st.count<list.length)list=list.slice(0,st.count);
+  SS={queue:list.map(function(ex){return {ex:ex,retry:false};}),i:0,tally:{},gapsN:0,gapsOk:0};
+  st.view='session';
+  render();
+}
+
+function tallyAdd(t,ok){
+  var x=SS.tally[t]||(SS.tally[t]={n:0,c:0});
+  x.n++;if(ok)x.c++;
+  SS.gapsN++;if(ok)SS.gapsOk++;
+}
+
+function renderSession(){
+  var q=SS.queue[SS.i];
+  if(!q){renderResult();return;}
+  var ex=q.ex;
+  clear(app);
+  var top=el('div','row');top.style.justifyContent='space-between';
+  top.appendChild(el('strong',null,'Grammatik A1.1'));
+  var ab=el('button','lnk','Abbrechen');ab.onclick=function(){if(SS.i>0){renderResult();}else{st.view='home';render();}};
+  top.appendChild(ab);app.appendChild(top);
+  var pr=el('div','prog');var bar=el('i');bar.style.width=Math.round(SS.i/SS.queue.length*100)+'%';pr.appendChild(bar);app.appendChild(pr);
+  var pi=el('div','pinfo');pi.appendChild(el('span',null,'Aufgabe '+(SS.i+1)+' von '+SS.queue.length));app.appendChild(pi);
+
+  var card=el('div','card');
+  card.appendChild(el('div','meta',FNAME[ex.f]+(q.retry?' · Wiederholung':'')));
+  if(ex.ti)card.appendChild(el('div','ti',ex.ti));
+  card.appendChild(el('div','instr',INSTR[ex.f]));
+  var rt=(ex.f==='order')?buildOrder(ex):(ex.f==='choice')?buildChoice(ex):buildGaps(ex);
+  card.appendChild(rt.node);
+  var fb=el('div','fb');fb.setAttribute('aria-live','polite');card.appendChild(fb);
+  var row=el('div','row');row.style.marginTop='14px';
+  var btn=el('button','btn','Prüfen');
+  row.appendChild(btn);
+  if(rt.reset){var rs=el('button','btn sec','Zurücksetzen');rs.onclick=function(){if(!checked)rt.reset();};row.appendChild(rs);}
+  card.appendChild(row);
+  app.appendChild(card);
+  var checked=false;
+  function doCheck(){
+    if(checked){SS.i++;render();window.scrollTo(0,0);return;}
+    var r=rt.check();
+    if(r===null){fb.className='fb warn';clear(fb);fb.appendChild(el('div','hd',rt.warn||'Bitte erst alle Lücken ausfüllen.'));return;}
+    checked=true;
+    if(!q.retry){r.items.forEach(function(it){tallyAdd(it.t,it.ok);});}
+    clear(fb);fb.className='fb '+(r.ok?'ok':'bad');
+    fb.appendChild(el('div','hd',r.ok?'Richtig!':'Noch nicht ganz.'));
+    (r.lines||[]).forEach(function(l){fb.appendChild(el('div','ln',l));});
+    if(!r.ok){
+      var seen={};
+      r.items.forEach(function(it){
+        if(it.ok||seen[it.t])return;seen[it.t]=true;
+        var d=el('div','rule');var b=el('strong',null,TM[it.t].n+': ');d.appendChild(b);d.appendChild(document.createTextNode(it.w||TM[it.t].r));fb.appendChild(d);
+      });
+      if(!q.retry){
+        var pos=Math.min(SS.i+4,SS.queue.length);
+        SS.queue.splice(pos,0,{ex:ex,retry:true});
+      }
+    }
+    btn.textContent=(SS.i===SS.queue.length-1)?'Ergebnis':'Weiter';
+    btn.focus();
+  }
+  btn.onclick=doCheck;
+}
+
+/* ----- Lücken-Aufgaben (Lückentext, Wortbank, Tippen, Blitzfrage) ----- */
+function buildGaps(ex){
+  var root=el('div','sent');
+  var wrap=el('div');wrap.appendChild(root);
+  var gaps=[];
+  var mode=ex.f;
+  var chips=[],active=null,boxEl=null,optsEl=null;
+
+  ex.p.forEach(function(part){
+    if(typeof part==='string'){addText(root,part);return;}
+    var g=part;
+    var gs={g:g,val:'',node:null,chip:null,locked:false};
+    if(!st.topics[g.t]){
+      gs.locked=true;
+      var lk=el('span','locked',g.k==='i'?g.a[0]:g.a);root.appendChild(lk);gaps.push(gs);return;
+    }
+    if(mode==='text'){
+      var sel=el('select','gsel');
+      var o0=el('option',null,'…');o0.value='';sel.appendChild(o0);
+      shuffle(g.o).forEach(function(o){var op=el('option',null,o);op.value=o;sel.appendChild(op);});
+      sel.setAttribute('aria-label','Lücke');
+      root.appendChild(sel);gs.node=sel;gs.get=function(){return sel.value;};
+    }else if(mode==='mc'){
+      var blank=el('span','gap','\u00a0');
+      root.appendChild(blank);gs.node=blank;
+      gs.get=function(){return gs.val;};
+      optsEl=el('div','opts');
+      shuffle(g.o).forEach(function(o){
+        var b=el('button','opt',o);
+        b.onclick=function(){if(gs.done)return;gs.val=o;blank.textContent=o;
+          Array.prototype.forEach.call(optsEl.childNodes,function(x){x.classList.remove('sel');});b.classList.add('sel');};
+        optsEl.appendChild(b);
+      });
+    }else if(mode==='type'){
+      var inp=el('input','gin');inp.type='text';
+      inp.setAttribute('autocomplete','off');inp.setAttribute('autocapitalize','none');inp.setAttribute('autocorrect','off');inp.setAttribute('spellcheck','false');
+      inp.setAttribute('aria-label','Lücke');
+      var len=0;g.a.forEach(function(a){if(a.length>len)len=a.length;});
+      inp.size=Math.max(4,len+1);
+      root.appendChild(inp);
+      if(g.h)root.appendChild(el('span','ghint','('+g.h+')'));
+      gs.node=inp;gs.get=function(){return inp.value;};
+    }else if(mode==='bank'){
+      var gb=el('button','gap','\u00a0');gb.type='button';gb.setAttribute('aria-label','Lücke');
+      gb.onclick=function(){
+        if(gs.done)return;
+        if(gs.chip){gs.chip.used=false;gs.chip.node.classList.remove('used');gs.chip=null;gs.val='';gb.textContent='\u00a0';}
+        active=gs;refreshActive();
+      };
+      root.appendChild(gb);gs.node=gb;gs.get=function(){return gs.val;};
+    }
+    gaps.push(gs);
+  });
+
+  function refreshActive(){gaps.forEach(function(x){if(x.node&&mode==='bank')x.node.classList.toggle('act',x===active);});}
+  function firstEmpty(){for(var i=0;i<gaps.length;i++){if(!gaps[i].locked&&!gaps[i].val)return gaps[i];}return null;}
+
+  if(mode==='bank'){
+    var words=[];
+    gaps.forEach(function(x){if(!x.locked)words.push(x.g.a);});
+    (ex.extra||[]).forEach(function(w){words.push(w);});
+    boxEl=el('div','box');
+    shuffle(words).forEach(function(w){
+      var c={w:w,used:false};
+      var b=el('button','wchip',w);b.type='button';c.node=b;
+      b.onclick=function(){
+        if(c.used)return;
+        var t=(active&&!active.val&&!active.done)?active:firstEmpty();
+        if(!t)return;
+        t.chip=c;t.val=w;c.used=true;b.classList.add('used');t.node.textContent=w;active=null;refreshActive();
+      };
+      chips.push(c);boxEl.appendChild(b);
+    });
+    wrap.appendChild(boxEl);
+  }
+  if(mode==='mc'&&optsEl)wrap.appendChild(optsEl);
+  if(mode==='type'){
+    var ins=[];gaps.forEach(function(x){if(x.node&&!x.locked)ins.push(x);});
+    ins.forEach(function(x,i){
+      x.node.addEventListener('keydown',function(e){
+        if(e.key==='Enter'||e.keyCode===13){
+          e.preventDefault();
+          if(i<ins.length-1){ins[i+1].node.focus();}
+          else{var b=document.querySelector('.card .btn');if(b)b.click();}
+        }
+      });
+    });
+  }
+
+  return {
+    node:wrap,
+    warn:'Bitte erst alle Lücken ausfüllen.',
+    check:function(){
+      var open=gaps.filter(function(x){return !x.locked;});
+      for(var i=0;i<open.length;i++){if(!open[i].get()||!String(open[i].get()).replace(/\s+/g,''))return null;}
+      var items=[],all=true;
+      open.forEach(function(x){
+        var v=x.get(),ok;
+        if(x.g.k==='i'){ok=x.g.a.some(function(a){return norm(a)===norm(v);});}
+        else{ok=(v===x.g.a);}
+        x.done=true;
+        if(x.node){
+          x.node.classList.remove('act');
+          x.node.classList.add(ok?'ok':'bad');
+          if(x.node.tagName==='SELECT'||x.node.tagName==='INPUT'){x.node.disabled=true;}
+          if(!ok){
+            var fx=el('span','fix','→ '+(x.g.k==='i'?x.g.a[0]:x.g.a));
+            if(x.node.nextSibling&&x.node.nextSibling.className==='ghint'){x.node.parentNode.insertBefore(fx,x.node.nextSibling.nextSibling);}
+            else{x.node.parentNode.insertBefore(fx,x.node.nextSibling);}
+          }
+        }
+        if(!ok)all=false;
+        items.push({t:x.g.t,ok:ok,w:x.g.w});
+      });
+      if(mode==='mc'&&optsEl){Array.prototype.forEach.call(optsEl.childNodes,function(b){b.disabled=true;});}
+      if(mode==='bank'){chips.forEach(function(c){c.node.disabled=true;});}
+      return {ok:all,items:items};
+    },
+    reset:null
+  };
+}
+
+/* ----- Satzbau ----- */
+function buildOrder(ex){
+  var n=ex.a.length;
+  var wrap=el('div');
+  var line=el('div','sline');
+  var ans=el('div','ans');
+  line.appendChild(ans);line.appendChild(el('span','endp',ex.p));
+  wrap.appendChild(line);
+  var pl=el('div','pool');wrap.appendChild(pl);
+  var chosen=[],chips=[];
+  var order;
+  var tries=0;
+  do{order=shuffle(ex.a.map(function(_,i){return i;}));tries++;}
+  while(tries<20&&order.every(function(v,i){return ex.a[v]===ex.a[i];}));
+  function redraw(){
+    clear(ans);
+    chosen.forEach(function(c,i){
+      var b=el('button','wchip',c.w);b.type='button';
+      b.onclick=function(){if(done)return;chosen.splice(i,1);c.used=false;redraw();};
+      ans.appendChild(b);
+    });
+    chips.forEach(function(c){c.node.classList.toggle('used',c.used);});
+  }
+  var done=false;
+  order.forEach(function(idx){
+    var c={w:ex.a[idx],used:false};
+    var b=el('button','wchip',c.w);b.type='button';c.node=b;
+    b.onclick=function(){if(done||c.used)return;c.used=true;chosen.push(c);redraw();};
+    chips.push(c);pl.appendChild(b);
+  });
+  return {
+    node:wrap,
+    warn:'Bitte erst alle Wörter setzen.',
+    reset:function(){chosen=[];chips.forEach(function(c){c.used=false;});redraw();},
+    check:function(){
+      if(chosen.length<n)return null;
+      done=true;
+      var got=chosen.map(function(c){return c.w;});
+      function eq(a){return a.length===got.length&&a.every(function(x,i){return x===got[i];});}
+      var ok=eq(ex.a)||ex.alt.some(eq);
+      Array.prototype.forEach.call(ans.childNodes,function(b){b.classList.add(ok?'sel':'sel');b.disabled=true;});
+      chips.forEach(function(c){c.node.disabled=true;});
+      var lines=[];
+      if(ok){
+        lines.push(sentence(got,ex.p));
+        var others=[ex.a].concat(ex.alt).filter(function(a){return a.join(' ')!==got.join(' ');});
+        if(others.length)lines.push('Auch möglich: '+others.map(function(a){return sentence(a,ex.p);}).join('  ·  '));
+      }else{
+        lines.push('Deine Lösung: '+sentence(got,ex.p));
+        lines.push('Richtig: '+sentence(ex.a,ex.p)+(ex.alt.length?'  ·  auch möglich: '+ex.alt.map(function(a){return sentence(a,ex.p);}).join('  ·  '):''));
+      }
+      return {ok:ok,items:ex.tp.map(function(t){return {t:t,ok:ok};}),lines:lines};
+    }
+  };
+}
+
+/* ----- Satzwahl ----- */
+function buildChoice(ex){
+  var wrap=el('div');
+  var sel=null,btns=[],done=false;
+  shuffle(ex.o).forEach(function(o){
+    var b=el('button','choice',o);b.type='button';
+    b.onclick=function(){if(done)return;sel=o;btns.forEach(function(x){x.classList.remove('sel');});b.classList.add('sel');};
+    btns.push(b);wrap.appendChild(b);
+  });
+  return {
+    node:wrap,
+    warn:'Bitte erst einen Satz wählen.',
+    check:function(){
+      if(!sel)return null;
+      done=true;
+      var ok=sel===ex.o[0];
+      btns.forEach(function(b){
+        b.disabled=true;b.classList.remove('sel');
+        if(b.textContent===ex.o[0])b.classList.add('ok');
+        else if(b.textContent===sel)b.classList.add('bad');
+      });
+      return {ok:ok,items:[{t:ex.tp[0],ok:ok,w:ok?null:ex.w}],lines:ex.w?[ex.w]:[]};
+    }
+  };
+}
+
+/* ================= Ergebnis ================= */
+function renderResult(){
+  clear(app);app.appendChild(header());
+  var pct=SS.gapsN?Math.round(SS.gapsOk/SS.gapsN*100):0;
+  var card=el('div','card');
+  card.appendChild(el('div','meta','Ergebnis'));
+  card.appendChild(el('div','big',pct+' %'));
+  card.appendChild(el('p',null,SS.gapsOk+' von '+SS.gapsN+' Antworten richtig (nur erste Versuche gezählt).'));
+  app.appendChild(card);
+  var ids=Object.keys(SS.tally);
+  ids.sort(function(a,b){return SS.tally[a].c/SS.tally[a].n-SS.tally[b].c/SS.tally[b].n;});
+  var weak=[];
+  if(ids.length){
+    app.appendChild(el('h2',null,'Nach Themen'));
+    ids.forEach(function(id){
+      var x=SS.tally[id],r=x.c/x.n;
+      if(r<0.8)weak.push(id);
+      var row=el('div','tr');
+      row.appendChild(el('span',null,TM[id].n));
+      var bar=el('div','bar');var i=el('i');i.style.width=Math.round(r*100)+'%';i.style.background=r>=0.8?'#1e7f4f':(r>=0.5?'#d9a42b':'#c23b2f');bar.appendChild(i);row.appendChild(bar);
+      row.appendChild(el('span',null,x.c+'/'+x.n));
+      app.appendChild(row);
+    });
+  }
+  var row=el('div','row');row.style.marginTop='20px';
+  if(weak.length){
+    var bw=el('button','btn','Schwächen üben ('+weak.length+' '+(weak.length===1?'Thema':'Themen')+')');
+    bw.onclick=function(){
+      st.topics={};weak.forEach(function(t){st.topics[t]=true;});
+      FORMATS.forEach(function(f){st.formats[f[0]]=true;});
+      if(st.count<20)st.count=20;
+      startSession();
+    };
+    row.appendChild(bw);
+  }
+  var again=el('button','btn sec','Nochmal mit gleicher Auswahl');again.onclick=function(){startSession();};
+  var home=el('button','btn sec','Neue Auswahl');home.onclick=function(){st.view='home';render();};
+  row.appendChild(again);row.appendChild(home);
+  app.appendChild(row);
+  if(!weak.length&&ids.length)app.appendChild(el('p','note','Alle Themen über 80 % – sehr gut! Mit einer höheren Lektion geht es weiter.'));
+  if(weak.length)app.appendChild(el('p','note','Tipp: Die Regeln zu den schwachen Themen stehen im Reiter „Regeln“.'));
+}
+
+function render(){
+  if(st.view==='home')renderHome();
+  else if(st.view==='rules')renderRules();
+  else if(st.view==='session')renderSession();
+  window.scrollTo(0,0);
+}
+window.__GT={getSS:function(){return SS;},EX:EX,TM:TM,TOPICS:TOPICS,st:st,render:render,startSession:startSession,pool:pool};
+render();
+})();
+</script>
+</body>
+</html>
