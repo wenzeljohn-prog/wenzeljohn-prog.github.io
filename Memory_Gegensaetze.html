@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Memory: Gegensätze (A1)</title>
+<style>
+  :root {
+    --bg: #1E2A28;
+    --panel: #25423C;
+    --panel-2: #2C4A44;
+    --gold: #D9A441;
+    --gold-dark: #B9842B;
+    --cream: #F6F1E4;
+    --ink: #1E2A28;
+    --success: #6FA287;
+    --muted: #9FB3AE;
+    --border: #3A5750;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--cream);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 24px 18px 60px; }
+
+  header.top { padding: 4px 0 18px; border-bottom: 1px solid var(--border); margin-bottom: 22px; }
+  header.top h1 { margin: 0 0 6px; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; }
+  header.top p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.5; max-width: 52ch; }
+
+  /* ---------- Auswahlbildschirm ---------- */
+  .round-list { list-style: none; margin: 0; padding: 0; }
+  .round-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 18px 4px; border-bottom: 1px solid var(--border);
+  }
+  .round-row:first-child { border-top: 1px solid var(--border); }
+  .round-info h2 { margin: 0 0 4px; font-size: 1.05rem; font-weight: 700; }
+  .round-info p { margin: 0; color: var(--muted); font-size: 0.88rem; }
+  .round-progress { color: var(--gold); font-size: 0.82rem; margin-top: 4px; }
+  .play-btn {
+    flex: none; background: var(--gold); color: var(--ink); border: none; border-radius: 8px;
+    padding: 10px 18px; font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .play-btn:active { background: var(--gold-dark); }
+  .play-btn:focus-visible { outline: 2px solid var(--cream); outline-offset: 2px; }
+
+  /* ---------- Spielbildschirm ---------- */
+  .game-top {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px;
+  }
+  .back-btn {
+    background: none; border: 1px solid var(--border); color: var(--cream); border-radius: 8px;
+    padding: 8px 14px; font-size: 0.88rem; cursor: pointer; font-family: inherit;
+  }
+  .back-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .stats { color: var(--muted); font-size: 0.88rem; text-align: right; }
+  .stats b { color: var(--cream); }
+
+  .board {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  }
+  @media (min-width: 560px) { .board { grid-template-columns: repeat(6, 1fr); } }
+
+  .card-slot { position: relative; width: 100%; padding-bottom: 133%; }
+  .card-btn {
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    border: 2px solid transparent; border-radius: 10px; padding: 6px; cursor: pointer;
+    font-family: inherit; font-weight: 700; line-height: 1.25;
+    overflow-wrap: break-word; word-break: normal; -webkit-hyphens: auto; hyphens: auto;
+    background: var(--gold); color: var(--ink); font-size: 1.3rem;
+    transition: transform 0.15s ease, background-color 0.15s ease, font-size 0.15s ease;
+  }
+  .card-btn.revealed { background: var(--cream); font-size: 0.82rem; transform: scale(1.04); }
+  .card-btn.matched { border-color: var(--success); box-shadow: 0 0 0 2px var(--success) inset; transform: none; }
+  .card-btn:disabled { cursor: default; }
+  .card-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+  .done-box {
+    margin-top: 22px; padding: 20px; background: var(--panel); border-radius: 12px; text-align: center;
+  }
+  .done-box p { margin: 0 0 14px; color: var(--muted); }
+  .done-box .big { font-size: 1.2rem; font-weight: 700; color: var(--cream); margin-bottom: 4px; }
+  .done-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+  footer.note { margin-top: 30px; color: var(--muted); font-size: 0.78rem; text-align: center; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>Memory: Gegensätze</h1>
+    <p>Deutsch A1 &middot; Zwei Karten aufdecken, das passende Gegenteil finden.</p>
+  </header>
+
+  <section id="picker">
+    <ul class="round-list" id="roundList"></ul>
+  </section>
+
+  <section id="game" hidden>
+    <div class="game-top">
+      <button type="button" class="back-btn" id="backBtn">&larr; Zur Auswahl</button>
+      <div class="stats">Versuche: <b id="moveCount">0</b> &middot; Paare: <b id="pairCount">0</b>/<span id="pairTotal">0</span></div>
+    </div>
+    <div class="board" id="board"></div>
+    <div class="done-box" id="doneBox" hidden>
+      <p class="big" id="doneHeading">Geschafft!</p>
+      <p id="doneSub"></p>
+      <div class="done-actions">
+        <button type="button" class="play-btn" id="againBtn">Nochmal spielen</button>
+        <button type="button" class="back-btn" id="menuBtn">Zur Auswahl</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="note">Funktioniert komplett offline &mdash; einfach speichern und im Browser öffnen.</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var ROUNDS = [
+    {
+      id: "eigenschaften-1",
+      title: "Eigenschaften – Teil 1",
+      desc: "alt/neu, billig/teuer, bequem/unbequem und mehr",
+      pairs: [
+        ["alt", "neu"], ["billig", "teuer"], ["bequem", "unbequem"], ["dunkel", "hell"],
+        ["erlaubt", "verboten"], ["falsch", "richtig"], ["früh", "spät"],
+        ["geöffnet", "geschlossen"], ["groß", "klein"]
+      ]
+    },
+    {
+      id: "eigenschaften-2",
+      title: "Eigenschaften – Teil 2",
+      desc: "gut/schlecht, interessant/langweilig, kalt/warm und mehr",
+      pairs: [
+        ["gut", "schlecht"], ["hässlich", "schön"], ["höflich", "unhöflich"],
+        ["interessant", "langweilig"], ["kalt", "warm"], ["kurz", "lang"],
+        ["laut", "ruhig"], ["ledig", "verheiratet"], ["nah/nahe", "weit"]
+      ]
+    },
+    {
+      id: "verben-nomen-woerter",
+      title: "Verben, Nomen & Wörter",
+      desc: "anfangen/aufhören, Tag/Nacht, ja/nein und mehr",
+      pairs: [
+        ["anfangen", "aufhören"], ["anmachen", "ausmachen"], ["anziehen", "ausziehen"],
+        ["aufmachen", "zumachen"], ["fragen", "antworten"], ["suchen", "finden"],
+        ["da sein", "weg sein"], ["Tag", "Nacht"], ["Morgen", "Abend"],
+        ["Frühschicht", "Spätschicht"], ["ja", "nein"], ["hier", "dort"],
+        ["alles", "nichts"], ["allein/alleine", "zusammen"]
+      ]
+    }
+  ];
+
+  var STORAGE_KEY = "memory_gegensaetze_best";
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function loadBest() {
+    try { return JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveBest(best) {
+    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(best)); } catch (e) {}
+  }
+
+  var state = {
+    round: null,
+    cards: [],        // {id, text, pairId}
+    flippedIdx: [],
+    matchedPairIds: {},
+    moves: 0,
+    locked: false
+  };
+
+  /* ---------- Auswahlbildschirm ---------- */
+  function renderPicker() {
+    var list = $("roundList");
+    list.innerHTML = "";
+    var best = loadBest();
+    for (var i = 0; i < ROUNDS.length; i++) {
+      (function (round) {
+        var li = el("li", "round-row");
+        var info = el("div", "round-info");
+        info.appendChild(el("h2", "", round.title));
+        info.appendChild(el("p", "", round.desc + " (" + round.pairs.length + " Paare)"));
+        if (best[round.id]) {
+          info.appendChild(el("p", "round-progress", "Beste Versuche: " + best[round.id]));
+        }
+        li.appendChild(info);
+        var btn = el("button", "play-btn", "Spielen");
+        btn.type = "button";
+        btn.addEventListener("click", function () { startRound(round); });
+        li.appendChild(btn);
+        list.appendChild(li);
+      })(ROUNDS[i]);
+    }
+  }
+
+  /* ---------- Spiel starten ---------- */
+  function startRound(round) {
+    state.round = round;
+    var cards = [];
+    for (var i = 0; i < round.pairs.length; i++) {
+      var pairId = round.id + "-" + i;
+      cards.push({ id: pairId + "-a", text: round.pairs[i][0], pairId: pairId });
+      cards.push({ id: pairId + "-b", text: round.pairs[i][1], pairId: pairId });
+    }
+    state.cards = shuffle(cards);
+    state.flippedIdx = [];
+    state.matchedPairIds = {};
+    state.moves = 0;
+    state.locked = false;
+
+    $("picker").hidden = true;
+    $("game").hidden = false;
+    $("doneBox").hidden = true;
+    $("board").hidden = false;
+    $("pairTotal").textContent = round.pairs.length;
+    renderGame();
+  }
+
+  function showPicker() {
+    $("game").hidden = true;
+    $("picker").hidden = false;
+    renderPicker();
+  }
+
+  /* ---------- Spielbrett ---------- */
+  function renderGame() {
+    $("moveCount").textContent = state.moves;
+    $("pairCount").textContent = Object.keys(state.matchedPairIds).length;
+
+    var board = $("board");
+    board.innerHTML = "";
+    for (var i = 0; i < state.cards.length; i++) {
+      (function (idx) {
+        var card = state.cards[idx];
+        var isMatched = !!state.matchedPairIds[card.pairId];
+        var isFlipped = isMatched || state.flippedIdx.indexOf(idx) >= 0;
+
+        var slot = el("div", "card-slot");
+        var cls = "card-btn" + (isFlipped ? " revealed" : "") + (isMatched ? " matched" : "");
+        var btn = el("button", cls, isFlipped ? card.text : "?");
+        btn.type = "button";
+        btn.setAttribute("aria-pressed", isFlipped ? "true" : "false");
+        btn.disabled = isMatched || (state.locked && !isFlipped);
+
+        btn.addEventListener("click", function () { flipCard(idx); });
+        slot.appendChild(btn);
+        board.appendChild(slot);
+      })(i);
+    }
+
+    if (state.round && Object.keys(state.matchedPairIds).length === state.round.pairs.length) {
+      finishRound();
+    }
+  }
+
+  function flipCard(idx) {
+    if (state.locked) return;
+    if (state.flippedIdx.indexOf(idx) >= 0) return;
+    var card = state.cards[idx];
+    if (state.matchedPairIds[card.pairId]) return;
+    if (state.flippedIdx.length >= 2) return;
+
+    state.flippedIdx.push(idx);
+    renderGame();
+
+    if (state.flippedIdx.length === 2) {
+      state.moves += 1;
+      var a = state.cards[state.flippedIdx[0]];
+      var b = state.cards[state.flippedIdx[1]];
+      if (a.pairId === b.pairId) {
+        state.matchedPairIds[a.pairId] = true;
+        state.flippedIdx = [];
+        renderGame();
+      } else {
+        state.locked = true;
+        renderGame();
+        window.setTimeout(function () {
+          state.flippedIdx = [];
+          state.locked = false;
+          renderGame();
+        }, 850);
+      }
+    }
+  }
+
+  function finishRound() {
+    $("board").hidden = true;
+    $("doneBox").hidden = false;
+    $("doneSub").textContent = "Du hast alle " + state.round.pairs.length + " Paare in " + state.moves + " Versuchen gefunden.";
+
+    var best = loadBest();
+    if (!best[state.round.id] || state.moves < best[state.round.id]) {
+      best[state.round.id] = state.moves;
+      saveBest(best);
+    }
+  }
+
+  $("backBtn").addEventListener("click", showPicker);
+  $("menuBtn").addEventListener("click", showPicker);
+  $("againBtn").addEventListener("click", function () { startRound(state.round); });
+
+  renderPicker();
+})();
+</script>
+</body>
+</html>
