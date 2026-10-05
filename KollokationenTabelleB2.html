@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kollokationen ordnen: Verb, Adjektiv und Nomen mit Präposition (B2)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#E8EEEC; --panel:#FFFFFF; --ink:#14302B; --muted:#44605B; --line:#BFD0CB;
+  --felt:#1F5A52; --felt-deep:#17463F; --felt-ink:#DCEDE8; --felt-line:#3A7A70;
+  --tile:#F7F3E8; --tile-cap:#E3DCC8; --tile-edge:#CBC2A9; --tile-ink:#1B2623; --tile-prep:#7A5400;
+  --accent:#F2B93B; --ring:#0B58A8;
+  --ok:#1E6B43; --bad:#A8321F;
+  --note-bg:#FFF2CC; --note-ink:#3B2C00; --note-line:#E0A92B;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1A18; --panel:#142523; --ink:#E3EFEC; --muted:#A3BBB6; --line:#2B413D;
+    --felt:#1B4F48; --felt-deep:#133B36; --felt-line:#2F6A61;
+    --ring:#8CC4FF; --ok:#7FDCA5; --bad:#FF9E8C;
+    --note-bg:#3A3015; --note-ink:#FFF0C4; --note-line:#B88A1E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1A18; --panel:#142523; --ink:#E3EFEC; --muted:#A3BBB6; --line:#2B413D;
+  --felt:#1B4F48; --felt-deep:#133B36; --felt-line:#2F6A61;
+  --ring:#8CC4FF; --ok:#7FDCA5; --bad:#FF9E8C;
+  --note-bg:#3A3015; --note-ink:#FFF0C4; --note-line:#B88A1E;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:17px;line-height:1.5;
+}
+.page{max-width:1000px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:30px;line-height:1.15;margin:0 0 6px;font-weight:700}
+h2{font-size:19px;line-height:1.25;margin:0;font-weight:700}
+h3{font-size:18px;margin:20px 0 8px}
+.lead{margin:0 0 14px;color:var(--muted);font-size:18px}
+.howto{margin:0 0 18px;max-width:70ch}
+:focus-visible{outline:3px solid var(--ring);outline-offset:3px}
+.pool :focus-visible,.th-felt :focus-visible{outline-color:#FFE08A}
+.hyph{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word}
+
+/* Steuerung */
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;margin-bottom:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:0 16px;border-radius:22px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--felt);border-color:var(--felt);color:#fff}
+.chk{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer}
+.chk input{width:22px;height:22px;accent-color:var(--felt);margin:0}
+
+/* Tabelle */
+.tbl{width:100%;border-collapse:separate;border-spacing:0 8px;table-layout:fixed}
+.tbl th{padding:10px 8px;background:var(--felt);color:#fff;font-size:15px;font-weight:700;text-align:center;line-height:1.25}
+.tbl th:first-child{border-radius:10px 0 0 10px}
+.tbl th:last-child{border-radius:0 10px 10px 0}
+.tbl th small{display:block;font-weight:400;font-size:13px;opacity:.9}
+.tbl td{padding:0 4px;vertical-align:middle}
+.tbl td:first-child{padding-left:0}
+.tbl td:last-child{padding-right:0}
+.col-a,.col-n{width:30%}
+.col-v{width:40%}
+.cell{display:flex;align-items:center;justify-content:center;min-height:58px;padding:8px 10px;border-radius:10px;font-size:16px;line-height:1.3;text-align:center;font:inherit;font-size:16px;width:100%}
+.verbcell{overflow-wrap:anywhere;position:relative;background:var(--felt);color:#fff;font-weight:700;box-shadow:inset 0 0 0 2px var(--felt-line)}
+.verbcell .p{color:#FFD36B}
+.verbcell .badge{position:absolute;top:-8px;right:-4px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#2B2208;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.verbcell.flash{animation:flash 0.5s ease-in-out 4}
+.slot{border:2px dashed var(--line);background:transparent;color:var(--muted);cursor:pointer;-webkit-appearance:none;appearance:none}
+.slot::after{content:"?";font-size:20px;font-weight:700;opacity:.55}
+.has-sel .slot{border-color:var(--accent);background:rgba(242,185,59,.14)}
+.slot.shake{animation:shake .36s ease-in-out;border-color:var(--bad);border-style:solid}
+.filled{background:var(--tile);color:var(--tile-ink);border:1px solid var(--tile-edge);box-shadow:0 2px 0 var(--tile-edge);border-left:5px solid var(--ok);cursor:default}
+.filled .p,.chipbtn .p{color:var(--tile-prep);font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.dash{color:var(--muted);font-size:20px;min-height:58px;display:flex;align-items:center;justify-content:center;opacity:.6;width:100%}
+.note-row td{padding:0}
+.note{margin:-2px 0 6px;padding:12px 14px;background:var(--note-bg);color:var(--note-ink);border-left:5px solid var(--note-line);border-radius:10px;font-size:16px;line-height:1.45;animation:pop .22s ease-out}
+.note strong{font-weight:700}
+.legend{margin:2px 0 0;font-size:15px;color:var(--muted)}
+
+/* Plättchen-Ablage */
+.pool{
+  position:sticky;bottom:0;z-index:20;margin-top:16px;
+  background:var(--felt);color:var(--felt-ink);border-radius:16px;
+  padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));
+  box-shadow:inset 0 0 0 2px var(--felt-line),0 -6px 18px rgba(0,0,0,.25);
+  max-height:46vh;overflow-y:auto;
+}
+.pool-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.pool-top span{font-size:15px}
+.msg{margin:4px 0 10px;min-height:2.7em;font-size:16px;font-weight:700;line-height:1.35}
+.msg.ok{color:#B6F2CE}
+.msg.bad{color:#FFC1B3}
+.chiplist{display:flex;flex-wrap:wrap;gap:10px}
+.chipbtn{
+  position:relative;padding:9px 14px;min-height:46px;border-radius:10px;font:inherit;font-size:16px;line-height:1.25;
+  background:var(--tile);color:var(--tile-ink);border:1px solid var(--tile-edge);
+  box-shadow:0 3px 0 var(--tile-edge),0 6px 10px rgba(0,0,0,.28);cursor:pointer;
+  -webkit-appearance:none;appearance:none;text-align:center;transition:transform .12s ease;
+}
+.chipbtn:hover{transform:translateY(-2px)}
+.chipbtn[aria-pressed="true"]{outline:3px solid var(--accent);outline-offset:2px;transform:translateY(-3px)}
+.chipbtn.adj{border-bottom-color:var(--tile-edge)}
+
+/* Abschluss */
+.finish{margin-top:14px;background:var(--panel);border:1.5px solid var(--line);border-radius:16px;padding:22px 20px}
+.finish h2{font-size:24px;margin-bottom:6px}
+.finish h2:focus{outline:none}
+.result{margin:0 0 4px;font-size:18px}
+.diffs,.exs{list-style:none;margin:8px 0 0;padding:0}
+.diffs li{padding:10px 12px;margin-bottom:8px;background:var(--note-bg);color:var(--note-ink);border-left:5px solid var(--note-line);border-radius:10px}
+.diffs b{display:block}
+.exs li{padding:10px 0;border-top:1px solid var(--line)}
+.exs b{font-weight:700}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.btn{min-height:46px;padding:0 20px;border-radius:10px;border:2px solid var(--felt);background:var(--felt);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.btn.alt{background:transparent;color:var(--ink);border-color:var(--line)}
+[hidden]{display:none !important}
+
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes pop{from{transform:scale(.97);opacity:.3}to{transform:scale(1);opacity:1}}
+@keyframes flash{0%,100%{box-shadow:inset 0 0 0 2px var(--felt-line)}50%{box-shadow:0 0 0 5px var(--accent)}}
+@media (prefers-reduced-motion: reduce){
+  .slot.shake,.note,.verbcell.flash{animation:none}
+  .verbcell.flash{box-shadow:0 0 0 5px var(--accent)}
+  .chipbtn{transition:none}
+  .chipbtn:hover{transform:none}
+}
+@media (max-width:640px){
+  h1{font-size:26px}
+  .howto{font-size:16px}
+  .chips{flex-wrap:nowrap;overflow-x:auto;padding:2px 16px 8px;margin:0 -16px;-webkit-overflow-scrolling:touch}
+  .chip{flex:0 0 auto}
+  .tbl{border-spacing:0 6px}
+  .tbl th{font-size:13px;padding:8px 4px}
+  .tbl th small{display:none}
+  .tbl td{padding:0 2px}
+  .cell{font-size:15px;padding:6px 5px;min-height:54px}
+  .verbcell{font-size:14.5px}
+  .col-a,.col-n{width:31%}
+  .col-v{width:38%}
+  .note{font-size:15px}
+  .pool{max-height:36vh;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px))}
+  .pool h2{font-size:17px}
+  .msg{margin:2px 0 8px;font-size:15px}
+  .chiplist{gap:8px}
+  .chipbtn{font-size:15px;padding:7px 10px;min-height:44px}
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <header>
+    <h1>Kollokationen ordnen</h1>
+    <p class="lead">Verb, Adjektiv und Nomen mit Präposition, Niveau B2</p>
+    <p class="howto">In der Mitte stehen die Verben mit ihrer Präposition. Ordne die Adjektive (links) und die Nomen (rechts) mit ihrer Präposition der passenden Zeile zu. Tippe ein Plättchen an und dann ein freies Feld, oder ziehe das Plättchen mit der Maus. Meistens ist die Präposition in der ganzen Zeile gleich. Manchmal ist sie anders: Dann bekommst du einen Hinweis.</p>
+  </header>
+
+  <section class="controls" aria-label="Einstellungen">
+    <div id="sets" class="chips" role="group" aria-label="Stufe wählen"></div>
+    <label class="chk"><input type="checkbox" id="shownotes"> Hinweise zu abweichenden Präpositionen sofort zeigen</label>
+  </section>
+
+  <div id="board" class="board">
+    <table id="tbl" class="tbl">
+      <colgroup><col class="col-a"><col class="col-v"><col class="col-n"></colgroup>
+      <thead>
+        <tr>
+          <th scope="col">Adjektiv<small>mit Präposition</small></th>
+          <th scope="col">Verb<small>mit Präposition</small></th>
+          <th scope="col">Nomen<small>mit Präposition</small></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <p class="legend">Ein Strich (–) bedeutet: In dieser Zeile gibt es dazu kein Adjektiv oder kein Nomen.</p>
+  </div>
+
+  <section id="finish" class="finish" hidden aria-labelledby="h-finish">
+    <h2 id="h-finish" tabindex="-1">Tabelle vollständig</h2>
+    <p id="result" class="result"></p>
+    <div id="diffbox"></div>
+    <h3>Beispielsätze zu den Verben</h3>
+    <ul id="exs" class="exs"></ul>
+    <div id="actions" class="actions"></div>
+  </section>
+
+  <section id="pool" class="pool" aria-labelledby="h-pool">
+    <div class="pool-top"><h2 id="h-pool">Plättchen</h2><span id="poolcount"></span></div>
+    <p id="msg" class="msg" role="status" aria-live="polite"></p>
+    <div id="chiplist" class="chiplist"></div>
+  </section>
+
+  <noscript>Diese Aufgabe braucht JavaScript.</noscript>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var SH = '\u00AD';
+
+  /* Jede Zeile: Verb mit Präposition (Mitte), optional Adjektiv (links) und Nomen (rechts).
+     Wenn sich eine Präposition von der des Verbs unterscheidet, steht in "note" der Hinweis. */
+  var SETS = [
+    { key: 'gefuehle', name: 'Gefühle', rows: [
+      { v: 'sich interessieren', p: 'für', adj: { w: 'interessiert', p: 'an' }, noun: { art: 'das', w: 'Interesse', p: 'an' },
+        ex: 'Meine Tochter interessiert sich für Astronomie.',
+        note: 'Das Verb verlangt »für« (sich interessieren für), Adjektiv und Nomen aber »an« (interessiert an, das Interesse an; selten auch: Interesse für). Beispiel: Ich interessiere mich für Fotografie. – Ich bin an Fotografie interessiert. – Ich habe großes Interesse an Fotografie.' },
+      { v: 'sich freuen', p: 'über', adj: { w: 'froh', p: 'über' }, noun: { art: 'die', w: 'Freude', p: 'über' },
+        ex: 'Wir freuen uns über deinen Besuch.' },
+      { v: 'sich ärgern', p: 'über', adj: { w: 'verärgert', p: 'über' }, noun: { art: 'der', w: 'Ärger', p: 'über' },
+        ex: 'Er ärgert sich über die ständigen Verspätungen.' },
+      { v: 'sich wundern', p: 'über', adj: { w: 'erstaunt', p: 'über' }, noun: { art: 'das', w: 'Erstaunen', p: 'über' },
+        ex: 'Ich wundere mich über seine Reaktion.' },
+      { v: 'sich begeistern', p: 'für', adj: { w: 'begeistert', p: 'von' }, noun: { art: 'die', w: 'Begeisterung', p: 'für' },
+        ex: 'Die Schüler begeistern sich für das neue Projekt.',
+        note: 'Verb und Nomen stehen mit »für« (sich begeistern für, die Begeisterung für), das Adjektiv meist mit »von« (begeistert von). Beispiel: Sie begeistert sich für Opern. – Sie ist von Opern begeistert. – Ihre Begeisterung für Opern ist groß.' },
+      { v: 'sich sorgen', p: 'um', adj: { w: 'besorgt', p: 'um' }, noun: { art: 'die', w: 'Sorge', p: 'um' },
+        ex: 'Die Eltern sorgen sich um ihren Sohn.' },
+      { v: 'sich sehnen', p: 'nach', noun: { art: 'die', w: 'Sehnsucht', p: 'nach' },
+        ex: 'Nach dem langen Winter sehnen wir uns nach Sonne.' },
+      { v: 'sich verlieben', p: 'in', adj: { w: 'verliebt', p: 'in' }, noun: { art: 'die', w: 'Liebe', p: 'zu' },
+        ex: 'Sie hat sich in einen Kollegen verliebt.',
+        note: 'Verb und Adjektiv stehen mit »in« (sich verlieben in, verliebt in), das Nomen aber mit »zu« (die Liebe zu). Beispiel: Er hat sich in Lena verliebt. – Er ist in Lena verliebt. – Seine Liebe zu Lena ist groß.' }
+    ]},
+    { key: 'wissen', name: 'Wissen und Meinung', rows: [
+      { v: 'überzeugen', p: 'von', adj: { w: 'überzeugt', p: 'von' }, noun: { art: 'die', w: 'Überzeugung', p: 'von' },
+        ex: 'Der Verkäufer hat mich von der Qualität überzeugt.' },
+      { v: 'informieren', p: 'über', adj: { w: 'informiert', p: 'über' }, noun: { art: 'die', w: 'Information', p: 'über' },
+        ex: 'Die Schule informiert die Eltern über den Ausflug.' },
+      { v: 'sich zufriedengeben', p: 'mit', adj: { w: 'zufrieden', p: 'mit' }, noun: { art: 'die', w: 'Zufriedenheit', p: 'mit' },
+        ex: 'Mit dem zweiten Platz gibt sie sich nicht zufrieden.' },
+      { v: 'zweifeln', p: 'an', noun: { art: 'der', w: 'Zweifel', p: 'an' },
+        ex: 'Niemand zweifelt an seinem Talent.' },
+      { v: 'sich unterscheiden', p: 'von', adj: { w: 'verschieden', p: 'von' }, noun: { art: 'der', w: 'Unterschied', p: 'zu' },
+        ex: 'Das neue Modell unterscheidet sich kaum vom alten.',
+        note: 'Verb und Adjektiv stehen mit »von« (sich unterscheiden von, verschieden von), das Nomen mit »zu« oder »zwischen« (der Unterschied zu, der Unterschied zwischen). Beispiel: Das Auto unterscheidet sich vom Vorgängermodell. – Es ist vom Vorgängermodell verschieden. – Der Unterschied zum Vorgängermodell ist klein.' },
+      { v: 'denken', p: 'an', noun: { art: 'der', w: 'Gedanke', p: 'an' },
+        ex: 'Ich denke oft an meine Großeltern.' },
+      { v: 'sich erinnern', p: 'an', noun: { art: 'die', w: 'Erinnerung', p: 'an' },
+        ex: 'Erinnerst du dich an den Namen des Hotels?' },
+      { v: 'fragen', p: 'nach', noun: { art: 'die', w: 'Frage', p: 'nach' },
+        ex: 'Die Gäste fragen nach dem Weg zum Strand.' }
+    ]},
+    { key: 'arbeit', name: 'Arbeit und Zusammenleben', rows: [
+      { v: 'teilnehmen', p: 'an', adj: { w: 'beteiligt', p: 'an' }, noun: { art: 'die', w: 'Teilnahme', p: 'an' },
+        ex: 'Alle Mitarbeiter nehmen an der Schulung teil.' },
+      { v: 'sich beschäftigen', p: 'mit', adj: { w: 'beschäftigt', p: 'mit' }, noun: { art: 'die', w: 'Beschäftigung', p: 'mit' },
+        ex: 'Der Student beschäftigt sich mit Statistik.' },
+      { v: 'sich bewerben', p: 'um', noun: { art: 'die', w: 'Bewerbung', p: 'um' },
+        ex: 'Sie bewirbt sich um ein Stipendium.' },
+      { v: 'zusammenarbeiten', p: 'mit', noun: { art: 'die', w: 'Zusammenarbeit', p: 'mit' },
+        ex: 'Unsere Firma arbeitet eng mit Hochschulen zusammen.' },
+      { v: 'sich verabreden', p: 'mit', adj: { w: 'verabredet', p: 'mit' }, noun: { art: 'die', w: 'Verabredung', p: 'mit' },
+        ex: 'Wir verabreden uns mit den Nachbarn zum Grillen.' },
+      { v: 'abhängen', p: 'von', adj: { w: 'abhängig', p: 'von' }, noun: { art: 'die', w: 'Abhängigkeit', p: 'von' },
+        ex: 'Der Erfolg hängt von der Vorbereitung ab.' },
+      { v: 'sorgen', p: 'für', adj: { w: 'verantwortlich', p: 'für' }, noun: { art: 'die', w: 'Verantwortung', p: 'für' },
+        ex: 'Die Stadt sorgt für saubere Straßen.' },
+      { v: 'sich eignen', p: 'für', adj: { w: 'geeignet', p: 'für' }, noun: { art: 'die', w: 'Eignung', p: 'für' },
+        ex: 'Dieser Raum eignet sich für Besprechungen.' },
+      { v: 'beneiden', p: 'um', adj: { w: 'neidisch', p: 'auf' }, noun: { art: 'der', w: 'Neid', p: 'auf' },
+        ex: 'Viele beneiden ihn um seinen Job.',
+        note: 'Das Verb verlangt »um« (jemanden um etwas beneiden), Adjektiv und Nomen aber »auf« (neidisch auf, der Neid auf). Beispiel: Ich beneide ihn um seinen Mut. – Ich bin neidisch auf seinen Mut. – Der Neid auf andere macht unglücklich.' }
+    ]},
+    { key: 'faehigkeit', name: 'Fähigkeit und Schutz', rows: [
+      { v: 'befähigen', p: 'zu', adj: { w: 'fähig', p: 'zu' }, noun: { art: 'die', w: 'Fähigkeit', p: 'zu' },
+        ex: 'Der Kurs befähigt die Teilnehmer zu selbstständigem Arbeiten.' },
+      { v: 'berechtigen', p: 'zu', adj: { w: 'berechtigt', p: 'zu' }, noun: { art: 'die', w: 'Berechtigung', p: 'zu' },
+        ex: 'Dieser Ausweis berechtigt zum Eintritt.' },
+      { v: 'sich verpflichten', p: 'zu', adj: { w: 'verpflichtet', p: 'zu' }, noun: { art: 'die', w: 'Verpflichtung', p: 'zu' },
+        ex: 'Die Firma verpflichtet sich zu fairen Preisen.' },
+      { v: 'sich vorbereiten', p: 'auf', adj: { w: 'vorbereitet', p: 'auf' }, noun: { art: 'die', w: 'Vorbereitung', p: 'auf' },
+        ex: 'Er bereitet sich auf das Vorstellungsgespräch vor.' },
+      { v: 'sich gewöhnen', p: 'an', adj: { w: 'gewöhnt', p: 'an' }, noun: { art: 'die', w: 'Gewöhnung', p: 'an' },
+        ex: 'Wir gewöhnen uns langsam an den Lärm.' },
+      { v: 'sich schützen', p: 'vor', adj: { w: 'geschützt', p: 'vor' }, noun: { art: 'der', w: 'Schutz', p: 'vor' },
+        ex: 'Mit Sonnencreme schützt man sich vor Sonnenbrand.' },
+      { v: 'befreien', p: 'von', adj: { w: 'frei', p: 'von' }, noun: { art: 'die', w: 'Befreiung', p: 'von' },
+        ex: 'Der Arzt befreit ihn vom Sportunterricht.' },
+      { v: 'warnen', p: 'vor', noun: { art: 'die', w: 'Warnung', p: 'vor' },
+        ex: 'Die Behörde warnt vor Hochwasser.' }
+    ]}
+  ];
+
+  var BREAKS = [
+    ['Zusammenarbeit', 'Zusammen' + SH + 'arbeit'], ['zusammenarbeiten', 'zusammen' + SH + 'arbeiten'],
+    ['Abhängigkeit', 'Abhängig' + SH + 'keit'], ['Begeisterung', 'Begeiste' + SH + 'rung'],
+    ['Beschäftigung', 'Beschäfti' + SH + 'gung'], ['beschäftigen', 'beschäf' + SH + 'tigen'], ['beschäftigt', 'beschäf' + SH + 'tigt'],
+    ['Zufriedenheit', 'Zufrieden' + SH + 'heit'], ['zufriedengeben', 'zufrieden' + SH + 'geben'],
+    ['Verantwortung', 'Verant' + SH + 'wortung'], ['verantwortlich', 'verant' + SH + 'wortlich'],
+    ['Überzeugung', 'Über' + SH + 'zeugung'], ['Vorbereitung', 'Vor' + SH + 'bereitung'],
+    ['Verpflichtung', 'Verpflich' + SH + 'tung'], ['verpflichtet', 'ver' + SH + 'pflichtet'], ['verpflichten', 'ver' + SH + 'pflichten'],
+    ['Berechtigung', 'Berech' + SH + 'tigung'], ['berechtigt', 'be' + SH + 'rechtigt'], ['berechtigen', 'be' + SH + 'rechtigen'],
+    ['interessieren', 'interes' + SH + 'sieren'], ['interessiert', 'interes' + SH + 'siert'],
+    ['Erinnerung', 'Erinne' + SH + 'rung'], ['unterscheiden', 'unter' + SH + 'scheiden'], ['verschieden', 'ver' + SH + 'schieden'],
+    ['Information', 'Infor' + SH + 'mation'], ['informiert', 'infor' + SH + 'miert'], ['informieren', 'infor' + SH + 'mieren'],
+    ['Verabredung', 'Verab' + SH + 'redung'], ['verabredet', 'verab' + SH + 'redet'], ['verabreden', 'verab' + SH + 'reden'],
+    ['Sehnsucht', 'Sehn' + SH + 'sucht'], ['Fähigkeit', 'Fähig' + SH + 'keit'], ['befähigen', 'be' + SH + 'fähigen'],
+    ['Gewöhnung', 'Gewöh' + SH + 'nung'], ['Befreiung', 'Befrei' + SH + 'ung'], ['befreien', 'be' + SH + 'freien'],
+    ['überzeugen', 'über' + SH + 'zeugen'], ['überzeugt', 'über' + SH + 'zeugt'],
+    ['vorbereiten', 'vor' + SH + 'bereiten'], ['vorbereitet', 'vor' + SH + 'bereitet'],
+    ['teilnehmen', 'teil' + SH + 'nehmen'], ['begeistern', 'begeis' + SH + 'tern'], ['begeistert', 'begeis' + SH + 'tert'],
+    ['gewöhnen', 'gewöh' + SH + 'nen'], ['gewöhnt', 'gewöhnt'], ['abhängen', 'ab' + SH + 'hängen'], ['bewerben', 'be' + SH + 'werben'],
+    ['wundern', 'wun' + SH + 'dern'], ['erstaunt', 'er' + SH + 'staunt'], ['schützen', 'schüt' + SH + 'zen']
+  ];
+  function disp(t) {
+    for (var i = 0; i < BREAKS.length; i++) { t = t.split(BREAKS[i][0]).join(BREAKS[i][1]); }
+    return t;
+  }
+
+  var state = { si: 0, rows: [], chips: [], pool: [], placed: {}, reveal: {}, sel: null,
+                errors: 0, chipErr: {}, showNotes: false, done: false, completed: {} };
+
+  function $(id) { return document.getElementById(id); }
+  function mk(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt !== undefined && txt !== null) e.textContent = txt;
+    return e;
+  }
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function rowDiff(r) { return !!((r.adj && r.adj.p !== r.p) || (r.noun && r.noun.p !== r.p)); }
+  function plain(t) { return t.split(SH).join(''); }
+
+  function chipLabel(c) { return (c.art ? c.art + ' ' : '') + c.w + ' ' + c.p; }
+  function fillChipText(el, c) {
+    var pre = (c.art ? c.art + ' ' : '') + c.w + ' ';
+    el.appendChild(document.createTextNode(disp(pre)));
+    el.appendChild(mk('b', 'p', c.p));
+  }
+
+  function start(si) {
+    state.si = si;
+    state.rows = SETS[si].rows;
+    state.chips = [];
+    state.rows.forEach(function (r, i) {
+      if (r.adj) state.chips.push({ id: i + 'a', row: i, col: 'a', art: '', w: r.adj.w, p: r.adj.p });
+      if (r.noun) state.chips.push({ id: i + 'n', row: i, col: 'n', art: r.noun.art, w: r.noun.w, p: r.noun.p });
+    });
+    state.pool = shuffle(state.chips.slice());
+    state.placed = {}; state.reveal = {}; state.sel = null;
+    state.errors = 0; state.chipErr = {}; state.done = false;
+    $('finish').hidden = true;
+    $('pool').hidden = false;
+    render();
+    setMsg('', 'Tippe ein Plättchen an und dann das passende freie Feld in der Tabelle.');
+  }
+
+  function chipById(id) {
+    for (var i = 0; i < state.chips.length; i++) { if (state.chips[i].id === id) return state.chips[i]; }
+    return null;
+  }
+
+  function setMsg(kind, text) {
+    var m = $('msg');
+    m.className = 'msg' + (kind ? ' ' + kind : '');
+    m.textContent = text;
+  }
+
+  /* ---------- Darstellung ---------- */
+  function renderSets() {
+    var box = $('sets');
+    box.innerHTML = '';
+    SETS.forEach(function (s, i) {
+      var done = !!state.completed[i];
+      var b = mk('button', 'chip', s.name + (done ? ' ✓' : ''));
+      b.type = 'button';
+      b.setAttribute('aria-pressed', i === state.si ? 'true' : 'false');
+      if (done) b.setAttribute('aria-label', s.name + ', abgeschlossen');
+      b.addEventListener('click', function () { start(i); });
+      box.appendChild(b);
+    });
+  }
+
+  function verbCell(r, i) {
+    var d = mk('div', 'cell verbcell hyph');
+    d.id = 'v' + i;
+    var t = mk('span');
+    t.appendChild(document.createTextNode(disp(r.v) + ' '));
+    t.appendChild(mk('b', 'p', r.p));
+    d.appendChild(t);
+    if (rowDiff(r) && (state.showNotes || state.reveal[i])) {
+      var bd = mk('span', 'badge', '!');
+      bd.setAttribute('aria-label', 'Achtung: abweichende Präposition');
+      d.appendChild(bd);
+    }
+    return d;
+  }
+
+  function slotCell(i, col, label) {
+    var key = i + col;
+    var c = state.placed[key];
+    if (c) {
+      var f = mk('div', 'cell filled hyph');
+      var ft = mk('span');
+      fillChipText(ft, c);
+      f.appendChild(ft);
+      return f;
+    }
+    var has = (col === 'a') ? state.rows[i].adj : state.rows[i].noun;
+    if (!has) {
+      var d = mk('span', 'dash', '–');
+      d.setAttribute('aria-label', 'kein ' + label + ' in dieser Zeile');
+      return d;
+    }
+    var b = mk('button', 'cell slot');
+    b.type = 'button';
+    b.setAttribute('aria-label', label + ' zu »' + state.rows[i].v + ' ' + state.rows[i].p + '« einordnen');
+    b.addEventListener('click', function () { place(i, col, b); });
+    b.addEventListener('dragover', function (e) { e.preventDefault(); });
+    b.addEventListener('drop', function (e) { e.preventDefault(); place(i, col, b); });
+    return b;
+  }
+
+  function renderTable() {
+    var tb = $('tbody');
+    tb.innerHTML = '';
+    state.rows.forEach(function (r, i) {
+      var tr = mk('tr');
+      var a = mk('td'); a.appendChild(slotCell(i, 'a', 'Adjektiv'));
+      var m = mk('td'); m.appendChild(verbCell(r, i));
+      var n = mk('td'); n.appendChild(slotCell(i, 'n', 'Nomen'));
+      tr.appendChild(a); tr.appendChild(m); tr.appendChild(n);
+      tb.appendChild(tr);
+      if (rowDiff(r) && (state.showNotes || state.reveal[i])) {
+        var nr = mk('tr', 'note-row');
+        var td = mk('td'); td.colSpan = 3;
+        var box = mk('div', 'note');
+        box.appendChild(mk('strong', null, 'Hinweis: '));
+        box.appendChild(document.createTextNode(r.note));
+        td.appendChild(box); nr.appendChild(td); tb.appendChild(nr);
+      }
+    });
+    $('board').className = 'board' + (state.sel ? ' has-sel' : '');
+  }
+
+  function renderPool() {
+    var box = $('chiplist');
+    box.innerHTML = '';
+    state.pool.forEach(function (c) {
+      var b = mk('button', 'chipbtn hyph ' + (c.col === 'a' ? 'adj' : 'noun'));
+      b.type = 'button';
+      b.id = 'c-' + c.id;
+      b.setAttribute('aria-pressed', state.sel === c.id ? 'true' : 'false');
+      b.setAttribute('aria-label', (c.col === 'a' ? 'Adjektiv: ' : 'Nomen: ') + chipLabel(c));
+      b.draggable = true;
+      fillChipText(b, c);
+      b.addEventListener('click', function () { selectChip(c.id); });
+      b.addEventListener('dragstart', function (e) {
+        state.sel = c.id;
+        try { e.dataTransfer.setData('text/plain', c.id); e.dataTransfer.effectAllowed = 'move'; } catch (err) {}
+        $('board').className = 'board has-sel';
+        b.setAttribute('aria-pressed', 'true');
+      });
+      box.appendChild(b);
+    });
+    $('poolcount').textContent = state.pool.length + ' übrig';
+  }
+
+  function render() {
+    renderSets();
+    renderTable();
+    renderPool();
+  }
+
+  /* ---------- Spiellogik ---------- */
+  function selectChip(id) {
+    if (state.done) return;
+    state.sel = (state.sel === id) ? null : id;
+    renderTable();
+    renderPool();
+    if (state.sel) {
+      var c = chipById(id);
+      setMsg('', 'Gewählt: »' + chipLabel(c) + '«. Tippe jetzt auf das passende freie Feld.');
+    } else {
+      setMsg('', 'Tippe ein Plättchen an und dann das passende freie Feld in der Tabelle.');
+    }
+  }
+
+  function place(i, col, el) {
+    if (state.done) return;
+    if (!state.sel) { setMsg('', 'Tippe zuerst auf ein Plättchen und dann auf ein freies Feld.'); return; }
+    var c = chipById(state.sel);
+    if (c.row === i && c.col === col) {
+      state.placed[i + col] = c;
+      state.pool = state.pool.filter(function (x) { return x.id !== c.id; });
+      state.sel = null;
+      var r = state.rows[i];
+      var differs = (c.p !== r.p);
+      if (differs && r.note) state.reveal[i] = true;
+      render();
+      if (differs) {
+        setMsg('ok', 'Richtig. Achtung: Hier ist die Präposition anders als beim Verb »' + r.v + ' ' + r.p + '«. Lies den Hinweis in der Tabelle.');
+      } else {
+        setMsg('ok', 'Richtig: ' + r.v + ' ' + r.p + ' – ' + chipLabel(c) + '.');
+      }
+      if (state.pool.length === 0) { finish(); return; }
+      var first = $('chiplist').querySelector('button');
+      if (first) { try { first.focus({ preventScroll: true }); } catch (e) { first.focus(); } }
+    } else {
+      state.errors++;
+      state.chipErr[c.id] = (state.chipErr[c.id] || 0) + 1;
+      var txt;
+      if (c.col !== col) {
+        txt = 'Nicht ganz: »' + chipLabel(c) + '« ist ein ' + (c.col === 'a' ? 'Adjektiv und gehört in die linke Spalte.' : 'Nomen und gehört in die rechte Spalte.');
+      } else {
+        var rr = state.rows[i];
+        txt = 'Nicht ganz: »' + chipLabel(c) + '« passt nicht zu »' + rr.v + ' ' + rr.p + '«. Es gehört zu einem anderen Verb.';
+      }
+      if (state.chipErr[c.id] >= 3) {
+        var tv = state.rows[c.row];
+        txt += ' Tipp: Schau dir die markierte Zeile an.';
+        var vc = $('v' + c.row);
+        if (vc) { vc.classList.remove('flash'); void vc.offsetWidth; vc.classList.add('flash'); setTimeout(function () { vc.classList.remove('flash'); }, 2200); }
+      }
+      setMsg('bad', txt);
+      if (el) {
+        el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+        setTimeout(function () { el.classList.remove('shake'); }, 450);
+      }
+    }
+  }
+
+  function finish() {
+    state.done = true;
+    state.completed[state.si] = true;
+    renderSets();
+    $('pool').hidden = true;
+
+    $('result').textContent = 'Alle ' + state.chips.length + ' Plättchen sind richtig eingeordnet. '
+      + (state.errors === 0 ? 'Du hast keinen Fehlversuch gebraucht.' : 'Fehlversuche: ' + state.errors + '.');
+
+    var db = $('diffbox');
+    db.innerHTML = '';
+    var diffs = state.rows.filter(rowDiff);
+    if (diffs.length) {
+      db.appendChild(mk('h3', null, 'Hier unterscheidet sich die Präposition'));
+      var ul = mk('ul', 'diffs');
+      diffs.forEach(function (r) {
+        var li = mk('li');
+        var parts = [r.v + ' ' + r.p];
+        if (r.adj) parts.push(r.adj.w + ' ' + r.adj.p);
+        if (r.noun) parts.push(r.noun.art + ' ' + r.noun.w + ' ' + r.noun.p);
+        li.appendChild(mk('b', null, parts.join('  –  ')));
+        li.appendChild(document.createTextNode(r.note));
+        ul.appendChild(li);
+      });
+      db.appendChild(ul);
+    } else {
+      db.appendChild(mk('p', null, 'In dieser Stufe stimmen alle Präpositionen in jeder Zeile überein.'));
+    }
+
+    var ex = $('exs');
+    ex.innerHTML = '';
+    state.rows.forEach(function (r) {
+      var li = mk('li');
+      li.appendChild(mk('b', null, r.v + ' ' + r.p + ': '));
+      li.appendChild(document.createTextNode(r.ex));
+      ex.appendChild(li);
+    });
+
+    var act = $('actions');
+    act.innerHTML = '';
+    var again = mk('button', 'btn', 'Noch einmal, neu gemischt');
+    again.type = 'button';
+    again.addEventListener('click', function () { $('pool').hidden = false; start(state.si); toTop(); });
+    act.appendChild(again);
+    if (state.si + 1 < SETS.length) {
+      var nx = mk('button', 'btn alt', 'Nächste Stufe: ' + SETS[state.si + 1].name);
+      nx.type = 'button';
+      nx.addEventListener('click', function () { $('pool').hidden = false; start(state.si + 1); toTop(); });
+      act.appendChild(nx);
+    }
+
+    $('finish').hidden = false;
+    var h = $('h-finish');
+    try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); }
+    if (h.scrollIntoView) h.scrollIntoView({ block: 'start' });
+  }
+
+  function toTop() {
+    var t = $('sets');
+    if (t && t.scrollIntoView) t.scrollIntoView({ block: 'start' }); else window.scrollTo(0, 0);
+  }
+
+  $('shownotes').addEventListener('change', function () {
+    state.showNotes = this.checked;
+    renderTable();
+  });
+
+  start(0);
+})();
+</script>
+</body>
+</html>
