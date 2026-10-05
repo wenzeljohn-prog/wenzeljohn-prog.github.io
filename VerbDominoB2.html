@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Verb-Domino: Verben mit festen Präpositionen (B2)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#E8EEEC; --panel:#FFFFFF; --ink:#14302B; --muted:#44605B; --line:#BFD0CB;
+  --felt:#1F5A52; --felt-deep:#17463F; --felt-ink:#DCEDE8; --felt-line:#3A7A70;
+  --tile:#F7F3E8; --tile-cap:#E3DCC8; --tile-edge:#CBC2A9; --tile-ink:#1B2623; --tile-muted:#555F58;
+  --groove:#B5AB92; --brass:#B8903A;
+  --accent:#F2B93B; --ring:#0B58A8;
+  --mark:#FBE3A0; --mark-ink:#2B2208; --bad:#A8321F;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1A18; --panel:#142523; --ink:#E3EFEC; --muted:#A3BBB6; --line:#2B413D;
+    --felt:#1B4F48; --felt-deep:#133B36; --felt-line:#2F6A61;
+    --ring:#8CC4FF; --mark:#5B4A1D; --mark-ink:#FFF3CF; --bad:#FF9E8C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1A18; --panel:#142523; --ink:#E3EFEC; --muted:#A3BBB6; --line:#2B413D;
+  --felt:#1B4F48; --felt-deep:#133B36; --felt-line:#2F6A61;
+  --ring:#8CC4FF; --mark:#5B4A1D; --mark-ink:#FFF3CF; --bad:#FF9E8C;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:17px;line-height:1.5;
+}
+.page{max-width:1000px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:30px;line-height:1.15;margin:0 0 6px;font-weight:700}
+h2{font-size:19px;line-height:1.25;margin:0;font-weight:700}
+.lead{margin:0 0 14px;color:var(--muted);font-size:18px}
+.howto{margin:0 0 20px;max-width:68ch}
+:focus-visible{outline:3px solid var(--ring);outline-offset:3px}
+.felt :focus-visible,.board :focus-visible{outline-color:#FFE08A}
+
+/* Steuerung */
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;margin-bottom:18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  min-height:44px;padding:0 16px;border-radius:22px;border:1.5px solid var(--line);
+  background:var(--panel);color:var(--ink);font:inherit;font-weight:700;cursor:pointer;
+}
+.chip[aria-pressed="true"]{background:var(--felt);border-color:var(--felt);color:#fff}
+.chip-label{align-self:center;margin:0 2px 0 10px;font-size:14px;font-weight:700;color:var(--muted);white-space:nowrap}
+.chip-label:first-child{margin-left:0}
+.chk{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer}
+.chk input{width:22px;height:22px;accent-color:var(--felt);margin:0}
+
+/* Spieltisch */
+.board,.tray{
+  background:var(--felt);color:var(--felt-ink);border-radius:16px;
+  padding:14px 16px 16px;box-shadow:inset 0 0 0 2px var(--felt-line),inset 0 8px 24px rgba(0,0,0,.22);
+}
+.board{margin-bottom:16px}
+.board-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 16px;margin-bottom:6px}
+.status{display:flex;align-items:center;gap:12px;font-size:15px;white-space:nowrap}
+.pip{display:inline-block;width:11px;height:11px;border-radius:50%;border:2px solid var(--felt-ink);margin-right:4px;vertical-align:-1px}
+.pip.on{background:var(--accent);border-color:var(--accent)}
+.chain-wrap{max-height:540px;overflow-y:auto;overflow-x:hidden;padding:6px 6px 14px;margin:0 -6px}
+.chain{display:flex;flex-wrap:wrap;gap:12px 2px;list-style:none;margin:0;padding:0}
+.chain>li{min-width:0;max-width:100%}
+.msg{margin:6px 0 0;min-height:3em;font-size:16px;font-weight:700;color:var(--felt-ink)}
+.msg.ok{color:#B6F2CE}
+.msg.bad{color:#FFC1B3}
+.tray-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+.tray-top span{font-size:15px}
+.hand{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,336px),1fr));gap:14px 12px;padding:2px 4px 6px;justify-items:start}
+
+/* Dominostein */
+.tile{
+  --tw:336px;
+  position:relative;display:grid;grid-template-columns:1fr 1fr;width:var(--tw);max-width:100%;min-height:70px;
+  margin:0;padding:0;background:var(--tile);color:var(--tile-ink);text-align:left;font:inherit;
+  border:1px solid var(--tile-edge);border-radius:12px;
+  box-shadow:0 3px 0 var(--tile-edge),0 8px 12px rgba(0,0,0,.30);
+}
+.tile::after{content:"";position:absolute;left:50%;top:9px;bottom:9px;width:2px;margin-left:-1px;background:var(--groove);border-radius:1px}
+.tile::before{
+  content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;z-index:2;
+  background:radial-gradient(circle at 35% 30%,#EBD08A,var(--brass));box-shadow:0 0 0 1px rgba(0,0,0,.22);
+}
+.half{display:flex;flex-direction:column;justify-content:center;min-width:0;padding:10px 16px 10px 12px;font-size:16px;line-height:1.3;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:break-word}
+.half.right{padding:10px 12px 10px 18px}
+.half:first-child{border-radius:11px 0 0 11px}
+.half:last-child{border-radius:0 11px 11px 0}
+.half.cap{background:var(--tile-cap);align-items:center;text-align:center;color:var(--tile-muted);font-weight:700}
+.verb{font-weight:700;font-size:16px;hyphens:manual;-webkit-hyphens:manual}
+.hintline{font-size:14px;color:var(--tile-muted);margin-top:2px}
+button.tile{cursor:pointer;-webkit-appearance:none;appearance:none;transition:transform .12s ease,box-shadow .12s ease}
+button.tile:hover{transform:translateY(-2px);box-shadow:0 5px 0 var(--tile-edge),0 12px 14px rgba(0,0,0,.30)}
+button.tile:active{transform:translateY(1px);box-shadow:0 2px 0 var(--tile-edge),0 4px 8px rgba(0,0,0,.30)}
+.tile.pop{animation:pop .22s ease-out}
+.tile.shake{animation:shake .36s ease-in-out;outline:3px solid #FF8F7A;outline-offset:2px}
+
+/* Offenes Ende der Kette */
+.slot{
+  display:flex;align-items:center;justify-content:center;gap:8px;flex-direction:column;
+  width:calc(336px / 2);max-width:50%;min-height:70px;padding:8px;text-align:center;
+  border:2px dashed var(--accent);border-radius:12px;color:var(--accent);font-weight:700;font-size:15px;
+  animation:pulse 1.8s ease-in-out infinite;
+}
+.slot-q{font-size:24px;line-height:1}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@keyframes pop{from{transform:scale(.9);opacity:.4}to{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(242,185,59,0)}50%{box-shadow:0 0 0 6px rgba(242,185,59,.35)}}
+@media (prefers-reduced-motion: reduce){
+  .slot{animation:none;border-width:3px}
+  .tile.pop,.tile.shake{animation:none}
+  button.tile{transition:none}
+  button.tile:hover{transform:none}
+}
+
+/* Abschluss */
+.finish{margin-top:22px;background:var(--panel);border:1.5px solid var(--line);border-radius:16px;padding:22px 20px}
+.finish h2{font-size:24px;margin-bottom:6px}
+.finish h2:focus{outline:none}
+.result{margin:0 0 4px;font-size:18px}
+.review{list-style:none;margin:16px 0 0;padding:0}
+.review li{display:grid;grid-template-columns:minmax(190px,260px) 1fr;gap:4px 20px;padding:12px 0;border-top:1px solid var(--line)}
+.rv-verb{font-weight:700;font-size:18px}
+.rv-prep{display:block;color:var(--muted);font-weight:700}
+.rv-err{display:block;color:var(--bad);font-weight:700;font-size:15px}
+.rv-note{display:block;color:var(--muted);font-size:15px;margin-top:2px}
+mark{background:var(--mark);color:var(--mark-ink);font-weight:700;padding:0 3px;border-radius:3px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.btn{min-height:46px;padding:0 20px;border-radius:10px;border:2px solid var(--felt);background:var(--felt);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.btn.alt{background:transparent;color:var(--ink);border-color:var(--line)}
+[hidden]{display:none !important}
+
+@media (max-width:640px){
+  h1{font-size:26px}
+  .board{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;margin-bottom:14px}
+  .chain-wrap{max-height:160px}
+  .chips{flex-wrap:nowrap;overflow-x:auto;padding:2px 2px 8px;margin:0 -16px;padding-left:16px;padding-right:16px;-webkit-overflow-scrolling:touch}
+  .chip{flex:0 0 auto}
+  .controls{margin-bottom:12px}
+  .howto{font-size:16px;margin-bottom:14px}
+  .board{padding:12px 14px 12px}
+  .msg{min-height:2.9em;font-size:15px;line-height:1.35}
+  .review li{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <header>
+    <h1>Verb-Domino</h1>
+    <p class="lead">Verben mit festen Präpositionen, Niveau B2</p>
+    <p class="howto">Am offenen Ende der Kette steht ein Verb. Lege das Plättchen an, dessen linke Hälfte das passende Präpositionalobjekt zeigt, also die richtige Präposition mit dem richtigen Kasus. Rechts auf dem Plättchen steht das nächste Verb.</p>
+  </header>
+
+  <section class="controls" aria-label="Einstellungen">
+    <div id="rounds" class="chips" role="group" aria-label="Runde wählen"></div>
+    <label class="chk"><input type="checkbox" id="hint"> Hilfe: Präposition und Kasus unter dem Verb zeigen</label>
+  </section>
+
+  <section class="board" aria-labelledby="h-chain">
+    <div class="board-top">
+      <h2 id="h-chain">Die Kette</h2>
+      <div class="status"><span id="pips" aria-hidden="true"></span><span id="count"></span></div>
+    </div>
+    <div id="chainwrap" class="chain-wrap"><ol id="chain" class="chain"></ol></div>
+    <p id="msg" class="msg" role="status" aria-live="polite"></p>
+  </section>
+
+  <section id="tray" class="tray" aria-labelledby="h-hand">
+    <div class="tray-top"><h2 id="h-hand">Deine Plättchen</h2><span id="handcount"></span></div>
+    <div id="hand" class="hand"></div>
+  </section>
+
+  <section id="finish" class="finish" hidden aria-labelledby="h-finish">
+    <h2 id="h-finish" tabindex="-1">Kette geschlossen</h2>
+    <p id="result" class="result"></p>
+    <ul id="review" class="review"></ul>
+    <div id="actions" class="actions"></div>
+  </section>
+
+  <noscript>Dieses Spiel braucht JavaScript.</noscript>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var SH = '\u00AD';
+
+  /* pp: erlaubte Kombinationen "Präposition+Kasus" (A = Akkusativ, D = Dativ).
+     pp[0] ist die gesuchte Lösung, weitere Einträge sind ebenfalls korrekte Varianten.
+     Innerhalb einer Runde darf keine Variante eines Verbs zum Objekt eines anderen Verbs passen. */
+  var ROUNDS = [
+    { key: 'alltag', name: 'Alltag', verbs: [
+      { v: 'warten', pp: ['auf+A'], o: 'auf den nächsten Bus', ex: 'Wir warten schon zehn Minuten auf den nächsten Bus.' },
+      { v: 'sich kümmern', pp: ['um+A'], o: 'um die Anmeldung der Kinder', ex: 'Ich kümmere mich heute um die Anmeldung der Kinder.' },
+      { v: 'sich ärgern', pp: ['über+A'], o: 'über den Lärm im Treppenhaus', ex: 'Die Nachbarn ärgern sich über den Lärm im Treppenhaus.' },
+      { v: 'teilnehmen', pp: ['an+D'], o: 'an einem Deutschkurs', ex: 'Sie nimmt seit Januar an einem Deutschkurs teil.' },
+      { v: 'sich interessieren', pp: ['für+A'], o: 'für moderne Architektur', ex: 'Er interessiert sich sehr für moderne Architektur.' },
+      { v: 'sich verabreden', pp: ['mit+D'], o: 'mit einer Kollegin', ex: 'Ich habe mich für Freitag mit einer Kollegin verabredet.' },
+      { v: 'suchen', pp: ['nach+D'], o: 'nach einer bezahlbaren Wohnung', ex: 'Seit Monaten suchen sie nach einer bezahlbaren Wohnung.' },
+      { v: 'sich erinnern', pp: ['an+A'], o: 'an meinen ersten Arbeitstag', ex: 'Ich erinnere mich gern an meinen ersten Arbeitstag.' }
+    ]},
+    { key: 'gefuehle', name: 'Gefühle', verbs: [
+      { v: 'sich freuen', pp: ['auf+A', 'über+A'], o: 'auf den Urlaub im Sommer', ex: 'Die Kinder freuen sich auf den Urlaub im Sommer.', note: 'auf + Akk. = Zukunft; über + Akk. = Gegenwart oder Vergangenheit' },
+      { v: 'Angst haben', pp: ['vor+D', 'um+A'], o: 'vor dem Zahnarzt', ex: 'Viele Menschen haben Angst vor dem Zahnarzt.', note: 'Auch möglich: um + Akk. (Angst um jemanden haben)' },
+      { v: 'träumen', pp: ['von+D'], o: 'von einem Haus am Meer', ex: 'Sie träumt von einem Haus am Meer.' },
+      { v: 'zweifeln', pp: ['an+D'], o: 'an der Richtigkeit der Aussage', ex: 'Der Richter zweifelt an der Richtigkeit der Aussage.' },
+      { v: 'sich verlieben', pp: ['in+A'], o: 'in den neuen Nachbarn', ex: 'Sie hat sich in den neuen Nachbarn verliebt.' },
+      { v: 'sich gewöhnen', pp: ['an+A'], o: 'an das kalte Klima', ex: 'Er hat sich noch nicht an das kalte Klima gewöhnt.' },
+      { v: 'sich entscheiden', pp: ['für+A', 'gegen+A'], o: 'für das günstigere Angebot', ex: 'Wir haben uns für das günstigere Angebot entschieden.', note: 'für + Akk. oder gegen + Akk.' },
+      { v: 'sich sehnen', pp: ['nach+D'], o: 'nach einem ruhigen Wochenende', ex: 'Nach der anstrengenden Woche sehne ich mich nach einem ruhigen Wochenende.' }
+    ]},
+    { key: 'kommunikation', name: 'Kommunikation', verbs: [
+      { v: 'diskutieren', pp: ['über+A', 'mit+D'], o: 'über die neue Verkehrspolitik', ex: 'Im Seminar diskutieren wir über die neue Verkehrspolitik.', note: 'über + Akk. (Thema); mit + Dat. (Person)' },
+      { v: 'protestieren', pp: ['gegen+A'], o: 'gegen die Schließung des Jugendzentrums', ex: 'Die Anwohner protestieren gegen die Schließung des Jugendzentrums.' },
+      { v: 'bitten', pp: ['um+A'], o: 'um eine kurze Rückmeldung', ex: 'Ich bitte Sie um eine kurze Rückmeldung.' },
+      { v: 'sich verabschieden', pp: ['von+D'], o: 'von den Gästen', ex: 'Er verabschiedet sich von den Gästen.' },
+      { v: 'gratulieren', pp: ['zu+D'], o: 'zum bestandenen Examen', ex: 'Wir gratulieren dir herzlich zum bestandenen Examen.' },
+      { v: 'sich bedanken', pp: ['bei+D', 'für+A'], o: 'bei den Helfern', ex: 'Der Verein bedankt sich bei den Helfern.', note: 'bei + Dat. (Person); für + Akk. (Sache)' },
+      { v: 'appellieren', pp: ['an+A'], o: 'an die Vernunft der Bürger', ex: 'Der Bürgermeister appelliert an die Vernunft der Bürger.' },
+      { v: 'antworten', pp: ['auf+A', 'mit+D'], o: 'auf die E-Mail des Kunden', ex: 'Sie hat noch nicht auf die E-Mail des Kunden geantwortet.', note: 'Auch möglich: mit + Dat. (z. B. mit Ja antworten)' }
+    ]},
+    { key: 'gesundheit', name: 'Gesundheit und Umwelt', verbs: [
+      { v: 'leiden', pp: ['unter+D', 'an+D'], o: 'unter dem Lärm der Baustelle', ex: 'Viele Anwohner leiden unter dem Lärm der Baustelle.', note: 'unter + Dat. = Belastung; an + Dat. = Krankheit' },
+      { v: 'sich erholen', pp: ['von+D'], o: 'von der anstrengenden Operation', ex: 'Er erholt sich langsam von der anstrengenden Operation.' },
+      { v: 'sich schützen', pp: ['vor+D', 'gegen+A'], o: 'vor der starken Sonne', ex: 'Im Sommer sollte man sich vor der starken Sonne schützen.', note: 'vor + Dat. oder gegen + Akk.' },
+      { v: 'verzichten', pp: ['auf+A'], o: 'auf Zucker und Alkohol', ex: 'Während der Fastenzeit verzichtet sie auf Zucker und Alkohol.' },
+      { v: 'sorgen', pp: ['für+A'], o: 'für eine gesunde Ernährung', ex: 'Eltern sorgen für eine gesunde Ernährung ihrer Kinder.' },
+      { v: 'bestehen', pp: ['aus+D', 'auf+D'], o: 'aus frischem Gemüse und Obst', ex: 'Das Frühstück besteht aus frischem Gemüse und Obst.', note: 'aus + Dat. = Bestandteile; auf + Dat. = auf etwas beharren' },
+      { v: 'führen', pp: ['zu+D'], o: 'zu gesundheitlichen Problemen', ex: 'Dauerstress kann zu gesundheitlichen Problemen führen.' },
+      { v: 'sich anpassen', pp: ['an+A'], o: 'an den Klimawandel', ex: 'Die Städte müssen sich an den Klimawandel anpassen.' }
+    ]},
+    { key: 'arbeit', name: 'Arbeit und Gesellschaft', verbs: [
+      { v: 'sich auseinandersetzen', pp: ['mit+D'], o: 'mit der Kritik der Kollegen', ex: 'Sie setzt sich intensiv mit der Kritik der Kollegen auseinander.' },
+      { v: 'profitieren', pp: ['von+D'], o: 'von den neuen Förderprogrammen', ex: 'Kleine Betriebe profitieren von den neuen Förderprogrammen.' },
+      { v: 'sich beteiligen', pp: ['an+D'], o: 'an einem Umweltprojekt', ex: 'Mehrere Schulen beteiligen sich an einem Umweltprojekt.' },
+      { v: 'verfügen', pp: ['über+A'], o: 'über langjährige Erfahrung', ex: 'Die Bewerberin verfügt über langjährige Erfahrung.' },
+      { v: 'streben', pp: ['nach+D'], o: 'nach einer Führungsposition', ex: 'Er strebt nach einer Führungsposition.' },
+      { v: 'beruhen', pp: ['auf+D'], o: 'auf einem Missverständnis', ex: 'Der Streit beruht auf einem Missverständnis.' },
+      { v: 'verstoßen', pp: ['gegen+A'], o: 'gegen die Sicherheitsvorschriften', ex: 'Die Firma hat gegen die Sicherheitsvorschriften verstoßen.' },
+      { v: 'sich beziehen', pp: ['auf+A'], o: 'auf Ihr Schreiben vom 3. März', ex: 'Ich beziehe mich auf Ihr Schreiben vom 3. März.' }
+    ]},
+    { key: 'anspruchsvoll', name: 'Anspruchsvoll', verbs: [
+      { v: 'sich spezialisieren', pp: ['auf+A'], o: 'auf erneuerbare Energien', ex: 'Das Unternehmen hat sich auf erneuerbare Energien spezialisiert.' },
+      { v: 'zurechtkommen', pp: ['mit+D'], o: 'mit dem neuen Computerprogramm', ex: 'Kommst du mit dem neuen Computerprogramm zurecht?' },
+      { v: 'abhängen', pp: ['von+D'], o: 'vom Wetter', ex: 'Der Ausflug hängt vom Wetter ab.' },
+      { v: 'scheitern', pp: ['an+D'], o: 'an der fehlenden Finanzierung', ex: 'Das Projekt ist an der fehlenden Finanzierung gescheitert.' },
+      { v: 'sich wundern', pp: ['über+A'], o: 'über die hohen Mietpreise', ex: 'Ich wundere mich über die hohen Mietpreise.' },
+      { v: 'sich einmischen', pp: ['in+A'], o: 'in die Streitigkeiten der Nachbarn', ex: 'Er mischt sich ständig in die Streitigkeiten der Nachbarn ein.' },
+      { v: 'warnen', pp: ['vor+D'], o: 'vor dem Betrug im Internet', ex: 'Die Polizei warnt vor dem Betrug im Internet.' },
+      { v: 'sich halten', pp: ['an+A'], o: 'an die vereinbarten Regeln', ex: 'Alle Teilnehmer müssen sich an die vereinbarten Regeln halten.' }
+    ]},
+    { key: 'liste1', name: 'Liste 1', verbs: [
+      { v: "achten", pp: ["auf+A"], o: "auf die Qualität der Zutaten", ex: "Beim Einkaufen achte ich besonders auf die Qualität der Zutaten." },
+      { v: "sich anmelden", pp: ["für+A","zu+D","bei+D"], o: "für einen Marathon im Frühling", ex: "Er hat sich für einen Marathon im Frühling angemeldet.", note: "für + Akk.; auch möglich: zu + Dat. oder bei + Dat. (bei einer Schule anmelden)" },
+      { v: "sich entschuldigen", pp: ["für+A","bei+D"], o: "für die späte Antwort", ex: "Ich entschuldige mich für die späte Antwort.", note: "für + Akk. (Sache); bei + Dat. (Person)" },
+      { v: "sprechen", pp: ["über+A","mit+D","von+D","zu+D"], o: "über die Kosten der Renovierung", ex: "Wir müssen noch über die Kosten der Renovierung sprechen.", note: "über + Akk. oder von + Dat. (Thema); mit + Dat. (Person)" },
+      { v: "impfen", pp: ["gegen+A"], o: "gegen Tetanus", ex: "Der Arzt impft die Kinder gegen Tetanus." },
+      { v: "fragen", pp: ["nach+D","um+A","bei+D"], o: "nach dem Weg zum Bahnhof", ex: "Eine Touristin hat nach dem Weg zum Bahnhof gefragt.", note: "nach + Dat.; auch: um + Akk. (um Rat fragen)" }
+    ]},
+    { key: 'liste2', name: 'Liste 2', verbs: [
+      { v: "sich vorbereiten", pp: ["auf+A","für+A"], o: "auf den Besuch der Schwiegereltern", ex: "Sie bereiten sich schon auf den Besuch der Schwiegereltern vor.", note: "auf + Akk.; auch möglich: für + Akk." },
+      { v: "sich einsetzen", pp: ["für+A","gegen+A"], o: "für bessere Radwege", ex: "Der Verein setzt sich für bessere Radwege in der Stadt ein.", note: "für + Akk.; auch möglich: gegen + Akk." },
+      { v: "sich informieren", pp: ["bei+D","über+A"], o: "bei der Verbraucherzentrale", ex: "Ich informiere mich bei der Verbraucherzentrale über meine Rechte.", note: "bei + Dat. (Quelle); über + Akk. (Thema)" },
+      { v: "sich streiten", pp: ["um+A","über+A","mit+D"], o: "um das Erbe der Großmutter", ex: "Die Geschwister streiten sich seit Jahren um das Erbe der Großmutter.", note: "um oder über + Akk. (Thema); mit + Dat. (Person)" },
+      { v: "ausgehen", pp: ["von+D"], o: "von einem Preisanstieg im Herbst", ex: "Die Experten gehen von einem Preisanstieg im Herbst aus." }
+    ]},
+    { key: 'liste3', name: 'Liste 3', verbs: [
+      { v: "sich konzentrieren", pp: ["auf+A"], o: "auf die wichtigsten Aufgaben", ex: "Heute konzentriere ich mich auf die wichtigsten Aufgaben." },
+      { v: "demonstrieren", pp: ["für+A","gegen+A"], o: "für mehr Klimaschutz", ex: "Tausende Schüler demonstrieren für mehr Klimaschutz.", note: "für + Akk. oder gegen + Akk." },
+      { v: "berichten", pp: ["über+A","von+D"], o: "über die Ergebnisse der Umfrage", ex: "Die Zeitung berichtet über die Ergebnisse der Umfrage.", note: "über + Akk. oder von + Dat." },
+      { v: "sich bewerben", pp: ["um+A","bei+D","auf+A"], o: "um einen Platz im Studentenwohnheim", ex: "Sie hat sich um einen Platz im Studentenwohnheim beworben.", note: "um + Akk. (Stelle, Platz); bei + Dat. (Firma); auch: auf + Akk." },
+      { v: "sich beschäftigen", pp: ["mit+D"], o: "mit der Planung der Betriebsfeier", ex: "Das Team beschäftigt sich gerade mit der Planung der Betriebsfeier." },
+      { v: "passen", pp: ["zu+D"], o: "zu deinem dunklen Anzug", ex: "Diese Krawatte passt gut zu deinem dunklen Anzug." }
+    ]},
+    { key: 'liste4', name: 'Liste 4', verbs: [
+      { v: "sich verlassen", pp: ["auf+A"], o: "auf das Navigationsgerät", ex: "Im Ausland verlassen wir uns auf das Navigationsgerät." },
+      { v: "kämpfen", pp: ["für+A","gegen+A","um+A","mit+D"], o: "für den Erhalt des Schwimmbads", ex: "Die Bürger kämpfen für den Erhalt des Schwimmbads.", note: "für, gegen oder um + Akk.; auch: mit + Dat. (mit Problemen kämpfen)" },
+      { v: "erzählen", pp: ["von+D","über+A"], o: "von einer abenteuerlichen Wanderung", ex: "Er hat begeistert von einer abenteuerlichen Wanderung erzählt.", note: "von + Dat. oder über + Akk." },
+      { v: "gehören", pp: ["zu+D","in+A"], o: "zu den besten Schulen der Region", ex: "Diese Schule gehört zu den besten Schulen der Region.", note: "zu + Dat. (Gruppe); in + Akk. (Ort, z. B. in den Müll gehören)" },
+      { v: "vergleichen", pp: ["mit+D"], o: "mit dem Vorjahr", ex: "Die Firma vergleicht den Umsatz mit dem Vorjahr." }
+    ]},
+    { key: 'liste5', name: 'Liste 5', verbs: [
+      { v: "sich einstellen", pp: ["auf+A"], o: "auf neue Arbeitszeiten", ex: "Die Mitarbeiter müssen sich auf neue Arbeitszeiten einstellen." },
+      { v: "brauchen", pp: ["für+A"], o: "für die Steuererklärung", ex: "Ich brauche diese Belege für die Steuererklärung." },
+      { v: "lachen", pp: ["über+A","mit+D"], o: "über den Witz des Kollegen", ex: "Alle haben herzlich über den Witz des Kollegen gelacht." },
+      { v: "einladen", pp: ["zu+D","auf+A"], o: "zu einem Konzert im Stadtpark", ex: "Wir laden euch zu einem Konzert im Stadtpark ein.", note: "zu + Dat.; auch: auf + Akk. (auf einen Kaffee einladen)" },
+      { v: "sich trennen", pp: ["von+D"], o: "von seinem Geschäftspartner", ex: "Nach dem Streit trennte er sich von seinem Geschäftspartner." }
+    ]},
+    { key: 'liste6', name: 'Liste 6', verbs: [
+      { v: "hoffen", pp: ["auf+A","für+A"], o: "auf eine schnelle Lösung", ex: "Alle hoffen auf eine schnelle Lösung des Problems." },
+      { v: "ausgeben", pp: ["für+A"], o: "für ein gebrauchtes Fahrrad", ex: "Sie hat nur 150 Euro für ein gebrauchtes Fahrrad ausgegeben." },
+      { v: "sich beschweren", pp: ["bei+D","über+A"], o: "bei der Hausverwaltung", ex: "Die Mieter beschweren sich bei der Hausverwaltung über den Lärm.", note: "bei + Dat. (Person oder Stelle); über + Akk. (Sache)" },
+      { v: "denken", pp: ["an+A","über+A","von+D"], o: "an den letzten Sommer in Italien", ex: "Wir denken oft an den letzten Sommer in Italien zurück.", note: "an + Akk.; über + Akk. (Meinung haben)" },
+      { v: "aufhören", pp: ["mit+D"], o: "mit dem Rauchen", ex: "Mein Onkel hat endlich mit dem Rauchen aufgehört." },
+      { v: "telefonieren", pp: ["mit+D","über+A"], o: "mit der Hotline des Anbieters", ex: "Ich habe eine halbe Stunde mit der Hotline des Anbieters telefoniert." }
+    ]},
+    { key: 'liste7', name: 'Liste 7', verbs: [
+      { v: "aufpassen", pp: ["auf+A"], o: "auf den Hund der Nachbarin", ex: "Am Wochenende passe ich auf den Hund der Nachbarin auf." },
+      { v: "verschieben", pp: ["auf+A","um+A"], o: "auf einen späteren Zeitpunkt", ex: "Wir haben das Treffen auf einen späteren Zeitpunkt verschoben.", note: "auf + Akk. (Zeitpunkt); um + Akk. (Zeitspanne, z. B. um eine Woche verschieben)" },
+      { v: "halten", pp: ["für+A","von+D","zu+D"], o: "für eine gute Idee", ex: "Die Chefin hält den Vorschlag für eine gute Idee.", note: "halten für + Akk. (einschätzen); halten von + Dat. (Meinung: viel von jemandem halten)" },
+      { v: "nachdenken", pp: ["über+A"], o: "über einen Umzug in eine andere Stadt", ex: "Wir denken über einen Umzug in eine andere Stadt nach." },
+      { v: "umgehen", pp: ["mit+D"], o: "mit dem neuen Kopierer", ex: "Ich kann mit dem neuen Kopierer noch nicht umgehen." }
+    ]}
+  ];
+  var MIX_N = 10;
+
+  var state = {
+    rk: 'alltag', custom: false, set: [], order: [], tiles: [], hand: [], chain: [],
+    step: 0, errors: 0, errMap: {}, stepErrs: 0, done: false, hint: false,
+    completed: {}, lastPlaced: -1
+  };
+
+  function $(id) { return document.getElementById(id); }
+  function mk(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt !== undefined && txt !== null) e.textContent = txt;
+    return e;
+  }
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function parse(c) { var p = c.split('+'); return { w: p[0], k: p[1] }; }
+  function label(c) { var p = parse(c); return p.w + ' + ' + (p.k === 'A' ? 'Akk.' : 'Dat.'); }
+  function caseWord(k) { return k === 'A' ? 'Akkusativ' : 'Dativ'; }
+  /* Weiche Trennstriche, damit lange Verben auf schmalen Plättchen sauber umbrechen */
+  var BREAKS = [
+    ['auseinandersetzen', 'auseinander' + SH + 'setzen'],
+    ['zurechtkommen', 'zurecht' + SH + 'kommen'],
+    ['verabschieden', 'verab' + SH + 'schieden'],
+    ['interessieren', 'interes' + SH + 'sieren'],
+    ['spezialisieren', 'spezia' + SH + 'lisieren'],
+    ['protestieren', 'protes' + SH + 'tieren'],
+    ['entscheiden', 'ent' + SH + 'scheiden'],
+    ['beteiligen', 'betei' + SH + 'ligen'],
+    ['appellieren', 'appel' + SH + 'lieren']
+  ];
+  function disp(v) {
+    var t = v.v;
+    for (var i = 0; i < BREAKS.length; i++) { t = t.replace(BREAKS[i][0], BREAKS[i][1]); }
+    return t;
+  }
+
+  /* Zwei Verben passen nicht in dieselbe Kette, wenn das Objekt des einen auch zum anderen passen könnte. */
+  function conflict(a, b) { return a.pp.indexOf(b.pp[0]) >= 0 || b.pp.indexOf(a.pp[0]) >= 0; }
+
+  function buildMixed(n, listOnly) {
+    var all = [], i, r;
+    for (r = 0; r < ROUNDS.length; r++) {
+      if (listOnly && ROUNDS[r].key.indexOf('liste') !== 0) continue;
+      for (i = 0; i < ROUNDS[r].verbs.length; i++) { all.push(ROUNDS[r].verbs[i]); }
+    }
+    var best = [], tries = 0;
+    while (tries < 40) {
+      tries++;
+      shuffle(all);
+      var chosen = [];
+      for (i = 0; i < all.length && chosen.length < n; i++) {
+        var ok = true;
+        for (var j = 0; j < chosen.length; j++) { if (conflict(all[i], chosen[j])) { ok = false; break; } }
+        if (ok) chosen.push(all[i]);
+      }
+      if (chosen.length > best.length) best = chosen;
+      if (best.length >= n) break;
+    }
+    return best;
+  }
+
+  function setFor(key) {
+    if (key === 'mix') return buildMixed(MIX_N, false);
+    if (key === 'mixl') return buildMixed(MIX_N, true);
+    for (var i = 0; i < ROUNDS.length; i++) { if (ROUNDS[i].key === key) return ROUNDS[i].verbs.slice(); }
+    return ROUNDS[0].verbs.slice();
+  }
+
+  function sameOrder(a, b) {
+    for (var i = 0; i < a.length; i++) { if (a[i].id !== b[i].id) return false; }
+    return true;
+  }
+
+  function toBoard() {
+    if (window.innerWidth <= 640) {
+      var b = document.querySelector('.board');
+      if (b && b.scrollIntoView) b.scrollIntoView({ block: 'start' });
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }
+
+  function start(key, subset) {
+    state.rk = key;
+    state.custom = !!subset;
+    state.set = subset ? subset.slice() : setFor(key);
+    var n = state.set.length, i, idx = [];
+    for (i = 0; i < n; i++) idx.push(i);
+    state.order = shuffle(idx);
+    var tiles = [];
+    for (i = 0; i < n; i++) {
+      tiles.push({ id: i, obj: state.order[i], next: (i + 1 < n ? state.order[i + 1] : -1) });
+    }
+    state.tiles = tiles;
+    var h, tries = 0;
+    do { h = shuffle(tiles.slice()); tries++; } while (n > 2 && sameOrder(h, tiles) && tries < 12);
+    state.hand = h;
+    state.chain = [];
+    state.step = 0; state.errors = 0; state.errMap = {}; state.stepErrs = 0;
+    state.done = false; state.lastPlaced = -1;
+    $('finish').hidden = true;
+    render();
+    setMsg('', 'Das erste Verb ist »' + state.set[state.order[0]].v + '«. Welches Plättchen zeigt das passende Objekt?');
+    $('chainwrap').scrollTop = 0;
+  }
+
+  /* ---------- Darstellung ---------- */
+  var OBREAKS = [
+    ['Computerprogramm', 'Computer' + SH + 'programm'], ['Förderprogrammen', 'Förder' + SH + 'programmen'],
+    ['Sicherheitsvorschriften', 'Sicherheits' + SH + 'vorschriften'], ['Streitigkeiten', 'Streitig' + SH + 'keiten'],
+    ['Verkehrspolitik', 'Verkehrs' + SH + 'politik'], ['Rückmeldung', 'Rück' + SH + 'meldung'],
+    ['Jugendzentrums', 'Jugend' + SH + 'zentrums'], ['Missverständnis', 'Miss' + SH + 'verständnis'],
+    ['Führungsposition', 'Führungs' + SH + 'position'], ['Umweltprojekt', 'Umwelt' + SH + 'projekt'],
+    ['Treppenhaus', 'Treppen' + SH + 'haus'], ['gesundheitlichen', 'gesund' + SH + 'heitlichen'],
+    ['Mietpreise', 'Miet' + SH + 'preise'], ['Klimawandel', 'Klima' + SH + 'wandel'],
+    ['Deutschkurs', 'Deutsch' + SH + 'kurs'], ['Arbeitstag', 'Arbeits' + SH + 'tag'],
+    ['Wochenende', 'Wochen' + SH + 'ende'], ['Anmeldung', 'An' + SH + 'meldung'],
+    ['Finanzierung', 'Finan' + SH + 'zierung'], ['Architektur', 'Archi' + SH + 'tektur'],
+    ['bestandenen', 'bestan' + SH + 'denen'], ['vereinbarten', 'verein' + SH + 'barten'],
+    ['Verkehrspolitik', 'Verkehrs' + SH + 'politik'], ['Richtigkeit', 'Richtig' + SH + 'keit'],
+    ['langjährige', 'lang' + SH + 'jährige'], ['erneuerbare', 'erneuer' + SH + 'bare'],
+    ['Ernährung', 'Ernäh' + SH + 'rung'], ['Wohnung', 'Woh' + SH + 'nung'],
+    ['Studentenwohnheim', 'Studenten' + SH + 'wohnheim'], ['Verbraucherzentrale', 'Verbraucher' + SH + 'zentrale'],
+    ['Hausverwaltung', 'Haus' + SH + 'verwaltung'], ['Steuererklärung', 'Steuer' + SH + 'erklärung'],
+    ['Betriebsfeier', 'Betriebs' + SH + 'feier'], ['Renovierung', 'Renovie' + SH + 'rung'],
+    ['Navigationsgerät', 'Navigations' + SH + 'gerät'], ['Schwiegereltern', 'Schwieger' + SH + 'eltern'],
+    ['Technikabteilung', 'Technik' + SH + 'abteilung'], ['Geschäftspartner', 'Geschäfts' + SH + 'partner'],
+    ['Preisanstieg', 'Preis' + SH + 'anstieg'], ['abenteuerlichen', 'abenteuer' + SH + 'lichen'],
+    ['Klimaschutz', 'Klima' + SH + 'schutz'], ['Schwimmbads', 'Schwimm' + SH + 'bads'],
+    ['Großmutter', 'Groß' + SH + 'mutter'], ['Betriebsrat', 'Betriebs' + SH + 'rat'],
+    ['Spazierengehen', 'Spazieren' + SH + 'gehen'], ['Ergebnisse', 'Ergeb' + SH + 'nisse']
+  ];
+  function dispObj(o) {
+    for (var i = 0; i < OBREAKS.length; i++) { o = o.replace(OBREAKS[i][0], OBREAKS[i][1]); }
+    return o;
+  }
+  function halfObj(o, bold) {
+    o = dispObj(o);
+    var f = mk('span', 'half left');
+    if (bold) {
+      var sp = o.indexOf(' ');
+      f.appendChild(mk('b', null, o.slice(0, sp)));
+      f.appendChild(document.createTextNode(o.slice(sp)));
+    } else {
+      f.textContent = o;
+    }
+    return f;
+  }
+  function halfVerb(v) {
+    var h = mk('span', 'half right');
+    h.appendChild(mk('span', 'verb', disp(v)));
+    if (state.hint) h.appendChild(mk('span', 'hintline', label(v.pp[0])));
+    return h;
+  }
+  function halfCap(text, side) { return mk('span', 'half ' + side + ' cap', text); }
+
+  function renderRounds() {
+    var box = $('rounds');
+    box.innerHTML = '';
+    var items = [], i, lab = '';
+    for (i = 0; i < ROUNDS.length; i++) {
+      var isList = ROUNDS[i].key.indexOf('liste') === 0;
+      var l = isList ? 'Verben aus deiner Liste' : 'Themenrunden';
+      items.push({ key: ROUNDS[i].key, name: ROUNDS[i].name, label: l !== lab ? l : '' });
+      lab = l;
+    }
+    items.push({ key: 'mix', name: 'Alle Verben', label: 'Zufallsrunden' });
+    items.push({ key: 'mixl', name: 'Nur Liste', label: '' });
+    items.forEach(function (r) {
+      if (r.label) box.appendChild(mk('span', 'chip-label', r.label));
+      var done = !!state.completed[r.key];
+      var b = mk('button', 'chip', r.name + (done ? ' ✓' : ''));
+      b.type = 'button';
+      b.setAttribute('aria-pressed', r.key === state.rk ? 'true' : 'false');
+      if (done) b.setAttribute('aria-label', r.name + ', abgeschlossen');
+      b.addEventListener('click', function () { start(r.key); toBoard(); });
+      box.appendChild(b);
+    });
+  }
+
+  function renderChain() {
+    var ol = $('chain');
+    ol.innerHTML = '';
+    var first = state.set[state.order[0]];
+    var li = mk('li');
+    var st = mk('div', 'tile');
+    st.appendChild(halfCap('Start', 'left'));
+    st.appendChild(halfVerb(first));
+    li.appendChild(st);
+    ol.appendChild(li);
+
+    state.chain.forEach(function (t, i) {
+      var l = mk('li');
+      var d = mk('div', 'tile' + (i === state.lastPlaced ? ' pop' : ''));
+      d.appendChild(halfObj(state.set[t.obj].o, true));
+      if (t.next >= 0) d.appendChild(halfVerb(state.set[t.next]));
+      else d.appendChild(halfCap('Ende ✓', 'right'));
+      l.appendChild(d);
+      ol.appendChild(l);
+    });
+
+    if (!state.done) {
+      var open = state.set[state.order[state.step]];
+      var s = mk('li', 'slot');
+      s.appendChild(mk('span', 'slot-q', '?'));
+      s.appendChild(mk('span', null, 'Hier anlegen'));
+      s.appendChild(mk('span', 'sr', 'Offenes Ende: passendes Objekt zu »' + open.v + '« anlegen'));
+      ol.appendChild(s);
+    }
+  }
+
+  function renderHand() {
+    var box = $('hand');
+    box.innerHTML = '';
+    state.hand.forEach(function (t) {
+      var o = state.set[t.obj];
+      var b = mk('button', 'tile');
+      b.type = 'button';
+      b.appendChild(halfObj(o.o, false));
+      if (t.next >= 0) b.appendChild(halfVerb(state.set[t.next]));
+      else b.appendChild(halfCap('Ende ✓', 'right'));
+      b.setAttribute('aria-label', 'Plättchen: ' + o.o + ', rechte Hälfte: ' + (t.next >= 0 ? state.set[t.next].v : 'Ende der Kette'));
+      b.addEventListener('click', function () { pick(t.id, b); });
+      box.appendChild(b);
+    });
+    $('handcount').textContent = state.hand.length + ' übrig';
+  }
+
+  function renderStatus() {
+    var n = state.set.length, p = $('pips'), i;
+    p.innerHTML = '';
+    for (i = 0; i < n; i++) p.appendChild(mk('span', 'pip' + (i < state.step ? ' on' : '')));
+    var c = $('count');
+    c.innerHTML = '';
+    c.appendChild(mk('span', 'sr', state.step + ' von ' + n + ' gelegt, '));
+    c.appendChild(document.createTextNode('Fehler: ' + state.errors));
+  }
+
+  function setMsg(kind, text) {
+    var m = $('msg');
+    m.className = 'msg' + (kind ? ' ' + kind : '');
+    m.textContent = text;
+  }
+
+  function render() {
+    renderRounds();
+    renderChain();
+    renderHand();
+    renderStatus();
+    $('tray').hidden = state.done;
+  }
+
+  /* ---------- Spiellogik ---------- */
+  function findTile(id) {
+    for (var i = 0; i < state.hand.length; i++) { if (state.hand[i].id === id) return state.hand[i]; }
+    return null;
+  }
+
+  function pick(id, btn) {
+    if (state.done) return;
+    var t = findTile(id);
+    if (!t) return;
+    var openIdx = state.order[state.step];
+    var open = state.set[openIdx];
+
+    if (t.obj === openIdx) {
+      state.hand = state.hand.filter(function (x) { return x.id !== id; });
+      state.chain.push(t);
+      state.lastPlaced = state.chain.length - 1;
+      state.step++;
+      state.stepErrs = 0;
+      if (state.step === state.set.length) {
+        finish(open);
+        return;
+      }
+      render();
+      setMsg('ok', 'Richtig: ' + open.v + ' ' + label(open.pp[0]) + ' Weiter mit »' + state.set[state.order[state.step]].v + '«.');
+      var wrap = $('chainwrap');
+      wrap.scrollTop = wrap.scrollHeight;
+      var f = $('hand').querySelector('button');
+      if (f) { try { f.focus({ preventScroll: true }); } catch (e) { f.focus(); } }
+    } else {
+      state.errors++;
+      state.errMap[openIdx] = (state.errMap[openIdx] || 0) + 1;
+      state.stepErrs++;
+      var tc = parse(state.set[t.obj].pp[0]);
+      var want = parse(open.pp[0]);
+      var words = open.pp.map(function (c) { return parse(c).w; });
+      var txt;
+      if (open.pp.indexOf(state.set[t.obj].pp[0]) >= 0) {
+        txt = 'Nicht ganz: Grammatisch wäre das möglich, aber inhaltlich passt ein anderes Plättchen besser. Achte auf die Bedeutung von »' + open.v + '«.';
+      } else if (words.indexOf(tc.w) >= 0) {
+        txt = 'Nicht ganz: Die Präposition »' + tc.w + '« gibt es bei »' + open.v + '«, aber nicht mit diesem Kasus. Prüfe die Plättchen noch einmal.';
+      } else {
+        txt = 'Nicht ganz: Welche Präposition gehört fest zu »' + open.v + '«?';
+      }
+      if (state.stepErrs === 2) txt += ' Tipp: »' + want.w + '«.';
+      if (state.stepErrs >= 3) txt += ' Tipp: »' + want.w + '« + ' + caseWord(want.k) + '.';
+      setMsg('bad', txt);
+      renderStatus();
+      btn.classList.remove('shake');
+      void btn.offsetWidth;
+      btn.classList.add('shake');
+      setTimeout(function () { btn.classList.remove('shake'); }, 450);
+    }
+  }
+
+  function finish(lastVerb) {
+    state.done = true;
+    if (!state.custom) state.completed[state.rk] = true;
+    render();
+    setMsg('ok', 'Richtig: ' + lastVerb.v + ' ' + label(lastVerb.pp[0]) + ' Die Kette ist geschlossen.');
+    var w = $('chainwrap');
+    w.scrollTop = w.scrollHeight;
+    renderFinish();
+  }
+
+  function nextKey() {
+    if (state.rk === 'mix' || state.rk === 'mixl') return state.rk;
+    for (var i = 0; i < ROUNDS.length; i++) {
+      if (ROUNDS[i].key === state.rk) return i + 1 < ROUNDS.length ? ROUNDS[i + 1].key : 'mixl';
+    }
+    return 'alltag';
+  }
+  function nameOf(key) {
+    if (key === 'mix') return 'Zufallsrunde (alle Verben)';
+    if (key === 'mixl') return 'Zufallsrunde (nur Liste)';
+    for (var i = 0; i < ROUNDS.length; i++) { if (ROUNDS[i].key === key) return ROUNDS[i].name; }
+    return '';
+  }
+
+  function renderFinish() {
+    var n = state.set.length;
+    $('result').textContent = state.errors === 0
+      ? 'Alle ' + n + ' Plättchen ohne Fehler gelegt.'
+      : n + ' Plättchen gelegt, ' + state.errors + (state.errors === 1 ? ' Fehler.' : ' Fehler.') + ' Die Verben mit Fehlern sind unten markiert.';
+
+    var ul = $('review');
+    ul.innerHTML = '';
+    var errVerbs = [];
+    state.order.forEach(function (i) {
+      var v = state.set[i];
+      var li = mk('li');
+      var left = mk('div');
+      left.appendChild(mk('span', 'rv-verb', v.v));
+      left.appendChild(mk('span', 'rv-prep', label(v.pp[0])));
+      if (state.errMap[i]) {
+        left.appendChild(mk('span', 'rv-err', 'Fehler: ' + state.errMap[i] + '×'));
+        errVerbs.push(v);
+      }
+      var right = mk('div');
+      var p = mk('span');
+      var k = v.ex.indexOf(v.o);
+      if (k >= 0) {
+        p.appendChild(document.createTextNode(v.ex.slice(0, k)));
+        p.appendChild(mk('mark', null, v.o));
+        p.appendChild(document.createTextNode(v.ex.slice(k + v.o.length)));
+      } else {
+        p.textContent = v.ex;
+      }
+      right.appendChild(p);
+      if (v.note) right.appendChild(mk('span', 'rv-note', v.note));
+      li.appendChild(left);
+      li.appendChild(right);
+      ul.appendChild(li);
+    });
+
+    var act = $('actions');
+    act.innerHTML = '';
+    var again = mk('button', 'btn', 'Noch einmal, neu gemischt');
+    again.type = 'button';
+    again.addEventListener('click', function () {
+      if (state.custom) start(state.rk, state.set); else start(state.rk);
+      toBoard();
+    });
+    act.appendChild(again);
+
+    if (errVerbs.length >= 2) {
+      var errB = mk('button', 'btn alt', 'Nur die Fehlerverben üben');
+      errB.type = 'button';
+      errB.addEventListener('click', function () { start(state.rk, errVerbs); toBoard(); });
+      act.appendChild(errB);
+    }
+
+    var nk = nextKey();
+    var nb = mk('button', 'btn alt', (state.rk === 'mix' || state.rk === 'mixl') ? 'Neue Zufallsrunde' : 'Nächste Runde: ' + nameOf(nk));
+    nb.type = 'button';
+    nb.addEventListener('click', function () { start(nk); toBoard(); });
+    act.appendChild(nb);
+
+    $('finish').hidden = false;
+    var h = $('h-finish');
+    try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); }
+    if (h.scrollIntoView) h.scrollIntoView({ block: 'start' });
+  }
+
+  $('hint').addEventListener('change', function () {
+    state.hint = this.checked;
+    renderChain();
+    renderHand();
+  });
+
+  start('alltag');
+})();
+</script>
+</body>
+</html>
