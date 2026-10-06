@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>können – Trainer A1.1</title>
+<style>
+:root{--bg:#f3f5fa;--card:#fff;--ink:#1c2333;--mut:#586179;--line:#d5dbe8;--pri:#1f5fd6;--inf:#d4470a;--kl:#6f3fc4;--ok:#1a8f4b;--bad:#c62828;--okbg:#e5f6ec;--badbg:#fdeaea}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+#wrap{max-width:860px;margin:0 auto;padding:10px 14px 70px}
+#hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0 10px}
+#hdr .logo{font-weight:700;color:var(--pri);font-size:15px}
+#hdr select{font:inherit;font-size:15px;padding:6px 8px;border:2px solid var(--line);border-radius:10px;background:#fff;max-width:55%}
+h1{font-size:26px;margin:6px 0 2px}
+h2{font-size:21px;margin:18px 0 8px}
+h3{font-size:18px;margin:0 0 4px}
+p{margin:6px 0}
+.de{display:block}
+.tl{display:block;color:var(--mut);font-size:.9em;margin-top:2px;line-height:1.35}
+.tl[dir=rtl]{text-align:right;font-size:1em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:10px 0;box-shadow:0 1px 2px rgba(20,30,60,.05)}
+.card.rule{border-left:6px solid var(--pri)}
+.card.tip{border-left:6px solid var(--inf);background:#fff8f3}
+.btn{font:inherit;color:var(--ink);border:2px solid var(--line);background:#fff;border-radius:12px;padding:9px 14px;cursor:pointer;text-align:center;-webkit-appearance:none;appearance:none;touch-action:manipulation}
+.btn:active{background:#eef2fb}
+.btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}
+.btn.pri .tl{color:#e6eeff}
+.btn.sm{padding:6px 10px;font-size:15px}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.sel{border-color:var(--pri);background:#e7efff}
+.btn.good,.chip.good{border-color:var(--ok);background:var(--okbg)}
+.btn.bad,.chip.bad{border-color:var(--bad);background:var(--badbg)}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.row .btn{flex:1 1 150px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:14px 0}
+.menu .btn{text-align:left;padding:14px 16px;border-radius:16px;background:#fff}
+.menu .btn .t{font-weight:700;font-size:19px;display:block}
+.menu .btn .s{color:var(--mut);font-size:15px;display:block}
+.menu .btn .pg{display:inline-block;margin-top:6px;font-size:13px;color:var(--ok);font-weight:700}
+.tabs{display:flex;gap:8px;margin:8px 0}
+.tabs .btn{flex:1}
+.tabs .btn.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.tabs .btn.on .tl{color:#e6eeff}
+.tb{display:flex;align-items:center;gap:10px;margin:4px 0 6px}
+.tb .ttl{font-weight:700;font-size:18px;flex:1}
+.prog{flex:1;height:10px;background:#dde3f1;border-radius:6px;overflow:hidden}
+.prog div{height:100%;background:var(--pri);transition:width .3s}
+.cnt{font-size:15px;color:var(--mut);min-width:56px;text-align:right}
+.instr{color:var(--mut);margin-bottom:8px}
+.big{font-size:23px;line-height:1.4;margin:10px 0 14px;direction:ltr}
+.sit{background:#f1f4fb;border-radius:12px;padding:10px 12px;margin:8px 0 12px}
+.opts{display:grid;gap:10px}
+.opts.two{grid-template-columns:1fr 1fr}
+.opts .btn{font-size:19px;text-align:left}
+.gapbox{display:inline-block;min-width:76px;border-bottom:3px solid var(--pri);text-align:center;color:var(--pri);font-weight:700;margin:0 4px}
+.ctx{color:var(--mut);font-size:15px;margin-bottom:2px}
+input.inp{font:inherit;font-size:22px;padding:8px 10px;border:2px solid var(--line);border-radius:10px;width:170px;max-width:60%}
+.fb{border-radius:14px;padding:12px 14px;margin:12px 0}
+.fb.good{background:var(--okbg);border:2px solid var(--ok)}
+.fb.bad{background:var(--badbg);border:2px solid var(--bad)}
+.fb .h{font-weight:700;margin-bottom:4px}
+.fix{margin-top:6px;font-size:19px;direction:ltr}
+table.conj{border-collapse:collapse;width:100%;margin:8px 0;direction:ltr}
+table.conj td,table.conj th{border:1px solid var(--line);padding:8px 10px;vertical-align:middle;text-align:left}
+table.conj th{background:#eef2fb;font-size:14px;color:var(--mut)}
+table.conj td.f{font-size:22px;font-weight:700}
+table.conj td .tl{font-size:12.5px;font-weight:400}
+table.conj td .tl[dir=rtl]{text-align:left;direction:rtl;unicode-bidi:plaintext}
+table.conj u{text-decoration:none;color:var(--pri)}
+table.conj i{font-style:normal;color:var(--inf)}
+table.conj input{font:inherit;font-size:20px;width:100%;padding:6px 8px;border:2px solid var(--line);border-radius:8px}
+table.conj input.good{border-color:var(--ok);background:var(--okbg)}
+table.conj input.bad{border-color:var(--bad);background:var(--badbg)}
+.corr{font-size:13px;color:var(--ok);font-weight:700}
+.ex{margin:8px 0;padding:8px 10px;background:#f6f8fd;border-radius:10px}
+.exde{display:block;font-size:19px;font-weight:600;direction:ltr}
+.sent{direction:ltr;display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px;padding:16px 0 4px;overflow-x:auto}
+.cw{display:inline-flex;flex-direction:column;align-items:center}
+.sub{font-size:11px;line-height:14px;min-height:14px;color:var(--mut);white-space:nowrap}
+.chip{white-space:nowrap;display:inline-block;font:inherit;font-size:19px;color:var(--ink);border:2px solid var(--line);background:#fff;border-radius:10px;padding:6px 11px;-webkit-appearance:none;appearance:none}
+button.chip{cursor:pointer;touch-action:manipulation}
+.chip.sel{border-color:var(--pri);background:#e7efff}
+.chip.v{border-color:var(--pri);background:#e7efff;color:#0f3f9e;font-weight:700}
+.chip.i{border-color:var(--inf);background:#ffece4;color:#9a3308;font-weight:700}
+.chip.ghost{border-style:dashed;color:var(--inf);border-color:var(--inf);background:#fff}
+.kl{position:relative;display:inline-flex;flex-wrap:nowrap;align-items:flex-end;gap:6px;padding:20px 8px 0;margin:0 2px}
+.kl:before{content:"";position:absolute;left:0;right:0;top:9px;height:13px;border:3px solid var(--kl);border-bottom:0;border-radius:10px 10px 0 0}
+.klab{position:absolute;top:-9px;left:50%;margin-left:-40px;width:80px;text-align:center;font-size:12px;font-weight:700;color:var(--kl);white-space:nowrap;background:var(--card)}
+.kl.anim:before{transform-origin:left center;animation:grow .7s ease-out}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.bank{display:flex;flex-wrap:wrap;gap:8px;direction:ltr;margin:10px 0}
+.ans{min-height:58px;border:2px dashed #aab5d0;border-radius:12px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;direction:ltr;margin:8px 0;align-items:center}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;font-size:14px}
+.legend span{border-radius:8px;padding:2px 8px;border:2px solid}
+.legend .a{border-color:var(--pri);background:#e7efff;color:#0f3f9e}
+.legend .b{border-color:var(--inf);background:#ffece4;color:#9a3308}
+.legend .c{border-color:var(--kl);color:var(--kl)}
+.sum li{margin:8px 0}
+.wrongs{padding-left:20px}
+.score{font-size:40px;font-weight:800;color:var(--pri)}
+.stepbar{display:flex;gap:6px;margin:8px 0}
+.stepbar i{flex:1;height:8px;border-radius:5px;background:#dde3f1}
+.stepbar i.on{background:var(--kl)}
+.gl{font-size:13px;color:var(--mut)}
+@media (max-width:520px){
+ body{font-size:16px}
+ .big{font-size:20px}
+ .chip{font-size:15px;padding:4px 6px}
+ .sent{flex-wrap:nowrap}
+ .kl{padding-left:4px;padding-right:4px}
+ .kl{gap:4px;padding-left:5px;padding-right:5px}
+ .sent{gap:4px}
+ .opts.two{grid-template-columns:1fr}
+ h1{font-size:23px}
+}
+.btn.good:disabled,.btn.bad:disabled,.chip.good:disabled,.chip.bad:disabled{opacity:1}
+.gapbox.good{color:var(--ok);border-color:var(--ok)}
+.gapbox.bad{color:var(--bad);border-color:var(--bad)}
+</style>
+</head>
+<body>
+<div id="wrap">
+<div id="hdr"><span class="logo">Trainer A1.1 · können</span><select id="lang" aria-label="Sprache / Language"></select></div>
+<div id="app"></div>
+</div>
+<script>
+(function(){
+"use strict";
+/* ---------- Helfer ---------- */
+function X(a,b,c,d,e,f){return {de:a,en:b,ru:c,uk:d,tr:e,ar:f};}
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function capFirst(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+function shuf(a){var b=a.slice(),i,j,t;for(i=b.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function trim(s){return String(s).replace(/^\s+|\s+$/g,"");}
+
+var LANGS=[["none","Nur Deutsch"],["en","English"],["ru","Русский"],["uk","Українська"],["tr","Türkçe"],["ar","العربية"]];
+var S={lang:"none",page:"home",mod:null,tab:"exp",step:0,tbl:{vals:[],checked:false}};
+var STAT={};
+var KEY="koennenA11v1";
+var Sess=null;
+var lastInp=null;
+function load(){try{var j=JSON.parse(localStorage.getItem(KEY)||"{}");if(j.lang){S.lang=j.lang;}if(j.stat){STAT=j.stat;}}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({lang:S.lang,stat:STAT}));}catch(e){}}
+
+function tl(x){
+  if(S.lang==="none"||!x[S.lang]){return "";}
+  var d=(S.lang==="ar")?' dir="rtl" lang="ar"':' lang="'+S.lang+'"';
+  return '<span class="tl"'+d+'>'+x[S.lang]+'</span>';
+}
+function L(x){return '<span class="de">'+x.de+'</span>'+tl(x);}
+function LB(x){return '<span class="de">← '+x.de+'</span>'+tl(x);}
+function exl(x){return '<div class="ex"><span class="exde">'+esc(x.de)+'</span>'+tl(x)+'</div>';}
+
+/* ---------- Oberflächentexte ---------- */
+var T={
+ title:X("Modalverb „können“","Modal verb “können”","Модальный глагол «können»","Модальне дієслово «können»","“können” modal fiili","الفعل الناقص «können»"),
+ sub:X("Trainer A1.1 – nur Präsens","Trainer A1.1 – present tense only","Тренажёр A1.1 – только настоящее время (Präsens)","Тренажер A1.1 – лише теперішній час (Präsens)","Alıştırma programı A1.1 – yalnızca şimdiki zaman (Präsens)","مدرّب A1.1 – زمن المضارع (Präsens) فقط"),
+ langhelp:X("Erklärungen und Menü zusätzlich in:","Explanations and menu also in:","Объяснения и меню дополнительно на:","Пояснення та меню додатково мовою:","Açıklamalar ve menü ayrıca şu dilde:","الشرح والقائمة أيضًا بـ:"),
+ back:X("Zurück","Back","Назад","Назад","Geri","رجوع"),
+ menu:X("Menü","Menu","Меню","Меню","Menü","القائمة"),
+ next:X("Weiter","Next","Далее","Далі","Devam","التالي"),
+ prev:X("Zurück","Back","Назад","Назад","Geri","السابق"),
+ check:X("Prüfen","Check","Проверить","Перевірити","Kontrol et","تحقق"),
+ okH:X("Richtig!","Correct!","Правильно!","Правильно!","Doğru!","صحيح!"),
+ badH:X("Leider falsch.","Not correct.","К сожалению, неверно.","На жаль, неправильно.","Maalesef yanlış.","للأسف، خطأ."),
+ sol:X("Lösung","Solution","Решение","Розв’язок","Çözüm","الحل"),
+ expl:X("Erklärung","Explanation","Объяснение","Пояснення","Açıklama","شرح"),
+ exer:X("Aufgaben","Exercises","Упражнения","Вправи","Alıştırmalar","تمارين"),
+ toEx:X("Zu den Aufgaben","Go to the exercises","К упражнениям","До вправ","Alıştırmalara git","إلى التمارين"),
+ right:X("Richtig","Right","Верно","Правильно","Doğru","صحيح"),
+ wrong:X("Falsch","Wrong","Неверно","Неправильно","Yanlış","خطأ"),
+ result:X("Ergebnis","Result","Результат","Результат","Sonuç","النتيجة"),
+ vg:X("Sehr gut!","Very good!","Очень хорошо!","Дуже добре!","Çok iyi!","ممتاز!"),
+ gut:X("Gut gemacht!","Well done!","Хорошо!","Добре!","Aferin!","أحسنت!"),
+ more:X("Weiter üben!","Keep practising!","Продолжай тренироваться!","Продовжуй тренуватися!","Çalışmaya devam!","واصل التدريب!"),
+ mist:X("Das üben wir noch einmal:","Let’s practise these again:","Потренируем ещё раз:","Потренуємо ще раз:","Bunları tekrar çalışalım:","لنتدرّب على هذه مرة أخرى:"),
+ rep:X("Fehler wiederholen","Repeat mistakes","Повторить ошибки","Повторити помилки","Hataları tekrarla","أعد الأخطاء"),
+ again:X("Neue Runde","New round","Новый раунд","Новий раунд","Yeni tur","جولة جديدة"),
+ toMod:X("Zur Übersicht","Back to overview","К обзору","До огляду","Genel bakışa dön","إلى النظرة العامة"),
+ reset:X("Fortschritt löschen","Reset progress","Сбросить прогресс","Скинути прогрес","İlerlemeyi sil","مسح التقدّم"),
+ learned:X("gelernt","learned","выучено","вивчено","öğrenildi","تم تعلّمه"),
+ clear:X("Löschen","Clear","Очистить","Очистити","Temizle","مسح"),
+ mI:X("Was bedeutet „können“ in diesem Satz?","What does “können” mean in this sentence?","Что означает «können» в этом предложении?","Що означає «können» у цьому реченні?","Bu cümlede “können” ne anlama geliyor?","ماذا تعني «können» في هذه الجملة؟"),
+ sI:X("Welcher Satz passt zur Situation?","Which sentence fits the situation?","Какое предложение подходит к ситуации?","Яке речення підходить до ситуації?","Hangi cümle duruma uyar?","أيّ جملة تناسب الموقف؟"),
+ gapC:X("Welche Form von „können“ passt?","Which form of “können” fits?","Какая форма «können» подходит?","Яка форма «können» підходить?","“können” fiilinin hangi biçimi uyar?","أيّ صيغة من «können» تناسب؟"),
+ gapT:X("Schreibe die richtige Form von „können“.","Write the correct form of “können”.","Напиши правильную форму «können».","Напиши правильну форму «können».","“können” fiilinin doğru biçimini yaz.","اكتب الصيغة الصحيحة من «können»."),
+ tfI:X("Ist der Satz richtig oder falsch?","Is the sentence correct or incorrect?","Предложение правильное или неправильное?","Речення правильне чи неправильне?","Cümle doğru mu yanlış mı?","هل الجملة صحيحة أم خاطئة؟"),
+ markI:X("Tippe auf die beiden Teile der Verbklammer: das Modalverb und den Infinitiv.","Tap the two parts of the bracket: the modal verb and the infinitive.","Нажми на обе части рамки: модальный глагол и инфинитив.","Натисни на обидві частини рамки: модальне дієслово та інфінітив.","Çerçevenin iki parçasına dokun: modal fiil ve mastar.","اضغط على جزأي الإطار: الفعل الناقص والمصدر."),
+ buildI:X("Tippe die Wörter in der richtigen Reihenfolge. Tipp: Achte auf die Verbklammer!","Tap the words in the correct order. Tip: watch the verb bracket!","Нажимай на слова в правильном порядке. Подсказка: следи за глагольной рамкой!","Натискай слова в правильному порядку. Підказка: стеж за дієслівною рамкою!","Sözcüklere doğru sırayla dokun. İpucu: Fiil çerçevesine dikkat et!","اضغط على الكلمات بالترتيب الصحيح. تلميح: انتبه إلى إطار الفعل!"),
+ tblI:X("Fülle die Tabelle aus: Schreibe die Form von „können“.","Fill in the table: write the form of “können”.","Заполни таблицу: напиши форму «können».","Заповни таблицю: напиши форму «können».","Tabloyu doldur: “können” fiilinin biçimini yaz.","املأ الجدول: اكتب صيغة «können»."),
+ tblRe:X("Tabelle neu starten","Restart table","Начать таблицу заново","Почати таблицю заново","Tabloyu yeniden başlat","أعد الجدول"),
+ umlaut:X("Tipp: ö = Taste „ö“ oder „oe“ schreiben.","Tip: ö = press “ö” or type “oe”.","Подсказка: ö = клавиша «ö» или напиши «oe».","Підказка: ö = клавіша «ö» або напиши «oe».","İpucu: ö = “ö” tuşu ya da “oe” yaz.","تلميح: ö = زر «ö» أو اكتب «oe»."),
+ itIsRight:X("Der Satz ist richtig.","The sentence is correct.","Предложение правильное.","Речення правильне.","Cümle doğru.","الجملة صحيحة."),
+ plus:X("Richtig ist:","Correct:","Правильно:","Правильно:","Doğrusu:","الصحيح:")
+};
+var FB={
+ pos2:X("Das Modalverb steht auf Position 2.","The modal verb is in position 2.","Модальный глагол стоит на 2-м месте.","Модальне дієслово стоїть на 2-му місці.","Modal fiil 2. sırada durur.","الفعل الناقص في المرتبة 2."),
+ pos1:X("In der Ja/Nein-Frage steht das Modalverb auf Position 1.","In a yes/no question the modal verb is in position 1.","В вопросе без вопросительного слова модальный глагол стоит на 1-м месте.","У питанні без питального слова модальне дієслово стоїть на 1-му місці.","Evet/hayır sorusunda modal fiil 1. sıradadır.","في سؤال نعم/لا يكون الفعل الناقص في المرتبة 1."),
+ end:X("Der Infinitiv steht am Ende.","The infinitive is at the end.","Инфинитив стоит в конце.","Інфінітив стоїть у кінці.","Mastar en sonda durur.","المصدر في النهاية."),
+ conj:X("Das Modalverb muss zur Person passen.","The modal verb must match the person.","Модальный глагол должен соответствовать лицу.","Модальне дієслово має відповідати особі.","Modal fiil kişiye uymalıdır.","يجب أن يناسب الفعل الناقص الشخص."),
+ inf:X("Das zweite Verb bleibt Infinitiv (-en).","The second verb stays an infinitive (-en).","Второй глагол остаётся инфинитивом (-en).","Друге дієслово залишається інфінітивом (-en).","İkinci fiil mastar kalır (-en).","يبقى الفعل الثاني في صيغة المصدر (-en)."),
+ mid:X("Die Klammer ist richtig, aber die Reihenfolge der Wörter stimmt noch nicht.","The bracket is right, but the word order is not correct yet.","Рамка правильная, но порядок слов пока неверный.","Рамка правильна, але порядок слів ще неправильний.","Çerçeve doğru, ama sözcük sırası henüz doğru değil.","الإطار صحيح، لكن ترتيب الكلمات ليس صحيحًا بعد.")
+};
+var HINT={kann:"ich · er / sie / es · man → kann",kannst:"du → kannst",können:"wir · sie (Plural) · Sie → können",könnt:"ihr → könnt"};
+
+/* ---------- Bedeutung: Daten ---------- */
+var CAT=[
+ {t:X("Fähigkeit","Ability","Умение, способность","Уміння, здатність","Yetenek","القدرة"),
+  d:X("Jemand kann etwas (gut) machen.","Someone is able to do something (well).","Кто-то умеет или может что-то (хорошо) делать.","Хтось уміє або може щось (добре) робити.","Biri bir şeyi (iyi) yapabilir.","شخص ما قادر على فعل شيء (بشكل جيد).")},
+ {t:X("Möglichkeit / Erlaubnis","Possibility / permission","Возможность / разрешение","Можливість / дозвіл","Olasılık / izin","الإمكانية / الإذن"),
+  d:X("Etwas ist möglich oder erlaubt – oder nicht möglich.","Something is possible or allowed – or not possible.","Что-то возможно или разрешено – или невозможно.","Щось можливо або дозволено – або неможливо.","Bir şey mümkündür ya da serbesttir – ya da mümkün değildir.","شيء ما ممكن أو مسموح – أو غير ممكن.")},
+ {t:X("Bitte","Request","Просьба","Прохання","Rica","طلب"),
+  d:X("Du möchtest etwas von jemandem. „Können Sie …?“ klingt höflich.","You want something from someone. “Können Sie …?” sounds polite.","Ты хочешь о чём-то попросить. «Können Sie …?» звучит вежливо.","Ти хочеш про щось попросити. «Können Sie …?» звучить ввічливо.","Birinden bir şey istiyorsun. “Können Sie …?” nazik bir ifadedir.","تريد شيئًا من شخص ما. تبدو «Können Sie …?» مهذّبة.")}
+];
+var E={
+ swim:X("Ich kann gut schwimmen.","I can swim well.","Я хорошо умею плавать.","Я добре вмію плавати.","İyi yüzebilirim.","أستطيع السباحة جيدًا."),
+ cook:X("Sie kann sehr gut kochen.","She can cook very well.","Она очень хорошо умеет готовить.","Вона дуже добре вміє готувати.","O çok iyi yemek yapabilir.","هي تجيد الطبخ جدًا."),
+ de:X("Ich kann ein bisschen Deutsch.","I can speak a little German.","Я немного знаю немецкий.","Я трохи знаю німецьку.","Biraz Almanca biliyorum.","أعرف القليل من الألمانية."),
+ park:X("Hier kann man parken.","You can park here.","Здесь можно парковаться.","Тут можна паркуватися.","Burada park edilebilir.","يمكن الوقوف (الركن) هنا."),
+ today:X("Heute kann ich nicht kommen.","I can’t come today.","Сегодня я не могу прийти.","Сьогодні я не можу прийти.","Bugün gelemem.","لا أستطيع المجيء اليوم."),
+ sit:X("Kann ich hier sitzen?","Can I sit here?","Можно мне здесь сесть?","Можна мені тут сісти?","Burada oturabilir miyim?","هل يمكنني الجلوس هنا؟"),
+ help:X("Können Sie mir helfen?","Can you help me?","Вы можете мне помочь?","Ви можете мені допомогти?","Bana yardım edebilir misiniz?","هل يمكنك مساعدتي؟"),
+ rep:X("Kannst du das bitte wiederholen?","Can you repeat that, please?","Ты можешь повторить это, пожалуйста?","Ти можеш повторити це, будь ласка?","Bunu lütfen tekrar edebilir misin?","هل يمكنك أن تعيد ذلك من فضلك؟"),
+ not:X("Ich kann nicht schwimmen.","I can’t swim.","Я не умею плавать.","Я не вмію плавати.","Yüzme bilmiyorum.","لا أعرف السباحة.")
+};
+var MM=[["Ich kann gut schwimmen.",0],["Mein Sohn kann schon lesen.",0],["Sie kann drei Sprachen sprechen.",0],["Kannst du Auto fahren?",0],["Ich kann nicht kochen.",0],["Ich kann ein bisschen Deutsch.",0],
+ ["Hier kann man parken.",1],["Heute kann ich nicht kommen.",1],["Kann ich hier sitzen?",1],["Wir können morgen Fußball spielen.",1],["Hier kann man Brot kaufen.",1],["Kann ich hier telefonieren?",1],
+ ["Können Sie mir helfen?",2],["Kannst du das bitte wiederholen?",2],["Können Sie bitte langsam sprechen?",2],["Kannst du mir bitte Wasser geben?",2]];
+var MS=[
+ ["Du möchtest wissen: Ist Parken hier erlaubt?",["Kann man hier parken?","Kannst du gut parken?","Kannst du bitte parken?"],1],
+ ["Du möchtest wissen: Ist Tom gut im Tanzen?",["Kann Tom gut tanzen?","Kann man hier tanzen?","Können Sie bitte tanzen?"],0],
+ ["Du brauchst Hilfe. Du fragst höflich eine Frau (Sie).",["Können Sie mir bitte helfen?","Können Sie gut helfen?","Kann man hier helfen?"],2],
+ ["Du möchtest hier sitzen. Du fragst, ob das okay ist.",["Kann ich hier sitzen?","Kannst du gut sitzen?","Können Sie gut sitzen?"],1],
+ ["Du verstehst nichts. Du bittest deinen Freund, langsam zu sprechen.",["Kannst du bitte langsam sprechen?","Kannst du gut sprechen?","Kann man hier langsam sprechen?"],2],
+ ["Du erzählst: Dein Bruder schwimmt sehr gut.",["Mein Bruder kann sehr gut schwimmen.","Mein Bruder kann hier schwimmen.","Meine Brüder können sehr gut schwimmen."],0]
+];
+
+/* ---------- Sätze (Verbklammer) ---------- */
+var SBraw=[
+ ["s1","A",["ich","kann","gut","schwimmen"],"."],
+ ["s2","A",["du","kannst","sehr gut","tanzen"],"."],
+ ["s3","A",["er","kann","Auto","fahren"],"."],
+ ["s4","A",["sie","kann","Deutsch","sprechen"],"."],
+ ["s5","A",["wir","können","heute","kommen"],"."],
+ ["s6","A",["ihr","könnt","hier","parken"],"."],
+ ["s7","A",["die Kinder","können","gut","singen"],"."],
+ ["s8","A",["meine Mutter","kann","sehr gut","kochen"],"."],
+ ["s9","A",["heute","kann","ich","nicht","kommen"],"."],
+ ["s10","A",["hier","kann","man","Brot","kaufen"],"."],
+ ["s11","A",["jetzt","können","wir","Pause","machen"],"."],
+ ["s12","A",["ich","kann","das","nicht","verstehen"],"."],
+ ["s25","A",["ich","kann","nicht","schwimmen"],"."],
+ ["s26","A",["mein Bruder und ich","können","gut","tanzen"],"."],
+ ["s13","W",["wo","kann","ich","Brot","kaufen"],"?"],
+ ["s14","W",["wann","können","wir","Deutsch","lernen"],"?"],
+ ["s15","W",["wer","kann","mir","helfen"],"?"],
+ ["s16","W",["wo","kann","ich","hier","parken"],"?"],
+ ["s17","J",["kannst","du","Auto","fahren"],"?"],
+ ["s18","J",["können","Sie","mir","helfen"],"?"],
+ ["s19","J",["kann","ich","hier","sitzen"],"?"],
+ ["s20","J",["könnt","ihr","gut","schwimmen"],"?"],
+ ["s21","J",["können","Sie","bitte","langsam","sprechen"],"?"],
+ ["s22","J",["kann","er","Fahrrad","fahren"],"?"],
+ ["s23","J",["können","wir","hier","warten"],"?"],
+ ["s24","J",["kann","sie","Deutsch","lesen"],"?"]
+];
+var ALT={s5:[["heute","können","wir","kommen"]],s9:[["ich","kann","heute","nicht","kommen"]],s10:[["man","kann","hier","Brot","kaufen"]],s11:[["wir","können","jetzt","Pause","machen"]]};
+var SB=[],SBY={};
+(function(){var i,r,o;for(i=0;i<SBraw.length;i++){r=SBraw[i];o={id:r[0],type:r[1],parts:r[2],p:r[3],vi:(r[1]==="J"?0:1),ii:r[2].length-1,alt:ALT[r[0]]||[]};SB.push(o);SBY[o.id]=o;}})();
+function sbText(sb){return capFirst(sb.parts.join(" "))+sb.p;}
+
+function cw(txt,cls,sub){return '<span class="cw"><span class="chip'+(cls?" "+cls:"")+'">'+esc(txt)+'</span><span class="sub">'+(sub||"&nbsp;")+'</span></span>';}
+function sentHTML(sb,o){
+  var out='<div class="sent" dir="ltr">',i,txt,cls,sub;
+  for(i=0;i<sb.parts.length;i++){
+    if(o.color&&i===sb.vi){out+='<span class="kl'+(o.anim?" anim":"")+'"><span class="klab">Verbklammer</span>';}
+    txt=sb.parts[i];if(i===0){txt=capFirst(txt);}if(i===sb.parts.length-1){txt+=sb.p;}
+    cls="";sub="";
+    if(o.color&&i===sb.vi){cls="v";sub=(sb.type==="J"?"Position 1":"Position 2");}
+    if(o.color&&i===sb.ii){cls="i";sub="Infinitiv";}
+    out+=cw(txt,cls,sub);
+    if(o.color&&i===sb.ii){out+="</span>";}
+  }
+  return out+"</div>";
+}
+function legend(){return '<div class="legend"><span class="a">Modalverb (konjugiert)</span><span class="b">Infinitiv</span><span class="c">Verbklammer</span></div>';}
+
+/* ---------- Aufgaben-Daten ---------- */
+var POOL={mm:[],ms:[],gc:[],gt:[],tf:[],mk:[],bd:[]};
+(function(){
+  var i,a;
+  for(i=0;i<MM.length;i++){POOL.mm.push({id:"mm"+i,kind:"mc",instr:T.mI,sent:MM[i][0],opts:[CAT[0].t,CAT[1].t,CAT[2].t],fixed:true,a:MM[i][1],cat:MM[i][1]});}
+  for(i=0;i<MS.length;i++){POOL.ms.push({id:"ms"+i,kind:"mc",instr:T.sI,prompt:MS[i][0],opts:MS[i][1],fixed:false,a:0,cat:MS[i][2]});}
+  var G=[
+   ["","Ich","kann","gut schwimmen."],["","Du","kannst","sehr gut tanzen."],["","Er","kann","Auto fahren."],
+   ["sie = Anna","Sie","kann","Deutsch sprechen."],["","Wir","können","heute kommen."],["","Ihr","könnt","hier parken."],
+   ["sie = Anna und Tom","Sie","können","gut kochen."],["Sie = Frau Meier (formell)","","können","Sie mir helfen?"],
+   ["","","kannst","du Fahrrad fahren?"],["","Meine Mutter","kann","sehr gut singen."],["","Die Kinder","können","schon schwimmen."],
+   ["","Mein Bruder und ich","können","gut tanzen."],["","Anna und du","könnt","hier warten."],["","Wo","kann","ich hier parken?"],
+   ["","Wann","können","wir Deutsch lernen?"],["","","könnt","ihr gut singen?"],["","Herr Meier,","können","Sie bitte langsam sprechen?"],
+   ["","Wer","kann","mir helfen?"],["","Hier","kann","man Brot kaufen."],["","Das Baby","kann","noch nicht laufen."],
+   ["","Meine Freunde","können","gut Deutsch sprechen."],["","Heute","kann","ich nicht kommen."]
+  ];
+  for(i=0;i<G.length;i++){
+    a=G[i];
+    POOL.gc.push({id:"gc"+i,kind:"gap",mode:"c",ctx:a[0],pre:a[1],ans:a[2],post:a[3]});
+    POOL.gt.push({id:"gt"+i,kind:"gap",mode:"t",ctx:a[0],pre:a[1],ans:a[2],post:a[3]});
+  }
+  var TF=[
+   ["Ich kann gut schwimmen.",1,"","" ],["Ich gut kann schwimmen.",0,"pos2","Ich kann gut schwimmen."],
+   ["Wir können heute kommen.",1,"",""],["Wir können kommen heute.",0,"end","Wir können heute kommen."],
+   ["Du kannst gut tanzen.",1,"",""],["Du kann gut tanzen.",0,"conj","Du kannst gut tanzen."],
+   ["Er kann Auto fahren.",1,"",""],["Er kann Auto fährt.",0,"inf","Er kann Auto fahren."],
+   ["Kannst du Deutsch sprechen?",1,"",""],["Du kannst Deutsch sprechen?",0,"pos1","Kannst du Deutsch sprechen?"],
+   ["Wo kann ich Brot kaufen?",1,"",""],["Wo kann ich kaufen Brot?",0,"end","Wo kann ich Brot kaufen?"],
+   ["Ihr können hier parken.",0,"conj","Ihr könnt hier parken."],["Können Sie mir helfen?",1,"",""],
+   ["Können Sie helfen mir?",0,"end","Können Sie mir helfen?"],["Ich kann nicht schwimmen.",1,"",""],
+   ["Ich kann schwimmen nicht.",0,"end","Ich kann nicht schwimmen."],["Heute kann ich nicht kommen.",1,"",""],
+   ["Heute ich kann nicht kommen.",0,"pos2","Heute kann ich nicht kommen."],["Wir kann Deutsch lernen.",0,"conj","Wir können Deutsch lernen."],
+   ["Ich kann gut schwimme.",0,"inf","Ich kann gut schwimmen."],["Kann ich hier sitzen?",1,"",""],
+   ["Meine Eltern können gut kochen.",1,"",""],["Meine Mutter können gut kochen.",0,"conj","Meine Mutter kann gut kochen."]
+  ];
+  for(i=0;i<TF.length;i++){POOL.tf.push({id:"tf"+i,kind:"tf",s:TF[i][0],ok:TF[i][1]===1,err:TF[i][2],fix:TF[i][3]});}
+  var MK=["s1","s3","s5","s9","s10","s13","s14","s15","s17","s18","s19","s21","s25","s26"];
+  for(i=0;i<MK.length;i++){POOL.mk.push({id:"mk"+MK[i],kind:"mark",sid:MK[i]});}
+  for(i=0;i<SB.length;i++){POOL.bd.push({id:"bd"+SB[i].id,kind:"build",sid:SB[i].id,tp:SB[i].type});}
+})();
+function wt(it){var s=STAT[it.id];return s?(5-s.box):4;}
+function pick(pool,n){
+  var a=pool.slice(),out=[],i,tot,r;
+  while(out.length<n&&a.length){
+    tot=0;for(i=0;i<a.length;i++){tot+=wt(a[i]);}
+    r=Math.random()*tot;
+    for(i=0;i<a.length;i++){r-=wt(a[i]);if(r<=0){break;}}
+    if(i>=a.length){i=a.length-1;}
+    out.push(a.splice(i,1)[0]);
+  }
+  return out;
+}
+function rec(it,ok){
+  var s=STAT[it.id]||(STAT[it.id]={box:1,ok:0,n:0});
+  s.n++;if(ok){s.ok++;s.box=Math.min(4,s.box+1);}else{s.box=1;}
+  save();
+}
+function learned(pools){var n=0,t=0,i,j,p;for(i=0;i<pools.length;i++){p=POOL[pools[i]];for(j=0;j<p.length;j++){t++;if(STAT[p[j].id]&&STAT[p[j].id].box>=3){n++;}}}return [n,t];}
+function filt(arr,f){var o=[],i;for(i=0;i<arr.length;i++){if(f(arr[i])){o.push(arr[i]);}}return o;}
+
+var EX={
+ mean1:{t:X("Bedeutung erkennen","Recognise the meaning","Определи значение","Визнач значення","Anlamı bul","تعرّف على المعنى"),items:function(){return POOL.mm;},n:10},
+ mean2:{t:X("Welcher Satz passt?","Which sentence fits?","Какое предложение подходит?","Яке речення підходить?","Hangi cümle uyar?","أيّ جملة تناسب؟"),items:function(){return POOL.ms;},n:6},
+ conj1:{t:X("Tabelle ausfüllen","Fill in the table","Заполни таблицу","Заповни таблицю","Tabloyu doldur","املأ الجدول"),table:true},
+ conj2:{t:X("Welche Form passt?","Which form fits?","Какая форма подходит?","Яка форма підходить?","Hangi biçim uyar?","أيّ صيغة تناسب؟"),items:function(){return POOL.gc;},n:12},
+ conj3:{t:X("Formen schreiben","Write the forms","Напиши формы","Напиши форми","Biçimleri yaz","اكتب الصيغ"),items:function(){return POOL.gt;},n:12},
+ klam1:{t:X("Klammer markieren","Mark the bracket","Отметь рамку","Познач рамку","Çerçeveyi işaretle","حدّد الإطار"),items:function(){return POOL.mk;},n:10},
+ klam2:{t:X("Richtig oder falsch?","Right or wrong?","Верно или неверно?","Правильно чи неправильно?","Doğru mu yanlış mı?","صحيح أم خطأ؟"),items:function(){return POOL.tf;},n:12},
+ bd1:{t:X("Aussagesätze bauen","Build statements","Составь повествовательные предложения","Склади розповідні речення","Düz cümleler kur","كوّن جملًا خبرية"),items:function(){return filt(POOL.bd,function(i){return i.tp==="A";});},n:8},
+ bd2:{t:X("Fragen bauen","Build questions","Составь вопросы","Склади питання","Soru cümleleri kur","كوّن أسئلة"),items:function(){return filt(POOL.bd,function(i){return i.tp!=="A";});},n:8},
+ bd3:{t:X("Alle Sätze","All sentences","Все предложения","Усі речення","Tüm cümleler","كل الجمل"),items:function(){return POOL.bd;},n:10},
+ mix:{t:X("Gemischter Test","Mixed test","Смешанный тест","Змішаний тест","Karışık test","اختبار مختلط"),items:function(){
+   var g=[["mm",2],["ms",2],["gc",2],["gt",2],["tf",3],["mk",2],["bd",2]],o=[],i;
+   for(i=0;i<g.length;i++){o=o.concat(pick(POOL[g[i][0]],g[i][1]));}
+   return shuf(o);},n:15,fresh:true}
+};
+var MODS=[
+ {id:"mean",t:X("Bedeutung","Meaning","Значение","Значення","Anlam","المعنى"),s:X("Was bedeutet „können“?","What does “können” mean?","Что означает «können»?","Що означає «können»?","“können” ne demek?","ماذا تعني «können»؟"),ex:["mean1","mean2"],pools:["mm","ms"]},
+ {id:"conj",t:X("Konjugation","Conjugation","Спряжение","Дієвідмінювання","Fiil çekimi","التصريف"),s:X("ich kann, du kannst, wir können …","ich kann, du kannst, wir können …","ich kann, du kannst, wir können …","ich kann, du kannst, wir können …","ich kann, du kannst, wir können …","ich kann, du kannst, wir können …"),ex:["conj1","conj2","conj3"],pools:["gc","gt"]},
+ {id:"klam",t:X("Verbklammer","Verb bracket","Глагольная рамка","Дієслівна рамка","Fiil çerçevesi","إطار الفعل"),s:X("Modalverb + Infinitiv","Modal verb + infinitive","Модальный глагол + инфинитив","Модальне дієслово + інфінітив","Modal fiil + mastar","فعل ناقص + مصدر"),ex:["klam1","klam2"],pools:["tf","mk"]},
+ {id:"build",t:X("Sätze bauen","Build sentences","Составь предложения","Склади речення","Cümle kur","كوّن جملًا"),s:X("Wörter in die richtige Reihenfolge","Words in the correct order","Слова в правильном порядке","Слова в правильному порядку","Sözcükleri doğru sıraya koy","الكلمات بالترتيب الصحيح"),ex:["bd1","bd2","bd3"],pools:["bd"],noexp:true},
+ {id:"mix",t:X("Gemischter Test","Mixed test","Смешанный тест","Змішаний тест","Karışık test","اختبار مختلط"),s:X("Alles zusammen – 15 Aufgaben","Everything together – 15 tasks","Всё вместе – 15 заданий","Усе разом – 15 завдань","Hepsi bir arada – 15 alıştırma","كل شيء معًا – 15 تمرينًا"),direct:"mix",pools:[]},
+ {id:"rules",t:X("Regeln","Rules","Правила","Правила","Kurallar","القواعد"),s:X("Alles Wichtige auf einen Blick","Everything important at a glance","Всё важное на одном экране","Усе важливе на одному екрані","Önemli her şey bir bakışta","كل المهم في نظرة واحدة"),direct:"rules",pools:[]}
+];
+function modBy(id){var i;for(i=0;i<MODS.length;i++){if(MODS[i].id===id){return MODS[i];}}return null;}
+
+/* ---------- Erklärungen ---------- */
+function expMean(){
+  var h='<h2>'+L(X("Was bedeutet „können“?","What does “können” mean?","Что означает «können»?","Що означає «können»?","“können” ne demek?","ماذا تعني «können»؟"))+'</h2>';
+  var ex=[[E.swim,E.cook,E.de],[E.park,E.today,E.sit],[E.help,E.rep]],i,j;
+  for(i=0;i<3;i++){
+    h+='<div class="card rule"><h3>'+L(CAT[i].t)+'</h3>'+L(CAT[i].d);
+    for(j=0;j<ex[i].length;j++){h+=exl(ex[i][j]);}
+    h+='</div>';
+  }
+  h+='<div class="card tip">'+L(X("<b>Tipp:</b> Bei Sprachen steht oft kein zweites Verb: „Ich kann Deutsch.“ (= Ich kann Deutsch sprechen.)","<b>Tip:</b> With languages there is often no second verb: “Ich kann Deutsch.” (= Ich kann Deutsch sprechen.)","<b>Подсказка:</b> С языками часто нет второго глагола: «Ich kann Deutsch.» (= Ich kann Deutsch sprechen.)","<b>Підказка:</b> З мовами часто немає другого дієслова: «Ich kann Deutsch.» (= Ich kann Deutsch sprechen.)","<b>İpucu:</b> Dillerle birlikte çoğu zaman ikinci bir fiil kullanılmaz: “Ich kann Deutsch.” (= Ich kann Deutsch sprechen.)","<b>تلميح:</b> مع اللغات غالبًا لا يوجد فعل ثانٍ: «Ich kann Deutsch.» (= Ich kann Deutsch sprechen.)"))+'</div>';
+  h+='<div class="card tip">'+L(X("<b>Verneinung:</b> „Ich kann <b>nicht</b> …“ = Ich kann etwas nicht tun.","<b>Negation:</b> “Ich kann <b>nicht</b> …” = I can’t do something.","<b>Отрицание:</b> «Ich kann <b>nicht</b> …» = я не могу / не умею что-то делать.","<b>Заперечення:</b> «Ich kann <b>nicht</b> …» = я не можу / не вмію щось робити.","<b>Olumsuzluk:</b> “Ich kann <b>nicht</b> …” = Bir şeyi yapamam.","<b>النفي:</b> «Ich kann <b>nicht</b> …» = لا أستطيع فعل شيء."))+exl(E.not)+'</div>';
+  return h;
+}
+var P={
+ ich:X("ich","I","я","я","ben","أنا"),
+ du:X("du","you (informal, one person)","ты","ти","sen","أنتَ / أنتِ"),
+ er:X("er / sie / es","he / she / it","он / она / оно","він / вона / воно","o","هو / هي"),
+ wir:X("wir","we","мы","ми","biz","نحن"),
+ ihr:X("ihr","you (several people, informal)","вы (несколько друзей)","ви (кілька друзів)","siz (birkaç arkadaş)","أنتم"),
+ sie:X("sie (mehrere)","they","они","вони","onlar","هم / هنّ"),
+ Sie:X("Sie (formell)","you (formal)","Вы (вежливо)","Ви (ввічливо)","Siz (resmî)","حضرتك / حضراتكم")
+};
+var CT=[["ich","k<u>a</u>nn"],["du","k<u>a</u>nn<i>st</i>"],["er","k<u>a</u>nn"],["wir","k<u>ö</u>nn<i>en</i>"],["ihr","k<u>ö</u>nn<i>t</i>"],["sie","k<u>ö</u>nn<i>en</i>"],["Sie","k<u>ö</u>nn<i>en</i>"]];
+var TR=[["kann"],["kannst"],["kann"],["können"],["könnt"],["können"],["können"]];
+function expConj(){
+  var h='<h2>'+L(X("Konjugation im Präsens","Conjugation in the present tense","Спряжение в настоящем времени","Дієвідмінювання в теперішньому часі","Şimdiki zamanda çekim","التصريف في المضارع"))+'</h2>';
+  h+='<div class="card"><table class="conj"><tr><th>Person</th><th>können</th></tr>';
+  var i;
+  for(i=0;i<CT.length;i++){h+='<tr><td><b>'+P[CT[i][0]].de+'</b>'+tl(P[CT[i][0]])+'</td><td class="f">'+CT[i][1]+'</td></tr>';}
+  h+='</table></div>';
+  var R=[
+   X("Das Modalverb „können“ ist unregelmäßig.","The modal verb “können” is irregular.","Модальный глагол «können» — неправильный.","Модальне дієслово «können» — неправильне.","“können” modal fiili düzensizdir.","الفعل الناقص «können» شاذّ (غير منتظم)."),
+   X("Im Singular ändert sich der Vokal: <b>ö → a</b>.","In the singular the vowel changes: <b>ö → a</b>.","В единственном числе меняется гласная: <b>ö → a</b>.","В однині змінюється голосна: <b>ö → a</b>.","Tekilde ünlü değişir: <b>ö → a</b>.",'في المفرد يتغيّر حرف العلّة: <bdi dir="ltr"><b>ö → a</b></bdi>.'),
+   X("<b>ich</b> und <b>er / sie / es</b>: gleiche Form, keine Endung → <b>kann</b>.","<b>ich</b> and <b>er / sie / es</b>: same form, no ending → <b>kann</b>.","<b>ich</b> и <b>er / sie / es</b>: одинаковая форма, без окончания → <b>kann</b>.","<b>ich</b> та <b>er / sie / es</b>: однакова форма, без закінчення → <b>kann</b>.","<b>ich</b> ve <b>er / sie / es</b>: aynı biçim, ek yok → <b>kann</b>.",'<bdi dir="ltr"><b>ich</b></bdi> و<bdi dir="ltr"><b>er / sie / es</b></bdi>: الشكل نفسه، بلا نهاية ← <bdi dir="ltr"><b>kann</b></bdi>.'),
+   X("<b>du</b>: Endung -st → <b>kannst</b>.","<b>du</b>: ending -st → <b>kannst</b>.","<b>du</b>: окончание -st → <b>kannst</b>.","<b>du</b>: закінчення -st → <b>kannst</b>.","<b>du</b>: -st eki → <b>kannst</b>.",'<bdi dir="ltr"><b>du</b></bdi>: النهاية -st ← <bdi dir="ltr"><b>kannst</b></bdi>.'),
+   X("Plural: <b>wir, sie, Sie</b> = Form wie der Infinitiv → <b>können</b>. <b>ihr</b>: Endung -t → <b>könnt</b>.","Plural: <b>wir, sie, Sie</b> = same as the infinitive → <b>können</b>. <b>ihr</b>: ending -t → <b>könnt</b>.","Множественное число: <b>wir, sie, Sie</b> = как инфинитив → <b>können</b>. <b>ihr</b>: окончание -t → <b>könnt</b>.","Множина: <b>wir, sie, Sie</b> = як інфінітив → <b>können</b>. <b>ihr</b>: закінчення -t → <b>könnt</b>.","Çoğul: <b>wir, sie, Sie</b> = mastarla aynı → <b>können</b>. <b>ihr</b>: -t eki → <b>könnt</b>.",'الجمع: <bdi dir="ltr"><b>wir, sie, Sie</b></bdi> = مثل المصدر ← <bdi dir="ltr"><b>können</b></bdi>. <bdi dir="ltr"><b>ihr</b></bdi>: النهاية -t ← <bdi dir="ltr"><b>könnt</b></bdi>.'),
+   X("Achtung: <b>sie kann</b> (eine Person) – <b>sie können</b> (mehrere) – <b>Sie können</b> (formell, „Sie“ immer großgeschrieben).","Careful: <b>sie kann</b> (one person) – <b>sie können</b> (several) – <b>Sie können</b> (formal, “Sie” always capitalised).","Внимание: <b>sie kann</b> (одна) – <b>sie können</b> (несколько) – <b>Sie können</b> (вежливое «Вы», всегда с большой буквы).","Увага: <b>sie kann</b> (одна особа) – <b>sie können</b> (кілька) – <b>Sie können</b> (ввічливе «Ви», завжди з великої літери).","Dikkat: <b>sie kann</b> (tek kişi) – <b>sie können</b> (birden fazla kişi) – <b>Sie können</b> (resmî “siz”, her zaman büyük yazılır).",'انتبه: <bdi dir="ltr"><b>sie kann</b></bdi> (شخص واحد) – <bdi dir="ltr"><b>sie können</b></bdi> (عدة أشخاص) – <bdi dir="ltr"><b>Sie können</b></bdi> (صيغة الاحترام، تُكتب دائمًا بحرف كبير).')
+  ];
+  for(i=0;i<R.length;i++){h+='<div class="card rule">'+L(R[i])+'</div>';}
+  return h;
+}
+var STEPT=[
+ X("1. Ohne Modalverb: ein Verb auf Position 2.","1. Without a modal verb: one verb in position 2.","1. Без модального глагола: один глагол на 2-м месте.","1. Без модального дієслова: одне дієслово на 2-му місці.","1. Modal fiil olmadan: 2. sırada tek bir fiil.","1. بدون فعل ناقص: فعل واحد في المرتبة 2."),
+ X("2. Mit „können“: Das Modalverb übernimmt Position 2.","2. With “können”: the modal verb takes position 2.","2. С «können»: модальный глагол занимает 2-е место.","2. З «können»: модальне дієслово займає 2-ге місце.","2. “können” ile: modal fiil 2. sırayı alır.","2. مع «können»: يأخذ الفعل الناقص المرتبة 2."),
+ X("3. Das andere Verb wird Infinitiv und geht ans Ende.","3. The other verb becomes an infinitive and moves to the end.","3. Другой глагол становится инфинитивом и уходит в конец.","3. Інше дієслово стає інфінітивом і йде в кінець.","3. Diğer fiil mastar olur ve sona geçer.","3. يصبح الفعل الآخر مصدرًا وينتقل إلى النهاية."),
+ X("4. Zwischen den beiden Verben entsteht die Klammer.","4. Between the two verbs a bracket is formed.","4. Между двумя глаголами образуется рамка.","4. Між двома дієсловами утворюється рамка.","4. İki fiil arasında çerçeve oluşur.","4. ينشأ إطار بين الفعلين.")
+];
+function demoHTML(st){
+  var o='<div class="sent" dir="ltr">';
+  if(st===0){o+=cw("Ich")+cw("schwimme","v","Position 2")+cw("heute")+cw("gut.");}
+  else if(st===1){o+=cw("Ich")+cw("kann","v","Position 2")+cw("heute")+cw("gut")+cw("schwimmen","ghost","wartet …");}
+  else if(st===2){o+=cw("Ich")+cw("kann","v","Position 2")+cw("heute")+cw("gut")+cw("schwimmen.","i","Infinitiv");}
+  else{o+=cw("Ich")+'<span class="kl anim"><span class="klab">Verbklammer</span>'+cw("kann","v","Position 2")+cw("heute")+cw("gut")+cw("schwimmen.","i","Infinitiv")+'</span>';}
+  return o+"</div>";
+}
+function expKlam(){
+  var h='<h2>'+L(X("Die Verbklammer","The verb bracket","Глагольная рамка («Verbklammer»)","Дієслівна рамка («Verbklammer»)","Fiil çerçevesi (Verbklammer)","إطار الفعل (Verbklammer)"))+'</h2>';
+  var K=[
+   X("Mit „können“ gibt es <b>zwei Verben</b>: das Modalverb (konjugiert) und den Infinitiv.","With “können” there are <b>two verbs</b>: the modal verb (conjugated) and the infinitive.","С «können» в предложении <b>два глагола</b>: модальный (спрягается) и инфинитив.","З «können» у реченні <b>два дієслова</b>: модальне (змінюється за особами) та інфінітив.","“können” ile <b>iki fiil</b> olur: modal fiil (çekimli) ve mastar (Infinitiv).","مع «können» يوجد <b>فعلان</b>: الفعل الناقص (مصرَّف) والمصدر (Infinitiv)."),
+   X("Das Modalverb steht auf <b>Position 2</b> (Aussage, W-Frage) oder auf <b>Position 1</b> (Ja/Nein-Frage).","The modal verb is in <b>position 2</b> (statement, W-question) or in <b>position 1</b> (yes/no question).","Модальный глагол стоит на <b>2-м месте</b> (повествовательное предложение, вопрос с вопросительным словом) или на <b>1-м месте</b> (вопрос без вопросительного слова).","Модальне дієслово стоїть на <b>2-му місці</b> (розповідне речення, питання з питальним словом) або на <b>1-му місці</b> (питання без питального слова).","Modal fiil <b>2. sırada</b> durur (düz cümle, W-sorusu) ya da <b>1. sırada</b> (evet/hayır sorusu).","يقع الفعل الناقص في <b>المرتبة 2</b> (جملة خبرية، سؤال بأداة استفهام) أو في <b>المرتبة 1</b> (سؤال بنعم/لا)."),
+   X("Der Infinitiv steht <b>ganz am Ende</b> – und bleibt immer Infinitiv (-en).","The infinitive stands <b>at the very end</b> – and always stays an infinitive (-en).","Инфинитив стоит <b>в самом конце</b> — и всегда остаётся инфинитивом (-en).","Інфінітив стоїть <b>у самому кінці</b> — і завжди залишається інфінітивом (-en).","Mastar <b>en sonda</b> durur ve her zaman mastar kalır (-en).","يأتي المصدر <b>في آخر الجملة تمامًا</b>، ويبقى دائمًا مصدرًا (-en)."),
+   X("Alles andere steht <b>in der Mitte</b> – in der Klammer.","Everything else goes <b>in the middle</b> – inside the bracket.","Всё остальное стоит <b>посередине</b> — внутри рамки.","Усе інше стоїть <b>посередині</b> — всередині рамки.","Geri kalan her şey <b>ortada</b>, çerçevenin içinde durur.","كل شيء آخر يأتي <b>في الوسط</b>، داخل الإطار."),
+   X("„nicht“ steht meistens direkt vor dem Infinitiv, also in der Klammer.","“nicht” usually stands directly before the infinitive – inside the bracket.","«nicht» обычно стоит прямо перед инфинитивом — внутри рамки.","«nicht» зазвичай стоїть просто перед інфінітивом — усередині рамки.","“nicht” genellikle mastarın hemen önünde, yani çerçevenin içinde durur.","غالبًا تقع «nicht» قبل المصدر مباشرةً، أي داخل الإطار.")
+  ];
+  var i;
+  for(i=0;i<K.length;i++){h+='<div class="card rule">'+L(K[i])+'</div>';}
+  h+='<h2>'+L(X("So entsteht die Klammer","How the bracket is formed","Как возникает рамка","Як утворюється рамка","Çerçeve nasıl oluşur","كيف يتكوّن الإطار"))+'</h2>';
+  h+='<div class="card"><div class="stepbar">';
+  for(i=0;i<4;i++){h+='<i class="'+(i<=S.step?"on":"")+'"></i>';}
+  h+='</div><div style="min-height:70px">'+L(STEPT[S.step])+'</div>'+demoHTML(S.step);
+  if(S.step===1){h+='<div class="gl">'+L(X("Das zweite Verb wartet noch …","The second verb is still waiting …","Второй глагол пока ждёт …","Друге дієслово поки що чекає …","İkinci fiil henüz bekliyor …","الفعل الثاني ما زال ينتظر …"))+'</div>';}
+  h+='<div class="row"><button class="btn" data-act="step" data-d="-1"'+(S.step===0?" disabled":"")+'>'+L(T.prev)+'</button><button class="btn pri" data-act="step" data-d="1"'+(S.step===3?" disabled":"")+'>'+L(T.next)+'</button></div></div>';
+  h+='<h2>'+L(X("Vier Satztypen","Four sentence types","Четыре типа предложений","Чотири типи речень","Dört cümle türü","أربعة أنواع من الجمل"))+'</h2>';
+  var ST=[
+   ["s1",X("Aussage","Statement","Повествовательное предложение","Розповідне речення","Düz cümle","جملة خبرية")],
+   ["s9",X("Aussage mit anderem Anfang","Statement with a different first word","Повествовательное предложение с другим первым словом","Розповідне речення з іншим першим словом","Başka bir sözcükle başlayan düz cümle","جملة خبرية تبدأ بكلمة أخرى")],
+   ["s13",X("W-Frage","W-question","Вопрос с вопросительным словом (W-Frage)","Питання з питальним словом (W-Frage)","W-sorusu (soru sözcüklü)","سؤال بأداة استفهام (W-Frage)")],
+   ["s17",X("Ja/Nein-Frage","Yes/no question","Вопрос без вопросительного слова (Ja/Nein-Frage)","Питання без питального слова (Ja/Nein-Frage)","Evet/hayır sorusu","سؤال بنعم/لا (Ja/Nein-Frage)")]
+  ];
+  for(i=0;i<ST.length;i++){h+='<div class="card"><h3>'+L(ST[i][1])+'</h3>'+sentHTML(SBY[ST[i][0]],{color:true})+'</div>';}
+  return h;
+}
+
+/* ---------- Seiten ---------- */
+function topbar(title,act){return '<div class="tb"><button class="btn sm" data-act="'+act+'">'+LB(T.back)+'</button><div class="ttl">'+L(title)+'</div></div>';}
+function rHome(){
+  var h='<h1>'+L(T.title)+'</h1><div class="gl" style="font-size:16px">'+L(T.sub)+'</div><div class="menu">',i,m,lr,pg;
+  for(i=0;i<MODS.length;i++){
+    m=MODS[i];pg="";
+    if(m.pools.length){lr=learned(m.pools);pg='<span class="pg">'+lr[0]+' / '+lr[1]+' '+T.learned.de+'</span>';}
+    h+='<button class="btn" data-act="mod" data-m="'+m.id+'"><span class="t">'+L(m.t)+'</span><span class="s">'+L(m.s)+'</span>'+pg+'</button>';
+  }
+  h+='</div><div class="row"><button class="btn sm" data-act="resetprog">'+L(T.reset)+'</button></div>';
+  $("app").innerHTML=h;
+}
+function rMod(){
+  var m=modBy(S.mod),h=topbar(m.t,"home"),i,e,lr;
+  if(!m.noexp){
+    h+='<div class="tabs"><button class="btn'+(S.tab==="exp"?" on":"")+'" data-act="tab" data-t="exp">'+L(T.expl)+'</button><button class="btn'+(S.tab==="ex"?" on":"")+'" data-act="tab" data-t="ex">'+L(T.exer)+'</button></div>';
+  }else{S.tab="ex";}
+  if(S.tab==="exp"){
+    if(m.id==="mean"){h+=expMean();}
+    else if(m.id==="conj"){h+=expConj();}
+    else if(m.id==="klam"){h+=expKlam();}
+    h+='<div class="row"><button class="btn pri" data-act="tab" data-t="ex">'+L(T.toEx)+'</button></div>';
+  }else{
+    if(m.id==="build"){h+='<div class="card">'+L(T.buildI)+'</div>';}
+    h+='<div class="menu">';
+    for(i=0;i<m.ex.length;i++){
+      e=EX[m.ex[i]];
+      h+='<button class="btn" data-act="ex" data-e="'+m.ex[i]+'"><span class="t">'+L(e.t)+'</span></button>';
+    }
+    h+='</div>';
+  }
+  $("app").innerHTML=h;
+}
+function rRules(){
+  $("app").innerHTML=topbar(modBy("rules").t,"home")+expMean()+expConj()+expKlam();
+}
+
+/* ---------- Tabellenaufgabe ---------- */
+function rTab(){
+  var h=topbar(EX.conj1.t,"exitmod"),i,v,cls,c;
+  h+='<div class="card"><div class="instr">'+L(T.tblI)+'</div><table class="conj"><tr><th>Person</th><th>können</th></tr>';
+  for(i=0;i<7;i++){
+    v=S.tbl.vals[i]||"";cls="";c="";
+    if(S.tbl.checked){if(tblOk(v,TR[i][0])){cls=" good";}else{cls=" bad";c='<div class="corr">→ '+TR[i][0]+'</div>';}}
+    h+='<tr><td><b>'+P[CT[i][0]].de+'</b>'+tl(P[CT[i][0]])+'</td><td><input type="text" id="t'+i+'" class="'+cls+'" value="'+esc(v)+'" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"'+(S.tbl.checked?" readonly":"")+'>'+c+'</td></tr>';
+  }
+  h+='</table><div class="gl">'+L(T.umlaut)+'</div><div class="row"><button class="btn sm" data-act="oe" style="flex:0 0 60px">ö</button>';
+  if(!S.tbl.checked){h+='<button class="btn pri" data-act="tabchk">'+L(T.check)+'</button>';}
+  else{h+='<button class="btn pri" data-act="tabrst">'+L(T.tblRe)+'</button>';}
+  h+='</div></div>';
+  $("app").innerHTML=h;
+}
+function tblOk(v,ans){v=trim(v).toLowerCase();return v===ans||v===ans.replace(/ö/g,"oe");}
+
+/* ---------- Sitzung ---------- */
+function newCur(it){
+  var c={done:false,ok:false,fb:""},i,o;
+  if(it.kind==="mc"){c.order=[];for(i=0;i<it.opts.length;i++){c.order.push(i);}if(!it.fixed){c.order=shuf(c.order);}}
+  else if(it.kind==="gap"){c.order=shuf(["kann","kannst","können","könnt"]);c.typed="";}
+  else if(it.kind==="mark"){c.sel=[];}
+  else if(it.kind==="build"){
+    var sb=SBY[it.sid],idx=[],tries=0,same;
+    for(i=0;i<sb.parts.length;i++){idx.push(i);}
+    do{o=shuf(idx);same=true;for(i=0;i<o.length;i++){if(o[i]!==i){same=false;}}tries++;}while(same&&tries<8);
+    c.bank=o;c.seq=[];
+  }
+  return c;
+}
+function startSession(exId,items){
+  var ex=EX[exId],pool=items||(ex.items?ex.items():[]);
+  var list=items?items:(ex.fresh?pool:pick(pool,Math.min(ex.n,pool.length)));
+  Sess={ex:exId,items:list,i:0,ok:0,wrong:[],cur:null};
+  Sess.cur=newCur(list[0]);
+  S.page="sess";render();window.scrollTo(0,0);
+}
+function renderSess(){
+  var it=Sess.items[Sess.i],c=Sess.cur;
+  var pct=Math.round(Sess.i/Sess.items.length*100);
+  var h='<div class="tb"><button class="btn sm" data-act="exit">'+LB(T.back)+'</button><div class="prog"><div style="width:'+pct+'%"></div></div><div class="cnt">'+(Sess.i+1)+' / '+Sess.items.length+'</div></div>';
+  h+='<div class="card">'+R[it.kind](it,c)+'</div>';
+  if(c.done){
+    h+='<div class="fb '+(c.ok?"good":"bad")+'"><div class="h">'+L(c.ok?T.okH:T.badH)+'</div>'+c.fb+'</div>';
+    h+='<button class="btn pri" style="width:100%" data-act="nxt">'+L(Sess.i+1<Sess.items.length?T.next:T.result)+'</button>';
+  }
+  $("app").innerHTML=h;
+  var inp=$("inp");if(inp&&!c.done){lastInp=inp;try{inp.focus();}catch(e){}}
+}
+function finish(it,ok,fb){
+  var c=Sess.cur;c.done=true;c.ok=ok;c.fb=fb;
+  if(ok){Sess.ok++;}else{Sess.wrong.push(it);}
+  rec(it,ok);
+  renderSess();
+}
+var R={};
+R.mc=function(it,c){
+  var h='<div class="instr">'+L(it.instr)+'</div>',k,i,o,cls;
+  if(it.sent){h+='<div class="big">'+esc(it.sent)+'</div>';}
+  if(it.prompt){h+='<div class="sit">'+esc(it.prompt)+'</div>';}
+  h+='<div class="opts">';
+  for(k=0;k<c.order.length;k++){
+    i=c.order[k];o=it.opts[i];cls="";
+    if(c.done){if(i===it.a){cls=" good";}else if(i===c.pick){cls=" bad";}}
+    h+='<button class="btn'+cls+'" data-act="opt" data-i="'+i+'"'+(c.done?" disabled":"")+'>'+(typeof o==="string"?esc(o):L(o))+'</button>';
+  }
+  return h+'</div>';
+};
+R.gap=function(it,c){
+  var h='<div class="instr">'+L(it.mode==="t"?T.gapT:T.gapC)+'</div>',k,f,cls,txt,shown;
+  if(it.ctx){h+='<div class="ctx">('+esc(it.ctx)+')</div>';}
+  shown=it.pre===""?capFirst(it.ans):it.ans;
+  h+='<div class="big">'+(it.pre?esc(it.pre)+" ":"")+'<span class="gapbox'+(c.done?(c.ok?" good":" bad"):"")+'">'+(c.done?esc(shown):"&nbsp;&nbsp;?&nbsp;&nbsp;")+'</span> '+esc(it.post)+'</div>';
+  if(it.mode==="c"){
+    h+='<div class="opts two">';
+    for(k=0;k<c.order.length;k++){
+      f=c.order[k];cls="";
+      if(c.done){if(f===it.ans){cls=" good";}else if(f===c.pickF){cls=" bad";}}
+      txt=it.pre===""?capFirst(f):f;
+      h+='<button class="btn'+cls+'" data-act="gopt" data-f="'+f+'"'+(c.done?" disabled":"")+'>'+esc(txt)+'</button>';
+    }
+    h+='</div>';
+  }else{
+    h+='<div class="row" style="align-items:center"><input type="text" id="inp" class="inp" value="'+esc(c.typed)+'" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"'+(c.done?" disabled":"")+'>';
+    if(!c.done){h+='<button class="btn sm" data-act="oe" style="flex:0 0 52px">ö</button><button class="btn pri" data-act="gchk" style="flex:0 0 130px">'+L(T.check)+'</button>';}
+    h+='</div>';
+    if(!c.done){h+='<div class="gl">'+L(T.umlaut)+'</div>';}
+  }
+  return h;
+};
+R.tf=function(it,c){
+  var h='<div class="instr">'+L(T.tfI)+'</div><div class="big">'+esc(it.s)+'</div><div class="opts two">',v,cls;
+  for(v=1;v>=0;v--){
+    cls="";
+    if(c.done){if((v===1)===it.ok){cls=" good";}else if(v===c.pickV){cls=" bad";}}
+    h+='<button class="btn'+cls+'" data-act="tfa" data-v="'+v+'"'+(c.done?" disabled":"")+'>'+L(v===1?T.right:T.wrong)+'</button>';
+  }
+  return h+'</div>';
+};
+R.mark=function(it,c){
+  var sb=SBY[it.sid],h='<div class="instr">'+L(T.markI)+'</div>',i,txt,sel;
+  if(c.done){return h+sentHTML(sb,{color:true,anim:true})+legend();}
+  h+='<div class="sent" dir="ltr">';
+  for(i=0;i<sb.parts.length;i++){
+    txt=sb.parts[i];if(i===0){txt=capFirst(txt);}if(i===sb.parts.length-1){txt+=sb.p;}
+    sel=(c.sel.indexOf(i)>=0)?" sel":"";
+    h+='<span class="cw"><button class="chip'+sel+'" data-act="mchip" data-i="'+i+'">'+esc(txt)+'</button><span class="sub">&nbsp;</span></span>';
+  }
+  h+='</div><div class="row"><button class="btn pri" data-act="mchk"'+(c.sel.length===2?"":" disabled")+'>'+L(T.check)+'</button></div>';
+  return h;
+};
+R.build=function(it,c){
+  var sb=SBY[it.sid],h='<div class="instr">'+L(T.buildI)+'</div>',i,k,cls,ch;
+  h+='<div class="ans" id="ans">';
+  for(i=0;i<c.seq.length;i++){
+    k=c.seq[i];cls=c.done?(c.ok?" good":" bad"):"";
+    h+='<button class="chip'+cls+'" data-act="bchip" data-i="'+i+'"'+(c.done?" disabled":"")+'>'+esc(sb.parts[k])+'</button>';
+  }
+  h+='</div>';
+  if(!c.done){
+    h+='<div class="bank">';
+    for(i=0;i<c.bank.length;i++){
+      k=c.bank[i];
+      if(c.seq.indexOf(k)<0){h+='<button class="chip" data-act="badd" data-k="'+k+'">'+esc(sb.parts[k])+'</button>';}
+    }
+    h+='</div><div class="row"><button class="btn" data-act="bclr"'+(c.seq.length?"":" disabled")+'>'+L(T.clear)+'</button><button class="btn pri" data-act="bchk"'+(c.seq.length===sb.parts.length?"":" disabled")+'>'+L(T.check)+'</button></div>';
+  }else{
+    h+=sentHTML(sb,{color:true,anim:true})+legend();
+  }
+  return h;
+};
+function summ(it){
+  var sb,s;
+  if(it.kind==="mc"){return it.sent?esc(it.sent)+" → <b>"+L(CAT[it.cat].t)+"</b>":esc(it.prompt)+" → <b>"+esc(it.opts[0])+"</b>";}
+  if(it.kind==="gap"){s=(it.pre?it.pre+" ":"")+it.ans+" "+it.post;return "<b>"+esc(capFirst(s))+"</b>";}
+  if(it.kind==="tf"){return it.ok?"<b>"+esc(it.s)+"</b>":esc(it.s)+" → <b>"+esc(it.fix)+"</b>";}
+  sb=SBY[it.sid];return "<b>"+esc(sbText(sb))+"</b>";
+}
+function gapSentence(it){var s=(it.pre?it.pre+" ":"")+it.ans+" "+it.post;return capFirst(s);}
+function doGap(it,form){
+  var ok=form===it.ans;
+  var fb='<div class="fix">'+esc(gapSentence(it))+'</div><div class="gl">'+esc(HINT[it.ans])+'</div>';
+  finish(it,ok,fb);
+}
+function builtList(it,c){var sb=SBY[it.sid],a=[],i;for(i=0;i<c.seq.length;i++){a.push(sb.parts[c.seq[i]]);}return a;}
+function arrEq(a,b){return a.join("|")===b.join("|");}
+function act(a,el){
+  var it=Sess&&Sess.items?Sess.items[Sess.i]:null,c=Sess?Sess.cur:null,i,sb,b,ok,fb,v,val;
+  if(a==="home"){S.page="home";render();window.scrollTo(0,0);}
+  else if(a==="mod"){
+    var m=modBy(el.getAttribute("data-m"));
+    if(m.direct==="mix"){startSession("mix");return;}
+    if(m.direct==="rules"){S.page="rules";render();window.scrollTo(0,0);return;}
+    S.mod=m.id;S.tab=m.noexp?"ex":"exp";S.step=0;S.page="mod";render();window.scrollTo(0,0);
+  }
+  else if(a==="tab"){S.tab=el.getAttribute("data-t");render();window.scrollTo(0,0);}
+  else if(a==="step"){S.step=Math.max(0,Math.min(3,S.step+parseInt(el.getAttribute("data-d"),10)));render();}
+  else if(a==="ex"){
+    var id=el.getAttribute("data-e");
+    if(EX[id].table){S.tbl={vals:[],checked:false};S.exid=id;S.page="tab";render();window.scrollTo(0,0);}
+    else{startSession(id);}
+  }
+  else if(a==="exit"||a==="exitmod"){
+    if(Sess&&Sess.ex==="mix"&&a==="exit"){S.page="home";}else{S.page="mod";S.tab="ex";}
+    render();window.scrollTo(0,0);
+  }
+  else if(a==="resetprog"){if(window.confirm("Fortschritt wirklich löschen?")){STAT={};save();render();}}
+  else if(a==="oe"){
+    if(lastInp&&!lastInp.disabled&&!lastInp.readOnly){lastInp.value+="ö";try{lastInp.focus();}catch(e){}if(lastInp.id==="inp"&&c){c.typed=lastInp.value;}}
+  }
+  else if(a==="tabchk"){
+    S.tbl.vals=[];for(i=0;i<7;i++){S.tbl.vals.push($("t"+i).value);}
+    S.tbl.checked=true;render();
+  }
+  else if(a==="tabrst"){S.tbl={vals:[],checked:false};render();}
+  else if(a==="opt"){
+    i=parseInt(el.getAttribute("data-i"),10);c.pick=i;ok=(i===it.a);
+    fb='<div class="fix"><b>'+L(CAT[it.cat].t)+'</b></div>'+L(CAT[it.cat].d);
+    if(it.prompt){fb='<div class="fix">'+esc(it.opts[0])+'</div>'+fb;}
+    finish(it,ok,fb);
+  }
+  else if(a==="gopt"){c.pickF=el.getAttribute("data-f");doGap(it,c.pickF);}
+  else if(a==="gchk"){
+    val=trim($("inp").value);c.typed=val;
+    if(val===""){return;}
+    ok=tblOk(val,it.ans);
+    doGap(it,ok?it.ans:"–");
+  }
+  else if(a==="tfa"){
+    v=parseInt(el.getAttribute("data-v"),10);c.pickV=v;ok=((v===1)===it.ok);
+    if(it.ok){fb='<div>'+L(T.itIsRight)+'</div>';}
+    else{fb='<div>'+L(FB[it.err])+'</div><div class="fix">'+L(T.plus)+' <b>'+esc(it.fix)+'</b></div>';}
+    finish(it,ok,fb);
+  }
+  else if(a==="mchip"){
+    i=parseInt(el.getAttribute("data-i"),10);b=c.sel.indexOf(i);
+    if(b>=0){c.sel.splice(b,1);}else if(c.sel.length<2){c.sel.push(i);}
+    renderSess();
+  }
+  else if(a==="mchk"){
+    sb=SBY[it.sid];ok=(c.sel.length===2&&c.sel.indexOf(sb.vi)>=0&&c.sel.indexOf(sb.ii)>=0);
+    fb='<div>'+L(sb.type==="J"?FB.pos1:FB.pos2)+'</div><div>'+L(FB.end)+'</div>';
+    finish(it,ok,fb);
+  }
+  else if(a==="badd"){c.seq.push(parseInt(el.getAttribute("data-k"),10));renderSess();}
+  else if(a==="bchip"){c.seq.splice(parseInt(el.getAttribute("data-i"),10),1);renderSess();}
+  else if(a==="bclr"){c.seq=[];renderSess();}
+  else if(a==="bchk"){
+    sb=SBY[it.sid];b=builtList(it,c);ok=arrEq(b,sb.parts);
+    for(i=0;i<sb.alt.length&&!ok;i++){if(arrEq(b,sb.alt[i])){ok=true;}}
+    if(ok){fb='<div class="fix">'+esc(capFirst(b.join(" "))+sb.p)+'</div>';}
+    else{
+      var pos=(sb.type==="J"?0:1),hint;
+      if(b.indexOf(sb.parts[sb.vi])!==pos){hint=(sb.type==="J"?FB.pos1:FB.pos2);}
+      else if(b[b.length-1]!==sb.parts[sb.ii]){hint=FB.end;}
+      else{hint=FB.mid;}
+      fb='<div>'+L(hint)+'</div><div class="fix">'+L(T.plus)+' <b>'+esc(sbText(sb))+'</b></div>';
+    }
+    finish(it,ok,fb);
+  }
+  else if(a==="nxt"){
+    if(Sess.i+1<Sess.items.length){Sess.i++;Sess.cur=newCur(Sess.items[Sess.i]);renderSess();window.scrollTo(0,0);}
+    else{S.page="res";render();window.scrollTo(0,0);}
+  }
+  else if(a==="rep"){var w=shuf(Sess.wrong);startSession(Sess.ex,w);}
+  else if(a==="again"){startSession(Sess.ex);}
+}
+function renderRes(){
+  var n=Sess.items.length,pct=Math.round(Sess.ok/n*100),msg=pct>=90?T.vg:(pct>=60?T.gut:T.more),i,seen={},h;
+  h='<div class="card" style="text-align:center"><div class="gl">'+L(T.result)+'</div><div class="score">'+Sess.ok+' / '+n+'</div><h2>'+L(msg)+'</h2></div>';
+  if(Sess.wrong.length){
+    h+='<div class="card"><h3>'+L(T.mist)+'</h3><ul class="wrongs">';
+    for(i=0;i<Sess.wrong.length;i++){if(!seen[Sess.wrong[i].id]){seen[Sess.wrong[i].id]=1;h+='<li style="font-size:18px">'+summ(Sess.wrong[i])+'</li>';}}
+    h+='</ul></div>';
+  }
+  h+='<div class="row">';
+  if(Sess.wrong.length){h+='<button class="btn pri" data-act="rep">'+L(T.rep)+'</button>';}
+  h+='<button class="btn" data-act="again">'+L(T.again)+'</button><button class="btn" data-act="exit">'+L(T.toMod)+'</button></div>';
+  $("app").innerHTML=h;
+}
+function render(){
+  var p=S.page;
+  if(p==="home"){rHome();}else if(p==="mod"){rMod();}else if(p==="sess"){renderSess();}
+  else if(p==="res"){renderRes();}else if(p==="tab"){rTab();}else if(p==="rules"){rRules();}
+}
+
+/* ---------- Start ---------- */
+function init(){
+  load();
+  var sel=$("lang"),i,o,h="";
+  for(i=0;i<LANGS.length;i++){h+='<option value="'+LANGS[i][0]+'">'+(i===0?"🌐 ":"")+LANGS[i][1]+'</option>';}
+  sel.innerHTML=h;sel.value=S.lang;
+  sel.addEventListener("change",function(){S.lang=sel.value;save();render();});
+  var app=$("app");
+  app.addEventListener("click",function(e){
+    var t=e.target;
+    while(t&&t!==app&&!(t.getAttribute&&t.getAttribute("data-act"))){t=t.parentNode;}
+    if(!t||t===app||t.disabled){return;}
+    act(t.getAttribute("data-act"),t);
+  });
+  app.addEventListener("focusin",function(e){if(e.target&&e.target.tagName==="INPUT"){lastInp=e.target;}});
+  app.addEventListener("keydown",function(e){
+    if((e.key==="Enter"||e.keyCode===13)&&e.target&&e.target.id==="inp"){
+      var c=Sess&&Sess.cur;if(c&&!c.done){act("gchk",e.target);}
+    }
+  });
+  render();
+}
+init();
+})();
+</script>
+</body>
+</html>
