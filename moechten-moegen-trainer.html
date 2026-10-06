@@ -1,0 +1,539 @@
+<title>Möchten und mögen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito+Sans:wght@400;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700&display=swap">
+<style>
+/* Layout: two verbs side by side. möchten (order pad, ochre) on the left, mögen (likes list, cobalt) on the right. */
+:root{
+  --bg:#EDF0F5; --surface:#FFFFFF; --ink:#16202C; --muted:#566376; --line:#D2D9E3;
+  --moe:#B25808; --moe-soft:#FBEBDB; --on-moe:#FFFFFF;
+  --mog:#1F5CA6; --mog-soft:#E0ECF9; --on-mog:#FFFFFF;
+  --ok:#25703A; --ok-soft:#DDF0E1; --bad:#B3261E; --bad-soft:#F8DFDD;
+  --display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --body:'Nunito Sans','Segoe UI',system-ui,sans-serif;
+  --arabic:'Noto Sans Arabic','Segoe UI',Tahoma,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1520; --surface:#17212E; --ink:#E9EEF4; --muted:#9BA9BA; --line:#2C394A;
+    --moe:#F2A560; --moe-soft:#3A2A1B; --on-moe:#1B1107;
+    --mog:#82B4F0; --mog-soft:#1B2D44; --on-mog:#091523;
+    --ok:#82D596; --ok-soft:#1B3524; --bad:#FF918A; --bad-soft:#3E2220;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1520; --surface:#17212E; --ink:#E9EEF4; --muted:#9BA9BA; --line:#2C394A;
+  --moe:#F2A560; --moe-soft:#3A2A1B; --on-moe:#1B1107;
+  --mog:#82B4F0; --mog-soft:#1B2D44; --on-mog:#091523;
+  --ok:#82D596; --ok-soft:#1B3524; --bad:#FF918A; --bad-soft:#3E2220;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;padding-inline:16px;padding-block:20px 48px}
+*{box-sizing:border-box}
+.wrap{max-width:900px;margin-inline:auto;display:flex;flex-direction:column;gap:20px}
+[lang="ar"]{font-family:var(--arabic)}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--mog);outline-offset:2px}
+
+/* Kopf */
+.top{display:flex;flex-direction:column;gap:14px}
+.mast{display:flex;align-items:baseline;flex-wrap:wrap;column-gap:14px}
+h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(2.1rem,8vw,3.4rem);line-height:1.05;letter-spacing:-.02em;text-wrap:balance}
+h1 .amp{margin-inline:.28em;color:var(--muted);font-weight:600}
+.v-moe{color:var(--moe)} .v-mog{color:var(--mog)}
+.lvl{margin:0;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-size:.8rem}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px}
+.tab{border:0;background:transparent;border-radius:9px;padding:8px 16px;cursor:pointer;font-weight:800;text-align:center;line-height:1.2}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.tab .tl{color:inherit;opacity:.8}
+.lang{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.9rem;color:var(--muted)}
+.lang span{display:flex;flex-direction:column;line-height:1.2}
+.lang select{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-weight:700;color:var(--ink);min-width:9.5em}
+
+/* Übersetzungen */
+.tl{display:block;font-size:.88em;font-weight:600;color:var(--muted);line-height:1.4}
+.tl[dir="rtl"]{text-align:right}
+.de{display:block}
+
+/* Karten */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:16px}
+.verb h2{margin:0 0 4px;font-family:var(--display);font-size:2rem;font-weight:800;line-height:1.1}
+.verb.moe{border-top:6px solid var(--moe)} .verb.moe h2{color:var(--moe)}
+.verb.mog{border-top:6px solid var(--mog)} .verb.mog h2{color:var(--mog)}
+.verb h3,.card h3{margin:18px 0 8px;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.verb h3 .tl{display:inline;margin-inline-start:.5em;text-transform:none;letter-spacing:0}
+.meaning{font-weight:600}
+.meaning .tl{margin-top:4px}
+table.conj{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+table.conj th{text-align:left;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;padding:4px 8px}
+table.conj td{padding:7px 8px;border-top:1px solid var(--line)}
+table.conj td:first-child{color:var(--muted);font-weight:700;width:46%}
+table.conj td:last-child{font-weight:800;font-size:1.12em}
+.moe table.conj td:last-child{color:var(--moe)} .mog table.conj td:last-child{color:var(--mog)}
+ul.ex{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+ul.ex li{padding-inline-start:12px;border-inline-start:3px solid var(--line)}
+.moe ul.ex li{border-color:var(--moe)} .mog ul.ex li{border-color:var(--mog)}
+ul.ex .de{font-weight:800}
+.note-card ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.note-card li{padding-inline-start:12px;border-inline-start:3px solid var(--line)}
+.eq{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px;margin-bottom:12px}
+.eq div{border-radius:12px;padding:12px 14px;font-weight:800}
+.eq .a{background:var(--moe-soft);color:var(--ink);border-left:5px solid var(--moe)}
+.eq .b{background:var(--mog-soft);color:var(--ink);border-left:5px solid var(--mog)}
+.eq small{display:block;font-weight:600;color:var(--muted)}
+
+/* Üben: Menü */
+.menu h2{margin:0 0 12px;font-family:var(--display);font-size:1.5rem}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+.mode{text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.mode:hover{border-color:var(--ink)}
+.mode strong{font-family:var(--display);font-size:1.25rem}
+.mode strong .tl{display:inline;margin-inline-start:.4em}
+.mode .desc .tl{margin-top:2px}
+
+/* Üben: Aufgabe */
+.prog{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.prog>i{display:block;height:100%;background:var(--ink);transition:width .25s}
+.count{margin:6px 0 0;color:var(--muted);font-weight:700;font-size:.85rem;display:flex;justify-content:space-between;gap:12px}
+.q{display:flex;flex-direction:column;gap:16px}
+.sit{margin:0;color:var(--muted)}
+.sit b{color:var(--ink)}
+.sentence{margin:0;font-family:var(--display);font-size:clamp(1.5rem,5.5vw,2.1rem);font-weight:600;line-height:1.35}
+.gap{display:inline-block;min-width:3.8em;height:1em;border-bottom:4px solid var(--ink);vertical-align:-.1em;margin-inline:.1em}
+.fill{font-weight:800;border-radius:6px;padding:0 .2em}
+.fill.moechten{background:var(--moe-soft);color:var(--moe)}
+.fill.moegen{background:var(--mog-soft);color:var(--mog)}
+.tag{display:inline-block;font-family:var(--body);font-size:.5em;font-weight:800;border-radius:99px;padding:.15em .8em;vertical-align:.25em;margin-inline-start:.5em}
+.tag.moechten{background:var(--moe);color:var(--on-moe)} .tag.moegen{background:var(--mog);color:var(--on-mog)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:10px}
+.btn{border:2px solid var(--ink);background:var(--surface);border-radius:12px;padding:12px 18px;font-weight:800;cursor:pointer;text-align:center;line-height:1.25}
+.btn:hover:not(:disabled){transform:translateY(-1px)}
+.btn:disabled{cursor:default}
+.btn.moe{background:var(--moe);border-color:var(--moe);color:var(--on-moe);font-size:1.3rem}
+.btn.mog{background:var(--mog);border-color:var(--mog);color:var(--on-mog);font-size:1.3rem}
+.btn.moe .tl,.btn.mog .tl,.btn.primary .tl{color:inherit;opacity:.85}
+.btn.primary{background:var(--ink);color:var(--bg)}
+.btn.ghost{border-color:var(--line);font-weight:700;font-size:.9rem;padding:8px 14px}
+.btn.opt{font-size:1.3rem}
+.btn.opt.ok,.btn.moe.ok-pick,.btn.mog.ok-pick{outline:4px solid var(--ok);outline-offset:2px}
+.btn.opt.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.btn.opt.bad{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.btn.moe.dim,.btn.mog.dim{opacity:.45}
+.trline{margin:0}
+.fb{border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.fb p{margin:0}
+.fb.ok{background:var(--ok-soft)} .fb.bad{background:var(--bad-soft)}
+.verdict{font-weight:800;font-size:1.15rem}
+.fb.ok .verdict{color:var(--ok)} .fb.bad .verdict{color:var(--bad)}
+.verdict .tl{display:inline;margin-inline-start:.5em}
+.note{font-size:.95rem}
+.txt{width:100%;max-width:340px;border:2px solid var(--ink);border-radius:12px;background:var(--surface);padding:12px 14px;font-size:1.4rem;font-weight:800}
+.txt:disabled{opacity:1}
+.txt.ok{border-color:var(--ok);background:var(--ok-soft)} .txt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.hintkeys{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:.85rem;font-weight:700}
+.hintkeys .btn{padding:6px 16px;font-size:1.2rem}
+.warn{color:var(--bad);font-weight:700;margin:0}
+table.fill-t{width:100%;border-collapse:collapse}
+table.fill-t td{padding:6px 8px;border-top:1px solid var(--line);vertical-align:middle}
+table.fill-t td:first-child{font-weight:700;color:var(--muted);width:40%}
+table.fill-t .txt{max-width:220px;padding:8px 12px;font-size:1.2rem}
+.right{font-weight:800;color:var(--ok);margin-inline-start:10px}
+
+/* Ergebnis */
+.score{font-family:var(--display);font-size:3.2rem;font-weight:800;line-height:1;margin:0}
+.score small{font-size:1.2rem;color:var(--muted)}
+.wl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.wl li{padding:8px 12px;border-radius:10px;background:var(--bad-soft)}
+.wl b{font-weight:800}
+.acts{display:flex;flex-wrap:wrap;gap:10px}
+@media (max-width:420px){.two{grid-template-columns:1fr}.tab{padding:8px 12px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.btn:hover:not(:disabled){transform:none}}
+</style>
+
+<div id="app"></div>
+<noscript>Dieser Trainer braucht JavaScript. / This trainer needs JavaScript.</noscript>
+<script>
+const LANGS={de:'Nur Deutsch',en:'English',tr:'Türkçe',ar:'العربية',ru:'Русский'};
+const INF={moechten:'möchten',moegen:'mögen'};
+const FORMS={
+  moechten:{ich:'möchte',du:'möchtest',er:'möchte',wir:'möchten',ihr:'möchtet',sie:'möchten',Sie:'möchten'},
+  moegen:{ich:'mag',du:'magst',er:'mag',wir:'mögen',ihr:'mögt',sie:'mögen',Sie:'mögen'}
+};
+const PRON=[['ich','ich'],['du','du'],['er','er / sie / es'],['wir','wir'],['ihr','ihr'],['sie','sie (Plural)'],['Sie','Sie (formal)']];
+
+const U={
+  learn:{de:'Lernen',en:'Learn',tr:'Öğren',ar:'تعلّم',ru:'Учить'},
+  practice:{de:'Üben',en:'Practise',tr:'Alıştırma',ar:'تمرين',ru:'Практика'},
+  expl:{de:'Erklärungen in',en:'Explanations in',tr:'Açıklamalar',ar:'الشرح بلغة',ru:'Объяснения на'},
+  forms:{de:'Formen',en:'Forms',tr:'Biçimler',ar:'الصيغ',ru:'Формы'},
+  examples:{de:'Beispiele',en:'Examples',tr:'Örnekler',ar:'أمثلة',ru:'Примеры'},
+  meaning:{de:'Bedeutung',en:'Meaning',tr:'Anlam',ar:'المعنى',ru:'Значение'},
+  diff:{de:'Der Unterschied',en:'The difference',tr:'Fark',ar:'الفرق',ru:'Разница'},
+  tips:{de:'Tipps',en:'Tips',tr:'İpuçları',ar:'نصائح',ru:'Советы'},
+  pron:{de:'Pronomen',en:'Pronoun',tr:'Zamir',ar:'الضمير',ru:'Местоимение'},
+  form:{de:'Form',en:'Form',tr:'Biçim',ar:'الصيغة',ru:'Форма'},
+  pick:{de:'Was möchtest du üben?',en:'What would you like to practise?',tr:'Ne çalışmak istersin?',ar:'ماذا تودّ أن تتدرّب؟',ru:'Что вы хотите потренировать?'},
+  mVerb:{de:'Welches Verb?',en:'Which verb?',tr:'Hangi fiil?',ar:'أيّ فعل؟',ru:'Какой глагол?'},
+  mForm:{de:'Welche Form?',en:'Which form?',tr:'Hangi biçim?',ar:'أيّ صيغة؟',ru:'Какая форма?'},
+  mWrite:{de:'Schreiben',en:'Write',tr:'Yazma',ar:'كتابة',ru:'Писать'},
+  mTable:{de:'Tabelle',en:'Table',tr:'Tablo',ar:'جدول',ru:'Таблица'},
+  dVerb:{de:'Lies die Situation. Wähle das passende Verb.',en:'Read the situation. Choose the fitting verb.',tr:'Durumu oku. Uygun fiili seç.',ar:'اقرأ الموقف. اختر الفعل المناسب.',ru:'Прочитайте ситуацию. Выберите подходящий глагол.'},
+  dForm:{de:'Wähle die richtige Form im Satz.',en:'Choose the correct form in the sentence.',tr:'Cümlede doğru biçimi seç.',ar:'اختر الصيغة الصحيحة في الجملة.',ru:'Выберите правильную форму в предложении.'},
+  dWrite:{de:'Schreibe die richtige Form.',en:'Type the correct form.',tr:'Doğru biçimi yaz.',ar:'اكتب الصيغة الصحيحة.',ru:'Напишите правильную форму.'},
+  dTable:{de:'Ergänze alle Formen von möchten und mögen.',en:'Complete all forms of möchten and mögen.',tr:'möchten ve mögen için tüm biçimleri tamamla.',ar:'أكمل جميع صيغ möchten وmögen.',ru:'Заполните все формы möchten и mögen.'},
+  check:{de:'Prüfen',en:'Check',tr:'Kontrol et',ar:'تحقّق',ru:'Проверить'},
+  next:{de:'Weiter',en:'Next',tr:'Devam',ar:'التالي',ru:'Далее'},
+  ok:{de:'Richtig!',en:'Correct!',tr:'Doğru!',ar:'صحيح!',ru:'Верно!'},
+  bad:{de:'Leider falsch.',en:'Not quite.',tr:'Yanlış.',ar:'خطأ.',ru:'Неверно.'},
+  corr:{de:'Richtig ist:',en:'The answer is:',tr:'Doğrusu:',ar:'الصحيح هو:',ru:'Правильно:'},
+  result:{de:'Ergebnis',en:'Result',tr:'Sonuç',ar:'النتيجة',ru:'Результат'},
+  again:{de:'Nochmal',en:'Again',tr:'Tekrar',ar:'مرة أخرى',ru:'Ещё раз'},
+  mistakes:{de:'Fehler üben',en:'Practise mistakes',tr:'Hataları çalış',ar:'تدرّب على الأخطاء',ru:'Работа над ошибками'},
+  back:{de:'Zurück',en:'Back',tr:'Geri',ar:'رجوع',ru:'Назад'},
+  trans:{de:'Übersetzung zeigen',en:'Show translation',tr:'Çeviriyi göster',ar:'أظهر الترجمة',ru:'Показать перевод'},
+  question:{de:'Frage',en:'Question',tr:'Soru',ar:'سؤال',ru:'Вопрос'},
+  situation:{de:'Situation',en:'Situation',tr:'Durum',ar:'الموقف',ru:'Ситуация'},
+  wrongs:{de:'Das war falsch',en:'These were wrong',tr:'Bunlar yanlıştı',ar:'هذه كانت خاطئة',ru:'Ошибки'},
+  allRight:{de:'Alles richtig!',en:'All correct!',tr:'Hepsi doğru!',ar:'كلّها صحيحة!',ru:'Всё верно!'},
+  fillAll:{de:'Fülle alle Felder aus.',en:'Fill in all fields.',tr:'Tüm alanları doldur.',ar:'املأ كل الحقول.',ru:'Заполните все поля.'},
+  umlautHint:{de:'ö einfügen',en:'insert ö',tr:'ö ekle',ar:'أدخل ö',ru:'вставить ö'}
+};
+
+const EX={
+  moechten:{
+    mean:{de:'Ein höflicher Wunsch: Du bestellst etwas oder bittest um etwas.',
+      en:'A polite wish: you order something or ask for something. English: “would like”.',
+      tr:'Kibar bir istek: Bir şey sipariş edersin ya da rica edersin. Türkçe: “istemek” (kibar).',
+      ar:'رغبة مهذّبة: تطلب شيئًا أو ترجو شيئًا. بالعربية: «أودّ».',
+      ru:'Вежливое желание: вы заказываете что-то или просите о чём-то. По-русски: «хотел бы».'},
+    ex:[
+      {de:'Ich möchte einen Kaffee.',en:'I would like a coffee.',tr:'Bir kahve istiyorum.',ar:'أودّ فنجان قهوة.',ru:'Я хотел бы кофе.'},
+      {de:'Möchtest du ein Wasser?',en:'Would you like a water?',tr:'Bir su ister misin?',ar:'هل تودّ كوب ماء؟',ru:'Хочешь воды?'},
+      {de:'Wir möchten zwei Tickets.',en:'We would like two tickets.',tr:'İki bilet istiyoruz.',ar:'نودّ تذكرتين.',ru:'Мы хотели бы два билета.'}
+    ]},
+  moegen:{
+    mean:{de:'Etwas oder jemanden gern haben, gut finden. Das gilt allgemein, nicht nur jetzt.',
+      en:'To like something or someone, in general (not only now). English: “to like”.',
+      tr:'Bir şeyi ya da birini sevmek, hoşlanmak. Genel olarak geçerlidir, sadece şimdi değil. Türkçe: “sevmek”.',
+      ar:'أن تحبّ شيئًا أو شخصًا بشكل عام، وليس الآن فقط. بالعربية: «يحبّ».',
+      ru:'Любить, когда что-то или кто-то нравится: вообще, а не только сейчас. По-русски: «любить / нравиться».'},
+    ex:[
+      {de:'Ich mag Kaffee.',en:'I like coffee.',tr:'Kahveyi severim.',ar:'أحبّ القهوة.',ru:'Я люблю кофе.'},
+      {de:'Magst du Katzen?',en:'Do you like cats?',tr:'Kedileri sever misin?',ar:'هل تحبّ القطط؟',ru:'Ты любишь кошек?'},
+      {de:'Meine Kinder mögen Schokolade.',en:'My children like chocolate.',tr:'Çocuklarım çikolatayı sever.',ar:'يحبّ أطفالي الشوكولاتة.',ru:'Мои дети любят шоколад.'}
+    ]}
+};
+const VM={
+  moechten:{de:'möchten = höflicher Wunsch (bestellen, bitten).',en:'möchten = a polite wish (ordering, asking): “would like”.',tr:'möchten = kibar istek (sipariş verme, rica).',ar:'möchten = رغبة مهذّبة (طلب، رجاء): «أودّ».',ru:'möchten = вежливое желание (заказ, просьба): «хотел бы».'},
+  moegen:{de:'mögen = etwas oder jemanden gern haben, gut finden.',en:'mögen = to like something or someone.',tr:'mögen = bir şeyi veya birini sevmek, hoşlanmak.',ar:'mögen = أن تحبّ شيئًا أو شخصًا.',ru:'mögen = любить, когда что-то или кто-то нравится.'}
+};
+const DIFF={
+  a:{de:'Ich möchte einen Kaffee.',sub:{de:'Ich bestelle jetzt.',en:'I order now.',tr:'Şimdi sipariş veriyorum.',ar:'أطلب الآن.',ru:'Я заказываю сейчас.'}},
+  b:{de:'Ich mag Kaffee.',sub:{de:'Ich finde Kaffee gut.',en:'I like coffee in general.',tr:'Genel olarak kahveyi severim.',ar:'أحبّ القهوة عمومًا.',ru:'Я вообще люблю кофе.'}},
+  note:{de:'Das sind zwei verschiedene Verben. Lerne die Formen getrennt.',en:'These are two different verbs. Learn their forms separately.',tr:'Bunlar iki ayrı fiildir. Biçimlerini ayrı ayrı öğren.',ar:'هذان فعلان مختلفان. تعلّم صيغهما بشكل منفصل.',ru:'Это два разных глагола. Учите их формы отдельно.'}
+};
+const HINT={
+  sing:{de:'ich und er/sie/es haben dieselbe Form, ohne Endung.',en:'ich and er/sie/es use the same form, with no ending.',tr:'ich ve er/sie/es aynı biçimi kullanır, ek yoktur.',ar:'ich وer/sie/es لهما الصيغة نفسها، بلا نهاية.',ru:'У ich и er/sie/es одинаковая форма, без окончания.'},
+  du:{de:'du: Endung -st (möchtest, magst).',en:'du: ending -st (möchtest, magst).',tr:'du: -st eki (möchtest, magst).',ar:'du: النهاية -st (möchtest, magst).',ru:'du: окончание -st (möchtest, magst).'},
+  ihr:{de:'ihr: Endung -t (möchtet, mögt).',en:'ihr: ending -t (möchtet, mögt).',tr:'ihr: -t eki (möchtet, mögt).',ar:'ihr: النهاية -t (möchtet, mögt).',ru:'ihr: окончание -t (möchtet, mögt).'},
+  plural:{de:'wir, sie (Plural) und Sie: wie der Infinitiv (möchten, mögen).',en:'wir, sie (plural) and Sie: same as the infinitive (möchten, mögen).',tr:'wir, sie (çoğul) ve Sie: mastar (Infinitiv) ile aynı (möchten, mögen).',ar:'wir وsie (جمع) وSie: مثل المصدر (möchten, mögen).',ru:'wir, sie (мн. ч.) и Sie: как инфинитив (möchten, mögen).'},
+  umlaut:{de:'mögen: ö bei wir, ihr, sie/Sie. Kein ö bei ich, du, er/sie/es (mag, magst).',en:'mögen: ö for wir, ihr, sie/Sie. No ö for ich, du, er/sie/es (mag, magst).',tr:'mögen: wir, ihr, sie/Sie için ö var. ich, du, er/sie/es için ö yok (mag, magst).',ar:'mögen: مع ö في wir وihr وsie/Sie. بدون ö في ich وdu وer/sie/es (mag, magst).',ru:'mögen: ö у wir, ihr, sie/Sie. Без ö у ich, du, er/sie/es (mag, magst).'}
+};
+const TIPS=[HINT.sing,HINT.umlaut,
+  {de:'Nach beiden Verben steht ein Nomen. Nach möchten oft mit Artikel (einen Kaffee), nach mögen oft ohne Artikel (Kaffee, Katzen).',
+   en:'A noun follows both verbs. After möchten usually with an article (einen Kaffee), after mögen often without (Kaffee, Katzen).',
+   tr:'Her iki fiilden sonra bir isim gelir. möchten’den sonra çoğunlukla artikel ile (einen Kaffee), mögen’den sonra çoğunlukla artikelsiz (Kaffee, Katzen).',
+   ar:'بعد الفعلين يأتي اسم. بعد möchten غالبًا مع أداة (مثل einen Kaffee)، وبعد mögen غالبًا بدونها (Kaffee, Katzen).',
+   ru:'После обоих глаголов стоит существительное. После möchten обычно с артиклем (einen Kaffee), после mögen часто без артикля (Kaffee, Katzen).'}
+];
+
+/* Aufgaben: v = Verb, p = Person, a/b = Text vor/nach der Lücke, ans = richtige Form, sit = Situation */
+const ITEMS=[
+ {v:'moechten',p:'ich',a:'Ich ',b:' einen Kaffee.',ans:'möchte',sit:'Im Café. Du bestellst.',tr:{en:'I would like a coffee.',tr:'Bir kahve istiyorum.',ar:'أودّ فنجان قهوة.',ru:'Я хотел бы кофе.'}},
+ {v:'moechten',p:'du',a:'Du ',b:' ein Wasser.',ans:'möchtest',sit:'Im Restaurant. Du bestellst.',tr:{en:'You would like a water.',tr:'Bir su istiyorsun.',ar:'تودّ كوب ماء.',ru:'Ты хотел бы воды.'}},
+ {v:'moechten',p:'er',a:'Er ',b:' eine Pizza.',ans:'möchte',sit:'In der Pizzeria. Er bestellt.',tr:{en:'He would like a pizza.',tr:'Bir pizza istiyor.',ar:'يودّ بيتزا.',ru:'Он хотел бы пиццу.'}},
+ {v:'moechten',p:'wir',a:'Wir ',b:' zwei Tickets.',ans:'möchten',sit:'Wir sind an der Kinokasse.',tr:{en:'We would like two tickets.',tr:'İki bilet istiyoruz.',ar:'نودّ تذكرتين.',ru:'Мы хотели бы два билета.'}},
+ {v:'moechten',p:'ihr',a:'Ihr ',b:' einen Tisch.',ans:'möchtet',sit:'Im Restaurant. Ihr fragt den Kellner.',tr:{en:'You (pl.) would like a table.',tr:'Bir masa istiyorsunuz.',ar:'تودّون طاولة.',ru:'Вы хотели бы столик.'}},
+ {v:'moechten',p:'sie',a:'Die Kinder ',b:' ein Eis.',ans:'möchten',sit:'An der Eisdiele. Die Kinder bestellen.',tr:{en:'The children would like an ice cream.',tr:'Çocuklar bir dondurma istiyor.',ar:'الأطفال يودّون آيس كريم.',ru:'Дети хотели бы мороженое.'}},
+ {v:'moechten',p:'Sie',a:'Frau Meier, ',b:' Sie einen Tee?',ans:'möchten',sit:'Im Café. Die Kellnerin fragt.',tr:{en:'Ms Meier, would you like a tea?',tr:'Bayan Meier, bir çay ister misiniz?',ar:'سيدة ماير، هل تودّين شايًا؟',ru:'Госпожа Майер, хотите чаю?'}},
+ {v:'moechten',p:'er',a:'Anna ',b:' einen Apfel.',ans:'möchte',sit:'Auf dem Markt. Anna kauft.',tr:{en:'Anna would like an apple.',tr:'Anna bir elma istiyor.',ar:'تودّ آنا تفاحة.',ru:'Анна хотела бы яблоко.'}},
+ {v:'moechten',p:'du',a:'',b:' du einen Tee?',ans:'Möchtest',sit:'Du bietest etwas an.',tr:{en:'Would you like a tea?',tr:'Bir çay ister misin?',ar:'هل تودّ شايًا؟',ru:'Хочешь чаю?'}},
+ {v:'moechten',p:'ich',a:'Ich ',b:' einen Salat.',ans:'möchte',sit:'Im Restaurant. Du bestellst.',tr:{en:'I would like a salad.',tr:'Bir salata istiyorum.',ar:'أودّ سلطة.',ru:'Я хотел бы салат.'}},
+ {v:'moechten',p:'wir',a:'Wir ',b:' einen Kaffee, bitte.',ans:'möchten',sit:'Im Café. Ihr bestellt.',tr:{en:'We would like a coffee, please.',tr:'Bir kahve istiyoruz, lütfen.',ar:'نودّ قهوة من فضلك.',ru:'Мы хотели бы кофе, пожалуйста.'}},
+ {v:'moechten',p:'sie',a:'Meine Eltern ',b:' ein Haus.',ans:'möchten',sit:'Beim Hausmakler. Sie fragen nach einem Haus.',tr:{en:'My parents would like a house.',tr:'Annem babam bir ev istiyor.',ar:'يودّ والديّ منزلًا.',ru:'Мои родители хотели бы дом.'}},
+ {v:'moechten',p:'ich',a:'Ich ',b:' ein Brot.',ans:'möchte',sit:'In der Bäckerei. Du kaufst.',tr:{en:'I would like a loaf of bread.',tr:'Bir ekmek istiyorum.',ar:'أودّ رغيف خبز.',ru:'Я хотел бы хлеб.'}},
+ {v:'moegen',p:'ich',a:'Ich ',b:' Kaffee.',ans:'mag',sit:'Kaffee ist dein Lieblingsgetränk.',tr:{en:'I like coffee.',tr:'Kahveyi severim.',ar:'أحبّ القهوة.',ru:'Я люблю кофе.'}},
+ {v:'moegen',p:'du',a:'Du ',b:' Tomaten.',ans:'magst',sit:'Tomaten schmecken dir immer gut.',tr:{en:'You like tomatoes.',tr:'Domatesleri seversin.',ar:'تحبّ الطماطم.',ru:'Ты любишь помидоры.'}},
+ {v:'moegen',p:'er',a:'Er ',b:' Musik.',ans:'mag',sit:'Musik gefällt ihm immer.',tr:{en:'He likes music.',tr:'Müziği sever.',ar:'يحبّ الموسيقى.',ru:'Он любит музыку.'}},
+ {v:'moegen',p:'wir',a:'Wir ',b:' Äpfel.',ans:'mögen',sit:'Äpfel schmecken uns immer gut.',tr:{en:'We like apples.',tr:'Elmayı severiz.',ar:'نحبّ التفاح.',ru:'Мы любим яблоки.'}},
+ {v:'moegen',p:'ihr',a:'Ihr ',b:' Hunde.',ans:'mögt',sit:'Hunde gefallen euch.',tr:{en:'You (pl.) like dogs.',tr:'Köpekleri seversiniz.',ar:'تحبّون الكلاب.',ru:'Вы любите собак.'}},
+ {v:'moegen',p:'sie',a:'Meine Kinder ',b:' Schokolade.',ans:'mögen',sit:'Schokolade schmeckt den Kindern immer.',tr:{en:'My children like chocolate.',tr:'Çocuklarım çikolatayı sever.',ar:'يحبّ أطفالي الشوكولاتة.',ru:'Мои дети любят шоколад.'}},
+ {v:'moegen',p:'Sie',a:'Herr Yilmaz, ',b:' Sie Musik?',ans:'mögen',sit:'Smalltalk. Du fragst nach den Hobbys.',tr:{en:'Mr Yilmaz, do you like music?',tr:'Bay Yılmaz, müziği sever misiniz?',ar:'سيد يلماز، هل تحبّ الموسيقى؟',ru:'Господин Йылмаз, вы любите музыку?'}},
+ {v:'moegen',p:'er',a:'Anna ',b:' Katzen.',ans:'mag',sit:'Katzen gefallen Anna.',tr:{en:'Anna likes cats.',tr:'Anna kedileri sever.',ar:'تحبّ آنا القطط.',ru:'Анна любит кошек.'}},
+ {v:'moegen',p:'ich',a:'Ich ',b:' meinen Lehrer.',ans:'mag',sit:'Du findest deinen Lehrer nett.',tr:{en:'I like my teacher.',tr:'Öğretmenimi severim.',ar:'أحبّ معلّمي.',ru:'Мне нравится мой учитель.'}},
+ {v:'moegen',p:'du',a:'',b:' du Fische?',ans:'Magst',sit:'Du fragst: Findest du Fische gut?',tr:{en:'Do you like fish?',tr:'Balıkları sever misin?',ar:'هل تحبّ الأسماك؟',ru:'Ты любишь рыбу?'}},
+ {v:'moegen',p:'ich',a:'Ich ',b:' keine Milch.',ans:'mag',sit:'Milch schmeckt dir nicht.',tr:{en:'I don’t like milk.',tr:'Süt sevmiyorum.',ar:'لا أحبّ الحليب.',ru:'Я не люблю молоко.'}},
+ {v:'moegen',p:'er',a:'Das Kind ',b:' Bananen.',ans:'mag',sit:'Bananen schmecken dem Kind immer.',tr:{en:'The child likes bananas.',tr:'Çocuk muz sever.',ar:'يحبّ الطفل الموز.',ru:'Ребёнок любит бананы.'}},
+ {v:'moegen',p:'er',a:'Er ',b:' seine Arbeit.',ans:'mag',sit:'Seine Arbeit gefällt ihm.',tr:{en:'He likes his job.',tr:'İşini sever.',ar:'يحبّ عمله.',ru:'Ему нравится его работа.'}}
+];
+/* ---------- Hilfsfunktionen ---------- */
+const app=document.getElementById('app');
+function ld(k,d){try{const v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
+function sv(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function norm(s){return s.trim().toLowerCase().replace(/oe/g,'ö').replace(/\s+/g,' ')}
+function dirOf(l){return l==='ar'?'rtl':'ltr'}
+function hintKey(p){return p==='du'?'du':p==='ihr'?'ihr':(p==='ich'||p==='er')?'sing':'plural'}
+
+let lang=ld('mm-lang','en'); if(!LANGS[lang])lang='en';
+let tab='learn', S=null, lastInput=null;
+let W={}; try{W=JSON.parse(ld('mm-w','{}'))||{}}catch(e){W={}}
+function saveW(){sv('mm-w',JSON.stringify(W))}
+
+function tl(o){return (lang==='de'||!o||!o[lang])?'':`<span class="tl" lang="${lang}" dir="${dirOf(lang)}">${o[lang]}</span>`}
+function bi(o){return `<span class="de">${o.de}</span>${tl(o)}`}
+function u(k){return bi(U[k])}
+
+/* ---------- Kopf ---------- */
+function head(){
+  const opts=Object.keys(LANGS).map(k=>`<option value="${k}"${k===lang?' selected':''}>${LANGS[k]}</option>`).join('');
+  const t=(k,key)=>`<button class="tab" role="tab" data-act="tab" data-tab="${k}" aria-selected="${tab===k}">${u(key)}</button>`;
+  return `<header class="top">
+    <div class="mast"><h1><span class="v-moe">möchten</span><span class="amp">&amp;</span><span class="v-mog">mögen</span></h1><p class="lvl">A1.1 · Präsens</p></div>
+    <div class="bar">
+      <div class="tabs" role="tablist">${t('learn','learn')}${t('practice','practice')}</div>
+      <label class="lang"><span>${u('expl')}</span><select id="lang">${opts}</select></label>
+    </div></header>`;
+}
+
+/* ---------- Lernen ---------- */
+function convTable(v){
+  const rows=PRON.map(([p,l])=>`<tr><td>${l}</td><td lang="de">${FORMS[v][p]}</td></tr>`).join('');
+  return `<table class="conj"><thead><tr><th>${u('pron')}</th><th>${u('form')}</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function verbCard(v,cls){
+  const ex=EX[v].ex.map(e=>`<li><span class="de" lang="de">${e.de}</span>${tl(e)}</li>`).join('');
+  return `<section class="card verb ${cls}"><h2 lang="de">${INF[v]}</h2>
+    <h3>${u('meaning')}</h3><div class="meaning">${bi(EX[v].mean)}</div>
+    <h3>${u('forms')}</h3>${convTable(v)}
+    <h3>${u('examples')}</h3><ul class="ex">${ex}</ul></section>`;
+}
+function learn(){
+  const tips=TIPS.map(t=>`<li>${bi(t)}</li>`).join('');
+  return `<div class="pair">${verbCard('moechten','moe')}${verbCard('moegen','mog')}</div>
+  <section class="card note-card"><h3 style="margin-top:0">${u('diff')}</h3>
+    <div class="eq"><div class="a" lang="de">${DIFF.a.de}<small>${DIFF.a.sub.de}</small>${tl(DIFF.a.sub)}</div><div class="b" lang="de">${DIFF.b.de}<small>${DIFF.b.sub.de}</small>${tl(DIFF.b.sub)}</div></div>
+    <div>${bi(DIFF.note)}</div></section>
+  <section class="card note-card"><h3 style="margin-top:0">${u('tips')}</h3><ul>${tips}</ul></section>`;
+}
+
+/* ---------- Üben: Menü ---------- */
+function menu(){
+  const m=(k,n,d)=>`<button class="mode" data-act="mode" data-mode="${k}"><strong>${u(n)}</strong><span class="desc">${bi(U[d])}</span></button>`;
+  return `<section class="card menu"><h2>${u('pick')}</h2><div class="modes">
+    ${m('verb','mVerb','dVerb')}${m('form','mForm','dForm')}${m('write','mWrite','dWrite')}${m('table','mTable','dTable')}
+  </div></section>`;
+}
+
+/* ---------- Sitzung ---------- */
+function pick(pool,n){
+  const items=pool.map(id=>({id,w:W[id]??1})),res=[];
+  while(res.length<n&&items.length){
+    const tot=items.reduce((a,b)=>a+b.w,0);let r=Math.random()*tot,i=0;
+    for(;i<items.length;i++){r-=items[i].w;if(r<=0)break}
+    if(i>=items.length)i=items.length-1;
+    res.push(items.splice(i,1)[0].id);
+  }
+  return res;
+}
+function start(mode,ids){
+  const pool=ids&&ids.length?ids:ITEMS.map((_,i)=>i);
+  const queue=mode==='table'?shuffle(['moechten','moegen']):pick(pool,Math.min(10,pool.length));
+  S={mode,queue,i:0,score:0,total:0,wrong:[],q:null};
+  newQ();render();
+}
+function mkOpts(it){
+  const other=it.v==='moechten'?'moegen':'moechten',ans=it.ans.toLowerCase();
+  const same=[...new Set(Object.values(FORMS[it.v]))].filter(f=>f!==ans);
+  const oth=[...new Set(Object.values(FORMS[other]))];
+  let list=[...new Set([ans,...shuffle(same).slice(0,2),FORMS[other][it.p]])];
+  for(const f of shuffle(oth)){if(list.length>=4)break;if(!list.includes(f))list.push(f)}
+  const up=it.ans[0]!==it.ans[0].toLowerCase();
+  return shuffle(list).map(f=>up?cap(f):f);
+}
+function newQ(){
+  if(S.i>=S.queue.length){S.q=null;return}
+  const id=S.queue[S.i];
+  S.q={id,done:false,showTr:false,ok:null,val:'',vals:null,warn:false};
+  if(S.mode==='form')S.q.opts=mkOpts(ITEMS[id]);
+}
+function record(id,ok){
+  W[id]=ok?Math.max(.4,(W[id]??1)-.5):Math.min(8,(W[id]??1)+2);saveW();
+  S.total++;if(ok)S.score++;else S.wrong.push(id);
+}
+
+/* ---------- Üben: Ansichten ---------- */
+function sent(it,fill,tag){
+  const g=fill===null?'<span class="gap"></span>':`<span class="fill ${it.v}">${esc(fill)}</span>`;
+  const t=tag?`<span class="tag ${it.v}" lang="de">${INF[it.v]}</span>`:'';
+  return `<p class="sentence" lang="de">${esc(it.a)}${g}${esc(it.b)}${t}</p>`;
+}
+function fb(it,q,withVerb){
+  let h=`<div class="fb ${q.ok?'ok':'bad'}" role="status"><p class="verdict">${q.ok?'✓':'✗'} ${u(q.ok?'ok':'bad')}</p>`;
+  if(!q.ok&&S.mode!=='verb')h+=`<p>${u('corr')} <b lang="de">${esc(it.ans)}</b></p>`;
+  if(withVerb)h+=`<p class="note">${bi(VM[it.v])}</p>`;
+  if(!q.ok&&S.mode!=='verb'){
+    h+=`<p class="note">${bi(HINT[hintKey(it.p)])}</p>`;
+    if(it.v==='moegen')h+=`<p class="note">${bi(HINT.umlaut)}</p>`;
+  }
+  if(lang!=='de')h+=`<p class="trline">${tl(it.tr)}</p>`;
+  return h+'</div>';
+}
+function nextBtn(){return `<div class="acts"><button class="btn primary" id="nextBtn" data-act="next">${u('next')}</button></div>`}
+function trBlock(it,q){
+  if(lang==='de'||q.done)return '';
+  return q.showTr?`<p class="trline">${tl(it.tr)}</p>`:`<div><button class="btn ghost" data-act="tr">${u('trans')}</button></div>`;
+}
+function qVerb(){
+  const it=ITEMS[S.q.id],q=S.q;
+  let h=`<div class="card q"><p class="sit"><b>${u('situation')}:</b> <span lang="de">${esc(it.sit)}</span></p>${sent(it,q.done?it.ans:null,false)}`;
+  h+=trBlock(it,q);
+  if(!q.done){
+    h+=`<div class="two"><button class="btn moe" data-act="verb" data-v="moechten" lang="de">möchten</button><button class="btn mog" data-act="verb" data-v="moegen" lang="de">mögen</button></div>`;
+  }else{
+    h+=fb(it,q,true)+nextBtn();
+  }
+  return h+'</div>';
+}
+function qForm(){
+  const it=ITEMS[S.q.id],q=S.q;
+  let h=`<div class="card q">${sent(it,q.done?it.ans:null,true)}${trBlock(it,q)}<div class="opts">`;
+  q.opts.forEach((o,i)=>{
+    let c='btn opt';
+    if(q.done){if(o.toLowerCase()===it.ans.toLowerCase())c+=' ok';else if(i===q.pick)c+=' bad'}
+    h+=`<button class="${c}" data-act="opt" data-i="${i}" lang="de"${q.done?' disabled':''}>${o}</button>`;
+  });
+  h+='</div>';
+  if(q.done)h+=fb(it,q,false)+nextBtn();
+  return h+'</div>';
+}
+function umlautBtn(){return `<div class="hintkeys"><button class="btn ghost" data-act="umlaut" aria-label="${U.umlautHint.de}">ö</button></div>`}
+function qWrite(){
+  const it=ITEMS[S.q.id],q=S.q;
+  let h=`<div class="card q">${sent(it,q.done?it.ans:null,true)}${trBlock(it,q)}`;
+  const c=q.done?(q.ok?' ok':' bad'):'';
+  h+=`<div class="row"><input id="ans" class="txt${c}" type="text" lang="de" autocomplete="off" autocapitalize="none" spellcheck="false" value="${esc(q.val)}"${q.done?' disabled':''}>${q.done?'':umlautBtn()}</div>`;
+  if(q.warn)h+=`<p class="warn">${u('fillAll')}</p>`;
+  if(!q.done)h+=`<div class="acts"><button class="btn primary" data-act="check">${u('check')}</button></div>`;
+  else h+=fb(it,q,false)+nextBtn();
+  return h+'</div>';
+}
+function qTable(){
+  const v=S.q.id,q=S.q;
+  const rows=PRON.map(([p,l])=>{
+    const val=q.vals?q.vals[p]:'';
+    const r=q.done?q.res[p]:null;
+    const cls=q.done?(r?' ok':' bad'):'';
+    const right=q.done&&!r?`<span class="right" lang="de">${FORMS[v][p]}</span>`:(q.done?'<span class="right">✓</span>':'');
+    return `<tr><td>${l}</td><td><input id="r-${p}" class="txt ans${cls}" type="text" lang="de" autocomplete="off" autocapitalize="none" spellcheck="false" value="${esc(val)}"${q.done?' disabled':''}>${right}</td></tr>`;
+  }).join('');
+  let h=`<div class="card q"><h2 style="margin:0;font-family:var(--display)" lang="de">${INF[v]} <span class="tag ${v}">${INF[v]}</span></h2><table class="fill-t"><tbody>${rows}</tbody></table>`;
+  if(q.warn)h+=`<p class="warn">${u('fillAll')}</p>`;
+  if(!q.done)h+=`<div class="row">${umlautBtn()}<button class="btn primary" data-act="check">${u('check')}</button></div>`;
+  else h+=nextBtn();
+  return h+'</div>';
+}
+function resultView(){
+  const pct=S.total?Math.round(100*S.score/S.total):0;
+  let wl='';
+  if(S.wrong.length){
+    const items=S.wrong.map(w=>{
+      if(typeof w==='object')return `<li><b lang="de">${PRON.find(x=>x[0]===w.p)[1]}</b> → <b lang="de">${FORMS[w.v][w.p]}</b> <span class="tl" style="display:inline">(${INF[w.v]})</span></li>`;
+      const it=ITEMS[w];
+      return `<li lang="de">${esc(it.a)}<b>${esc(it.ans)}</b>${esc(it.b)}</li>`;
+    }).join('');
+    wl=`<h3>${u('wrongs')}</h3><ul class="wl">${items}</ul>`;
+  }
+  const ids=[...new Set(S.wrong.filter(w=>typeof w==='number'))];
+  return `<section class="card q"><h2 style="margin:0;font-family:var(--display)">${u('result')}</h2>
+    <p class="score">${S.score}<small> / ${S.total}</small></p>
+    ${S.wrong.length?'':`<p class="verdict" style="color:var(--ok)">✓ ${u('allRight')}</p>`}
+    ${wl}
+    <div class="acts"><button class="btn primary" data-act="again">${u('again')}</button>${ids.length?`<button class="btn" data-act="mistakes">${u('mistakes')}</button>`:''}<button class="btn ghost" data-act="home">${u('back')}</button></div></section>`;
+}
+function practice(){
+  if(!S)return menu();
+  if(S.q===null)return resultView();
+  const n=S.queue.length;
+  const pr=Math.round(100*(S.i+(S.q.done?1:0))/n);
+  const top=`<div><div class="prog"><i style="width:${pr}%"></i></div><p class="count"><span>${u('question')} ${S.i+1} / ${n}</span><button class="btn ghost" data-act="home" style="padding:2px 12px">${u('back')}</button></p></div>`;
+  const body={verb:qVerb,form:qForm,write:qWrite,table:qTable}[S.mode]();
+  return top+body;
+}
+
+/* ---------- Render & Ereignisse ---------- */
+function render(){
+  app.innerHTML=`<div class="wrap">${head()}<div id="view">${tab==='learn'?learn():practice()}</div></div>`;
+  if(tab==='practice'&&S&&S.q){
+    const q=S.q;
+    if(q.done){const nb=document.getElementById('nextBtn');if(nb)nb.focus()}
+    else if(S.mode==='write'){const el=document.getElementById('ans');if(el)el.focus()}
+    else if(S.mode==='table'){const el=app.querySelector('.txt.ans');if(el)el.focus()}
+  }
+}
+app.addEventListener('change',e=>{
+  if(e.target.id==='lang'){lang=e.target.value;sv('mm-lang',lang);render()}
+});
+app.addEventListener('focusin',e=>{if(e.target.tagName==='INPUT')lastInput=e.target});
+app.addEventListener('mousedown',e=>{if(e.target.closest('[data-act="umlaut"]'))e.preventDefault()});
+app.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'||!S||!S.q)return;
+  if(e.target.tagName==='INPUT'&&!S.q.done){e.preventDefault();doCheck()}
+});
+function doCheck(){
+  const q=S.q;
+  if(S.mode==='write'){
+    const el=document.getElementById('ans');q.val=el?el.value:'';
+    if(!q.val.trim()){q.warn=true;render();return}
+    const it=ITEMS[q.id];q.ok=norm(q.val)===it.ans.toLowerCase();q.done=true;record(q.id,q.ok);
+  }else if(S.mode==='table'){
+    const vals={};let empty=false;
+    PRON.forEach(([p])=>{const el=document.getElementById('r-'+p);vals[p]=el?el.value:'';if(!vals[p].trim())empty=true});
+    q.vals=vals;
+    if(empty){q.warn=true;render();return}
+    q.res={};
+    PRON.forEach(([p])=>{const ok=norm(vals[p])===FORMS[q.id][p];q.res[p]=ok;S.total++;if(ok)S.score++;else S.wrong.push({v:q.id,p})});
+    q.done=true;
+  }
+  render();
+}
+app.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const a=b.dataset.act;
+  if(a==='tab'){tab=b.dataset.tab;render();return}
+  if(a==='mode'){start(b.dataset.mode);return}
+  if(a==='home'){S=null;render();return}
+  if(a==='again'){start(S.mode);return}
+  if(a==='mistakes'){start(S.mode,[...new Set(S.wrong.filter(w=>typeof w==='number'))]);return}
+  if(a==='umlaut'){
+    const el=lastInput;if(!el||el.disabled||!document.contains(el))return;
+    const s=el.selectionStart??el.value.length,t=el.selectionEnd??s;
+    el.value=el.value.slice(0,s)+'ö'+el.value.slice(t);el.focus();el.setSelectionRange(s+1,s+1);return;
+  }
+  if(!S||!S.q)return;
+  const q=S.q;
+  if(a==='tr'){q.showTr=true;render();return}
+  if(a==='verb'&&!q.done){q.ok=b.dataset.v===ITEMS[q.id].v;q.done=true;record(q.id,q.ok);render();return}
+  if(a==='opt'&&!q.done){const i=+b.dataset.i;q.pick=i;q.ok=q.opts[i].toLowerCase()===ITEMS[q.id].ans.toLowerCase();q.done=true;record(q.id,q.ok);render();return}
+  if(a==='check'&&!q.done){doCheck();return}
+  if(a==='next'){S.i++;newQ();render();window.scrollTo({top:0})}
+});
+render();
+</script>
