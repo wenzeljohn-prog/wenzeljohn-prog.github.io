@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fragen-Generator A1 L1–L8</title>
+<style>
+  :root {
+    --bg: #f4f6fa; --card: #ffffff; --text: #1d2433; --muted: #5b667a;
+    --line: #d5dbe6; --accent: #2b5fd9; --accent-text: #ffffff;
+    --du: #1f7a4d; --du-bg: #e3f4ea; --sie: #8a4b0f; --sie-bg: #fbeedb;
+    --chip: #e9eef8; --chip-on: #2b5fd9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12161f; --card: #1b2130; --text: #e8ecf5; --muted: #9aa5ba;
+      --line: #30394d; --accent: #6b97ff; --accent-text: #0b1226;
+      --du: #6fd6a2; --du-bg: #183427; --sie: #f0b36a; --sie-bg: #3a2a14;
+      --chip: #252d40; --chip-on: #6b97ff;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    line-height: 1.45; min-height: 100vh;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.25rem; margin: 4px 0 14px; }
+  .panel {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 14px 16px; margin-bottom: 14px;
+  }
+  .panel h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 8px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
+    padding: 8px 14px; border-radius: 999px; background: var(--chip);
+    border: 2px solid transparent; cursor: pointer; font-size: .95rem; user-select: none;
+  }
+  .chip input { position: absolute; opacity: 0; pointer-events: none; }
+  .chip.on { border-color: var(--chip-on); font-weight: 600; }
+  .chip:focus-within { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .small { color: var(--muted); font-size: .85rem; margin-top: 6px; }
+  .linkbtn { background: none; border: none; color: var(--accent); cursor: pointer; font-size: .9rem; padding: 6px 2px; min-height: 44px; }
+
+  .stage {
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    padding: 22px 20px; min-height: 280px; display: flex; flex-direction: column;
+    justify-content: space-between; margin-bottom: 14px;
+  }
+  .meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; color: var(--muted); font-size: .9rem; flex-wrap: wrap; }
+  .badge { display: inline-block; padding: 3px 12px; border-radius: 999px; font-weight: 700; font-size: .9rem; }
+  .badge.du { background: var(--du-bg); color: var(--du); }
+  .badge.sie { background: var(--sie-bg); color: var(--sie); }
+  #question {
+    font-size: clamp(1.7rem, 5.5vw, 3rem); font-weight: 700; text-align: center;
+    padding: 24px 6px; line-height: 1.25; word-wrap: break-word; overflow-wrap: anywhere;
+  }
+  #question.empty { font-size: 1.15rem; font-weight: 500; color: var(--muted); }
+  .notice { text-align: center; color: var(--accent); font-weight: 600; min-height: 1.4em; font-size: .95rem; }
+  .actions { display: flex; gap: 10px; }
+  button.main {
+    flex: 1; min-height: 56px; border-radius: 14px; border: none; cursor: pointer;
+    font-size: 1.15rem; font-weight: 700; background: var(--accent); color: var(--accent-text);
+  }
+  button.main:disabled { opacity: .4; cursor: default; }
+  button.sec {
+    min-height: 56px; min-width: 64px; border-radius: 14px; cursor: pointer; font-size: 1rem;
+    background: var(--card); color: var(--text); border: 2px solid var(--line);
+  }
+  button.sec:disabled { opacity: .4; cursor: default; }
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  details.list summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+  details.list h3 { font-size: .95rem; margin: 14px 0 4px; }
+  details.list ul { margin: 0; padding-left: 20px; }
+  details.list li { margin: 2px 0; }
+  details.list .v { color: var(--muted); font-size: .9em; }
+  @media (max-width: 480px) { .wrap { padding: 10px; } .stage { padding: 16px 12px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Fragen-Generator &middot; A1 L1&ndash;L8</h1>
+
+  <div class="stage" aria-live="polite">
+    <div class="meta"><span id="topicLabel"></span><span><span id="badge" class="badge"></span></span><span id="counter"></span></div>
+    <div id="question" class="empty">Los geht&rsquo;s: &bdquo;N&auml;chste Frage&ldquo; dr&uuml;cken.</div>
+    <div class="notice" id="notice"></div>
+    <div class="actions">
+      <button type="button" class="sec" id="backBtn" title="Zur&uuml;ck (Pfeil links)">&larr;</button>
+      <button type="button" class="main" id="nextBtn" title="Leertaste, Eingabe oder Pfeil rechts">N&auml;chste Frage</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Anrede</h2>
+    <div class="row" id="modeRow"></div>
+    <div class="small" id="modeInfo"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Themen</h2>
+    <div class="row" id="topicRow"></div>
+    <div>
+      <button type="button" class="linkbtn" id="allTopics">alle</button> &middot;
+      <button type="button" class="linkbtn" id="noTopics">keine</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <details class="list" id="listBox">
+      <summary>Alle Fragen anzeigen</summary>
+      <div id="listBody"></div>
+    </details>
+  </div>
+  <div class="small" style="text-align:center;margin-bottom:20px">Die Fragen kommen in zuf&auml;lliger Reihenfolge, ohne Wiederholung, bis alle einmal dran waren. Tastatur: Leertaste / Pfeil rechts = weiter, Pfeil links = zur&uuml;ck.</div>
+</div>
+<script>
+(function () {
+  "use strict";
+  var TOPICS = [
+    "L1 \u00b7 Vorstellung",
+    "L2 \u00b7 Beruf & Wohnen",
+    "L3 \u00b7 Gegenst\u00e4nde",
+    "L4 \u00b7 Familie",
+    "L5 \u00b7 Freizeit & Tag",
+    "L6 \u00b7 Uhrzeit & Arbeit",
+    "L7 \u00b7 Essen & Einkaufen"
+  ];
+
+  /* Gegenst\u00e4nde f\u00fcr die Platzhalter-Fragen (Nominativ, mit Artikel) */
+  var OBJECTS = {
+    kost: ["der Herd", "die Waschmaschine", "der K\u00fchlschrank", "die Kaffeemaschine", "der Computer", "der Laptop", "das Handy", "das Fahrrad", "das Sofa", "der Schrank", "der Tisch", "der Stuhl", "das Bett", "das Regal", "das W\u00f6rterbuch", "das Buch"],
+    alt:  ["der Herd", "die Waschmaschine", "der K\u00fchlschrank", "das Auto", "das Handy", "das Fahrrad", "das Haus", "das Sofa", "der Computer", "der Laptop", "das Bett"],
+    mass: ["der Schrank", "das Regal", "der Tisch", "der K\u00fchlschrank", "die T\u00fcr", "das Fenster", "das Sofa", "das Bett", "der Herd", "der Stuhl", "die Waschmaschine", "die Tafel"]
+  };
+
+  /* t = Thema (1-7), d = nur du, s = nur Sie, p = [du, Sie], n = neutral, o = Gegenstandsliste */
+  var ITEMS = [
+    /* L1 */
+    {t:1, p:["Wie hei\u00dft du?", "Wie hei\u00dfen Sie?"]},
+    {t:1, p:["Woher kommst du?", "Woher kommen Sie?"]},
+    {t:1, p:["Wie geht es dir?", "Wie geht es Ihnen?"]},
+    {t:1, p:["Welche Sprachen sprichst du?", "Welche Sprachen sprechen Sie?"]},
+    {t:1, p:["Sprichst du Deutsch?", "Sprechen Sie Deutsch?"]},
+    {t:1, p:["Wie ist dein Name?", "Wie ist Ihr Name?"]},
+    {t:1, p:["Wie schreibt man deinen Namen?", "Wie schreibt man Ihren Namen?"]},
+    /* L2 */
+    {t:2, p:["Was bist du von Beruf?", "Was sind Sie von Beruf?"]},
+    {t:2, p:["Was machst du beruflich?", "Was machen Sie beruflich?"]},
+    {t:2, p:["Wo arbeitest du?", "Wo arbeiten Sie?"]},
+    {t:2, d:"Arbeitest du jetzt?"},
+    {t:2, d:"Was lernst du?"},
+    {t:2, d:"Was studierst du?"},
+    {t:2, p:["Wo wohnst du?", "Wo wohnen Sie?"]},
+    {t:2, p:["Wie ist deine Adresse?", "Wie ist Ihre Adresse?"]},
+    {t:2, d:"Wie ist deine Postleitzahl?"},
+    {t:2, d:"Wie ist deine Hausnummer?"},
+    {t:2, d:"Wie ist deine Telefonnummer?"},
+    {t:2, d:"Wie ist deine E-Mail-Adresse?"},
+    {t:2, d:"Wie ist dein Vorname?"},
+    {t:2, d:"Wie ist dein Nachname?"},
+    {t:2, d:"Was ist dein Heimatland?"},
+    {t:2, n:"Wer ist das?"},
+    {t:2, n:"Was bedeutet das?"},
+    /* L3 */
+    {t:3, n:"Was ist das?"},
+    {t:3, n:"Wie hei\u00dft das auf Deutsch?"},
+    {t:3, n:"Was kostet {O}?", o:"kost"},
+    {t:3, n:"Wie alt ist {O}?", o:"alt"},
+    {t:3, n:"Wie hoch ist {O}?", o:"mass"},
+    {t:3, n:"Wie breit ist {O}?", o:"mass"},
+    /* L4 */
+    {t:4, d:"Hast du Kinder? Wie viele?"},
+    {t:4, d:"Wie hei\u00dft dein Vater?"},
+    {t:4, d:"Wie hei\u00dft deine Mutter?"},
+    {t:4, d:"Wie ist dein Familienstand?"},
+    {t:4, d:"Kennst du deine Nachbarn? Sind sie nett?"},
+    /* L5 */
+    {t:5, d:"Was ist dein Hobby?"},
+    {t:5, d:"Was sind deine Hobbys?"},
+    {t:5, d:"Was machst du gern?"},
+    {t:5, d:"Spielst du gern Fu\u00dfball?"},
+    {t:5, d:"Spielst du gern Tischtennis?"},
+    {t:5, d:"Schwimmst du gern?"},
+    {t:5, d:"Liest du gern?"},
+    {t:5, d:"Was machst du am Wochenende?"},
+    {t:5, d:"Was machst du am Morgen?"},
+    {t:5, d:"Was machst du am Mittag?"},
+    {t:5, d:"Was machst du am Abend?"},
+    {t:5, d:"Wie findest du deine Stadt?"},
+    {t:5, d:"Wann fr\u00fchst\u00fcckst du?"},
+    {t:5, d:"Wann gehst du zum Kurs?"},
+    {t:5, d:"Wann gehst du ins Bett?"},
+    /* L6 */
+    {t:6, n:"Wie sp\u00e4t ist es?"},
+    {t:6, n:"Wie viel Uhr ist es?"},
+    {t:6, n:"Wann beginnt der Kurs?"},
+    {t:6, d:"Wann hast du Pause?"},
+    {t:6, n:"Wann ist die Mittagspause?"},
+    {t:6, d:"Wann hast du Feierabend?"},
+    {t:6, d:"Wann gehst du nach Hause?"},
+    {t:6, d:"Wo kaufst du ein?"},
+    {t:6, d:"Wann kaufst du ein?"},
+    {t:6, d:"Wann hast du Urlaub?"},
+    /* L7 */
+    {t:7, d:"Was isst du gern?"},
+    {t:7, d:"Was trinkst du gern?"},
+    {t:7, d:"Was magst du zum Beispiel?"},
+    {t:7, d:"Was isst du nicht?"},
+    {t:7, d:"Isst du Fleisch?"},
+    {t:7, d:"Isst du Fisch?"},
+    {t:7, d:"Bist du vegetarisch?"},
+    {t:7, d:"Bist du vegan?"},
+    {t:7, n:"Ist das gesund?"},
+    {t:7, n:"Was isst man in Deutschland?"},
+    {t:7, n:"Was trinkt man in Deutschland?"},
+    {t:7, n:"Was ist in Deutschland beliebt?"},
+    {t:7, d:"Trinkst du Kaffee mit Milch?"},
+    {t:7, d:"Trinkst du Kaffee ohne Zucker?"},
+    {t:7, d:"Trinkst du lieber Wasser oder Saft?"},
+    {t:7, d:"Isst du lieber Reis oder Nudeln?"},
+    {t:7, n:"Was kostet das Brot?"},
+    {t:7, n:"Wie viel kostet ein Kilo \u00c4pfel?"},
+    {t:7, n:"Was kostet eine Flasche Wasser?"},
+    {t:7, d:"Wo kaufst du Brot?"},
+    {t:7, d:"Wo kaufst du Obst?"},
+    {t:7, d:"Wo kaufst du Gem\u00fcse?"}
+  ];
+
+  var STORAGE_KEY = "daz_fragen_generator_a1_l1_8";
+  var MODES = [
+    { id: "beide", label: "du und Sie gemischt" },
+    { id: "du", label: "nur du" },
+    { id: "sie", label: "nur Sie" }
+  ];
+
+  var settings = { mode: "beide", topics: [] };
+  var i;
+  for (i = 0; i < TOPICS.length; i++) { settings.topics.push(true); }
+
+  function loadSettings() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) { return; }
+      var s = JSON.parse(raw);
+      if (s && (s.mode === "beide" || s.mode === "du" || s.mode === "sie")) { settings.mode = s.mode; }
+      if (s && s.topics && s.topics.length === TOPICS.length) {
+        for (var k = 0; k < s.topics.length; k++) { settings.topics[k] = !!s.topics[k]; }
+      }
+    } catch (e) { /* ohne Speicher weiterarbeiten */ }
+  }
+  function saveSettings() {
+    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(settings)); } catch (e) { /* egal */ }
+  }
+
+  function $(id) { return document.getElementById(id); }
+
+  function hasForm(item, mode) {
+    if (item.n) { return true; }
+    if (mode === "beide") { return true; }
+    if (mode === "du") { return !!(item.d || item.p); }
+    return !!(item.s || item.p);
+  }
+
+  function eligibleIndexes() {
+    var out = [];
+    for (var k = 0; k < ITEMS.length; k++) {
+      var it = ITEMS[k];
+      if (settings.topics[it.t - 1] && hasForm(it, settings.mode)) { out.push(k); }
+    }
+    return out;
+  }
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var k = a.length - 1; k > 0; k--) {
+      var j = Math.floor(Math.random() * (k + 1));
+      var tmp = a[k]; a[k] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
+
+  /* Zustand */
+  var deck = [];
+  var deckPos = 0;
+  var round = 1;
+  var history = [];
+  var hpos = -1;
+  var lastItem = -1;
+
+  function rebuildDeck() {
+    deck = shuffle(eligibleIndexes());
+    deckPos = 0;
+    round = 1;
+    history = [];
+    hpos = -1;
+    lastItem = -1;
+  }
+
+  function render(idx) {
+    var it = ITEMS[idx];
+    var text, badge = "";
+    if (it.n) {
+      text = it.n;
+      if (it.o) { text = text.replace("{O}", pick(OBJECTS[it.o])); }
+    } else if (it.p) {
+      var useDu = settings.mode === "du" ? true : (settings.mode === "sie" ? false : Math.random() < 0.5);
+      text = useDu ? it.p[0] : it.p[1];
+      badge = useDu ? "du" : "Sie";
+    } else if (it.d) {
+      text = it.d; badge = "du";
+    } else {
+      text = it.s; badge = "Sie";
+    }
+    return { text: text, badge: badge, topic: it.t, round: round, size: deck.length, n: deckPos };
+  }
+
+  function draw() {
+    if (deck.length === 0) { return null; }
+    var newRound = false;
+    if (deckPos >= deck.length) {
+      deck = shuffle(eligibleIndexes());
+      if (deck.length > 1 && deck[0] === lastItem) {
+        var sw = deck[0]; deck[0] = deck[deck.length - 1]; deck[deck.length - 1] = sw;
+      }
+      deckPos = 0;
+      round += 1;
+      newRound = true;
+    }
+    var idx = deck[deckPos];
+    deckPos += 1;
+    lastItem = idx;
+    var entry = render(idx);
+    entry.newRound = newRound;
+    return entry;
+  }
+
+  function show(entry) {
+    var q = $("question");
+    var b = $("badge");
+    var notice = $("notice");
+    if (!entry) {
+      q.className = "empty";
+      q.textContent = deck.length === 0 && eligibleIndexes().length === 0
+        ? "Keine Fragen ausgewählt. Bitte oben mindestens ein Thema wählen."
+        : "Los geht’s: „Nächste Frage“ drücken.";
+      b.className = "badge"; b.textContent = "";
+      $("topicLabel").textContent = "";
+      $("counter").textContent = "";
+      notice.textContent = "";
+      return;
+    }
+    q.className = "";
+    q.textContent = entry.text;
+    b.className = "badge" + (entry.badge === "du" ? " du" : (entry.badge === "Sie" ? " sie" : ""));
+    b.textContent = entry.badge;
+    $("topicLabel").textContent = TOPICS[entry.topic - 1];
+    $("counter").textContent = entry.n + " / " + entry.size + (entry.round > 1 ? " · Runde " + entry.round : "");
+    notice.textContent = entry.newRound ? "Alle Fragen waren einmal dran – neue Runde." : "";
+  }
+
+  function updateButtons() {
+    $("backBtn").disabled = hpos <= 0;
+    $("nextBtn").disabled = eligibleIndexes().length === 0;
+  }
+
+  function next() {
+    if (eligibleIndexes().length === 0) { show(null); updateButtons(); return; }
+    if (hpos < history.length - 1) {
+      hpos += 1;
+      show(history[hpos]);
+    } else {
+      var e = draw();
+      if (e) { history.push(e); hpos = history.length - 1; show(e); }
+    }
+    updateButtons();
+  }
+
+  function back() {
+    if (hpos > 0) {
+      hpos -= 1;
+      show(history[hpos]);
+      $("notice").textContent = "";
+    }
+    updateButtons();
+  }
+
+  /* Auswahlfelder */
+  function modeCount(mode) {
+    var c = 0;
+    for (var k = 0; k < ITEMS.length; k++) {
+      if (settings.topics[ITEMS[k].t - 1] && hasForm(ITEMS[k], mode)) { c += 1; }
+    }
+    return c;
+  }
+
+  function buildModes() {
+    var row = $("modeRow");
+    row.innerHTML = "";
+    MODES.forEach(function (m) {
+      var lab = document.createElement("label");
+      lab.className = "chip" + (settings.mode === m.id ? " on" : "");
+      var inp = document.createElement("input");
+      inp.type = "radio"; inp.name = "mode"; inp.value = m.id;
+      inp.checked = settings.mode === m.id;
+      inp.addEventListener("change", function () {
+        settings.mode = m.id; saveSettings(); refresh(true);
+      });
+      lab.appendChild(inp);
+      lab.appendChild(document.createTextNode(m.label));
+      row.appendChild(lab);
+    });
+    $("modeInfo").textContent = "Fragen ohne eigene Sie-Form (z. B. „Arbeitest du jetzt?“) erscheinen nur bei „du“ und „gemischt“. Neutrale Fragen (z. B. „Wer ist das?“) gibt es immer. Aktuell im Pool: " + modeCount(settings.mode) + " Fragen.";
+  }
+
+  function buildTopics() {
+    var row = $("topicRow");
+    row.innerHTML = "";
+    TOPICS.forEach(function (name, k) {
+      var lab = document.createElement("label");
+      lab.className = "chip" + (settings.topics[k] ? " on" : "");
+      var inp = document.createElement("input");
+      inp.type = "checkbox"; inp.checked = settings.topics[k];
+      inp.addEventListener("change", function () {
+        settings.topics[k] = inp.checked; saveSettings(); refresh(true);
+      });
+      lab.appendChild(inp);
+      lab.appendChild(document.createTextNode(name));
+      row.appendChild(lab);
+    });
+  }
+
+  function buildList() {
+    var body = $("listBody");
+    body.innerHTML = "";
+    TOPICS.forEach(function (name, k) {
+      var h = document.createElement("h3");
+      h.textContent = name;
+      var ul = document.createElement("ul");
+      var any = false;
+      ITEMS.forEach(function (it) {
+        if (it.t !== k + 1) { return; }
+        var li = document.createElement("li");
+        var t;
+        if (it.p) { t = it.p[0] + "  /  " + it.p[1]; }
+        else if (it.d) { t = it.d; }
+        else if (it.s) { t = it.s; }
+        else {
+          t = it.o ? it.n.replace("{O}", "…") + "  (zufälliger Gegenstand)" : it.n;
+        }
+        li.textContent = t;
+        ul.appendChild(li); any = true;
+      });
+      if (any) { body.appendChild(h); body.appendChild(ul); }
+    });
+  }
+
+  function refresh(resetDeck) {
+    buildModes();
+    buildTopics();
+    if (resetDeck) { rebuildDeck(); show(null); }
+    updateButtons();
+  }
+
+  function init() {
+    loadSettings();
+    buildList();
+    rebuildDeck();
+    refresh(false);
+    show(null);
+    $("nextBtn").addEventListener("click", next);
+    $("backBtn").addEventListener("click", back);
+    $("allTopics").addEventListener("click", function () {
+      for (var k = 0; k < settings.topics.length; k++) { settings.topics[k] = true; }
+      saveSettings(); refresh(true);
+    });
+    $("noTopics").addEventListener("click", function () {
+      for (var k = 0; k < settings.topics.length; k++) { settings.topics[k] = false; }
+      saveSettings(); refresh(true);
+    });
+    document.addEventListener("keydown", function (ev) {
+      var tag = ev.target && ev.target.tagName;
+      if (tag === "INPUT" || tag === "SUMMARY") { return; }
+      if (tag === "BUTTON" && (ev.key === " " || ev.key === "Enter")) { return; }
+      if (ev.key === " " || ev.key === "Enter" || ev.key === "ArrowRight") { ev.preventDefault(); next(); }
+      else if (ev.key === "ArrowLeft") { ev.preventDefault(); back(); }
+    });
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
