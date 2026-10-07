@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sprache wählen / Choose a language</title>
+<style>
+:root{--ink:#1d2433;--muted:#566074;--paper:#eef1f5;--card:#fff;--line:#d5dbe4;--focus:#0b57d0;--radius:12px}
+@media (prefers-color-scheme: dark){:root{--ink:#e8ecf3;--muted:#a3adbf;--paper:#12161f;--card:#1b2130;--line:#2f384b;--focus:#8ab4ff}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;background:var(--paper);color:var(--ink);
+  font:16px/1.5 "Avenir Next","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif}
+main{width:100%;max-width:980px;margin:0 auto;padding:40px 16px}
+h1{margin:0 0 28px;display:flex;flex-wrap:wrap;gap:6px 24px;font-size:1.05rem;font-weight:600;color:var(--muted)}
+.karten{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}
+a.karte{display:flex;flex-direction:column;gap:6px;padding:22px 22px 20px;background:var(--card);color:var(--ink);
+  text-decoration:none;border-radius:var(--radius);border:1px solid var(--line);border-inline-start:8px solid var(--c)}
+a.karte:hover{border-color:var(--c);box-shadow:0 0 0 2px var(--c)}
+a.karte:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.name{font-size:1.9rem;font-weight:750;line-height:1.2}
+.was{color:var(--muted);font-size:.95rem}
+.los{margin-top:10px;font-weight:650;color:var(--c);text-decoration:underline;text-underline-offset:3px}
+@media (prefers-color-scheme: dark){.los{color:var(--ink)}}
+@media (prefers-reduced-motion:no-preference){a.karte{transition:box-shadow .12s,border-color .12s}}
+</style>
+</head>
+<body>
+<main>
+  <h1>
+      <span lang="de">Sprache wählen</span>
+      <span lang="en">Choose a language</span>
+      <span lang="ar" dir="rtl">اختر اللغة</span>
+      <span lang="uk">Оберіть мову</span>
+      <span lang="ru">Выберите язык</span>
+      <span lang="tr">Dil seçin</span>
+  </h1>
+  <div class="karten">
+      <a class="karte" href="uebersicht-de.html" lang="de" hreflang="de" style="--c:#1b5e9e"><span class="name">Deutsch</span><span class="was">Materialsammlung Deutsch als Zweitsprache</span><span class="los">Weiter auf Deutsch</span></a>
+      <a class="karte" href="uebersicht-en.html" lang="en" hreflang="en" style="--c:#a8324a"><span class="name">English</span><span class="was">Teaching materials: German as a second language</span><span class="los">Continue in English</span></a>
+      <a class="karte" href="uebersicht-ar.html" lang="ar" hreflang="ar" dir="rtl" style="--c:#2f7d4f"><span class="name">العربية</span><span class="was">مجموعة مواد تعليمية: الألمانية كلغة ثانية</span><span class="los">المتابعة بالعربية</span></a>
+      <a class="karte" href="uebersicht-uk.html" lang="uk" hreflang="uk" style="--c:#8a5a00"><span class="name">Українська</span><span class="was">Збірка матеріалів: німецька як друга мова</span><span class="los">Продовжити українською</span></a>
+      <a class="karte" href="uebersicht-ru.html" lang="ru" hreflang="ru" style="--c:#5b4bb0"><span class="name">Русский</span><span class="was">Сборник материалов: немецкий как второй язык</span><span class="los">Продолжить на русском</span></a>
+      <a class="karte" href="uebersicht-tr.html" lang="tr" hreflang="tr" style="--c:#0f7b7b"><span class="name">Türkçe</span><span class="was">Materyal koleksiyonu: İkinci dil olarak Almanca</span><span class="los">Türkçe devam et</span></a>
+  </div>
+</main>
+<script>
+/* Alte Links wie index.html?lang=ar führen direkt zur gewählten Sprache. */
+(function(){
+  var erlaubt = ["de", "en", "ar", "uk", "ru", "tr"];
+  var m = /[?&]lang=([a-z]{2})/i.exec(location.search || '');
+  if(m && erlaubt.indexOf(m[1].toLowerCase()) >= 0){ location.replace('uebersicht-' + m[1].toLowerCase() + '.html'); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teaching materials: German as a second language</title>
+<style>
+:root{
+  --ink:#1d2433; --muted:#566074; --paper:#eef1f5; --card:#ffffff; --line:#d5dbe4;
+  --focus:#0b57d0; --chip:#e4e9f0; --chip-on:#1d2433; --chip-on-text:#ffffff;
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e8ecf3; --muted:#a3adbf; --paper:#12161f; --card:#1b2130; --line:#2f384b;
+    --focus:#8ab4ff; --chip:#27303f; --chip-on:#e8ecf3; --chip-on-text:#12161f;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#e8ecf3; --muted:#a3adbf; --paper:#12161f; --card:#1b2130; --line:#2f384b;
+  --focus:#8ab4ff; --chip:#27303f; --chip-on:#e8ecf3; --chip-on-text:#12161f;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:1rem}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:16px/1.5 "Avenir Next","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:4px}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 64px}
+header{padding:32px 0 20px;display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:flex-start}
+.kopf{flex:1 1 420px;min-width:0}
+h1{margin:0 0 4px;font-size:clamp(1.6rem,3.2vw,2.3rem);line-height:1.15;letter-spacing:-.01em;font-weight:750}
+.sub{margin:0;color:var(--muted);max-width:60ch}
+.sprachwahl{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.sprachwahl .lbl{color:var(--muted);font-size:.9rem}
+.sprache{display:flex;flex-wrap:wrap;gap:6px}
+.fehler{margin:0 0 16px;padding:10px 14px;border:2px solid #b3261e;border-radius:var(--radius);background:var(--card);font-size:.95rem}
+.fehler code{word-break:break-word;font-size:.85rem}
+.stand{margin:8px 0 0;color:var(--muted);font-size:.8rem}
+
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:28px;align-items:start}
+
+/* Seitenleiste */
+nav.cats{position:sticky;top:12px;display:flex;flex-direction:column;gap:2px}
+nav.cats button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:8px;color:var(--ink);line-height:1.3}
+nav.cats button:hover{background:var(--chip)}
+nav.cats button[aria-pressed="true"]{background:var(--card);box-shadow:inset 0 0 0 2px var(--c,var(--ink));font-weight:650}
+nav.cats button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+nav.cats .dot{flex:none;width:12px;height:12px;border-radius:3px;background:var(--c,var(--ink))}
+nav.cats .n{margin-inline-start:auto;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* Werkzeugleiste */
+.tools{display:grid;gap:12px;margin-bottom:22px}
+.search{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--card);color:var(--ink);font:inherit}
+.search::placeholder{color:var(--muted)}
+.filters{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center}
+.fg{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.fg .lbl{color:var(--muted);font-size:.9rem;margin-inline-end:2px}
+.chip{all:unset;box-sizing:border-box;cursor:pointer;padding:4px 11px;border-radius:999px;background:var(--chip);
+  font-size:.9rem;line-height:1.4}
+a.chip{all:unset;box-sizing:border-box;display:inline-block;cursor:pointer;padding:4px 11px;border-radius:999px;
+  background:var(--chip);font-size:.9rem;line-height:1.4;color:var(--ink)}
+.chip:hover{filter:brightness(.96)}
+.chip[aria-pressed="true"],a.chip[aria-current="page"]{background:var(--chip-on);color:var(--chip-on-text)}
+.chip:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.status{color:var(--muted);font-size:.95rem;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.status button{all:unset;cursor:pointer;text-decoration:underline;color:var(--ink)}
+.status button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+/* Karteikasten: jede Kategorie ein Karteireiter mit Fach */
+section.kat{margin:0 0 34px}
+.reiter{display:inline-block;margin:0;padding:7px 16px 6px;border-radius:12px 12px 0 0;
+  background:var(--c);color:#fff;font-size:1.05rem;font-weight:700;line-height:1.3}
+.fach{background:var(--card);border:2px solid var(--c);border-radius:var(--radius);
+  border-start-start-radius:0;overflow:hidden}
+.fach > .info{margin:0;padding:10px 16px;color:var(--muted);font-size:.95rem;border-bottom:1px solid var(--line)}
+h3.gruppe{margin:0;padding:10px 16px 6px;font-size:.95rem;font-weight:700;color:var(--ink);background:color-mix(in srgb,var(--c) 9%,var(--card))}
+ul.liste{list-style:none;margin:0;padding:0}
+ul.liste li{position:relative;padding:12px 16px;border-top:1px solid var(--line)}
+ul.liste li:first-child{border-top:0}
+ul.liste li:hover{background:color-mix(in srgb,var(--c) 7%,var(--card))}
+.titel{font-weight:650;font-size:1.05rem;line-height:1.3;text-decoration:none}
+.titel::after{content:"";position:absolute;inset:0}   /* ganze Zeile klickbar */
+.titel:hover{text-decoration:underline}
+.orig{margin:2px 0 0;color:var(--muted);font-size:.85rem;direction:ltr;text-align:start;unicode-bidi:isolate}
+html[dir="rtl"] .orig{text-align:right}
+.text{margin:3px 0 0;color:var(--muted);max-width:75ch;font-size:.95rem}
+.meta{margin:8px 0 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.85rem;position:relative;z-index:1;pointer-events:none}
+.tag{padding:1px 8px;border-radius:6px;background:var(--chip);color:var(--ink)}
+.tag.niv{background:color-mix(in srgb,var(--c) 18%,var(--card));font-weight:650}
+.tag.leer{background:transparent;border:1px dashed var(--line);color:var(--muted)}
+.datei{color:var(--muted);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem;word-break:break-all;
+  direction:ltr;unicode-bidi:isolate}
+.leer-meldung{padding:40px 8px;text-align:center;color:var(--muted)}
+.leer-meldung strong{display:block;color:var(--ink);font-size:1.1rem;margin-bottom:4px}
+.hinweis{margin-top:40px;color:var(--muted);font-size:.9rem;max-width:70ch}
+
+@media (max-width:820px){
+  .layout{grid-template-columns:1fr;gap:14px}
+  nav.cats{position:static;flex-direction:row;overflow-x:auto;padding-bottom:6px;gap:6px;scrollbar-width:thin}
+  nav.cats button{flex:none;background:var(--chip);white-space:nowrap}
+  nav.cats .n{margin-inline-start:6px}
+}
+@media (prefers-reduced-motion:no-preference){
+  ul.liste li{transition:background .12s}
+}
+@media print{
+  nav.cats,.tools,.sprachwahl{display:none}
+  .layout{display:block}
+  ul.liste li{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kopf">
+      <h1 id="h1">Teaching materials: German as a second language</h1>
+      <p class="sub" id="sub">44 trainers and exercises. Click a row to open the file.</p>
+    </div>
+    <div class="sprachwahl">
+      <span class="lbl" id="sprachlabel">Page language</span>
+      <div class="sprache" id="sprache" role="group" aria-label="Page language">
+        <a class="chip" href="uebersicht-de.html" hreflang="de" lang="de">Deutsch</a>
+        <a class="chip" href="uebersicht-en.html" hreflang="en" lang="en" aria-current="page">English</a>
+        <a class="chip" href="uebersicht-ar.html" hreflang="ar" lang="ar">العربية</a>
+        <a class="chip" href="uebersicht-uk.html" hreflang="uk" lang="uk">Українська</a>
+        <a class="chip" href="uebersicht-ru.html" hreflang="ru" lang="ru">Русский</a>
+        <a class="chip" href="uebersicht-tr.html" hreflang="tr" lang="tr">Türkçe</a>
+      </div>
+    </div>
+  </header>
+  <p class="fehler" id="fehler" role="alert" hidden></p>
+  <noscript><p class="fehler">JavaScript is required / JavaScript wird benötigt.</p></noscript>
+
+  <div class="layout">
+    <nav class="cats" id="cats" aria-label="Categories"></nav>
+
+    <main>
+      <div class="tools">
+        <input class="search" id="q" type="search" placeholder="Search by title, topic or file name" aria-label="Search">
+        <div class="filters" id="filters"></div>
+        <div class="status" id="status" aria-live="polite"></div>
+      </div>
+      <div id="out"></div>
+      <p class="hinweis" id="hinweis">Level and languages are taken from the files themselves. Where a file states no level, it says “not specified”.</p>
+      <p class="stand" id="stand">Version of this page: 2026-10-07 17:50</p>
+    </main>
+  </div>
+</div>
+
+<script type="application/json" id="daten">{"kategorien": [{"id": "wortschatz", "name": "Wortschatz nach Lektion", "farbe": "#1b5e9e", "text": "Karteikarten, Quiz, Zuordnen, Tippen und Fortschrittsanzeige zu den Lektionen 1 bis 11.", "t": {"en": {"name": "Vocabulary by lesson", "text": "Flashcards, quiz, matching, typing and progress display for lessons 1 to 11."}}}, {"id": "artikel", "name": "Artikel, Genus und Plural", "farbe": "#a8324a", "text": "der, die, das, ein, kein, mein und die Pluralformen.", "t": {"en": {"name": "Articles, gender and plural", "text": "der, die, das, ein, kein, mein and plural forms."}}}, {"id": "verben", "name": "Verben und Konjugation", "farbe": "#2f7d4f", "text": "Konjugation, starke und trennbare Verben, Übersetzung.", "t": {"en": {"name": "Verbs and conjugation", "text": "Conjugation, strong and separable verbs, translation."}}}, {"id": "modal", "name": "Modalverben", "farbe": "#8a5a00", "text": "können, möchten und mögen.", "t": {"en": {"name": "Modal verbs", "text": "können, möchten and mögen."}}}, {"id": "satzbau", "name": "Satzbau und Grammatik gemischt", "farbe": "#5b4bb0", "text": "Verbposition und ein Trainer für mehrere Grammatikthemen.", "t": {"en": {"name": "Sentence structure and mixed grammar", "text": "Verb position and one trainer covering several grammar topics."}}}, {"id": "aussprache", "name": "Aussprache und Rechtschreibung", "farbe": "#0f7b7b", "text": "Hören, Laute und Schreibregeln.", "t": {"en": {"name": "Pronunciation and spelling", "text": "Listening, sounds and spelling rules."}}}, {"id": "zahlen", "name": "Zahlen und Zeit", "farbe": "#b0561a", "text": "Zahlen, Wochentage und Tageszeiten.", "t": {"en": {"name": "Numbers and time", "text": "Numbers, days of the week and times of day."}}}, {"id": "spiele", "name": "Sprechen und Spiele", "farbe": "#8a3f8f", "text": "Zufallsfragen und Memory für den Kurs.", "t": {"en": {"name": "Speaking and games", "text": "Random questions and a memory game for class."}}}, {"id": "b2", "name": "Fortgeschritten (B2)", "farbe": "#3c4452", "text": "Verben, Adjektive und Nomen mit Präposition.", "t": {"en": {"name": "Advanced (B2)", "text": "Verbs, adjectives and nouns with prepositions."}}}], "eintraege": [{"datei": "WortA1L1234.html", "titel": "Wortschatz Lektion 1 bis 4", "kat": "wortschatz", "gruppe": "Wählbare Zielsprache, alle Lektionen bis zur genannten", "niveau": "A1", "stufe": "A1", "sprachen": ["en", "ru", "ar", "tr"], "text": "Begrüßen und Vorstellen, Berufe, Freizeit, Möbel, Elektronik, Maße und Preise, Familie, Nachbarn.", "href": "WortA1L1234.html", "t": {"en": {"titel": "Vocabulary, lessons 1 to 4", "text": "Greetings and introductions, professions, leisure, furniture, electronics, measurements and prices, family, neighbours."}}}, {"datei": "WortA1L5.html", "titel": "Wortschatz Lektion 1 bis 5", "kat": "wortschatz", "gruppe": "Wählbare Zielsprache, alle Lektionen bis zur genannten", "niveau": "A1", "stufe": "A1", "sprachen": ["en", "ru", "ar", "tr"], "text": "Neu in Lektion 5: Tagesablauf und Tageszeiten, Freizeit und Stadt, Wochentage und Vereine.", "href": "WortA1L5.html", "t": {"en": {"titel": "Vocabulary, lessons 1 to 5", "text": "New in lesson 5: daily routine and times of day, free time and the city, days of the week and clubs."}}}, {"datei": "WortA1L7.html", "titel": "Wortschatz Lektion 1 bis 7", "kat": "wortschatz", "gruppe": "Wählbare Zielsprache, alle Lektionen bis zur genannten", "niveau": "A1", "stufe": "A1", "sprachen": ["en", "ru", "ar", "tr"], "text": "Enthält auch Lektion 6 (Uhrzeit, trennbare Verben, Arbeitszeiten). Neu in Lektion 7: Essen und Trinken, Mengen und Vorlieben, Geschäfte und Einkaufsdialog.", "href": "WortA1L7.html", "t": {"en": {"titel": "Vocabulary, lessons 1 to 7", "text": "Also includes lesson 6 (clock time, separable verbs, working hours). New in lesson 7: food and drink, quantities and preferences, shops and shopping dialogue."}}}, {"datei": "WortA1L8.html", "titel": "Wortschatz Lektion 1 bis 8", "kat": "wortschatz", "gruppe": "Wählbare Zielsprache, alle Lektionen bis zur genannten", "niveau": "A1", "stufe": "A1", "sprachen": ["en", "ru", "ar", "tr"], "text": "Neu in Lektion 8: Mahlzeiten und Alltag, Feste und Einladungen, Genuss und Geschmack.", "href": "WortA1L8.html", "t": {"en": {"titel": "Vocabulary, lessons 1 to 8", "text": "New in lesson 8: meals and everyday life, celebrations and invitations, enjoyment and taste."}}}, {"datei": "WortA1L9.html", "titel": "Wortschatz Lektion 1 bis 9", "kat": "wortschatz", "gruppe": "Wählbare Zielsprache, alle Lektionen bis zur genannten", "niveau": "A1", "stufe": "A1", "sprachen": ["en", "ru", "ar", "tr"], "text": "Neu in Lektion 9: Termine und Ämter, Besorgungen, Verabredungen.", "href": "WortA1L9.html", "t": {"en": {"titel": "Vocabulary, lessons 1 to 9", "text": "New in lesson 9: appointments and offices, errands, arranging to meet."}}}, {"datei": "WortA1L10.html", "titel": "Wortschatz Lektion 1 bis 10", "kat": "wortschatz", "gruppe": "Wählbare Zielsprache, alle Lektionen bis zur genannten", "niveau": "A1", "stufe": "A1", "sprachen": ["en", "ru", "ar", "tr"], "text": "Neu in Lektion 10: Unterwegs sein, Wegbeschreibung und Verkehrsmittel, Regeln und Verbote.", "href": "WortA1L10.html", "t": {"en": {"titel": "Vocabulary, lessons 1 to 10", "text": "New in lesson 10: getting around, directions and public transport, rules and prohibitions."}}}, {"datei": "WortA1L11.html", "titel": "Wortschatz Lektion 1 bis 11", "kat": "wortschatz", "gruppe": "Wählbare Zielsprache, alle Lektionen bis zur genannten", "niveau": "A1", "stufe": "A1", "sprachen": ["en", "ru", "ar", "tr"], "text": "Neu in Lektion 11: Wohnung und Zimmer, Wohnungssuche, Hausmeister und Nachbarschaftshilfe.", "href": "WortA1L11.html", "t": {"en": {"titel": "Vocabulary, lessons 1 to 11", "text": "New in lesson 11: the apartment and rooms, finding a flat, caretaker and neighbourly help."}}}, {"datei": "WortA1L1234EN.html", "titel": "Wortschatz Lektion 1 bis 4, Englisch", "kat": "wortschatz", "gruppe": "Lektion 1 bis 4, eine feste Sprache pro Datei", "niveau": "A1", "stufe": "A1", "sprachen": ["en"], "text": "Gleicher Inhalt wie oben, Oberfläche und Übersetzung auf Englisch.", "href": "WortA1L1234EN.html", "t": {"en": {"titel": "Vocabulary, lessons 1 to 4, English", "text": "Same content as above; interface and translation — language: English."}}}, {"datei": "WortA1L1234AR.html", "titel": "Wortschatz Lektion 1 bis 4, Arabisch", "kat": "wortschatz", "gruppe": "Lektion 1 bis 4, eine feste Sprache pro Datei", "niveau": "A1", "stufe": "A1", "sprachen": ["ar"], "text": "Gleicher Inhalt wie oben, Oberfläche und Übersetzung auf Arabisch.", "href": "WortA1L1234AR.html", "t": {"en": {"titel": "Vocabulary, lessons 1 to 4, Arabic", "text": "Same content as above; interface and translation — language: Arabic."}}}, {"datei": "WortA1L1234RH.html", "titel": "Wortschatz Lektion 1 bis 4, Russisch", "kat": "wortschatz", "gruppe": "Lektion 1 bis 4, eine feste Sprache pro Datei", "niveau": "A1", "stufe": "A1", "sprachen": ["ru"], "text": "Gleicher Inhalt wie oben, Oberfläche und Übersetzung auf Russisch.", "href": "WortA1L1234RH.html", "t": {"en": {"titel": "Vocabulary, lessons 1 to 4, Russian", "text": "Same content as above; interface and translation — language: Russian."}}}, {"datei": "WortA1L1234TR.html", "titel": "Wortschatz Lektion 1 bis 4, Türkisch", "kat": "wortschatz", "gruppe": "Lektion 1 bis 4, eine feste Sprache pro Datei", "niveau": "A1", "stufe": "A1", "sprachen": ["tr"], "text": "Gleicher Inhalt wie oben, Oberfläche und Übersetzung auf Türkisch.", "href": "WortA1L1234TR.html", "t": {"en": {"titel": "Vocabulary, lessons 1 to 4, Turkish", "text": "Same content as above; interface and translation — language: Turkish."}}}, {"datei": "Vokabeln-A1L2-englisch.html", "titel": "Vokabeln Lektion 2, Englisch", "kat": "wortschatz", "gruppe": "Lektion 2, eine feste Sprache pro Datei", "niveau": "A1/A2", "stufe": "A1/A2", "sprachen": ["en"], "text": "Berufe, Freizeit, Kommunikation und persönliche Daten.", "href": "Vokabeln-A1L2-englisch.html", "t": {"en": {"titel": "Vocabulary, lesson 2, English", "text": "Professions, leisure, communication and personal details."}}}, {"datei": "Vokabeln-A1L2-arabisch.html", "titel": "Vokabeln Lektion 2, Arabisch", "kat": "wortschatz", "gruppe": "Lektion 2, eine feste Sprache pro Datei", "niveau": "A1/A2", "stufe": "A1/A2", "sprachen": ["ar"], "text": "Berufe, Freizeit, Kommunikation und persönliche Daten.", "href": "Vokabeln-A1L2-arabisch.html", "t": {"en": {"titel": "Vocabulary, lesson 2, Arabic", "text": "Professions, leisure, communication and personal details."}}}, {"datei": "Vokabeln-A1L2-russisch.html", "titel": "Vokabeln Lektion 2, Russisch", "kat": "wortschatz", "gruppe": "Lektion 2, eine feste Sprache pro Datei", "niveau": "A1/A2", "stufe": "A1/A2", "sprachen": ["ru"], "text": "Berufe, Freizeit, Kommunikation und persönliche Daten.", "href": "Vokabeln-A1L2-russisch.html", "t": {"en": {"titel": "Vocabulary, lesson 2, Russian", "text": "Professions, leisure, communication and personal details."}}}, {"datei": "Vokabeln-A1L2-tuerkisch.html", "titel": "Vokabeln Lektion 2, Türkisch", "kat": "wortschatz", "gruppe": "Lektion 2, eine feste Sprache pro Datei", "niveau": "A1/A2", "stufe": "A1/A2", "sprachen": ["tr"], "text": "Berufe, Freizeit, Kommunikation und persönliche Daten.", "href": "Vokabeln-A1L2-tuerkisch.html", "t": {"en": {"titel": "Vocabulary, lesson 2, Turkish", "text": "Professions, leisure, communication and personal details."}}}, {"datei": "WortA1L3EN.html", "titel": "Wortschatz Lektion 3, Englisch", "kat": "wortschatz", "gruppe": "Lektion 3, eine feste Sprache pro Datei", "niveau": "A1/A2", "stufe": "A1/A2", "sprachen": ["en"], "text": "Möbel und Schulsachen, Elektronik und Zimmer, Maße, Alter und Preise.", "href": "WortA1L3EN.html", "t": {"en": {"titel": "Vocabulary, lesson 3, English", "text": "Furniture and school items, electronics and rooms, measurements, age and prices."}}}, {"datei": "WortA1L3AR.html", "titel": "Wortschatz Lektion 3, Arabisch", "kat": "wortschatz", "gruppe": "Lektion 3, eine feste Sprache pro Datei", "niveau": "A1/A2", "stufe": "A1/A2", "sprachen": ["ar"], "text": "Möbel und Schulsachen, Elektronik und Zimmer, Maße, Alter und Preise.", "href": "WortA1L3AR.html", "t": {"en": {"titel": "Vocabulary, lesson 3, Arabic", "text": "Furniture and school items, electronics and rooms, measurements, age and prices."}}}, {"datei": "WortA1L3RH.html", "titel": "Wortschatz Lektion 3, Russisch", "kat": "wortschatz", "gruppe": "Lektion 3, eine feste Sprache pro Datei", "niveau": "A1/A2", "stufe": "A1/A2", "sprachen": ["ru"], "text": "Möbel und Schulsachen, Elektronik und Zimmer, Maße, Alter und Preise.", "href": "WortA1L3RH.html", "t": {"en": {"titel": "Vocabulary, lesson 3, Russian", "text": "Furniture and school items, electronics and rooms, measurements, age and prices."}}}, {"datei": "WortA1L3TR.html", "titel": "Wortschatz Lektion 3, Türkisch", "kat": "wortschatz", "gruppe": "Lektion 3, eine feste Sprache pro Datei", "niveau": "A1/A2", "stufe": "A1/A2", "sprachen": ["tr"], "text": "Möbel und Schulsachen, Elektronik und Zimmer, Maße, Alter und Preise.", "href": "WortA1L3TR.html", "t": {"en": {"titel": "Vocabulary, lesson 3, Turkish", "text": "Furniture and school items, electronics and rooms, measurements, age and prices."}}}, {"datei": "Artikeltrainer.html", "titel": "Artikeltrainer: der, die, das", "kat": "artikel", "niveau": "", "stufe": "", "sprachen": [], "text": "Den richtigen Artikel wählen. Themen frei auswählbar, 20 Fragen pro Runde, am Ende die Wörter zum Wiederholen.", "href": "Artikeltrainer.html", "t": {"en": {"titel": "Article trainer: der, die, das", "text": "Choose the correct article. Topics freely selectable, 20 questions per round, and at the end the words to review."}}}, {"datei": "Artikeltrainer-Nom-Akk-A1.html", "titel": "Artikeltrainer: ein und kein im Nominativ und Akkusativ", "kat": "artikel", "niveau": "A1", "stufe": "A1", "sprachen": ["en", "ru", "ar", "tr"], "text": "ein, eine, einen und kein, keine, keinen, mit einblendbarer Regeltabelle.", "href": "Artikeltrainer-Nom-Akk-A1.html", "t": {"en": {"titel": "Article trainer: ein and kein in the nominative and accusative", "text": "ein, eine, einen and kein, keine, keinen, with a rules table you can show or hide."}}}, {"datei": "Artikeltrainer-Nom-Akk-A1mitPossessivartikeln.html", "titel": "Artikeltrainer mit Possessivartikeln", "kat": "artikel", "niveau": "A1", "stufe": "A1", "sprachen": ["en", "ru", "ar", "tr"], "text": "Wie der Trainer davor, dazu der, die, das und mein, dein, sein, ihr, unser.", "href": "Artikeltrainer-Nom-Akk-A1mitPossessivartikeln.html", "t": {"en": {"titel": "Article trainer with possessive articles", "text": "Like the trainer before, plus der, die, das and mein, dein, sein, ihr, unser."}}}, {"datei": "Possartikel1.html", "titel": "Possessivartikel: mein und dein", "kat": "artikel", "niveau": "", "stufe": "", "sprachen": [], "text": "Zu Nomen wie Wohnort, Name oder Adresse die richtige Form von mein und dein wählen, mit Auswertung.", "href": "Possartikel1.html", "t": {"en": {"titel": "Possessive articles: mein and dein", "text": "For nouns such as place of residence, name or address, choose the correct form of mein and dein, with results at the end."}}}, {"datei": "Genus_Trainer_A1_L1-11.html", "titel": "Genus-Trainer, Lektion 1 bis 11", "kat": "artikel", "niveau": "A1", "stufe": "A1", "sprachen": ["en", "ru", "ar", "tr"], "text": "Üben, Lernliste und Fortschritt. Hilfe in einer Sprache zuschaltbar oder ausgeschaltet.", "href": "Genus_Trainer_A1_L1-11.html", "t": {"en": {"titel": "Gender trainer, lessons 1 to 11", "text": "Practice, study list and progress. Help in one language can be switched on or off."}}}, {"datei": "pluraltrainer.html", "titel": "Pluraltrainer", "kat": "artikel", "niveau": "", "stufe": "", "sprachen": [], "text": "Die Pluralform eintippen, 50 Wörter, mit Ergebnis am Ende.", "href": "pluraltrainer.html", "t": {"en": {"titel": "Plural trainer", "text": "Type the plural form, 50 words, with results at the end."}}}, {"datei": "konjugationstrainer.html", "titel": "Konjugationstrainer, alle Personen", "kat": "verben", "niveau": "", "stufe": "", "sprachen": ["en", "ru", "uk", "tr", "ar"], "text": "ich bis Sie. Mit Hinweisen zu Verben mit zusätzlichem -e-, ohne -s- und mit Vokalwechsel e zu i.", "href": "konjugationstrainer.html", "t": {"en": {"titel": "Conjugation trainer, all persons", "text": "ich to Sie. With notes on verbs with an extra -e-, without -s-, and with the vowel change e to i."}}}, {"datei": "starke-verben-trainer.html", "titel": "Starke Verben: Vokalwechsel", "kat": "verben", "niveau": "", "stufe": "", "sprachen": ["en", "ru", "uk", "tr", "ar"], "text": "Vier Muster: e zu i, e zu ie, a zu ä, au zu äu, dazu der Sonderfall essen und lesen.", "href": "starke-verben-trainer.html", "t": {"en": {"titel": "Strong verbs: vowel change", "text": "Four patterns: e to i, e to ie, a to ä, au to äu, plus the special case of essen and lesen."}}}, {"datei": "starke-verben-trainer-fortgeschritten.html", "titel": "Starke Verben, fortgeschritten", "kat": "verben", "niveau": "", "stufe": "", "sprachen": ["en", "ru", "uk", "tr", "ar"], "text": "28 Verben mit Vokalwechsel, auch Sonderfälle mit Stamm auf -t.", "href": "starke-verben-trainer-fortgeschritten.html", "t": {"en": {"titel": "Strong verbs, advanced", "text": "28 verbs with vowel change, including special cases with a stem ending in -t."}}}, {"datei": "verben-uebersetzungstrainer.html", "titel": "Verben-Übersetzungstrainer", "kat": "verben", "niveau": "A1.1", "stufe": "A1", "sprachen": ["en", "ru", "uk", "ar", "tr"], "text": "17 Verben im Präsens. Muttersprache wählbar, mit Hinweis zu studieren und lernen.", "href": "verben-uebersetzungstrainer.html", "t": {"en": {"titel": "Verb translation trainer", "text": "17 verbs in the present tense. Choose your native language, with a note on studieren and lernen."}}}, {"datei": "TrennbareVerben.html", "titel": "Trennbare Verben", "kat": "verben", "niveau": "", "stufe": "", "sprachen": ["en", "tr", "ru", "uk", "ar"], "text": "Trainer mit Animation zum Trennen des Verbs. Hilfssprache wählbar.", "href": "TrennbareVerben.html", "t": {"en": {"titel": "Separable verbs", "text": "Trainer with an animation showing how the verb separates. Help language selectable."}}}, {"datei": "TrennbareVerbenPraesens.html", "titel": "Trennbare Verben im Präsens", "kat": "verben", "niveau": "", "stufe": "", "sprachen": ["en", "tr", "ru", "uk", "ar"], "text": "Zweite Fassung des Trainers, laut Titel auf das Präsens bezogen.", "href": "TrennbareVerbenPraesens.html", "t": {"en": {"titel": "Separable verbs in the present tense", "text": "Second version of the trainer, limited to the present tense according to its title."}}}, {"datei": "zufallsgenerator Verben Konjugation regelmäßig 1.html", "titel": "Zufallsgenerator: Verbkarten ziehen", "kat": "verben", "niveau": "", "stufe": "", "sprachen": [], "text": "15 Karten mit Verbwendungen wie in Erfurt wohnen oder Deutsch lernen. Gemischt ziehen, zum Sprechen und Konjugieren.", "href": "zufallsgenerator%20Verben%20Konjugation%20regelm%C3%A4%C3%9Fig%201.html", "t": {"en": {"titel": "Random generator: draw verb cards", "text": "15 cards with verb phrases such as in Erfurt wohnen or Deutsch lernen. Drawn in random order, for speaking and conjugating."}}}, {"datei": "KoennenTrainerA11.html", "titel": "können-Trainer", "kat": "modal", "niveau": "A1.1", "stufe": "A1", "sprachen": ["en", "ru", "uk", "tr", "ar"], "text": "Erklärung und Übungen zu können. Sprache der Erklärung wählbar oder nur Deutsch.", "href": "KoennenTrainerA11.html", "t": {"en": {"titel": "können trainer", "text": "Explanation and exercises on können. Explanation language selectable, or German only."}}}, {"datei": "moechten-moegen-trainer.html", "titel": "Möchten und mögen", "kat": "modal", "niveau": "", "stufe": "", "sprachen": ["en", "tr", "ar", "ru"], "text": "Die Formen von möchten und mögen unterscheiden und einsetzen.", "href": "moechten-moegen-trainer.html", "t": {"en": {"titel": "Möchten and mögen", "text": "Tell the forms of möchten and mögen apart and use them."}}}, {"datei": "Verbposition-Trainer-A1.1.html", "titel": "Verbposition-Trainer", "kat": "satzbau", "niveau": "A1.1", "stufe": "A1", "sprachen": ["en", "ru", "uk", "tr", "ar"], "text": "Wo steht das Verb? Menü und Erklärungen wahlweise nur Deutsch oder mit zweiter Sprache.", "href": "Verbposition-Trainer-A1.1.html", "t": {"en": {"titel": "Verb position trainer", "text": "Where does the verb go? Menu and explanations in German only or with a second language."}}}, {"datei": "GrammatikA1_1_Kombitrainer.html", "titel": "Grammatik A1.1, Kombitrainer", "kat": "satzbau", "niveau": "A1.1", "stufe": "A1", "sprachen": [], "text": "Mehrere Themen in einer Datei, unter anderem Artikel, Präsens, trennbare Verben, können, müssen, dürfen, Verbposition, Akkusativ, Dativ und Possessivartikel.", "href": "GrammatikA1_1_Kombitrainer.html", "t": {"en": {"titel": "Grammar A1.1, combined trainer", "text": "Several topics in one file, including articles, present tense, separable verbs, können, müssen, dürfen, verb position, accusative, dative and possessive articles."}}}, {"datei": "Hoertrainer_Vokale_A1_L1-11.html", "titel": "Hörtrainer: Vokale und Diphthonge", "kat": "aussprache", "niveau": "A1", "stufe": "A1", "sprachen": [], "text": "Üben, Laute und Wörter, Fortschritt. Nutzt die Sprachausgabe des Browsers.", "href": "Hoertrainer_Vokale_A1_L1-11.html", "t": {"en": {"titel": "Listening trainer: vowels and diphthongs", "text": "Practice, sounds and words, progress. Uses the browser's speech output."}}}, {"datei": "Rechtschreib_Doppelkonsonant_A1_L1-11.html", "titel": "Rechtschreibtrainer: Doppelkonsonant, ck, tz", "kat": "aussprache", "niveau": "A1", "stufe": "A1", "sprachen": ["en", "ru", "ar", "tr"], "text": "Üben, Regeln und Wörter, Fortschritt. Nutzt die Sprachausgabe des Browsers.", "href": "Rechtschreib_Doppelkonsonant_A1_L1-11.html", "t": {"en": {"titel": "Spelling trainer: double consonants, ck, tz", "text": "Practice, rules and words, progress. Uses the browser's speech output."}}}, {"datei": "zahlen-0-20-trainer.html", "titel": "Zahlen 0 bis 20", "kat": "zahlen", "niveau": "", "stufe": "", "sprachen": ["en", "ru", "uk", "tr", "ar"], "text": "Zahlen lernen, Sprache der Erklärungen zu Beginn wählbar.", "href": "zahlen-0-20-trainer.html", "t": {"en": {"titel": "Numbers 0 to 20", "text": "Learn numbers; choose the language of the explanations at the start."}}}, {"datei": "WochentageTageszeiten.html", "titel": "Wochentage und Tageszeiten", "kat": "zahlen", "niveau": "", "stufe": "", "sprachen": ["uk", "ru", "en", "be", "bn", "tr", "fr", "ar"], "text": "Karten, Quiz, Schreiben und Reihenfolge. Acht Hilfssprachen.", "href": "WochentageTageszeiten.html", "t": {"en": {"titel": "Days of the week and times of day", "text": "Cards, quiz, writing and ordering. Eight help languages."}}}, {"datei": "Fragen_Generator_A1_L1-8.html", "titel": "Fragen-Generator, Lektion 1 bis 8", "kat": "spiele", "niveau": "A1", "stufe": "A1", "sprachen": [], "text": "Zufällige Fragen ohne Wiederholung, nach Anrede und Themen filterbar. Weiter mit Leertaste oder Pfeil rechts.", "href": "Fragen_Generator_A1_L1-8.html", "t": {"en": {"titel": "Question generator, lessons 1 to 8", "text": "Random questions without repeats, filterable by form of address and topic. Continue with the space bar or right arrow."}}}, {"datei": "Memory_Gegensaetze.html", "titel": "Memory: Gegensätze", "kat": "spiele", "niveau": "A1", "stufe": "A1", "sprachen": [], "text": "Zwei Karten aufdecken und das passende Gegenteil finden.", "href": "Memory_Gegensaetze.html", "t": {"en": {"titel": "Memory: opposites", "text": "Turn over two cards and find the matching opposite."}}}, {"datei": "KollokationenTabelleB2.html", "titel": "Kollokationen ordnen", "kat": "b2", "niveau": "B2", "stufe": "B2", "sprachen": [], "text": "Adjektive und Nomen mit ihrer Präposition dem passenden Verb zuordnen. Plättchen antippen oder ziehen.", "href": "KollokationenTabelleB2.html", "t": {"en": {"titel": "Arranging collocations", "text": "Match adjectives and nouns with their prepositions to the right verb. Tap or drag the tiles."}}}, {"datei": "VerbDominoB2.html", "titel": "Verb-Domino", "kat": "b2", "niveau": "B2", "stufe": "B2", "sprachen": [], "text": "Verben mit festen Präpositionen: Plättchen an die Kette legen, bis sie sich schließt.", "href": "VerbDominoB2.html", "t": {"en": {"titel": "Verb domino", "text": "Verbs with fixed prepositions: add tiles to the chain until it closes."}}}], "stand": "2026-10-07 17:50", "i18n": {"ui": {"de": {"titel": "Materialsammlung Deutsch als Zweitsprache", "sub": "{n} Trainer und Übungen. Ein Klick auf eine Zeile öffnet die Datei.", "search_ph": "Suchen nach Titel, Thema oder Dateiname", "search_aria": "Suchen", "cats_aria": "Kategorien", "all_cats": "Alle Kategorien", "level": "Niveau", "help": "Hilfssprache der Trainer", "lvl_a1": "A1", "lvl_a1a2": "A1 bis A2", "lvl_b2": "B2", "lvl_none": "nicht angegeben", "count": "{n} von {total} Dateien", "reset": "Filter zurücksetzen", "none_title": "Keine Treffer", "none_text": "Suchbegriff kürzen oder Filter zurücksetzen.", "tag_level": "Niveau {x}", "tag_level_none": "Niveau nicht angegeben", "tag_help_none": "Hilfssprache: keine", "hinweis": "Niveau und Sprachen stammen aus den Dateien selbst. Wo eine Datei kein Niveau nennt, steht „nicht angegeben“.", "lang_aria": "Sprache der Seite", "stand": "Stand dieser Übersicht: {d}", "fehler": "Die Sprache konnte nicht umgestellt werden."}, "en": {"titel": "Teaching materials: German as a second language", "sub": "{n} trainers and exercises. Click a row to open the file.", "search_ph": "Search by title, topic or file name", "search_aria": "Search", "cats_aria": "Categories", "all_cats": "All categories", "level": "Level", "help": "Trainer help language", "lvl_a1": "A1", "lvl_a1a2": "A1 to A2", "lvl_b2": "B2", "lvl_none": "not specified", "count": "{n} of {total} files", "reset": "Reset filters", "none_title": "No results", "none_text": "Shorten the search term or reset the filters.", "tag_level": "Level {x}", "tag_level_none": "Level not specified", "tag_help_none": "Help language: none", "hinweis": "Level and languages are taken from the files themselves. Where a file states no level, it says “not specified”.", "lang_aria": "Page language", "stand": "Version of this page: {d}", "fehler": "The page language could not be changed."}}, "sprachnamen": {"de": {"en": "Englisch", "ru": "Russisch", "uk": "Ukrainisch", "tr": "Türkisch", "ar": "Arabisch", "be": "Belarussisch", "bn": "Bengalisch", "fr": "Französisch"}, "en": {"en": "English", "ru": "Russian", "uk": "Ukrainian", "tr": "Turkish", "ar": "Arabic", "be": "Belarusian", "bn": "Bengali", "fr": "French"}}, "gruppen": {"Wählbare Zielsprache, alle Lektionen bis zur genannten": {"en": "Selectable target language, all lessons up to the one named"}, "Lektion 1 bis 4, eine feste Sprache pro Datei": {"en": "Lessons 1 to 4, one fixed language per file"}, "Lektion 2, eine feste Sprache pro Datei": {"en": "Lesson 2, one fixed language per file"}, "Lektion 3, eine feste Sprache pro Datei": {"en": "Lesson 3, one fixed language per file"}}}}</script>
+<script>
+(function(){
+  var D = JSON.parse(document.getElementById('daten').textContent);
+  var I = D.i18n;
+  var lang = document.documentElement.lang || 'de';   // feste Sprache dieser Seite
+  var sel = { kat: null, stufen: {}, sprachen: {}, q: '' };
+  var STUFEN = [['A1','lvl_a1'],['A1/A2','lvl_a1a2'],['B2','lvl_b2'],['','lvl_none']];
+
+  // ---- Hilfsfunktionen
+  function norm(s){
+    return (s||'').toLowerCase().normalize('NFD')
+      .replace(/[̀-ًͯ-ٰٟ]/g,'').replace(/ß/g,'ss');
+  }
+  function el(tag, cls, text){ var e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
+  function anyOn(o){ return Object.keys(o).some(function(k){ return o[k]; }); }
+  function ui(key, vars){
+    var s = (I.ui[lang] && I.ui[lang][key]) || (I.ui.de && I.ui.de[key]) || key;
+    if(vars) Object.keys(vars).forEach(function(k){ s = s.split('{'+k+'}').join(vars[k]); });
+    return s;
+  }
+  function field(obj, f){ var t = obj.t && obj.t[lang]; return (t && t[f]) || obj[f] || ''; }
+  function spName(code){ var m = I.sprachnamen[lang] || {}; return m[code] || (I.sprachnamen.de||{})[code] || code; }
+  function groupName(g){ var t = I.gruppen && I.gruppen[g]; return (t && t[lang]) || g; }
+
+  // verwendete Hilfssprachen in fester Reihenfolge
+  var spr = []; D.eintraege.forEach(function(e){ e.sprachen.forEach(function(s){ if(spr.indexOf(s)<0) spr.push(s); }); });
+  var order = ['en','ru','uk','tr','ar','be','bn','fr'];
+  spr.sort(function(a,b){ return order.indexOf(a)-order.indexOf(b); });
+
+  function matches(e, ignoreKat){
+    if(!ignoreKat && sel.kat && e.kat!==sel.kat) return false;
+    if(anyOn(sel.stufen) && !sel.stufen[e.stufe||'']) return false;
+    if(anyOn(sel.sprachen) && !e.sprachen.some(function(s){ return sel.sprachen[s]; })) return false;
+    if(sel.q){
+      // durchsucht die Sprache der Seite und zusätzlich das deutsche Original
+      var hay = norm([field(e,'titel'),field(e,'text'),e.titel,e.text,e.datei,e.gruppe||'',e.niveau,
+        e.sprachen.map(spName).join(' ')].join(' '));
+      var words = norm(sel.q).split(/\s+/).filter(Boolean);
+      for(var i=0;i<words.length;i++) if(hay.indexOf(words[i])<0) return false;
+    }
+    return true;
+  }
+
+  function renderNav(){
+    var nav = document.getElementById('cats'); nav.textContent='';
+    function btn(id, name, color, n){
+      var b = el('button'); b.type='button';
+      b.setAttribute('aria-pressed', String(sel.kat===id));
+      if(color) b.style.setProperty('--c', color);
+      b.appendChild(el('span','dot'));
+      b.appendChild(el('span',null,name));
+      b.appendChild(el('span','n',String(n)));
+      b.addEventListener('click', function(){ sel.kat = (sel.kat===id ? null : id); render(); });
+      nav.appendChild(b);
+    }
+    var total = D.eintraege.filter(function(e){ return matches(e,true); }).length;
+    var all = el('button'); all.type='button'; all.setAttribute('aria-pressed', String(sel.kat===null));
+    all.style.setProperty('--c','var(--ink)');
+    all.appendChild(el('span','dot'));
+    all.appendChild(el('span',null,ui('all_cats')));
+    all.appendChild(el('span','n',String(total)));
+    all.addEventListener('click', function(){ sel.kat=null; render(); });
+    nav.appendChild(all);
+    D.kategorien.forEach(function(k){
+      var n = D.eintraege.filter(function(e){ return e.kat===k.id && matches(e,true); }).length;
+      btn(k.id, field(k,'name'), k.farbe, n);
+    });
+  }
+
+  function renderFilters(){
+    var f = document.getElementById('filters'); f.textContent='';
+    function group(label, items, st){
+      var g = el('div','fg'); g.setAttribute('role','group'); g.setAttribute('aria-label',label);
+      g.appendChild(el('span','lbl',label));
+      items.forEach(function(it){
+        var c = el('button','chip',it[1]); c.type='button';
+        c.setAttribute('aria-pressed', String(!!st[it[0]]));
+        c.addEventListener('click', function(){ st[it[0]] = !st[it[0]]; render(); });
+        g.appendChild(c);
+      });
+      f.appendChild(g);
+    }
+    group(ui('level'), STUFEN.map(function(s){ return [s[0], ui(s[1])]; }), sel.stufen);
+    group(ui('help'), spr.map(function(s){ return [s, spName(s)]; }), sel.sprachen);
+  }
+
+  function renderList(){
+    var out = document.getElementById('out'); out.textContent='';
+    var shown = 0;
+    D.kategorien.forEach(function(k){
+      var items = D.eintraege.filter(function(e){ return e.kat===k.id && matches(e,false); });
+      if(!items.length) return;
+      shown += items.length;
+      var sec = el('section','kat'); sec.style.setProperty('--c', k.farbe); sec.id = 'kat-'+k.id;
+      sec.appendChild(el('h2','reiter',field(k,'name')));
+      var fach = el('div','fach');
+      var kt = field(k,'text');
+      if(kt) fach.appendChild(el('p','info',kt));
+      var lastGroup = null, cur = null;
+      items.forEach(function(e){
+        var g = e.gruppe || '';
+        if(g !== lastGroup){
+          if(g) fach.appendChild(el('h3','gruppe',groupName(g)));
+          cur = el('ul','liste'); fach.appendChild(cur); lastGroup = g;
+        }
+        var li = el('li');
+        var shownTitle = field(e,'titel');
+        var a = el('a','titel',shownTitle); a.href = e.href;
+        li.appendChild(a);
+        if(lang !== 'de' && e.titel && e.titel !== shownTitle){
+          var o = el('p','orig',e.titel); o.lang = 'de'; li.appendChild(o);
+        }
+        var tx = field(e,'text');
+        if(tx) li.appendChild(el('p','text',tx));
+        var m = el('div','meta');
+        m.appendChild(e.niveau ? el('span','tag niv',ui('tag_level',{x:e.niveau})) : el('span','tag leer',ui('tag_level_none')));
+        if(e.sprachen.length){
+          e.sprachen.forEach(function(s){ m.appendChild(el('span','tag',spName(s))); });
+        } else {
+          m.appendChild(el('span','tag leer',ui('tag_help_none')));
+        }
+        m.appendChild(el('span','datei',e.datei));
+        li.appendChild(m);
+        cur.appendChild(li);
+      });
+      sec.appendChild(fach);
+      out.appendChild(sec);
+    });
+    if(!shown){
+      var d = el('div','leer-meldung');
+      d.appendChild(el('strong',null,ui('none_title')));
+      d.appendChild(el('span',null,ui('none_text')));
+      out.appendChild(d);
+    }
+    var st = document.getElementById('status'); st.textContent='';
+    st.appendChild(el('span',null, ui('count',{n:shown,total:D.eintraege.length})));
+    if(sel.kat || anyOn(sel.stufen) || anyOn(sel.sprachen) || sel.q){
+      var r = el('button',null,ui('reset')); r.type='button';
+      r.addEventListener('click', function(){ sel={kat:null,stufen:{},sprachen:{},q:''}; document.getElementById('q').value=''; render(); });
+      st.appendChild(r);
+    }
+  }
+
+  function render(){ renderNav(); renderFilters(); renderList(); }
+
+  // Zeigt einen Fehler sichtbar an, statt still zu scheitern (hilft bei der Fehlersuche im Browser)
+  function zeigeFehler(err){
+    var box = document.getElementById('fehler');
+    box.textContent = '';
+    box.appendChild(el('strong',null,ui('fehler')+' '));
+    box.appendChild(el('code',null,String(err && err.message || err)+' | '+navigator.userAgent));
+    box.hidden = false;
+  }
+
+  document.getElementById('q').addEventListener('input', function(ev){ sel.q = ev.target.value; renderNav(); renderList(); });
+  try{ render(); }catch(err){ zeigeFehler(err); }
+})();
+</script>
+</body>
+</html>
