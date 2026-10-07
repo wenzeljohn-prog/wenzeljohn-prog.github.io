@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rechtschreibtrainer: Doppelkonsonant, ck, tz</title>
+<style>
+  :root {
+    --bg:#f4f6fa; --card:#fff; --text:#1d2433; --muted:#5b667a; --line:#d5dbe6;
+    --accent:#2b5fd9; --accent-text:#fff; --chip:#e9eef8;
+    --ok:#1f7a4d; --ok-bg:#e0f3e8; --bad:#b3303f; --bad-bg:#fbe4e7; --warn-bg:#fff4d6; --mark:#fde8a6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#12161f; --card:#1b2130; --text:#e8ecf5; --muted:#9aa5ba; --line:#30394d;
+      --accent:#6b97ff; --accent-text:#0b1226; --chip:#252d40;
+      --ok:#6fd6a2; --ok-bg:#183427; --bad:#ff8a98; --bad-bg:#42202a; --warn-bg:#3a3118; --mark:#6b5a1d;
+    }
+  }
+  * { box-sizing:border-box; }
+  html,body { margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; line-height:1.45; min-height:100vh; }
+  .wrap { max-width:900px; margin:0 auto; padding:14px; }
+  h1 { font-size:1.2rem; margin:2px 0 10px; }
+  .tabs { display:flex; gap:6px; margin-bottom:12px; }
+  .tab { flex:1; min-height:48px; border-radius:12px; border:2px solid var(--line); background:var(--card); color:var(--text); font-size:1rem; cursor:pointer; font-weight:600; }
+  .tab.on { border-color:var(--accent); background:var(--chip); }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+  .panel h2 { font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 8px; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .chip { display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:6px 14px; border-radius:999px; background:var(--chip); border:2px solid transparent; cursor:pointer; user-select:none; font-size:.95rem; }
+  .chip input { position:absolute; opacity:0; pointer-events:none; }
+  .chip.on { border-color:var(--accent); font-weight:700; }
+  .chip:focus-within { outline:3px solid var(--accent); outline-offset:2px; }
+  .chip small { color:var(--muted); font-weight:400; }
+  .small { color:var(--muted); font-size:.86rem; margin-top:6px; }
+  .linkbtn { background:none; border:none; color:var(--accent); cursor:pointer; font-size:.92rem; padding:6px 4px; min-height:44px; }
+  select, input[type=text], input[type=search] { min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); color:var(--text); font-size:1rem; padding:6px 10px; }
+  label.opt { display:flex; align-items:center; gap:8px; min-height:44px; }
+  button.main { width:100%; min-height:56px; border-radius:14px; border:none; cursor:pointer; font-size:1.15rem; font-weight:700; background:var(--accent); color:var(--accent-text); }
+  button.main:disabled { opacity:.4; cursor:default; }
+  button.sec { min-height:48px; padding:0 18px; border-radius:12px; cursor:pointer; font-size:1rem; background:var(--card); color:var(--text); border:2px solid var(--line); }
+  button:focus-visible, input:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  .bar { height:10px; background:var(--chip); border-radius:999px; overflow:hidden; }
+  .bar > i { display:block; height:100%; background:var(--accent); }
+  .top { display:flex; justify-content:space-between; font-size:.9rem; color:var(--muted); margin-bottom:6px; }
+  .qcard { text-align:center; padding:18px 12px 12px; }
+  .qtask { font-size:.95rem; color:var(--muted); margin-bottom:6px; }
+  .qmean { font-size:1.1rem; color:var(--muted); min-height:1.5em; margin-bottom:6px; }
+  .qbig { font-size:clamp(2rem,9vw,3.2rem); font-weight:800; margin:8px 0 12px; word-wrap:break-word; overflow-wrap:anywhere; letter-spacing:.02em; }
+  .gap { display:inline-block; min-width:1.6em; border-bottom:4px solid var(--accent); color:var(--accent); }
+  .opts { display:grid; gap:10px; margin:10px 0; }
+  .opts.two { grid-template-columns:1fr 1fr; }
+  .opts button { min-height:68px; border-radius:14px; border:3px solid var(--line); background:var(--card); color:var(--text); font-size:1.5rem; font-weight:800; cursor:pointer; padding:6px 10px; word-wrap:break-word; overflow-wrap:anywhere; }
+  .opts.rule button { font-size:1.05rem; font-weight:700; text-align:left; min-height:60px; }
+  .opts button small.sub { font-size:.82rem; font-weight:500; color:var(--text); opacity:.85; margin-top:4px; }
+  .opts button small { display:block; font-size:.7rem; font-weight:500; color:var(--muted); }
+  .opts button.right { background:var(--ok-bg); border-color:var(--ok); color:var(--ok); }
+  .opts button.wrong { background:var(--bad-bg); border-color:var(--bad); color:var(--bad); }
+  .opts button:disabled { cursor:default; }
+  .opts button:disabled:not(.right):not(.wrong) { opacity:.5; }
+  .typebox { display:flex; gap:8px; margin:8px 0; }
+  .typebox input { flex:1; font-size:1.4rem; min-width:0; }
+  .typebox button { min-width:96px; }
+  .umlauts { display:flex; gap:6px; justify-content:center; margin-bottom:8px; }
+  .umlauts button { min-width:52px; min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); color:var(--text); font-size:1.2rem; cursor:pointer; }
+  mark.seg { background:var(--mark); color:inherit; border-radius:4px; padding:0 2px; }
+  .fb { border-radius:12px; padding:12px 14px; margin-top:6px; text-align:left; }
+  .fb.ok { background:var(--ok-bg); } .fb.bad { background:var(--bad-bg); }
+  .fb .big { font-size:1.3rem; font-weight:800; }
+  .fb .hint { margin-top:6px; padding:8px 10px; border-radius:10px; background:var(--warn-bg); font-size:.95rem; }
+  .fb s { opacity:.7; }
+  .speak { min-height:44px; padding:0 14px; border-radius:999px; border:2px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; font-size:.95rem; margin-bottom:6px; }
+  .score { font-size:2.2rem; font-weight:800; text-align:center; }
+  .rev { list-style:none; margin:8px 0 0; padding:0; }
+  .rev li { padding:10px 0; border-top:1px solid var(--line); }
+  .rev .pl { color:var(--muted); font-size:.92rem; }
+  .rev .w { font-size:1.15rem; font-weight:700; }
+  .grp h3 { font-size:1.02rem; margin:0 0 4px; }
+  .grp p { margin:0 0 8px; color:var(--muted); font-size:.92rem; }
+  .words { display:flex; flex-wrap:wrap; gap:6px; }
+  .words span { background:var(--chip); border-radius:10px; padding:4px 10px; font-size:1rem; }
+  .words span small { color:var(--muted); }
+  .rowbar { display:flex; height:14px; border-radius:999px; overflow:hidden; background:var(--chip); }
+  .rowbar i { display:block; height:100%; }
+  .seg-s { background:var(--ok); } .seg-g { background:#e0a526; }
+  table.prog { width:100%; border-collapse:collapse; font-size:.95rem; }
+  table.prog td { padding:6px 4px; border-top:1px solid var(--line); vertical-align:middle; }
+  table.prog td.n { width:44%; font-weight:600; }
+  table.prog td.c { width:92px; text-align:right; color:var(--muted); font-size:.85rem; white-space:nowrap; }
+  details summary { cursor:pointer; font-weight:600; min-height:44px; display:flex; align-items:center; }
+  .rules li { margin:6px 0; }
+  .hidden { display:none !important; }
+  @media (max-width:560px) { .opts.two { grid-template-columns:1fr; } .wrap { padding:10px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Rechtschreibtrainer &middot; Doppelkonsonant, ck, tz</h1>
+  <div class="tabs" role="tablist">
+    <button class="tab on" id="tabPractice" type="button">&Uuml;ben</button>
+    <button class="tab" id="tabList" type="button">Regeln &amp; W&ouml;rter</button>
+    <button class="tab" id="tabProg" type="button">Fortschritt</button>
+  </div>
+  <div id="viewPractice"></div>
+  <div id="viewList" class="hidden"></div>
+  <div id="viewProg" class="hidden"></div>
+</div>
+<script>
+(function () {
+  "use strict";
+var ITEMS = [{"w": "bisschen", "pre": "bi", "a": "ss", "b": "s", "post": "chen", "wrong": "bischen", "cat": "kurz", "kind": "dk", "l": 1, "en": "a little", "tr": "biraz", "ru": "немного", "ar": "قليلاً", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "id": 0}, {"w": "bitte", "pre": "bi", "a": "tt", "b": "t", "post": "e", "wrong": "bite", "cat": "kurz", "kind": "dk", "l": 1, "en": "please / you're welcome", "tr": "lütfen / rica ederim", "ru": "пожалуйста", "ar": "من فضلك / عفواً", "exp": "Kurzer Vokal → doppelter Konsonant (tt).", "id": 1}, {"w": "interessant", "pre": "intere", "a": "ss", "b": "s", "post": "ant", "wrong": "interesant", "cat": "kurz", "kind": "dk", "l": 1, "en": "interesting", "tr": "ilginç", "ru": "интересно", "ar": "مثير للاهتمام", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "id": 2}, {"w": "kommen", "pre": "ko", "a": "mm", "b": "m", "post": "en", "wrong": "komen", "cat": "kurz", "kind": "dk", "l": 1, "en": "to come", "tr": "gelmek", "ru": "приезжать", "ar": "يأتي", "exp": "Kurzer Vokal → doppelter Konsonant (mm).", "id": 3}, {"w": "Adresse", "pre": "Adre", "a": "ss", "b": "s", "post": "e", "wrong": "Adrese", "cat": "kurz", "kind": "dk", "l": 2, "en": "address", "tr": "adres", "ru": "адрес", "ar": "العنوان", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "id": 4}, {"w": "Hausnummer", "pre": "Hausnu", "a": "mm", "b": "m", "post": "er", "wrong": "Hausnumer", "cat": "kurz", "kind": "dk", "l": 2, "en": "house number", "tr": "bina numarası", "ru": "номер дома", "ar": "رقم المنزل", "exp": "Kurzer Vokal → doppelter Konsonant (mm).", "id": 5}, {"w": "Kellner", "pre": "Ke", "a": "ll", "b": "l", "post": "ner", "wrong": "Kelner", "cat": "kurz", "kind": "dk", "l": 2, "en": "waiter / waitress", "tr": "garson", "ru": "официант / официантка", "ar": "نادل / نادلة", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 6}, {"w": "bekannt", "pre": "beka", "a": "nn", "b": "n", "post": "t", "wrong": "bekant", "cat": "kurz", "kind": "dk", "l": 2, "en": "known / famous", "tr": "tanınmış / ünlü", "ru": "известный", "ar": "معروف / مشهور", "exp": "Kurzer Vokal → doppelter Konsonant (nn).", "id": 7}, {"w": "jetzt", "pre": "je", "a": "tz", "b": "z", "post": "t", "wrong": "jezt", "cat": "kurz", "kind": "tz", "l": 2, "en": "now", "tr": "şimdi", "ru": "сейчас", "ar": "الآن", "exp": "Kurzer Vokal → statt zz schreibt man tz.", "id": 8}, {"w": "Bett", "pre": "Be", "a": "tt", "b": "t", "post": "", "wrong": "Bet", "cat": "kurz", "kind": "dk", "l": 3, "en": "bed", "tr": "yatak", "ru": "кровать", "ar": "السرير", "exp": "Kurzer Vokal → doppelter Konsonant (tt).", "id": 9}, {"w": "Kaffee", "pre": "Ka", "a": "ff", "b": "f", "post": "ee", "wrong": "Kafee", "cat": "kurz", "kind": "dk", "l": 3, "en": "coffee", "tr": "kahve", "ru": "кофе", "ar": "القهوة", "exp": "Kurzer Vokal → doppelter Konsonant (ff).", "id": 10}, {"w": "Kasse", "pre": "Ka", "a": "ss", "b": "s", "post": "e", "wrong": "Kase", "cat": "kurz", "kind": "dk", "l": 3, "en": "cash register / checkout", "tr": "kasa", "ru": "касса", "ar": "الصندوق", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "id": 11}, {"w": "Schlüssel", "pre": "Schlü", "a": "ss", "b": "s", "post": "el", "wrong": "Schlüsel", "cat": "kurz", "kind": "dk", "l": 3, "en": "key", "tr": "anahtar", "ru": "ключ", "ar": "المفتاح", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "id": 12}, {"w": "kaputt", "pre": "kapu", "a": "tt", "b": "t", "post": "", "wrong": "kaput", "cat": "kurz", "kind": "dk", "l": 3, "en": "broken", "tr": "bozuk", "ru": "сломанный", "ar": "معطّل / مكسور", "exp": "Kurzer Vokal → doppelter Konsonant (tt).", "id": 13}, {"w": "Mutter", "pre": "Mu", "a": "tt", "b": "t", "post": "er", "wrong": "Muter", "cat": "kurz", "kind": "dk", "l": 4, "en": "mother", "tr": "anne", "ru": "мать", "ar": "الأم", "exp": "Kurzer Vokal → doppelter Konsonant (tt).", "id": 14}, {"w": "dann", "pre": "da", "a": "nn", "b": "n", "post": "", "wrong": "dan", "cat": "kurz", "kind": "dk", "l": 4, "en": "then", "tr": "sonra", "ru": "потом, затем", "ar": "ثم", "exp": "Kurzer Vokal → doppelter Konsonant (nn).", "id": 15}, {"w": "kennen", "pre": "ke", "a": "nn", "b": "n", "post": "en", "wrong": "kenen", "cat": "kurz", "kind": "dk", "l": 4, "en": "to know / be acquainted with", "tr": "tanımak", "ru": "знать, быть знакомым", "ar": "يعرف", "exp": "Kurzer Vokal → doppelter Konsonant (nn).", "id": 16}, {"w": "nett", "pre": "ne", "a": "tt", "b": "t", "post": "", "wrong": "net", "cat": "kurz", "kind": "dk", "l": 4, "en": "nice / kind", "tr": "nazik / hoş", "ru": "милый, приятный", "ar": "لطيف", "exp": "Kurzer Vokal → doppelter Konsonant (tt).", "id": 17}, {"w": "toll", "pre": "to", "a": "ll", "b": "l", "post": "", "wrong": "tol", "cat": "kurz", "kind": "dk", "l": 4, "en": "great / awesome", "tr": "harika", "ru": "классный, замечательный", "ar": "رائع", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 18}, {"w": "vielleicht", "pre": "vie", "a": "ll", "b": "l", "post": "eicht", "wrong": "vieleicht", "cat": "kurz", "kind": "dk", "l": 4, "en": "maybe / perhaps", "tr": "belki", "ru": "может быть", "ar": "ربما", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 19}, {"w": "zusammen", "pre": "zusa", "a": "mm", "b": "m", "post": "en", "wrong": "zusamen", "cat": "kurz", "kind": "dk", "l": 4, "en": "together", "tr": "birlikte", "ru": "вместе", "ar": "معاً", "exp": "Kurzer Vokal → doppelter Konsonant (mm).", "id": 20}, {"w": "bestimmt", "pre": "besti", "a": "mm", "b": "m", "post": "t", "wrong": "bestimt", "cat": "kurz", "kind": "dk", "l": 4, "en": "definitely / for sure", "tr": "kesinlikle", "ru": "точно, наверняка", "ar": "بالتأكيد", "exp": "Kurzer Vokal → doppelter Konsonant (mm).", "id": 21}, {"w": "allein", "pre": "a", "a": "ll", "b": "l", "post": "ein", "wrong": "alein", "cat": "kurz", "kind": "dk", "l": 4, "en": "alone", "tr": "yalnız", "ru": "один / одна", "ar": "وحيداً / بمفرده", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 22}, {"w": "alles", "pre": "a", "a": "ll", "b": "l", "post": "es", "wrong": "ales", "cat": "kurz", "kind": "dk", "l": 4, "en": "everything", "tr": "her şey", "ru": "всё", "ar": "كل شيء", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 23}, {"w": "Donnerstag", "pre": "Do", "a": "nn", "b": "n", "post": "erstag", "wrong": "Donerstag", "cat": "kurz", "kind": "dk", "l": 5, "en": "Thursday", "tr": "perşembe", "ru": "четверг", "ar": "يوم الخميس", "exp": "Kurzer Vokal → doppelter Konsonant (nn).", "id": 24}, {"w": "Eintritt", "pre": "Eintri", "a": "tt", "b": "t", "post": "", "wrong": "Eintrit", "cat": "kurz", "kind": "dk", "l": 5, "en": "admission / entrance fee", "tr": "giriş / giriş ücreti", "ru": "вход, входная плата", "ar": "رسوم الدخول", "exp": "Kurzer Vokal → doppelter Konsonant (tt).", "id": 25}, {"w": "Fußball", "pre": "Fußba", "a": "ll", "b": "l", "post": "", "wrong": "Fußbal", "cat": "kurz", "kind": "dk", "l": 5, "en": "football", "tr": "futbol", "ru": "футбол", "ar": "كرة القدم", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 26}, {"w": "Hobby", "pre": "Ho", "a": "bb", "b": "b", "post": "y", "wrong": "Hoby", "cat": "kurz", "kind": "dk", "l": 5, "en": "hobby", "tr": "hobi", "ru": "хобби", "ar": "الهواية", "exp": "Kurzer Vokal → doppelter Konsonant (bb).", "id": 27}, {"w": "Million", "pre": "Mi", "a": "ll", "b": "l", "post": "ion", "wrong": "Milion", "cat": "kurz", "kind": "dk", "l": 5, "en": "million", "tr": "milyon", "ru": "миллион", "ar": "المليون", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 28}, {"w": "Mittag", "pre": "Mi", "a": "tt", "b": "t", "post": "ag", "wrong": "Mitag", "cat": "kurz", "kind": "dk", "l": 5, "en": "noon / midday", "tr": "öğle", "ru": "полдень, обеденное время", "ar": "الظهر", "exp": "Kurzer Vokal → doppelter Konsonant (tt).", "id": 29}, {"w": "Mittwoch", "pre": "Mi", "a": "tt", "b": "t", "post": "woch", "wrong": "Mitwoch", "cat": "kurz", "kind": "dk", "l": 5, "en": "Wednesday", "tr": "çarşamba", "ru": "среда", "ar": "يوم الأربعاء", "exp": "Kurzer Vokal → doppelter Konsonant (tt).", "id": 30}, {"w": "Picknick", "pre": "Pi", "a": "ck", "b": "k", "post": "nick", "wrong": "Piknick", "cat": "kurz", "kind": "ck", "l": 5, "en": "picnic", "tr": "piknik", "ru": "пикник", "ar": "البيكنيك", "exp": "Kurzer Vokal → statt kk schreibt man ck.", "id": 31}, {"w": "Sonntag", "pre": "So", "a": "nn", "b": "n", "post": "tag", "wrong": "Sontag", "cat": "kurz", "kind": "dk", "l": 5, "en": "Sunday", "tr": "pazar", "ru": "воскресенье", "ar": "يوم الأحد", "exp": "Kurzer Vokal → doppelter Konsonant (nn).", "id": 32}, {"w": "Schwimmbad", "pre": "Schwi", "a": "mm", "b": "m", "post": "bad", "wrong": "Schwimbad", "cat": "kurz", "kind": "dk", "l": 5, "en": "swimming pool", "tr": "yüzme havuzu", "ru": "бассейн", "ar": "المسبح", "exp": "Kurzer Vokal → doppelter Konsonant (mm).", "id": 33}, {"w": "Tischtennis", "pre": "Tischte", "a": "nn", "b": "n", "post": "is", "wrong": "Tischtenis", "cat": "kurz", "kind": "dk", "l": 5, "en": "table tennis", "tr": "masa tenisi", "ru": "настольный теннис", "ar": "تنس الطاولة", "exp": "Kurzer Vokal → doppelter Konsonant (nn).", "id": 34}, {"w": "treffen", "pre": "tre", "a": "ff", "b": "f", "post": "en", "wrong": "trefen", "cat": "kurz", "kind": "dk", "l": 5, "en": "to meet", "tr": "buluşmak", "ru": "встречаться, встречать", "ar": "يلتقي", "exp": "Kurzer Vokal → doppelter Konsonant (ff).", "id": 35}, {"w": "essen", "pre": "e", "a": "ss", "b": "s", "post": "en", "wrong": "esen", "cat": "kurz", "kind": "dk", "l": 5, "en": "to eat", "tr": "yemek yemek", "ru": "есть", "ar": "يأكل", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "id": 36}, {"w": "frühstücken", "pre": "frühstü", "a": "ck", "b": "k", "post": "en", "wrong": "frühstüken", "cat": "kurz", "kind": "ck", "l": 5, "en": "to have breakfast", "tr": "kahvaltı yapmak", "ru": "завтракать", "ar": "يتناول الفطور", "exp": "Kurzer Vokal → statt kk schreibt man ck.", "id": 37}, {"w": "grillen", "pre": "gri", "a": "ll", "b": "l", "post": "en", "wrong": "grilen", "cat": "kurz", "kind": "dk", "l": 5, "en": "to grill / to barbecue", "tr": "ızgara yapmak", "ru": "жарить на гриле", "ar": "يشوي", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 38}, {"w": "lecker", "pre": "le", "a": "ck", "b": "k", "post": "er", "wrong": "leker", "cat": "kurz", "kind": "ck", "l": 5, "en": "tasty / delicious", "tr": "lezzetli", "ru": "вкусный", "ar": "لذيذ", "exp": "Kurzer Vokal → statt kk schreibt man ck.", "id": 39}, {"w": "putzen", "pre": "pu", "a": "tz", "b": "z", "post": "en", "wrong": "puzen", "cat": "kurz", "kind": "tz", "l": 5, "en": "to clean", "tr": "temizlemek", "ru": "убирать, чистить", "ar": "ينظّف", "exp": "Kurzer Vokal → statt zz schreibt man tz.", "id": 40}, {"w": "schwimmen", "pre": "schwi", "a": "mm", "b": "m", "post": "en", "wrong": "schwimen", "cat": "kurz", "kind": "dk", "l": 5, "en": "to swim", "tr": "yüzmek", "ru": "плавать", "ar": "يسبح", "exp": "Kurzer Vokal → doppelter Konsonant (mm).", "id": 41}, {"w": "wann", "pre": "wa", "a": "nn", "b": "n", "post": "", "wrong": "wan", "cat": "kurz", "kind": "dk", "l": 5, "en": "when", "tr": "ne zaman", "ru": "когда", "ar": "متى", "exp": "Kurzer Vokal → doppelter Konsonant (nn).", "id": 42}, {"w": "Kollege", "pre": "Ko", "a": "ll", "b": "l", "post": "ege", "wrong": "Kolege", "cat": "kurz", "kind": "dk", "l": 6, "en": "colleague", "tr": "iş arkadaşı", "ru": "коллега", "ar": "زميل", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 43}, {"w": "beginnen", "pre": "begi", "a": "nn", "b": "n", "post": "en", "wrong": "beginen", "cat": "kurz", "kind": "dk", "l": 6, "en": "to begin", "tr": "başlamak", "ru": "начинаться, начинать", "ar": "يبدأ", "exp": "Kurzer Vokal → doppelter Konsonant (nn).", "id": 44}, {"w": "geschlossen", "pre": "geschlo", "a": "ss", "b": "s", "post": "en", "wrong": "geschlosen", "cat": "kurz", "kind": "dk", "l": 6, "en": "closed", "tr": "kapalı", "ru": "закрыто", "ar": "مُغلق", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "id": 45}, {"w": "kontrollieren", "pre": "kontro", "a": "ll", "b": "l", "post": "ieren", "wrong": "kontrolieren", "cat": "kurz", "kind": "dk", "l": 6, "en": "to check / to control", "tr": "kontrol etmek", "ru": "проверять, контролировать", "ar": "يراقب / يتحقّق من", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 46}, {"w": "Butter", "pre": "Bu", "a": "tt", "b": "t", "post": "er", "wrong": "Buter", "cat": "kurz", "kind": "dk", "l": 7, "en": "butter", "tr": "tereyağı", "ru": "масло", "ar": "الزبدة", "exp": "Kurzer Vokal → doppelter Konsonant (tt).", "id": 47}, {"w": "Bäckerei", "pre": "Bä", "a": "ck", "b": "k", "post": "erei", "wrong": "Bäkerei", "cat": "kurz", "kind": "ck", "l": 7, "en": "bakery", "tr": "fırın", "ru": "пекарня", "ar": "المخبز", "exp": "Kurzer Vokal → statt kk schreibt man ck.", "id": 48}, {"w": "Kartoffel", "pre": "Karto", "a": "ff", "b": "f", "post": "el", "wrong": "Kartofel", "cat": "kurz", "kind": "dk", "l": 7, "en": "potato", "tr": "patates", "ru": "картофель", "ar": "البطاطا", "exp": "Kurzer Vokal → doppelter Konsonant (ff).", "id": 49}, {"w": "Lammfleisch", "pre": "La", "a": "mm", "b": "m", "post": "fleisch", "wrong": "Lamfleisch", "cat": "kurz", "kind": "dk", "l": 7, "en": "lamb", "tr": "kuzu eti", "ru": "баранина", "ar": "لحم الخروف", "exp": "Kurzer Vokal → doppelter Konsonant (mm).", "id": 50}, {"w": "Pfeffer", "pre": "Pfe", "a": "ff", "b": "f", "post": "er", "wrong": "Pfefer", "cat": "kurz", "kind": "dk", "l": 7, "en": "pepper", "tr": "karabiber", "ru": "перец", "ar": "الفلفل الأسود", "exp": "Kurzer Vokal → doppelter Konsonant (ff).", "id": 51}, {"w": "Stück", "pre": "Stü", "a": "ck", "b": "k", "post": "", "wrong": "Stük", "cat": "kurz", "kind": "ck", "l": 7, "en": "piece", "tr": "parça / tane", "ru": "штука, кусок", "ar": "القطعة", "exp": "Kurzer Vokal → statt kk schreibt man ck.", "id": 52}, {"w": "Wasser", "pre": "Wa", "a": "ss", "b": "s", "post": "er", "wrong": "Waser", "cat": "kurz", "kind": "dk", "l": 7, "en": "water", "tr": "su", "ru": "вода", "ar": "الماء", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "id": 53}, {"w": "Zucker", "pre": "Zu", "a": "ck", "b": "k", "post": "er", "wrong": "Zuker", "cat": "kurz", "kind": "ck", "l": 7, "en": "sugar", "tr": "şeker", "ru": "сахар", "ar": "السكر", "exp": "Kurzer Vokal → statt kk schreibt man ck.", "id": 54}, {"w": "zurück", "pre": "zurü", "a": "ck", "b": "k", "post": "", "wrong": "zurük", "cat": "kurz", "kind": "ck", "l": 7, "en": "back", "tr": "geri", "ru": "обратно, назад", "ar": "إلى الوراء / عودة", "exp": "Kurzer Vokal → statt kk schreibt man ck.", "id": 55}, {"w": "Programm", "pre": "Progra", "a": "mm", "b": "m", "post": "", "wrong": "Program", "cat": "kurz", "kind": "dk", "l": 8, "en": "program", "tr": "program", "ru": "программа", "ar": "البرنامج", "exp": "Kurzer Vokal → doppelter Konsonant (mm).", "id": 56}, {"w": "Suppe", "pre": "Su", "a": "pp", "b": "p", "post": "e", "wrong": "Supe", "cat": "kurz", "kind": "dk", "l": 8, "en": "soup", "tr": "çorba", "ru": "суп", "ar": "الحساء", "exp": "Kurzer Vokal → doppelter Konsonant (pp).", "id": 57}, {"w": "backen", "pre": "ba", "a": "ck", "b": "k", "post": "en", "wrong": "baken", "cat": "kurz", "kind": "ck", "l": 8, "en": "to bake", "tr": "pişirmek", "ru": "печь", "ar": "يخبز", "exp": "Kurzer Vokal → statt kk schreibt man ck.", "id": 58}, {"w": "bestellen", "pre": "beste", "a": "ll", "b": "l", "post": "en", "wrong": "bestelen", "cat": "kurz", "kind": "dk", "l": 8, "en": "to order", "tr": "sipariş etmek", "ru": "заказывать", "ar": "يطلب", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 59}, {"w": "können", "pre": "kö", "a": "nn", "b": "n", "post": "en", "wrong": "könen", "cat": "kurz", "kind": "dk", "l": 8, "en": "can / to be able to", "tr": "yapabilmek / -ebilmek", "ru": "мочь, уметь", "ar": "يستطيع / يقدر", "exp": "Kurzer Vokal → doppelter Konsonant (nn).", "id": 60}, {"w": "schmecken", "pre": "schme", "a": "ck", "b": "k", "post": "en", "wrong": "schmeken", "cat": "kurz", "kind": "ck", "l": 8, "en": "to taste", "tr": "tadı olmak / tat vermek", "ru": "быть на вкус", "ar": "يتذوّق / طعمه", "exp": "Kurzer Vokal → statt kk schreibt man ck.", "id": 61}, {"w": "Brille", "pre": "Bri", "a": "ll", "b": "l", "post": "e", "wrong": "Brile", "cat": "kurz", "kind": "dk", "l": 9, "en": "glasses", "tr": "gözlük", "ru": "очки", "ar": "النظارة", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 62}, {"w": "Bäcker", "pre": "Bä", "a": "ck", "b": "k", "post": "er", "wrong": "Bäker", "cat": "kurz", "kind": "ck", "l": 9, "en": "baker", "tr": "fırıncı", "ru": "пекарь, булочник", "ar": "الخبّاز", "exp": "Kurzer Vokal → statt kk schreibt man ck.", "id": 63}, {"w": "Pass", "pre": "Pa", "a": "ss", "b": "s", "post": "", "wrong": "Pas", "cat": "kurz", "kind": "dk", "l": 9, "en": "passport", "tr": "pasaport", "ru": "паспорт", "ar": "جواز السفر", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "id": 64}, {"w": "Rucksack", "pre": "Ru", "a": "ck", "b": "k", "post": "sack", "wrong": "Ruksack", "cat": "kurz", "kind": "ck", "l": 9, "en": "backpack", "tr": "sırt çantası", "ru": "рюкзак", "ar": "حقيبة الظهر", "exp": "Kurzer Vokal → statt kk schreibt man ck.", "id": 65}, {"w": "Ticket", "pre": "Ti", "a": "ck", "b": "k", "post": "et", "wrong": "Tiket", "cat": "kurz", "kind": "ck", "l": 9, "en": "ticket", "tr": "bilet", "ru": "билет", "ar": "التذكرة", "exp": "Kurzer Vokal → statt kk schreibt man ck.", "id": 66}, {"w": "Platz", "pre": "Pla", "a": "tz", "b": "z", "post": "", "wrong": "Plaz", "cat": "kurz", "kind": "tz", "l": 10, "en": "square / plaza", "tr": "meydan", "ru": "площадь", "ar": "الساحة", "exp": "Kurzer Vokal → statt zz schreibt man tz.", "id": 67}, {"w": "müssen", "pre": "mü", "a": "ss", "b": "s", "post": "en", "wrong": "müsen", "cat": "kurz", "kind": "dk", "l": 9, "en": "must / to have to", "tr": "zorunda olmak / -meli", "ru": "быть должным, должен", "ar": "يجب / لا بدّ", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "id": 68}, {"w": "vergessen", "pre": "verge", "a": "ss", "b": "s", "post": "en", "wrong": "vergesen", "cat": "kurz", "kind": "dk", "l": 9, "en": "to forget", "tr": "unutmak", "ru": "забывать", "ar": "ينسى", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "id": 69}, {"w": "Zettel", "pre": "Ze", "a": "tt", "b": "t", "post": "el", "wrong": "Zetel", "cat": "kurz", "kind": "dk", "l": 11, "en": "note / slip of paper", "tr": "not kâğıdı / pusula", "ru": "записка, листок", "ar": "الورقة", "exp": "Kurzer Vokal → doppelter Konsonant (tt).", "id": 70}, {"w": "Zimmer", "pre": "Zi", "a": "mm", "b": "m", "post": "er", "wrong": "Zimer", "cat": "kurz", "kind": "dk", "l": 11, "en": "room", "tr": "oda", "ru": "комната", "ar": "الغرفة", "exp": "Kurzer Vokal → doppelter Konsonant (mm).", "id": 71}, {"w": "Hammer", "pre": "Ha", "a": "mm", "b": "m", "post": "er", "wrong": "Hamer", "cat": "kurz", "kind": "dk", "l": 11, "en": "hammer", "tr": "çekiç", "ru": "молоток", "ar": "المطرقة", "exp": "Kurzer Vokal → doppelter Konsonant (mm).", "id": 72}, {"w": "Keller", "pre": "Ke", "a": "ll", "b": "l", "post": "er", "wrong": "Keler", "cat": "kurz", "kind": "dk", "l": 11, "en": "basement / cellar", "tr": "bodrum / kiler", "ru": "подвал", "ar": "القبو", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 73}, {"w": "Tasse", "pre": "Ta", "a": "ss", "b": "s", "post": "e", "wrong": "Tase", "cat": "kurz", "kind": "dk", "l": 11, "en": "cup", "tr": "fincan", "ru": "чашка", "ar": "الفنجان", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "id": 74}, {"w": "Toilette", "pre": "Toile", "a": "tt", "b": "t", "post": "e", "wrong": "Toilete", "cat": "kurz", "kind": "dk", "l": 11, "en": "toilet", "tr": "tuvalet", "ru": "туалет", "ar": "المرحاض", "exp": "Kurzer Vokal → doppelter Konsonant (tt).", "id": 75}, {"w": "Treppenhaus", "pre": "Tre", "a": "pp", "b": "p", "post": "enhaus", "wrong": "Trepenhaus", "cat": "kurz", "kind": "dk", "l": 11, "en": "stairwell / staircase", "tr": "merdiven boşluğu", "ru": "лестничная клетка", "ar": "بيت الدرج", "exp": "Kurzer Vokal → doppelter Konsonant (pp).", "id": 76}, {"w": "Appetit", "pre": "A", "a": "pp", "b": "p", "post": "etit", "wrong": "Apetit", "cat": "kurz", "kind": "dk", "l": 8, "en": "appetite", "tr": "iştah", "ru": "аппетит", "ar": "الشهية", "exp": "Kurzer Vokal → doppelter Konsonant (pp).", "id": 77}, {"w": "willkommen", "pre": "wi", "a": "ll", "b": "l", "post": "kommen", "wrong": "wilkommen", "cat": "kurz", "kind": "dk", "l": 1, "en": "welcome", "tr": "hoş geldiniz", "ru": "добро пожаловать", "ar": "أهلاً وسهلاً", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 78}, {"w": "Tipp", "pre": "Ti", "a": "pp", "b": "p", "post": "", "wrong": "Tip", "cat": "kurz", "kind": "dk", "l": 5, "en": "tip / piece of advice", "tr": "ipucu / tavsiye", "ru": "совет, подсказка", "ar": "النصيحة", "exp": "Kurzer Vokal → doppelter Konsonant (pp).", "id": 79}, {"w": "Busse", "pre": "Bu", "a": "ss", "b": "s", "post": "e", "wrong": "Buse", "cat": "kurz", "kind": "dk", "l": 10, "en": "bus", "tr": "otobüs", "ru": "автобус", "ar": "الحافلة", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "base": "Bus", "id": 80}, {"w": "schnell", "pre": "schne", "a": "ll", "b": "l", "post": "", "wrong": "schnel", "cat": "kurz", "kind": "dk", "l": 10, "en": "fast / quick", "tr": "hızlı", "ru": "быстрый", "ar": "سريع", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 81}, {"w": "billig", "pre": "bi", "a": "ll", "b": "l", "post": "ig", "wrong": "bilig", "cat": "kurz", "kind": "dk", "l": 10, "en": "cheap", "tr": "ucuz", "ru": "дешёвый", "ar": "رخيص", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 82}, {"w": "hell", "pre": "he", "a": "ll", "b": "l", "post": "", "wrong": "hel", "cat": "kurz", "kind": "dk", "l": 11, "en": "bright / light", "tr": "aydınlık / ışıklı", "ru": "светлый", "ar": "مضيء", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 83}, {"w": "hässlich", "pre": "hä", "a": "ss", "b": "s", "post": "lich", "wrong": "häslich", "cat": "kurz", "kind": "dk", "l": 11, "en": "ugly", "tr": "çirkin", "ru": "некрасивый, уродливый", "ar": "قبيح", "exp": "Kurzer Vokal → doppelter Konsonant (ss).", "id": 84}, {"w": "abstellen", "pre": "abste", "a": "ll", "b": "l", "post": "en", "wrong": "abstelen", "cat": "kurz", "kind": "dk", "l": 11, "en": "to put down / to turn off", "tr": "bir kenara koymak / kapatmak", "ru": "ставить, отключать", "ar": "يُطفئ / يضع جانباً", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 85}, {"w": "geöffnet", "pre": "geö", "a": "ff", "b": "f", "post": "net", "wrong": "geöfnet", "cat": "kurz", "kind": "dk", "l": 9, "en": "open", "tr": "açık", "ru": "открыто", "ar": "مفتوح", "exp": "Kurzer Vokal → doppelter Konsonant (ff).", "id": 86}, {"w": "Freundinnen", "pre": "Freundi", "a": "nn", "b": "n", "post": "en", "wrong": "Freundinen", "cat": "kurz", "kind": "dk", "l": 4, "en": "friend", "tr": "arkadaş", "ru": "подруга", "ar": "صديقة", "exp": "Kurzer Vokal → doppelter Konsonant (nn).", "base": "Freundin", "id": 87}, {"w": "Lebensmittel", "pre": "Lebensmi", "a": "tt", "b": "t", "post": "el", "wrong": "Lebensmitel", "cat": "kurz", "kind": "dk", "l": 5, "en": "groceries / food", "tr": "gıda maddeleri", "ru": "продукты питания", "ar": "المواد الغذائية", "exp": "Kurzer Vokal → doppelter Konsonant (tt).", "id": 88}, {"w": "alle", "pre": "a", "a": "ll", "b": "l", "post": "e", "wrong": "ale", "cat": "kurz", "kind": "dk", "l": 5, "en": "all / everyone", "tr": "hepsi / herkes", "ru": "все", "ar": "الجميع", "exp": "Kurzer Vokal → doppelter Konsonant (ll).", "id": 89}, {"w": "Fahrrad", "pre": "Fah", "a": "rr", "b": "r", "post": "ad", "wrong": "Fahrad", "cat": "zs", "kind": "zs", "l": 5, "en": "bicycle", "tr": "bisiklet", "ru": "велосипед", "ar": "الدراجة الهوائية", "exp": "Zusammensetzung: Fahr + Rad – beide Wortteile behalten ihren Buchstaben, deshalb rr.", "id": 90}, {"w": "aussehen", "pre": "au", "a": "ss", "b": "s", "post": "ehen", "wrong": "ausehen", "cat": "zs", "kind": "zs", "l": 8, "en": "to look / to appear", "tr": "görünmek", "ru": "выглядеть", "ar": "يبدو", "exp": "Zusammensetzung: aus + sehen – beide Wortteile behalten ihren Buchstaben, deshalb ss.", "id": 91}, {"w": "aussteigen", "pre": "au", "a": "ss", "b": "s", "post": "teigen", "wrong": "austeigen", "cat": "zs", "kind": "zs", "l": 10, "en": "to get off / to exit", "tr": "inmek", "ru": "выходить", "ar": "ينزل", "exp": "Zusammensetzung: aus + steigen – beide Wortteile behalten ihren Buchstaben, deshalb ss.", "id": 92}, {"w": "Unterricht", "pre": "Unte", "a": "rr", "b": "r", "post": "icht", "wrong": "Untericht", "cat": "zs", "kind": "zs", "l": 10, "en": "lesson / class", "tr": "ders", "ru": "урок, занятие", "ar": "الدرس / الحصة", "exp": "Zusammensetzung: unter + richt(en) – beide Wortteile behalten ihren Buchstaben, deshalb rr.", "id": 93}, {"w": "Name", "pre": "Na", "a": "m", "b": "mm", "post": "e", "wrong": "Namme", "cat": "lang", "kind": "ek", "l": 1, "en": "name", "tr": "isim / ad", "ru": "имя", "ar": "الاسم", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 94}, {"w": "Vater", "pre": "Va", "a": "t", "b": "tt", "post": "er", "wrong": "Vatter", "cat": "lang", "kind": "ek", "l": 4, "en": "father", "tr": "baba", "ru": "отец", "ar": "الأب", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 95}, {"w": "Oma", "pre": "O", "a": "m", "b": "mm", "post": "a", "wrong": "Omma", "cat": "lang", "kind": "ek", "l": 4, "en": "grandma", "tr": "anneanne / babaanne", "ru": "бабуля", "ar": "الجدة", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 96}, {"w": "Opa", "pre": "O", "a": "p", "b": "pp", "post": "a", "wrong": "Oppa", "cat": "lang", "kind": "ek", "l": 4, "en": "grandpa", "tr": "dede", "ru": "дедуля", "ar": "الجد", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 97}, {"w": "Kino", "pre": "Ki", "a": "n", "b": "nn", "post": "o", "wrong": "Kinno", "cat": "lang", "kind": "ek", "l": 5, "en": "cinema", "tr": "sinema", "ru": "кинотеатр", "ar": "السينما", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 98}, {"w": "Foto", "pre": "Fo", "a": "t", "b": "tt", "post": "o", "wrong": "Fotto", "cat": "lang", "kind": "ek", "l": 3, "en": "photo", "tr": "fotoğraf", "ru": "фото", "ar": "الصورة", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 99}, {"w": "Sofa", "pre": "So", "a": "f", "b": "ff", "post": "a", "wrong": "Soffa", "cat": "lang", "kind": "ek", "l": 3, "en": "sofa", "tr": "kanepe", "ru": "диван", "ar": "الأريكة", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 100}, {"w": "Regal", "pre": "Re", "a": "g", "b": "gg", "post": "al", "wrong": "Reggal", "cat": "lang", "kind": "ek", "l": 3, "en": "shelf / shelves", "tr": "raf", "ru": "полка, стеллаж", "ar": "الرف", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 101}, {"w": "Tafel", "pre": "Ta", "a": "f", "b": "ff", "post": "el", "wrong": "Taffel", "cat": "lang", "kind": "ek", "l": 3, "en": "board", "tr": "tahta", "ru": "доска", "ar": "اللوح", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 102}, {"w": "leben", "pre": "le", "a": "b", "b": "bb", "post": "en", "wrong": "lebben", "cat": "lang", "kind": "ek", "l": 4, "en": "to live / be alive", "tr": "yaşamak / hayatta olmak", "ru": "жить, быть живым", "ar": "يعيش / يكون على قيد الحياة", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 103}, {"w": "lesen", "pre": "le", "a": "s", "b": "ss", "post": "en", "wrong": "lessen", "cat": "lang", "kind": "ek", "l": 5, "en": "to read", "tr": "okumak", "ru": "читать", "ar": "يقرأ", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 104}, {"w": "schlafen", "pre": "schla", "a": "f", "b": "ff", "post": "en", "wrong": "schlaffen", "cat": "lang", "kind": "ek", "l": 5, "en": "to sleep", "tr": "uyumak", "ru": "спать", "ar": "ينام", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 105}, {"w": "laufen", "pre": "lau", "a": "f", "b": "ff", "post": "en", "wrong": "lauffen", "cat": "lang", "kind": "ek", "l": 5, "en": "to run / to walk", "tr": "koşmak / yürümek", "ru": "бегать, ходить пешком", "ar": "يركض / يمشي", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 106}, {"w": "kaufen", "pre": "kau", "a": "f", "b": "ff", "post": "en", "wrong": "kauffen", "cat": "lang", "kind": "ek", "l": 5, "en": "to buy", "tr": "satın almak", "ru": "покупать", "ar": "يشتري", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 107}, {"w": "Tage", "pre": "Ta", "a": "g", "b": "gg", "post": "e", "wrong": "Tagge", "cat": "lang", "kind": "ek", "l": 5, "en": "day", "tr": "gün", "ru": "день", "ar": "يوم", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "base": "Tag", "id": 108}, {"w": "Abend", "pre": "A", "a": "b", "b": "bb", "post": "end", "wrong": "Abbend", "cat": "lang", "kind": "ek", "l": 5, "en": "evening", "tr": "akşam", "ru": "вечер", "ar": "المساء", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 109}, {"w": "Käse", "pre": "Kä", "a": "s", "b": "ss", "post": "e", "wrong": "Kässe", "cat": "lang", "kind": "ek", "l": 7, "en": "cheese", "tr": "peynir", "ru": "сыр", "ar": "الجبن", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 110}, {"w": "Kilo", "pre": "Ki", "a": "l", "b": "ll", "post": "o", "wrong": "Killo", "cat": "lang", "kind": "ek", "l": 7, "en": "kilo", "tr": "kilo", "ru": "килограмм", "ar": "كيلوغرام", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 111}, {"w": "Liter", "pre": "Li", "a": "t", "b": "tt", "post": "er", "wrong": "Litter", "cat": "lang", "kind": "ek", "l": 7, "en": "liter", "tr": "litre", "ru": "литр", "ar": "لتر", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 112}, {"w": "Meter", "pre": "Me", "a": "t", "b": "tt", "post": "er", "wrong": "Metter", "cat": "lang", "kind": "ek", "l": 3, "en": "meter", "tr": "metre", "ru": "метр", "ar": "المتر", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 113}, {"w": "Laden", "pre": "La", "a": "d", "b": "dd", "post": "en", "wrong": "Ladden", "cat": "lang", "kind": "ek", "l": 7, "en": "shop / store", "tr": "dükkân", "ru": "магазин, лавка", "ar": "المحل / الدكان", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 114}, {"w": "Wege", "pre": "We", "a": "g", "b": "gg", "post": "e", "wrong": "Wegge", "cat": "lang", "kind": "ek", "l": 10, "en": "way / route", "tr": "yol", "ru": "путь, дорога", "ar": "الطريق", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "base": "Weg", "id": 115}, {"w": "Bruder", "pre": "Bru", "a": "d", "b": "dd", "post": "er", "wrong": "Brudder", "cat": "lang", "kind": "ek", "l": 4, "en": "brother", "tr": "erkek kardeş", "ru": "брат", "ar": "الأخ", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 116}, {"w": "Kantine", "pre": "Kanti", "a": "n", "b": "nn", "post": "e", "wrong": "Kantinne", "cat": "lang", "kind": "ek", "l": 8, "en": "canteen / cafeteria", "tr": "yemekhane / kantin", "ru": "столовая", "ar": "المقصف / الكافتيريا", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 117}, {"w": "Frage", "pre": "Fra", "a": "g", "b": "gg", "post": "e", "wrong": "Fragge", "cat": "lang", "kind": "ek", "l": 3, "en": "question", "tr": "soru", "ru": "вопрос", "ar": "السؤال", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 118}, {"w": "Aufgabe", "pre": "Aufga", "a": "b", "b": "bb", "post": "e", "wrong": "Aufgabbe", "cat": "lang", "kind": "ek", "l": 6, "en": "task", "tr": "görev", "ru": "задача, задание", "ar": "المهمة", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 119}, {"w": "haben", "pre": "ha", "a": "b", "b": "bb", "post": "en", "wrong": "habben", "cat": "lang", "kind": "ek", "l": 4, "en": "to have", "tr": "sahip olmak", "ru": "иметь", "ar": "يملك / لديه", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 120}, {"w": "reden", "pre": "re", "a": "d", "b": "dd", "post": "en", "wrong": "redden", "cat": "lang", "kind": "ek", "l": 11, "en": "to talk", "tr": "konuşmak", "ru": "разговаривать, говорить", "ar": "يتحدّث", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 121}, {"w": "baden", "pre": "ba", "a": "d", "b": "dd", "post": "en", "wrong": "badden", "cat": "lang", "kind": "ek", "l": 10, "en": "to bathe / to swim", "tr": "yüzmek / banyo yapmak", "ru": "купаться", "ar": "يستحم / يسبح", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 122}, {"w": "mieten", "pre": "mie", "a": "t", "b": "tt", "post": "en", "wrong": "mietten", "cat": "lang", "kind": "ek", "l": 11, "en": "to rent", "tr": "kiralamak", "ru": "снимать", "ar": "يستأجر", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 123}, {"w": "Blume", "pre": "Blu", "a": "m", "b": "mm", "post": "e", "wrong": "Blumme", "cat": "lang", "kind": "ek", "l": 11, "en": "flower", "tr": "çiçek", "ru": "цветок", "ar": "الزهرة", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 124}, {"w": "Schule", "pre": "Schu", "a": "l", "b": "ll", "post": "e", "wrong": "Schulle", "cat": "lang", "kind": "ek", "l": 9, "en": "school", "tr": "okul", "ru": "школа", "ar": "المدرسة", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 125}, {"w": "Möbel", "pre": "Mö", "a": "b", "b": "bb", "post": "el", "wrong": "Möbbel", "cat": "lang", "kind": "ek", "l": 11, "en": "furniture", "tr": "mobilya", "ru": "мебель", "ar": "الأثاث", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 126}, {"w": "Bäder", "pre": "Bä", "a": "d", "b": "dd", "post": "er", "wrong": "Bädder", "cat": "lang", "kind": "ek", "l": 11, "en": "bathroom", "tr": "banyo", "ru": "ванная комната", "ar": "الحمام", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "base": "Bad", "id": 127}, {"w": "Gemüse", "pre": "Gemü", "a": "s", "b": "ss", "post": "e", "wrong": "Gemüsse", "cat": "lang", "kind": "ek", "l": 7, "en": "vegetables", "tr": "sebze", "ru": "овощи", "ar": "الخضروات", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 128}, {"w": "Nudeln", "pre": "Nu", "a": "d", "b": "dd", "post": "eln", "wrong": "Nuddeln", "cat": "lang", "kind": "ek", "l": 7, "en": "pasta / noodles", "tr": "makarna / erişte", "ru": "макароны, лапша", "ar": "المعكرونة", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 129}, {"w": "vegan", "pre": "ve", "a": "g", "b": "gg", "post": "an", "wrong": "veggan", "cat": "lang", "kind": "ek", "l": 7, "en": "vegan", "tr": "vegan", "ru": "веганский", "ar": "نباتي صرف", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 130}, {"w": "komisch", "pre": "ko", "a": "m", "b": "mm", "post": "isch", "wrong": "kommisch", "cat": "lang", "kind": "ek", "l": 10, "en": "strange / funny", "tr": "garip / tuhaf", "ru": "странный, смешной", "ar": "غريب / مضحك", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 131}, {"w": "später", "pre": "spä", "a": "t", "b": "tt", "post": "er", "wrong": "spätter", "cat": "lang", "kind": "ek", "l": 4, "en": "later", "tr": "daha sonra", "ru": "позже", "ar": "لاحقاً", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 132}, {"w": "lieber", "pre": "lie", "a": "b", "b": "bb", "post": "er", "wrong": "liebber", "cat": "lang", "kind": "ek", "l": 7, "en": "rather / preferably", "tr": "daha çok / tercihen", "ru": "охотнее, предпочтительнее", "ar": "بالأحرى / يُفضَّل", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 133}, {"w": "schade", "pre": "scha", "a": "d", "b": "dd", "post": "e", "wrong": "schadde", "cat": "lang", "kind": "ek", "l": 5, "en": "too bad / what a pity", "tr": "yazık / ne yazık", "ru": "жаль", "ar": "يا للأسف", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 134}, {"w": "Türen", "pre": "Tü", "a": "r", "b": "rr", "post": "en", "wrong": "Türren", "cat": "lang", "kind": "ek", "l": 3, "en": "door", "tr": "kapı", "ru": "дверь", "ar": "الباب", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "base": "Tür", "id": 135}, {"w": "Preise", "pre": "Prei", "a": "s", "b": "ss", "post": "e", "wrong": "Preisse", "cat": "lang", "kind": "ek", "l": 3, "en": "price", "tr": "fiyat", "ru": "цена", "ar": "السعر", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "base": "Preis", "id": 136}, {"w": "Zeitung", "pre": "Zei", "a": "t", "b": "tt", "post": "ung", "wrong": "Zeittung", "cat": "lang", "kind": "ek", "l": 11, "en": "newspaper", "tr": "gazete", "ru": "газета", "ar": "الجريدة", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 137}, {"w": "hören", "pre": "hö", "a": "r", "b": "rr", "post": "en", "wrong": "hörren", "cat": "lang", "kind": "ek", "l": 3, "en": "to hear / to listen", "tr": "duymak / dinlemek", "ru": "слышать, слушать", "ar": "يسمع / يستمع", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 138}, {"w": "aber", "pre": "a", "a": "b", "b": "bb", "post": "er", "wrong": "abber", "cat": "lang", "kind": "ek", "l": 2, "en": "but", "tr": "ama", "ru": "но", "ar": "لكن", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 139}, {"w": "wieder", "pre": "wie", "a": "d", "b": "dd", "post": "er", "wrong": "wiedder", "cat": "lang", "kind": "ek", "l": 9, "en": "again", "tr": "yine / tekrar", "ru": "снова, опять", "ar": "مرة أخرى / مجدداً", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "id": 140}, {"w": "Spiele", "pre": "Spie", "a": "l", "b": "ll", "post": "e", "wrong": "Spielle", "cat": "lang", "kind": "ek", "l": 8, "en": "game", "tr": "oyun", "ru": "игра", "ar": "اللعبة", "exp": "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant.", "base": "Spiel", "id": 141}, {"w": "Bank", "pre": "Ban", "a": "k", "b": "ck", "post": "", "wrong": "Banck", "cat": "kons", "kind": "k", "l": 3, "en": "bench", "tr": "oturma bankı", "ru": "скамейка", "ar": "المقعد", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 142}, {"w": "Schrank", "pre": "Schran", "a": "k", "b": "ck", "post": "", "wrong": "Schranck", "cat": "kons", "kind": "k", "l": 3, "en": "cupboard / wardrobe", "tr": "dolap", "ru": "шкаф", "ar": "الخزانة", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 143}, {"w": "trinken", "pre": "trin", "a": "k", "b": "ck", "post": "en", "wrong": "trincken", "cat": "kons", "kind": "k", "l": 2, "en": "to drink", "tr": "içmek", "ru": "пить", "ar": "يشرب", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 144}, {"w": "denken", "pre": "den", "a": "k", "b": "ck", "post": "en", "wrong": "dencken", "cat": "kons", "kind": "k", "l": 4, "en": "to think", "tr": "düşünmek", "ru": "думать", "ar": "يفكّر", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 145}, {"w": "danke", "pre": "dan", "a": "k", "b": "ck", "post": "e", "wrong": "dancke", "cat": "kons", "kind": "k", "l": 1, "en": "thank you", "tr": "teşekkürler", "ru": "спасибо", "ar": "شكراً", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 146}, {"w": "Onkel", "pre": "On", "a": "k", "b": "ck", "post": "el", "wrong": "Onckel", "cat": "kons", "kind": "k", "l": 4, "en": "uncle", "tr": "amca / dayı", "ru": "дядя", "ar": "العم / الخال", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 147}, {"w": "Schinken", "pre": "Schin", "a": "k", "b": "ck", "post": "en", "wrong": "Schincken", "cat": "kons", "kind": "k", "l": 7, "en": "ham", "tr": "jambon", "ru": "ветчина", "ar": "اللحم المقدد", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 148}, {"w": "Park", "pre": "Par", "a": "k", "b": "ck", "post": "", "wrong": "Parck", "cat": "kons", "kind": "k", "l": 5, "en": "park", "tr": "park", "ru": "парк", "ar": "الحديقة العامة", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 149}, {"w": "Markt", "pre": "Mar", "a": "k", "b": "ck", "post": "t", "wrong": "Marckt", "cat": "kons", "kind": "k", "l": 7, "en": "market", "tr": "pazar", "ru": "рынок", "ar": "السوق", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 150}, {"w": "Getränk", "pre": "Geträn", "a": "k", "b": "ck", "post": "", "wrong": "Getränck", "cat": "kons", "kind": "k", "l": 7, "en": "drink / beverage", "tr": "içecek", "ru": "напиток", "ar": "المشروب", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 151}, {"w": "Enkel", "pre": "En", "a": "k", "b": "ck", "post": "el", "wrong": "Enckel", "cat": "kons", "kind": "k", "l": 4, "en": "grandson", "tr": "torun", "ru": "внук", "ar": "الحفيد", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 152}, {"w": "dunkel", "pre": "dun", "a": "k", "b": "ck", "post": "el", "wrong": "dunckel", "cat": "kons", "kind": "k", "l": 11, "en": "dark", "tr": "karanlık", "ru": "тёмный", "ar": "مظلم", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 153}, {"w": "Kiosk", "pre": "Kios", "a": "k", "b": "ck", "post": "", "wrong": "Kiosck", "cat": "kons", "kind": "k", "l": 3, "en": "kiosk", "tr": "büfe", "ru": "киоск", "ar": "الكشك", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 154}, {"w": "Balkon", "pre": "Bal", "a": "k", "b": "ck", "post": "on", "wrong": "Balckon", "cat": "kons", "kind": "k", "l": 11, "en": "balcony", "tr": "balkon", "ru": "балкон", "ar": "الشرفة", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 155}, {"w": "Alkohol", "pre": "Al", "a": "k", "b": "ck", "post": "ohol", "wrong": "Alckohol", "cat": "kons", "kind": "k", "l": 8, "en": "alcohol", "tr": "alkol", "ru": "алкоголь", "ar": "الكحول", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 156}, {"w": "wirklich", "pre": "wir", "a": "k", "b": "ck", "post": "lich", "wrong": "wircklich", "cat": "kons", "kind": "k", "l": 8, "en": "really", "tr": "gerçekten", "ru": "действительно, правда", "ar": "حقاً / فعلاً", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 157}, {"w": "Verkäufer", "pre": "Ver", "a": "k", "b": "ck", "post": "äufer", "wrong": "Verckäufer", "cat": "kons", "kind": "k", "l": 2, "en": "salesperson / shop assistant", "tr": "satış elemanı", "ru": "продавец / продавщица", "ar": "بائع / بائعة", "exp": "Nach einem Konsonanten steht nie ck – nur k.", "id": 158}, {"w": "Paket", "pre": "Pa", "a": "k", "b": "ck", "post": "et", "wrong": "Packet", "cat": "lang", "kind": "k", "l": 6, "en": "package / parcel", "tr": "paket / koli", "ru": "посылка, пакет", "ar": "الطرد", "exp": "Nach langem oder unbetontem Vokal steht k – ck gibt es nur nach betontem kurzem Vokal.", "nr": true, "id": 159}, {"w": "Plakat", "pre": "Pla", "a": "k", "b": "ck", "post": "at", "wrong": "Plackat", "cat": "lang", "kind": "k", "l": 3, "en": "poster", "tr": "poster", "ru": "плакат", "ar": "الملصق", "exp": "Nach langem oder unbetontem Vokal steht k – ck gibt es nur nach betontem kurzem Vokal.", "nr": true, "id": 160}, {"w": "Musiker", "pre": "Musi", "a": "k", "b": "ck", "post": "er", "wrong": "Musicker", "cat": "lang", "kind": "k", "l": 10, "en": "musician", "tr": "müzisyen", "ru": "музыкант", "ar": "الموسيقي", "exp": "Nach langem oder unbetontem Vokal steht k – ck gibt es nur nach betontem kurzem Vokal.", "nr": true, "id": 161}, {"w": "Paprika", "pre": "Papri", "a": "k", "b": "ck", "post": "a", "wrong": "Papricka", "cat": "lang", "kind": "k", "l": 7, "en": "bell pepper", "tr": "biber", "ru": "болгарский перец", "ar": "الفلفل الحلو", "exp": "Nach langem oder unbetontem Vokal steht k – ck gibt es nur nach betontem kurzem Vokal.", "nr": true, "id": 162}, {"w": "Apotheke", "pre": "Apothe", "a": "k", "b": "ck", "post": "e", "wrong": "Apothecke", "cat": "lang", "kind": "k", "l": 9, "en": "pharmacy", "tr": "eczane", "ru": "аптека", "ar": "الصيدلية", "exp": "Nach langem oder unbetontem Vokal steht k – ck gibt es nur nach betontem kurzem Vokal.", "nr": true, "id": 163}, {"w": "Medikament", "pre": "Medi", "a": "k", "b": "ck", "post": "ament", "wrong": "Medickament", "cat": "lang", "kind": "k", "l": 9, "en": "medicine / medication", "tr": "ilaç", "ru": "лекарство", "ar": "الدواء", "exp": "Nach langem oder unbetontem Vokal steht k – ck gibt es nur nach betontem kurzem Vokal.", "nr": true, "id": 164}, {"w": "Bibliothek", "pre": "Bibliothe", "a": "k", "b": "ck", "post": "", "wrong": "Bibliotheck", "cat": "lang", "kind": "k", "l": 5, "en": "library", "tr": "kütüphane", "ru": "библиотека", "ar": "المكتبة", "exp": "Nach langem oder unbetontem Vokal steht k – ck gibt es nur nach betontem kurzem Vokal.", "nr": true, "id": 165}, {"w": "Salz", "pre": "Sal", "a": "z", "b": "tz", "post": "", "wrong": "Saltz", "cat": "kons", "kind": "z", "l": 7, "en": "salt", "tr": "tuz", "ru": "соль", "ar": "الملح", "exp": "Nach einem Konsonanten steht nie tz – nur z.", "id": 166}, {"w": "kurz", "pre": "kur", "a": "z", "b": "tz", "post": "", "wrong": "kurtz", "cat": "kons", "kind": "z", "l": 10, "en": "short", "tr": "kısa", "ru": "короткий", "ar": "قصير", "exp": "Nach einem Konsonanten steht nie tz – nur z.", "id": 167}, {"w": "tanzen", "pre": "tan", "a": "z", "b": "tz", "post": "en", "wrong": "tantzen", "cat": "kons", "kind": "z", "l": 2, "en": "to dance", "tr": "dans etmek", "ru": "танцевать", "ar": "يرقص", "exp": "Nach einem Konsonanten steht nie tz – nur z.", "id": 168}, {"w": "Arzt", "pre": "Ar", "a": "z", "b": "tz", "post": "t", "wrong": "Artzt", "cat": "kons", "kind": "z", "l": 2, "en": "doctor", "tr": "doktor", "ru": "врач", "ar": "طبيب / طبيبة", "exp": "Nach einem Konsonanten steht nie tz – nur z.", "id": 169}, {"w": "Ärztin", "pre": "Är", "a": "z", "b": "tz", "post": "tin", "wrong": "Ärtztin", "cat": "kons", "kind": "z", "l": 2, "en": "doctor", "tr": "doktor", "ru": "врач", "ar": "طبيب / طبيبة", "exp": "Nach einem Konsonanten steht nie tz – nur z.", "id": 170}, {"w": "Hochzeit", "pre": "Hoch", "a": "z", "b": "tz", "post": "eit", "wrong": "Hochtzeit", "cat": "kons", "kind": "z", "l": 8, "en": "wedding", "tr": "düğün", "ru": "свадьба", "ar": "حفل الزفاف", "exp": "Nach einem Konsonanten steht nie tz – nur z.", "id": 171}, {"w": "Aufzug", "pre": "Auf", "a": "z", "b": "tz", "post": "ug", "wrong": "Auftzug", "cat": "kons", "kind": "z", "l": 10, "en": "elevator / lift", "tr": "asansör", "ru": "лифт", "ar": "المصعد", "exp": "Nach einem Konsonanten steht nie tz – nur z.", "id": 172}, {"w": "Flugzeug", "pre": "Flug", "a": "z", "b": "tz", "post": "eug", "wrong": "Flugtzeug", "cat": "kons", "kind": "z", "l": 10, "en": "airplane", "tr": "uçak", "ru": "самолёт", "ar": "الطائرة", "exp": "Nach einem Konsonanten steht nie tz – nur z.", "id": 173}, {"w": "Umzug", "pre": "Um", "a": "z", "b": "tz", "post": "ug", "wrong": "Umtzug", "cat": "kons", "kind": "z", "l": 11, "en": "move / relocation", "tr": "taşınma", "ru": "переезд", "ar": "الانتقال", "exp": "Nach einem Konsonanten steht nie tz – nur z.", "id": 174}, {"w": "Anzeige", "pre": "An", "a": "z", "b": "tz", "post": "eige", "wrong": "Antzeige", "cat": "kons", "kind": "z", "l": 11, "en": "advertisement / listing", "tr": "ilan", "ru": "объявление", "ar": "الإعلان", "exp": "Nach einem Konsonanten steht nie tz – nur z.", "id": 175}, {"w": "anziehen", "pre": "an", "a": "z", "b": "tz", "post": "iehen", "wrong": "antziehen", "cat": "kons", "kind": "z", "l": 6, "en": "to put on", "tr": "giymek", "ru": "надевать", "ar": "يرتدي", "exp": "Nach einem Konsonanten steht nie tz – nur z.", "id": 176}, {"w": "Heizung", "pre": "Hei", "a": "z", "b": "tz", "post": "ung", "wrong": "Heitzung", "cat": "lang", "kind": "z", "l": 11, "en": "heating", "tr": "kalorifer / ısıtma", "ru": "отопление", "ar": "التدفئة", "exp": "Nach langem oder unbetontem Vokal und nach Doppellaut steht z – tz gibt es nur nach betontem kurzem Vokal.", "id": 177}, {"w": "Polizist", "pre": "Poli", "a": "z", "b": "tz", "post": "ist", "wrong": "Politzist", "cat": "lang", "kind": "z", "l": 2, "en": "police officer", "tr": "polis memuru", "ru": "полицейский", "ar": "شرطي / شرطية", "exp": "Nach langem oder unbetontem Vokal und nach Doppellaut steht z – tz gibt es nur nach betontem kurzem Vokal.", "nr": true, "id": 178}, {"w": "Rezeption", "pre": "Re", "a": "z", "b": "tz", "post": "eption", "wrong": "Retzeption", "cat": "lang", "kind": "z", "l": 6, "en": "reception", "tr": "resepsiyon", "ru": "ресепшен, стойка регистрации", "ar": "الاستقبال", "exp": "Nach langem oder unbetontem Vokal und nach Doppellaut steht z – tz gibt es nur nach betontem kurzem Vokal.", "nr": true, "id": 179}, {"w": "Spaziergang", "pre": "Spa", "a": "z", "b": "tz", "post": "iergang", "wrong": "Spatziergang", "cat": "lang", "kind": "z", "l": 5, "en": "walk / stroll", "tr": "yürüyüş", "ru": "прогулка", "ar": "نزهة على الأقدام", "exp": "Nach langem oder unbetontem Vokal und nach Doppellaut steht z – tz gibt es nur nach betontem kurzem Vokal.", "nr": true, "id": 180}];
+
+  var STORAGE_KEY = "daz_ortho_a1_l1_11_v1";
+  var LESSONS = 11;
+  var KINDS = [
+    { id: "dk", label: "Doppelkonsonant (mm, nn, ll …)" },
+    { id: "ck", label: "ck statt k" },
+    { id: "tz", label: "tz statt z" },
+    { id: "ek", label: "einfacher Konsonant nach langem Vokal" },
+    { id: "k",  label: "k (nicht ck)" },
+    { id: "z",  label: "z (nicht tz)" },
+    { id: "zs", label: "Zusammensetzungen" }
+  ];
+  var FORMATS = [
+    { id: "mix",    label: "Mix" },
+    { id: "choose", label: "Richtig wählen" },
+    { id: "gap",    label: "Lücke füllen" },
+    { id: "rule",   label: "Regel erkennen" },
+    { id: "type",   label: "Tippen" }
+  ];
+  var LANGS = [
+    { id: "en", label: "English" },
+    { id: "ru", label: "Русский" },
+    { id: "ar", label: "العربية" },
+    { id: "tr", label: "Türkçe" },
+    { id: "", label: "keine Hilfe" }
+  ];
+  var RULE_OPTS = [
+    { id: "kurz", label: "Kurzer Vokal → Doppelkonsonant (mm, ll …) oder ck / tz",
+      en: "Short vowel → double consonant (mm, ll …) or ck / tz",
+      ru: "Краткий гласный → двойной согласный (mm, ll …) или ck / tz",
+      ar: "حرف علة قصير: حرف ساكن مضاعف ⁦mm, ll …⁩ أو ⁦ck / tz⁩",
+      tr: "Kısa ünlü → çift ünsüz (mm, ll …) veya ck / tz" },
+    { id: "lang", label: "Langer Vokal oder Doppellaut (ei, au, ie …) → einfacher Konsonant",
+      en: "Long vowel or diphthong (ei, au, ie …) → single consonant",
+      ru: "Долгий гласный или дифтонг (ei, au, ie …) → один согласный",
+      ar: "حرف علة طويل أو مزدوج ⁦ei, au, ie …⁩: حرف ساكن واحد",
+      tr: "Uzun ünlü veya çift ünlü (ei, au, ie …) → tek ünsüz" },
+    { id: "kons", label: "Konsonant davor → k / z (nie ck / tz)",
+      en: "Consonant before it → k / z (never ck / tz)",
+      ru: "Перед ним согласный → k / z (никогда ck / tz)",
+      ar: "حرف ساكن قبله: ⁦k / z⁩ وليس ⁦ck / tz⁩",
+      tr: "Öncesinde ünsüz var → k / z (asla ck / tz değil)" }
+  ];
+  var WEIGHTS = [3, 2, 1];
+
+  var store = { settings: { lessons: [], kinds: [], format: "mix", lang: "", langSet: false, size: 20, auto: true }, words: {} };
+  var i;
+  for (i = 0; i < LESSONS; i++) { store.settings.lessons.push(true); }
+  for (i = 0; i < KINDS.length; i++) { store.settings.kinds.push(true); }
+
+  var session = null;
+  var autoTimer = null;
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) { e.className = cls; }
+    if (text !== undefined && text !== null) { e.textContent = text; }
+    return e;
+  }
+  function clear(node) { while (node.firstChild) { node.removeChild(node.firstChild); } }
+
+  /* ---------- Speicher ---------- */
+  function load() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) { return; }
+      var s = JSON.parse(raw), k;
+      if (s && s.settings) {
+        var st = s.settings;
+        if (st.lessons && st.lessons.length === LESSONS) { for (k = 0; k < LESSONS; k++) { store.settings.lessons[k] = !!st.lessons[k]; } }
+        if (st.kinds && st.kinds.length === KINDS.length) { for (k = 0; k < KINDS.length; k++) { store.settings.kinds[k] = !!st.kinds[k]; } }
+        if (typeof st.format === "string") { store.settings.format = st.format; }
+        if (typeof st.lang === "string") { store.settings.lang = st.lang; }
+        store.settings.langSet = st.langSet === true || !!st.lang;
+        if (typeof st.size === "number") { store.settings.size = st.size; }
+        if (typeof st.auto === "boolean") { store.settings.auto = st.auto; }
+      }
+      if (s && s.words) { store.words = s.words; }
+    } catch (e) { /* ohne Speicher weiterarbeiten */ }
+  }
+  function save() { try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); } catch (e) { /* egal */ } }
+
+  /* ---------- Daten ---------- */
+  var byId = {};
+  ITEMS.forEach(function (it) { byId[it.id] = it; });
+  function kindIndex(id) { for (var k = 0; k < KINDS.length; k++) { if (KINDS[k].id === id) { return k; } } return -1; }
+
+  function rec(id) { return store.words[id] || null; }
+  function weightOf(id) { var r = rec(id); return (!r || r.box === undefined) ? 1 : WEIGHTS[r.box]; }
+  function isSure(id) { var r = rec(id); return !!(r && r.s >= 2); }
+
+  function poolIds() {
+    var out = [];
+    ITEMS.forEach(function (it) {
+      if (store.settings.lessons[it.l - 1] && store.settings.kinds[kindIndex(it.kind)]) { out.push(it.id); }
+    });
+    return out;
+  }
+  function weightedSample(ids, count) {
+    var keyed = ids.map(function (id) { return { id: id, k: Math.pow(Math.random(), 1 / weightOf(id)) }; });
+    keyed.sort(function (a, b) { return b.k - a.k; });
+    var n = (count > 0 && count < keyed.length) ? count : keyed.length;
+    var out = [];
+    for (var k = 0; k < n; k++) { out.push(keyed[k].id); }
+    return out;
+  }
+  function shuffle(a) {
+    var r = a.slice();
+    for (var k = r.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)); var t = r[k]; r[k] = r[j]; r[j] = t; }
+    return r;
+  }
+  function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
+
+  function meaningLang() { return store.settings.lang || ""; }
+  function meaning(it) {
+    var l = meaningLang();
+    return l ? (it[l] || "") : "";
+  }
+  function langNeeded() { return store.settings.format === "type" || store.settings.format === "mix"; }
+  function langReady() { return store.settings.langSet && (store.settings.lang || !langNeeded()); }
+  function ruleApplicable(it) { return it.cat !== "zs" && !it.nr; }
+  function formatsFor(it) {
+    var f = ["choose", "gap", "type"];
+    if (ruleApplicable(it)) { f.push("rule"); }
+    return f;
+  }
+
+  /* Wortdarstellung mit hervorgehobenem Schluesselbereich */
+  function wordNode(it, which) {
+    var s = el("span");
+    s.appendChild(document.createTextNode(it.pre));
+    var m = el("mark", "seg", which === "wrong" ? it.b : it.a);
+    s.appendChild(m);
+    s.appendChild(document.createTextNode(it.post));
+    return s;
+  }
+
+  /* ---------- Sprachausgabe (nur wenn eine deutsche Stimme vorhanden ist) ---------- */
+  function hasGermanVoice() {
+    try {
+      if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) { return false; }
+      var v = window.speechSynthesis.getVoices();
+      for (var k = 0; k < v.length; k++) { if (v[k].lang && v[k].lang.toLowerCase().indexOf("de") === 0) { return true; } }
+    } catch (e) { /* keine Sprachausgabe */ }
+    return false;
+  }
+  function speak(word) {
+    try {
+      var u = new window.SpeechSynthesisUtterance(word);
+      u.lang = "de-DE";
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    } catch (e) { /* egal */ }
+  }
+  function speakBtn(word) {
+    if (!hasGermanVoice()) { return null; }
+    var b = el("button", "speak", "🔊 Anhören"); b.type = "button";
+    b.addEventListener("click", function () { speak(word); });
+    return b;
+  }
+
+  /* ---------- Auswahlchips ---------- */
+  function lessonCount(l) { var c = 0; ITEMS.forEach(function (it) { if (it.l === l) { c += 1; } }); return c; }
+  function kindCount(k) { var c = 0; ITEMS.forEach(function (it) { if (it.kind === k) { c += 1; } }); return c; }
+  function chipsRow(container, labels, getOn, setOn, onChange) {
+    var row = el("div", "row");
+    labels.forEach(function (lab, idx) {
+      var l = el("label", "chip" + (getOn(idx) ? " on" : ""));
+      var inp = document.createElement("input"); inp.type = "checkbox"; inp.checked = getOn(idx);
+      inp.addEventListener("change", function () { setOn(idx, inp.checked); save(); onChange(); });
+      l.appendChild(inp);
+      l.appendChild(document.createTextNode(lab.t + " "));
+      l.appendChild(el("small", null, "(" + lab.n + ")"));
+      row.appendChild(l);
+    });
+    container.appendChild(row);
+    var links = el("div");
+    var all = el("button", "linkbtn", "alle"); all.type = "button";
+    var none = el("button", "linkbtn", "keine"); none.type = "button";
+    all.addEventListener("click", function () { for (var k = 0; k < labels.length; k++) { setOn(k, true); } save(); onChange(); });
+    none.addEventListener("click", function () { for (var k = 0; k < labels.length; k++) { setOn(k, false); } save(); onChange(); });
+    links.appendChild(all); links.appendChild(document.createTextNode(" · ")); links.appendChild(none);
+    container.appendChild(links);
+  }
+  function kindChips(container, onChange) {
+    chipsRow(container, KINDS.map(function (k) { return { t: k.label, n: kindCount(k.id) }; }),
+      function (i2) { return store.settings.kinds[i2]; }, function (i2, v) { store.settings.kinds[i2] = v; }, onChange);
+  }
+  function lessonChips(container, onChange) {
+    var labels = [];
+    for (var l = 1; l <= LESSONS; l++) { labels.push({ t: "L" + l, n: lessonCount(l) }); }
+    chipsRow(container, labels, function (i2) { return store.settings.lessons[i2]; }, function (i2, v) { store.settings.lessons[i2] = v; }, onChange);
+  }
+
+  /* ---------- Üben ---------- */
+  function renderPractice() {
+    var v = $("viewPractice"); clear(v);
+    if (!session) { renderSetup(v); }
+    else if (session.pos >= session.queue.length) { renderEnd(v); }
+    else { renderQuestion(v); }
+  }
+
+  function renderSetup(v) {
+    var pl = el("div", "panel"); pl.appendChild(el("h2", null, "1. Sprache für die Bedeutungen"));
+    var rl = el("div", "row");
+    LANGS.forEach(function (lg) {
+      var on = store.settings.langSet && store.settings.lang === lg.id;
+      var l = el("label", "chip" + (on ? " on" : ""));
+      var inp = document.createElement("input"); inp.type = "radio"; inp.name = "lang"; inp.checked = on;
+      inp.addEventListener("change", function () { store.settings.lang = lg.id; store.settings.langSet = true; save(); renderPractice(); });
+      l.appendChild(inp); l.appendChild(document.createTextNode(lg.label)); rl.appendChild(l);
+    });
+    pl.appendChild(rl);
+    pl.appendChild(el("div", "small", "Die Wörter und die Antworten bei „Regel erkennen“ erscheinen in dieser Sprache."));
+    if (!store.settings.langSet) { var w0 = el("div", "small", "Bitte zuerst eine Sprache wählen."); w0.style.fontWeight = "700"; pl.appendChild(w0); }
+    v.appendChild(pl);
+    var p0 = el("div", "panel"); p0.appendChild(el("h2", null, "2. Aufgabenformat"));
+    var r0 = el("div", "row");
+    FORMATS.forEach(function (f) {
+      var l = el("label", "chip" + (store.settings.format === f.id ? " on" : ""));
+      var inp = document.createElement("input"); inp.type = "radio"; inp.name = "fmt"; inp.checked = store.settings.format === f.id;
+      inp.addEventListener("change", function () { store.settings.format = f.id; save(); renderPractice(); });
+      l.appendChild(inp); l.appendChild(document.createTextNode(f.label)); r0.appendChild(l);
+    });
+    p0.appendChild(r0);
+    var desc = {
+      mix: "Abwechslung: Die vier Formate wechseln sich zufällig ab.",
+      choose: "Zwei Schreibweisen – welche ist richtig? (z. B. komen / kommen)",
+      gap: "Ein Buchstabenbereich fehlt – welche Schreibung passt? (z. B. ko_en: m oder mm)",
+      rule: "Warum wird das Wort so geschrieben? Kurzer oder langer Vokal, oder steht ein Konsonant davor?",
+      type: "Das Wort wird nach der Bedeutung selbst eingetippt."
+    };
+    p0.appendChild(el("div", "small", desc[store.settings.format]));
+    v.appendChild(p0);
+
+    var p1 = el("div", "panel"); p1.appendChild(el("h2", null, "Themen")); kindChips(p1, renderPractice); v.appendChild(p1);
+    var p1b = el("div", "panel"); p1b.appendChild(el("h2", null, "Lektionen")); lessonChips(p1b, renderPractice); v.appendChild(p1b);
+
+    var p2 = el("div", "panel"); p2.appendChild(el("h2", null, "Einstellungen"));
+    var r1 = el("div", "row");
+    var l2 = el("label", "opt"); l2.appendChild(document.createTextNode("Runde mit: "));
+    var sel2 = document.createElement("select");
+    [[10, "10 Wörtern"], [20, "20 Wörtern"], [40, "40 Wörtern"], [0, "allen Wörtern"]].forEach(function (o) {
+      var op = document.createElement("option"); op.value = String(o[0]); op.textContent = o[1]; if (o[0] === store.settings.size) { op.selected = true; } sel2.appendChild(op);
+    });
+    sel2.addEventListener("change", function () { store.settings.size = parseInt(sel2.value, 10); save(); });
+    l2.appendChild(sel2); r1.appendChild(l2);
+    p2.appendChild(r1);
+    var l3 = el("label", "opt");
+    var cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = store.settings.auto;
+    cb.addEventListener("change", function () { store.settings.auto = cb.checked; save(); });
+    l3.appendChild(cb); l3.appendChild(document.createTextNode("Bei richtiger Antwort automatisch weiter"));
+    p2.appendChild(l3);
+    v.appendChild(p2);
+
+    var ids = poolIds();
+    var rep = 0;
+    ids.forEach(function (id) { var r = rec(id); if (r && r.box !== undefined && r.box < 2) { rep += 1; } });
+    var info = el("div", "small", ids.length + " Wörter im Pool" + (rep ? " · " + rep + " davon kommen wegen früherer Fehler häufiger dran." : ". Wörter, die du falsch beantwortest, kommen danach häufiger dran."));
+    info.style.marginBottom = "10px"; v.appendChild(info);
+    var go = el("button", "main", "Start"); go.type = "button"; go.disabled = ids.length === 0 || !langReady();
+    if (store.settings.format === "rule") {
+      var okRule = ids.filter(function (id) { return ruleApplicable(byId[id]); });
+      if (okRule.length === 0) { go.disabled = true; }
+      ids = okRule.length ? okRule : ids;
+    }
+    go.addEventListener("click", function () {
+      var chosen = weightedSample(ids, store.settings.size);
+      startSession(chosen.map(function (id) { return { id: id, fmt: formatFor(byId[id]) }; }), false);
+    });
+    v.appendChild(go);
+    if (go.disabled) {
+      var why = !store.settings.langSet ? "Bitte zuerst oben eine Sprache wählen."
+        : (!langReady() ? "Für „Tippen“ und „Mix“ wird eine Sprache gebraucht (nicht „keine Hilfe“)."
+        : (store.settings.format === "rule" ? "Für „Regel erkennen“ passt die Auswahl nicht (Zusammensetzungen und unbetonte Fälle sind ausgenommen)." : "Bitte mindestens ein Thema und eine Lektion wählen."));
+      v.appendChild(el("div", "small", why));
+    }
+  }
+
+  function formatFor(it) {
+    var f = store.settings.format;
+    if (f === "mix") { return pick(formatsFor(it)); }
+    if (f === "rule" && !ruleApplicable(it)) { return "choose"; }
+    return f;
+  }
+
+  function startSession(queue, isReview) {
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+    session = { queue: queue, pos: 0, results: [], answered: false, review: isReview };
+    renderPractice();
+  }
+
+  function renderQuestion(v) {
+    var q = session.queue[session.pos];
+    var it = byId[q.id];
+    var total = session.queue.length;
+    var top = el("div", "top");
+    top.appendChild(el("span", null, (session.review ? "Wiederholung · " : "") + "Frage " + (session.pos + 1) + " / " + total));
+    var right = 0; session.results.forEach(function (r) { if (r.ok) { right += 1; } });
+    top.appendChild(el("span", null, right + " richtig"));
+    v.appendChild(top);
+    var bar = el("div", "bar"); var fill = el("i"); fill.style.width = Math.round(100 * session.pos / total) + "%"; bar.appendChild(fill); v.appendChild(bar);
+
+    var card = el("div", "panel qcard");
+    var fmt = q.fmt;
+    var lg = meaningLang();
+    var mean = meaning(it);
+    var note = it.base ? "Mehrzahl von: " + it.base : "";
+    if (fmt === "choose") { renderChoose(card, it, q, mean, note); }
+    else if (fmt === "gap") { renderGap(card, it, q, mean, note); }
+    else if (fmt === "rule") { renderRule(card, it, q, mean, note); }
+    else { renderType(card, it, q, mean, note); }
+    var fb = el("div"); fb.id = "fbBox"; card.appendChild(fb);
+    var nxt = el("button", "main hidden", session.pos + 1 >= total ? "Auswertung" : "Weiter"); nxt.type = "button"; nxt.id = "nextBtn"; nxt.style.marginTop = "10px";
+    nxt.addEventListener("click", nextQuestion); card.appendChild(nxt);
+    v.appendChild(card);
+    var quit = el("button", "linkbtn", "Runde abbrechen"); quit.type = "button";
+    quit.addEventListener("click", function () { if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; } session = null; renderPractice(); });
+    v.appendChild(quit);
+    session.answered = false;
+    session.current = { it: it, fmt: fmt };
+    if (fmt === "type") { var inp = $("typeInput"); if (inp && inp.focus) { try { inp.focus(); } catch (e) { /* egal */ } } }
+  }
+
+  function headBits(card, it, mean, note, withSpeak) {
+    var m = el("div", "qmean", [mean, note].filter(function (x) { return x; }).join(" · "));
+    if (meaningLang() === "ar" && mean) { m.setAttribute("dir", "rtl"); }
+    var sp = withSpeak ? speakBtn(it.w) : null;
+    if (sp) { card.appendChild(sp); }
+    card.appendChild(m);
+  }
+  function optButtons(card, labels, cls, onPick) {
+    var box = el("div", "opts " + cls); box.id = "optRow";
+    labels.forEach(function (o, k) {
+      var b = el("button", null, o.text); b.type = "button"; b.setAttribute("data-v", o.value);
+      if (o.sub) { var sb = el("small", "sub", o.sub); if (o.rtl) { sb.setAttribute("dir", "rtl"); } b.appendChild(sb); }
+      b.appendChild(el("small", null, "Taste " + (k + 1)));
+      b.addEventListener("click", function () { onPick(o.value); });
+      box.appendChild(b);
+    });
+    card.appendChild(box);
+  }
+
+  function renderChoose(card, it, q, mean, note) {
+    card.appendChild(el("div", "qtask", "Welche Schreibweise ist richtig?"));
+    headBits(card, it, mean, note, true);
+    var opts = shuffle([{ text: it.w, value: "c" }, { text: it.wrong, value: "w" }]);
+    optButtons(card, opts, "two", function (val) { answer(val === "c", val === "c" ? it.w : it.wrong); });
+  }
+  function renderGap(card, it, q, mean, note) {
+    card.appendChild(el("div", "qtask", "Welche Schreibung passt in die Lücke?"));
+    headBits(card, it, mean, note, true);
+    var big = el("div", "qbig"); big.id = "gapWord";
+    big.appendChild(document.createTextNode(it.pre));
+    var g = el("span", "gap", "   "); g.id = "gapSpot"; big.appendChild(g);
+    big.appendChild(document.createTextNode(it.post));
+    card.appendChild(big);
+    var opts = shuffle([{ text: it.a, value: "c" }, { text: it.b, value: "w" }]);
+    optButtons(card, opts, "two", function (val) {
+      var spot = $("gapSpot"); if (spot) { spot.textContent = (val === "c" ? it.a : it.b); }
+      answer(val === "c", val === "c" ? it.a : it.b);
+    });
+  }
+  function renderRule(card, it, q, mean, note) {
+    card.appendChild(el("div", "qtask", "Warum wird das Wort so geschrieben?"));
+    headBits(card, it, mean, note, true);
+    var big = el("div", "qbig"); big.appendChild(wordNode(it, "right")); card.appendChild(big);
+    var lgR = meaningLang();
+    var opts = RULE_OPTS.map(function (o) { return { text: o.label, value: o.id, sub: lgR ? o[lgR] : "", rtl: lgR === "ar" }; });
+    optButtons(card, opts, "rule", function (val) { answer(val === it.cat, RULE_OPTS.filter(function (o) { return o.id === val; })[0].label); });
+  }
+  function renderType(card, it, q, mean, note) {
+    card.appendChild(el("div", "qtask", "Schreibe das Wort richtig."));
+    headBits(card, it, mean, note, true);
+    var pat = it.w.charAt(0);
+    for (var k = 1; k < it.w.length; k++) { pat += " _"; }
+    card.appendChild(el("div", "qbig", pat));
+    card.appendChild(el("div", "small", it.w.length + " Buchstaben"));
+    var uml = el("div", "umlauts");
+    ["ä", "ö", "ü", "ß"].forEach(function (c) {
+      var b = el("button", null, c); b.type = "button";
+      b.addEventListener("click", function () { var inp = $("typeInput"); if (inp && !inp.disabled) { inp.value += c; inp.focus(); } });
+      uml.appendChild(b);
+    });
+    card.appendChild(uml);
+    var box = el("div", "typebox");
+    var inp = document.createElement("input"); inp.type = "text"; inp.id = "typeInput"; inp.autocomplete = "off"; inp.setAttribute("autocapitalize", "off"); inp.setAttribute("spellcheck", "false"); inp.setAttribute("aria-label", "Antwort");
+    var ok = el("button", "sec", "Prüfen"); ok.type = "button"; ok.id = "checkBtn";
+    function doCheck() {
+      if (session.answered) { return; }
+      var val = inp.value.replace(/^\s+|\s+$/g, "");
+      if (!val) { return; }
+      var exact = val === it.w;
+      var caseOnly = !exact && val.toLowerCase() === it.w.toLowerCase();
+      inp.disabled = true; ok.disabled = true;
+      answer(exact || caseOnly, val, caseOnly ? "Groß-/Kleinschreibung beachten: " + it.w : null);
+    }
+    ok.addEventListener("click", doCheck);
+    inp.addEventListener("keydown", function (ev) { if (ev.key === "Enter") { ev.preventDefault(); doCheck(); } });
+    box.appendChild(inp); box.appendChild(ok); card.appendChild(box);
+  }
+
+  function answer(ok, pickedText, extraNote) {
+    if (!session || session.answered) { return; }
+    var cur = session.current, it = cur.it;
+    session.answered = true;
+    session.results.push({ id: it.id, ok: ok, pick: pickedText, fmt: cur.fmt });
+    var r = store.words[it.id] || { n: 0, c: 0, s: 0 };
+    r.n += 1;
+    if (ok) { r.c += 1; r.s += 1; if (r.box !== undefined && r.box < 2) { r.box += 1; } }
+    else { r.s = 0; r.box = 0; }
+    store.words[it.id] = r; save();
+
+    var row = $("optRow");
+    if (row) {
+      var btns = row.getElementsByTagName("button");
+      var correctVal = cur.fmt === "rule" ? it.cat : "c";
+      for (var k = 0; k < btns.length; k++) {
+        var v = btns[k].getAttribute("data-v");
+        btns[k].disabled = true;
+        if (v === correctVal) { btns[k].className = "right"; }
+        else if (!ok && cur.fmt !== "rule" && btns[k].textContent.indexOf(pickedText) === 0 && v !== correctVal) { btns[k].className = "wrong"; }
+        else if (!ok && cur.fmt === "rule" && btns[k].textContent.indexOf(pickedText) === 0) { btns[k].className = "wrong"; }
+      }
+    }
+    var fb = $("fbBox"); clear(fb);
+    var box = el("div", "fb " + (ok ? "ok" : "bad"));
+    var big = el("div", "big");
+    big.appendChild(document.createTextNode(ok ? "✓ Richtig: " : "✗ Richtig ist: "));
+    big.appendChild(wordNode(it, "right"));
+    box.appendChild(big);
+    if (!ok && cur.fmt === "type") { var yours = el("div", "small"); yours.appendChild(document.createTextNode("Deine Antwort: ")); yours.appendChild(el("s", null, pickedText)); box.appendChild(yours); }
+    if (!ok && cur.fmt === "choose") { var wr = el("div", "small"); wr.appendChild(document.createTextNode("Falsch wäre: ")); var s = el("s"); s.appendChild(wordNode(it, "wrong")); wr.appendChild(s); box.appendChild(wr); }
+    if (extraNote) { box.appendChild(el("div", "small", extraNote)); }
+    var m = meaning(it);
+    if (m && cur.fmt !== "type") { var md = el("div", "small", m); if (meaningLang() === "ar") { md.setAttribute("dir", "rtl"); } box.appendChild(md); }
+    if (!ok || cur.fmt === "rule") { box.appendChild(el("div", "hint", "Regel: " + it.exp)); }
+    fb.appendChild(box);
+    $("nextBtn").className = "main";
+    if (ok && store.settings.auto && cur.fmt !== "rule") {
+      autoTimer = setTimeout(function () { autoTimer = null; nextQuestion(); }, 1100);
+    }
+  }
+
+  function nextQuestion() {
+    if (!session || !session.answered) { return; }
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+    session.pos += 1;
+    renderPractice();
+  }
+
+  function renderEnd(v) {
+    var total = session.results.length, right = 0, wrong = [];
+    session.results.forEach(function (r) { if (r.ok) { right += 1; } else { wrong.push(r); } });
+    var pct = total ? Math.round(100 * right / total) : 0;
+    var p = el("div", "panel");
+    p.appendChild(el("div", "score", right + " / " + total + " (" + pct + " %)"));
+    var msg = pct === 100 ? "Alles richtig!" : (pct >= 80 ? "Sehr gut." : "Weiter üben – die Fehlerwörter kommen jetzt öfter dran.");
+    var m = el("div", "small", msg); m.style.textAlign = "center"; p.appendChild(m);
+    v.appendChild(p);
+    if (wrong.length) {
+      var pl = el("div", "panel"); pl.appendChild(el("h2", null, "Wiederholungsliste (" + wrong.length + ")"));
+      var ul = el("ul", "rev");
+      wrong.forEach(function (r) {
+        var it = byId[r.id]; var li = el("li");
+        var line = el("div", "w"); line.appendChild(wordNode(it, "right")); li.appendChild(line);
+        var mm = meaning(it);
+        var bits = [mm, it.base ? "Mehrzahl von " + it.base : ""].filter(function (x) { return x; }).join(" · ");
+        if (bits) { var md = el("div", "pl", bits); if (meaningLang() === "ar" && mm) { md.setAttribute("dir", "rtl"); } li.appendChild(md); }
+        li.appendChild(el("div", "pl", "Regel: " + it.exp));
+        ul.appendChild(li);
+      });
+      pl.appendChild(ul); v.appendChild(pl);
+    }
+    var acts = el("div");
+    if (wrong.length) {
+      var rb = el("button", "main", "Fehlerwörter wiederholen (" + wrong.length + ")"); rb.type = "button";
+      rb.addEventListener("click", function () {
+        var ids = shuffle(wrong.map(function (r) { return r.id; }));
+        startSession(ids.map(function (id) { return { id: id, fmt: formatFor(byId[id]) }; }), true);
+      });
+      acts.appendChild(rb);
+    }
+    var again = el("button", "sec", "Neue Runde"); again.type = "button"; again.style.marginTop = "10px"; again.style.width = "100%";
+    again.addEventListener("click", function () { session = null; renderPractice(); });
+    acts.appendChild(again); v.appendChild(acts);
+  }
+
+  /* ---------- Regeln & Wörter ---------- */
+  var KIND_TEXT = {
+    dk: "Nach einem kurzen, betonten Vokal wird der Konsonant verdoppelt: kommen, Mutter, Zimmer.",
+    ck: "Statt kk schreibt man ck – nur nach kurzem, betontem Vokal: Stück, backen, Rucksack.",
+    tz: "Statt zz schreibt man tz – nur nach kurzem Vokal: Platz, jetzt, putzen.",
+    ek: "Nach langem Vokal oder Doppellaut (ei, au, eu, ie) steht nur ein Konsonant: Name, Käse, Spiele.",
+    k:  "Nach einem Konsonanten steht k, nie ck: Bank, Schrank. Auch nach langem oder unbetontem Vokal: Paket, Apotheke.",
+    z:  "Nach einem Konsonanten steht z, nie tz: Salz, tanzen, Arzt. Auch nach langem Vokal oder Doppellaut: Heizung.",
+    zs: "Bei Zusammensetzungen behalten beide Wortteile ihren Buchstaben: Fahr + Rad = Fahrrad, aus + sehen = aussehen."
+  };
+  function renderList() {
+    var v = $("viewList"); clear(v);
+    var rules = el("div", "panel");
+    var det = document.createElement("details"); det.open = true;
+    det.appendChild(el("summary", null, "Die Regeln auf einen Blick"));
+    var ul = el("ul", "rules");
+    [
+      "Kurzer Vokal → Doppelkonsonant: kom-men, Mut-ter, Zim-mer. Statt kk schreibt man ck, statt zz schreibt man tz.",
+      "Langer Vokal oder Doppellaut (ei, au, eu, ie) → nur ein Konsonant: Na-me, Kä-se, Spie-le.",
+      "Nach einem Konsonanten steht nie ck oder tz: Bank, Schrank, Salz, tanzen.",
+      "Probe: Sprich das Wort langsam in Silben. Bei kommen hörst du das m am Ende der ersten Silbe (kom-) – der Vokal ist kurz.",
+      "Probe: Verlängere das Wort: Platz → Plätze, Bus → Busse. Dann hörst du den Vokal und den Konsonanten besser.",
+      "Zusammensetzungen: Fahr + Rad = Fahrrad (rr), aus + sehen = aussehen (ss).",
+      "Hier nicht enthalten: ss oder ß (z. B. Straße, heißen, groß) – das ist ein eigenes Thema."
+    ].forEach(function (t) { ul.appendChild(el("li", null, t)); });
+    det.appendChild(ul); rules.appendChild(det); v.appendChild(rules);
+
+    var p1 = el("div", "panel"); p1.appendChild(el("h2", null, "Lektionen")); lessonChips(p1, renderList); v.appendChild(p1);
+    KINDS.forEach(function (k) {
+      var items = ITEMS.filter(function (it) { return it.kind === k.id && store.settings.lessons[it.l - 1]; });
+      if (!items.length) { return; }
+      items.sort(function (a, b) { return a.w.localeCompare(b.w, "de"); });
+      var p = el("div", "panel grp");
+      p.appendChild(el("h3", null, k.label + " (" + items.length + ")"));
+      p.appendChild(el("p", null, KIND_TEXT[k.id]));
+      var w = el("div", "words");
+      items.forEach(function (it) {
+        var s = el("span"); s.appendChild(wordNode(it, "right")); s.appendChild(document.createTextNode(" ")); s.appendChild(el("small", null, "L" + it.l)); w.appendChild(s);
+      });
+      p.appendChild(w); v.appendChild(p);
+    });
+  }
+
+  /* ---------- Fortschritt ---------- */
+  function renderProg() {
+    var v = $("viewProg"); clear(v);
+    var seen = 0, sure = 0, tot = ITEMS.length;
+    var perK = {}; KINDS.forEach(function (k) { perK[k.id] = { t: 0, s: 0, g: 0 }; });
+    var hard = [];
+    ITEMS.forEach(function (it) {
+      var r = rec(it.id); perK[it.kind].t += 1;
+      if (r && r.n > 0) {
+        seen += 1;
+        if (isSure(it.id)) { sure += 1; perK[it.kind].s += 1; } else { perK[it.kind].g += 1; }
+        if (r.n - r.c > 0) { hard.push({ it: it, wrong: r.n - r.c, all: r.n }); }
+      }
+    });
+    var p = el("div", "panel"); p.appendChild(el("h2", null, "Gesamt"));
+    p.appendChild(el("div", null, sure + " von " + tot + " Wörtern sicher · " + seen + " schon geübt"));
+    var rb = el("div", "rowbar"); rb.style.marginTop = "8px";
+    var s1 = el("i", "seg-s"); s1.style.width = (100 * sure / tot) + "%";
+    var s2 = el("i", "seg-g"); s2.style.width = (100 * (seen - sure) / tot) + "%";
+    rb.appendChild(s1); rb.appendChild(s2); p.appendChild(rb);
+    p.appendChild(el("div", "small", "„sicher“ = zuletzt mindestens zweimal hintereinander richtig. Grün: sicher · Gelb: geübt, aber noch nicht sicher."));
+    v.appendChild(p);
+
+    var p2 = el("div", "panel"); p2.appendChild(el("h2", null, "Nach Thema"));
+    var tb = el("table", "prog");
+    KINDS.forEach(function (k) {
+      var d = perK[k.id]; var tr = el("tr");
+      tr.appendChild(el("td", "n", k.label));
+      var tdb = el("td"); var bb = el("div", "rowbar");
+      var a1 = el("i", "seg-s"); a1.style.width = (100 * d.s / d.t) + "%";
+      var a2 = el("i", "seg-g"); a2.style.width = (100 * d.g / d.t) + "%";
+      bb.appendChild(a1); bb.appendChild(a2); tdb.appendChild(bb); tr.appendChild(tdb);
+      tr.appendChild(el("td", "c", d.s + " / " + d.t + " sicher")); tb.appendChild(tr);
+    });
+    p2.appendChild(tb); v.appendChild(p2);
+
+    var p3 = el("div", "panel"); p3.appendChild(el("h2", null, "Schwierigste Wörter"));
+    hard.sort(function (a, b) { return b.wrong - a.wrong || b.all - a.all; });
+    if (!hard.length) { p3.appendChild(el("div", "small", "Noch keine Fehler – oder noch nichts geübt.")); }
+    else {
+      var ul = el("ul", "rev");
+      hard.slice(0, 10).forEach(function (h) {
+        var li = el("li"); var line = el("div", "w"); line.appendChild(wordNode(h.it, "right")); li.appendChild(line);
+        li.appendChild(el("div", "pl", h.wrong + " von " + h.all + " falsch")); ul.appendChild(li);
+      });
+      p3.appendChild(ul);
+    }
+    v.appendChild(p3);
+    var p4 = el("div", "panel");
+    var rs = el("button", "sec", "Fortschritt zurücksetzen"); rs.type = "button";
+    rs.addEventListener("click", function () {
+      if (window.confirm("Gesamten Fortschritt löschen? Das kann nicht rückgängig gemacht werden.")) { store.words = {}; save(); renderProg(); }
+    });
+    p4.appendChild(rs); v.appendChild(p4);
+  }
+
+  /* ---------- Tabs & Tastatur ---------- */
+  var tab = "practice";
+  function showTab(t) {
+    tab = t;
+    $("viewPractice").className = t === "practice" ? "" : "hidden";
+    $("viewList").className = t === "list" ? "" : "hidden";
+    $("viewProg").className = t === "prog" ? "" : "hidden";
+    $("tabPractice").className = "tab" + (t === "practice" ? " on" : "");
+    $("tabList").className = "tab" + (t === "list" ? " on" : "");
+    $("tabProg").className = "tab" + (t === "prog" ? " on" : "");
+    if (t === "practice") { renderPractice(); } else if (t === "list") { renderList(); } else { renderProg(); }
+  }
+  function init() {
+    load();
+    $("tabPractice").addEventListener("click", function () { showTab("practice"); });
+    $("tabList").addEventListener("click", function () { showTab("list"); });
+    $("tabProg").addEventListener("click", function () { showTab("prog"); });
+    document.addEventListener("keydown", function (ev) {
+      if (tab !== "practice" || !session || session.pos >= session.queue.length) { return; }
+      var tag = ev.target && ev.target.tagName;
+      var fmt = session.current ? session.current.fmt : "";
+      if (tag === "INPUT" || tag === "SELECT") {
+        if (tag === "INPUT" && ev.target.id === "typeInput" && session.answered && ev.key === "Enter") { ev.preventDefault(); nextQuestion(); }
+        return;
+      }
+      if (!session.answered) {
+        var row = $("optRow");
+        if (row && (ev.key === "1" || ev.key === "2" || ev.key === "3")) {
+          var b = row.getElementsByTagName("button")[parseInt(ev.key, 10) - 1];
+          if (b) { b.click(); }
+        }
+      } else if ((ev.key === "Enter" || ev.key === " ") && tag !== "BUTTON") { ev.preventDefault(); nextQuestion(); }
+    });
+    if (window.speechSynthesis) {
+      try { window.speechSynthesis.onvoiceschanged = function () { /* Stimmen geladen; Knopf erscheint ab der nächsten Frage */ }; } catch (e) { /* egal */ }
+    }
+    showTab("practice");
+  }
+  init();
+})();
+</script>
+</body>
+</html>
