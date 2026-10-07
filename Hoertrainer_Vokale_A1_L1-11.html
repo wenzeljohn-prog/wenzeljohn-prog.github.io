@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hörtrainer: Vokale und Diphthonge</title>
+<style>
+
+  :root {
+    --bg:#f4f6fa; --card:#fff; --text:#1d2433; --muted:#5b667a; --line:#d5dbe6;
+    --accent:#2b5fd9; --accent-text:#fff; --chip:#e9eef8;
+    --ok:#1f7a4d; --ok-bg:#e0f3e8; --bad:#b3303f; --bad-bg:#fbe4e7; --warn-bg:#fff4d6; --mark:#fde8a6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#12161f; --card:#1b2130; --text:#e8ecf5; --muted:#9aa5ba; --line:#30394d;
+      --accent:#6b97ff; --accent-text:#0b1226; --chip:#252d40;
+      --ok:#6fd6a2; --ok-bg:#183427; --bad:#ff8a98; --bad-bg:#42202a; --warn-bg:#3a3118; --mark:#6b5a1d;
+    }
+  }
+  * { box-sizing:border-box; }
+  html,body { margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; line-height:1.45; min-height:100vh; }
+  .wrap { max-width:900px; margin:0 auto; padding:14px; }
+  h1 { font-size:1.2rem; margin:2px 0 10px; }
+  .tabs { display:flex; gap:6px; margin-bottom:12px; }
+  .tab { flex:1; min-height:48px; border-radius:12px; border:2px solid var(--line); background:var(--card); color:var(--text); font-size:1rem; cursor:pointer; font-weight:600; }
+  .tab.on { border-color:var(--accent); background:var(--chip); }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+  .panel h2 { font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 8px; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .chip { display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:6px 14px; border-radius:999px; background:var(--chip); border:2px solid transparent; cursor:pointer; user-select:none; font-size:.95rem; }
+  .chip input { position:absolute; opacity:0; pointer-events:none; }
+  .chip.on { border-color:var(--accent); font-weight:700; }
+  .chip:focus-within { outline:3px solid var(--accent); outline-offset:2px; }
+  .chip small { color:var(--muted); font-weight:400; }
+  .small { color:var(--muted); font-size:.86rem; margin-top:6px; }
+  .linkbtn { background:none; border:none; color:var(--accent); cursor:pointer; font-size:.92rem; padding:6px 4px; min-height:44px; }
+  select, input[type=text], input[type=search] { min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); color:var(--text); font-size:1rem; padding:6px 10px; }
+  label.opt { display:flex; align-items:center; gap:8px; min-height:44px; }
+  button.main { width:100%; min-height:56px; border-radius:14px; border:none; cursor:pointer; font-size:1.15rem; font-weight:700; background:var(--accent); color:var(--accent-text); }
+  button.main:disabled { opacity:.4; cursor:default; }
+  button.sec { min-height:48px; padding:0 18px; border-radius:12px; cursor:pointer; font-size:1rem; background:var(--card); color:var(--text); border:2px solid var(--line); }
+  button:focus-visible, input:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  .bar { height:10px; background:var(--chip); border-radius:999px; overflow:hidden; }
+  .bar > i { display:block; height:100%; background:var(--accent); }
+  .top { display:flex; justify-content:space-between; font-size:.9rem; color:var(--muted); margin-bottom:6px; }
+  .qcard { text-align:center; padding:18px 12px 12px; }
+  .qtask { font-size:.95rem; color:var(--muted); margin-bottom:6px; }
+  .qmean { font-size:1.1rem; color:var(--muted); min-height:1.5em; margin-bottom:6px; }
+  .qbig { font-size:clamp(2rem,9vw,3.2rem); font-weight:800; margin:8px 0 12px; word-wrap:break-word; overflow-wrap:anywhere; letter-spacing:.02em; }
+  .gap { display:inline-block; min-width:1.6em; border-bottom:4px solid var(--accent); color:var(--accent); }
+  .opts { display:grid; gap:10px; margin:10px 0; }
+  .opts.two { grid-template-columns:1fr 1fr; }
+  .opts button { min-height:68px; border-radius:14px; border:3px solid var(--line); background:var(--card); color:var(--text); font-size:1.5rem; font-weight:800; cursor:pointer; padding:6px 10px; word-wrap:break-word; overflow-wrap:anywhere; }
+  .opts.rule button { font-size:1.05rem; font-weight:700; text-align:left; min-height:60px; }
+  .opts button small.sub { font-size:.82rem; font-weight:500; color:var(--text); opacity:.85; margin-top:4px; }
+  .opts button small { display:block; font-size:.7rem; font-weight:500; color:var(--muted); }
+  .opts button.right { background:var(--ok-bg); border-color:var(--ok); color:var(--ok); }
+  .opts button.wrong { background:var(--bad-bg); border-color:var(--bad); color:var(--bad); }
+  .opts button:disabled { cursor:default; }
+  .opts button:disabled:not(.right):not(.wrong) { opacity:.5; }
+  .typebox { display:flex; gap:8px; margin:8px 0; }
+  .typebox input { flex:1; font-size:1.4rem; min-width:0; }
+  .typebox button { min-width:96px; }
+  .umlauts { display:flex; gap:6px; justify-content:center; margin-bottom:8px; }
+  .umlauts button { min-width:52px; min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); color:var(--text); font-size:1.2rem; cursor:pointer; }
+  mark.seg { background:var(--mark); color:inherit; border-radius:4px; padding:0 2px; }
+  .fb { border-radius:12px; padding:12px 14px; margin-top:6px; text-align:left; }
+  .fb.ok { background:var(--ok-bg); } .fb.bad { background:var(--bad-bg); }
+  .fb .big { font-size:1.3rem; font-weight:800; }
+  .fb .hint { margin-top:6px; padding:8px 10px; border-radius:10px; background:var(--warn-bg); font-size:.95rem; }
+  .fb s { opacity:.7; }
+  .speak { min-height:44px; padding:0 14px; border-radius:999px; border:2px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; font-size:.95rem; margin-bottom:6px; }
+  .score { font-size:2.2rem; font-weight:800; text-align:center; }
+  .rev { list-style:none; margin:8px 0 0; padding:0; }
+  .rev li { padding:10px 0; border-top:1px solid var(--line); }
+  .rev .pl { color:var(--muted); font-size:.92rem; }
+  .rev .w { font-size:1.15rem; font-weight:700; }
+  .grp h3 { font-size:1.02rem; margin:0 0 4px; }
+  .grp p { margin:0 0 8px; color:var(--muted); font-size:.92rem; }
+  .words { display:flex; flex-wrap:wrap; gap:6px; }
+  .words span { background:var(--chip); border-radius:10px; padding:4px 10px; font-size:1rem; }
+  .words span small { color:var(--muted); }
+  .rowbar { display:flex; height:14px; border-radius:999px; overflow:hidden; background:var(--chip); }
+  .rowbar i { display:block; height:100%; }
+  .seg-s { background:var(--ok); } .seg-g { background:#e0a526; }
+  table.prog { width:100%; border-collapse:collapse; font-size:.95rem; }
+  table.prog td { padding:6px 4px; border-top:1px solid var(--line); vertical-align:middle; }
+  table.prog td.n { width:44%; font-weight:600; }
+  table.prog td.c { width:92px; text-align:right; color:var(--muted); font-size:.85rem; white-space:nowrap; }
+  details summary { cursor:pointer; font-weight:600; min-height:44px; display:flex; align-items:center; }
+  .rules li { margin:6px 0; }
+  .hidden { display:none !important; }
+  @media (max-width:560px) { .opts.two { grid-template-columns:1fr; } .wrap { padding:10px; } }
+
+  .play { min-height:64px; padding:0 26px; border-radius:999px; border:none; background:var(--accent); color:var(--accent-text); font-size:1.2rem; font-weight:700; cursor:pointer; }
+  .playrow { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:6px 0 4px; align-items:center; }
+  .opts.many { grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); }
+  .opts.many button { font-size:1.8rem; }
+  .mini { min-height:36px; min-width:36px; padding:0 10px; border-radius:999px; border:2px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; font-size:.95rem; }
+  .warn { background:var(--warn-bg); border-radius:10px; padding:10px 12px; font-size:.93rem; margin-top:8px; }
+  .vars summary { font-weight:600; }
+  .words span.clk { cursor:pointer; }
+  .words span.clk:hover { outline:2px solid var(--accent); }
+  .fb .ex { margin-top:6px; font-size:.95rem; }
+  @media (max-width:560px) { .opts.many { grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Hörtrainer &middot; Vokale und Diphthonge</h1>
+  <div class="tabs" role="tablist">
+    <button class="tab on" id="tabPractice" type="button">&Uuml;ben</button>
+    <button class="tab" id="tabList" type="button">Laute &amp; W&ouml;rter</button>
+    <button class="tab" id="tabProg" type="button">Fortschritt</button>
+  </div>
+  <div id="viewPractice"></div>
+  <div id="viewList" class="hidden"></div>
+  <div id="viewProg" class="hidden"></div>
+</div>
+<script>
+(function () {
+  "use strict";
+var ITEMS = [{"id": 0, "w": "wie", "pre": "w", "seg": "ie", "post": "", "g": "I", "l": 1}, {"id": 1, "w": "heißen", "pre": "h", "seg": "ei", "post": "ßen", "g": "EI", "l": 1}, {"id": 2, "w": "Sie", "pre": "S", "seg": "ie", "post": "", "g": "I", "l": 1}, {"id": 3, "w": "ich", "pre": "", "seg": "i", "post": "ch", "g": "I", "l": 1}, {"id": 4, "w": "Herr", "pre": "H", "seg": "e", "post": "rr", "g": "E", "l": 1}, {"id": 5, "w": "Frau", "pre": "Fr", "seg": "au", "post": "", "g": "AU", "l": 1}, {"id": 6, "w": "und", "pre": "", "seg": "u", "post": "nd", "g": "U", "l": 1}, {"id": 7, "w": "kommen", "pre": "k", "seg": "o", "post": "mmen", "g": "O", "l": 1}, {"id": 8, "w": "Sprache", "pre": "Spr", "seg": "a", "post": "che", "g": "A", "l": 1}, {"id": 9, "w": "sprechen", "pre": "spr", "seg": "e", "post": "chen", "g": "E", "l": 1}, {"id": 10, "w": "ein", "pre": "", "seg": "ei", "post": "n", "g": "EI", "l": 1}, {"id": 11, "w": "bisschen", "pre": "b", "seg": "i", "post": "sschen", "g": "I", "l": 1}, {"id": 12, "w": "Name", "pre": "N", "seg": "a", "post": "me", "g": "A", "l": 1}, {"id": 13, "w": "hier", "pre": "h", "seg": "ie", "post": "r", "g": "I", "l": 1}, {"id": 14, "w": "Land", "pre": "L", "seg": "a", "post": "nd", "g": "A", "l": 1}, {"id": 15, "w": "schreiben", "pre": "schr", "seg": "ei", "post": "ben", "g": "EI", "l": 1}, {"id": 16, "w": "buchstabieren", "pre": "b", "seg": "u", "post": "chstabieren", "g": "U", "l": 1}, {"id": 17, "w": "danke", "pre": "d", "seg": "a", "post": "nke", "g": "A", "l": 1}, {"id": 18, "w": "bitte", "pre": "b", "seg": "i", "post": "tte", "g": "I", "l": 1}, {"id": 19, "w": "nein", "pre": "n", "seg": "ei", "post": "n", "g": "EI", "l": 1}, {"id": 20, "w": "richtig", "pre": "r", "seg": "i", "post": "chtig", "g": "I", "l": 1}, {"id": 21, "w": "interessant", "pre": "", "seg": "i", "post": "nteressant", "g": "I", "l": 1}, {"id": 22, "w": "gut", "pre": "g", "seg": "u", "post": "t", "g": "U", "l": 1}, {"id": 23, "w": "schlecht", "pre": "schl", "seg": "e", "post": "cht", "g": "E", "l": 1}, {"id": 24, "w": "Altenpfleger", "pre": "", "seg": "a", "post": "ltenpfleger", "g": "A", "l": 2}, {"id": 25, "w": "Altenpflegerin", "pre": "", "seg": "a", "post": "ltenpflegerin", "g": "A", "l": 2}, {"id": 26, "w": "Arzt", "pre": "", "seg": "a", "post": "rzt", "g": "A", "l": 2}, {"id": 27, "w": "Ärztin", "pre": "", "seg": "ä", "post": "rztin", "g": "E", "l": 2}, {"id": 28, "w": "Friseur", "pre": "Fr", "seg": "i", "post": "seur", "g": "I", "l": 2}, {"id": 29, "w": "Friseurin", "pre": "Fr", "seg": "i", "post": "seurin", "g": "I", "l": 2}, {"id": 30, "w": "Hausmann", "pre": "H", "seg": "au", "post": "smann", "g": "AU", "l": 2}, {"id": 31, "w": "Hausfrau", "pre": "H", "seg": "au", "post": "sfrau", "g": "AU", "l": 2}, {"id": 32, "w": "Koch", "pre": "K", "seg": "o", "post": "ch", "g": "O", "l": 2}, {"id": 33, "w": "Köchin", "pre": "K", "seg": "ö", "post": "chin", "g": "OE", "l": 2}, {"id": 34, "w": "Lehrer", "pre": "L", "seg": "eh", "post": "rer", "g": "E", "l": 2}, {"id": 35, "w": "Lehrerin", "pre": "L", "seg": "eh", "post": "rerin", "g": "E", "l": 2}, {"id": 36, "w": "Mechatroniker", "pre": "M", "seg": "e", "post": "chatroniker", "g": "E", "l": 2}, {"id": 37, "w": "Mechatronikerin", "pre": "M", "seg": "e", "post": "chatronikerin", "g": "E", "l": 2}, {"id": 38, "w": "Polizist", "pre": "P", "seg": "o", "post": "lizist", "g": "O", "l": 2}, {"id": 39, "w": "Polizistin", "pre": "P", "seg": "o", "post": "lizistin", "g": "O", "l": 2}, {"id": 40, "w": "Sänger", "pre": "S", "seg": "ä", "post": "nger", "g": "E", "l": 2}, {"id": 41, "w": "Sängerin", "pre": "S", "seg": "ä", "post": "ngerin", "g": "E", "l": 2}, {"id": 42, "w": "Taxifahrer", "pre": "T", "seg": "a", "post": "xifahrer", "g": "A", "l": 2}, {"id": 43, "w": "Taxifahrerin", "pre": "T", "seg": "a", "post": "xifahrerin", "g": "A", "l": 2}, {"id": 44, "w": "Verkäufer", "pre": "Verk", "seg": "äu", "post": "fer", "g": "EU", "l": 2}, {"id": 45, "w": "Verkäuferin", "pre": "Verk", "seg": "äu", "post": "ferin", "g": "EU", "l": 2}, {"id": 46, "w": "arbeiten", "pre": "", "seg": "a", "post": "rbeiten", "g": "A", "l": 2}, {"id": 47, "w": "was", "pre": "w", "seg": "a", "post": "s", "g": "A", "l": 2}, {"id": 48, "w": "beruflich", "pre": "ber", "seg": "u", "post": "flich", "g": "U", "l": 2}, {"id": 49, "w": "jetzt", "pre": "j", "seg": "e", "post": "tzt", "g": "E", "l": 2}, {"id": 50, "w": "falsch", "pre": "f", "seg": "a", "post": "lsch", "g": "A", "l": 2}, {"id": 51, "w": "aber", "pre": "", "seg": "a", "post": "ber", "g": "A", "l": 2}, {"id": 52, "w": "auch", "pre": "", "seg": "au", "post": "ch", "g": "AU", "l": 2}, {"id": 53, "w": "Auto", "pre": "", "seg": "au", "post": "to", "g": "AU", "l": 2}, {"id": 54, "w": "Heimatland", "pre": "H", "seg": "ei", "post": "matland", "g": "EI", "l": 2}, {"id": 55, "w": "Kurs", "pre": "K", "seg": "u", "post": "rs", "g": "U", "l": 2}, {"id": 56, "w": "lernen", "pre": "l", "seg": "e", "post": "rnen", "g": "E", "l": 2}, {"id": 57, "w": "nicht", "pre": "n", "seg": "i", "post": "cht", "g": "I", "l": 2}, {"id": 58, "w": "reparieren", "pre": "r", "seg": "e", "post": "parieren", "g": "E", "l": 2}, {"id": 59, "w": "studieren", "pre": "st", "seg": "u", "post": "dieren", "g": "U", "l": 2}, {"id": 60, "w": "Mann", "pre": "M", "seg": "a", "post": "nn", "g": "A", "l": 2}, {"id": 61, "w": "Busfahrer", "pre": "B", "seg": "u", "post": "sfahrer", "g": "U", "l": 2}, {"id": 62, "w": "Busfahrerin", "pre": "B", "seg": "u", "post": "sfahrerin", "g": "U", "l": 2}, {"id": 63, "w": "Kellner", "pre": "K", "seg": "e", "post": "llner", "g": "E", "l": 2}, {"id": 64, "w": "Kellnerin", "pre": "K", "seg": "e", "post": "llnerin", "g": "E", "l": 2}, {"id": 65, "w": "bekannt", "pre": "bek", "seg": "a", "post": "nnt", "g": "A", "l": 2}, {"id": 66, "w": "Buch", "pre": "B", "seg": "u", "post": "ch", "g": "U", "l": 2}, {"id": 67, "w": "schon", "pre": "sch", "seg": "o", "post": "n", "g": "O", "l": 2}, {"id": 68, "w": "lange", "pre": "l", "seg": "a", "post": "nge", "g": "A", "l": 2}, {"id": 69, "w": "wohnen", "pre": "w", "seg": "oh", "post": "nen", "g": "O", "l": 2}, {"id": 70, "w": "Lied", "pre": "L", "seg": "ie", "post": "d", "g": "I", "l": 2}, {"id": 71, "w": "tanzen", "pre": "t", "seg": "a", "post": "nzen", "g": "A", "l": 2}, {"id": 72, "w": "Tee", "pre": "T", "seg": "ee", "post": "", "g": "E", "l": 2}, {"id": 73, "w": "trinken", "pre": "tr", "seg": "i", "post": "nken", "g": "I", "l": 2}, {"id": 74, "w": "bedeuten", "pre": "bed", "seg": "eu", "post": "ten", "g": "EU", "l": 2}, {"id": 75, "w": "Problem", "pre": "Pr", "seg": "o", "post": "blem", "g": "O", "l": 2}, {"id": 76, "w": "verstehen", "pre": "verst", "seg": "eh", "post": "en", "g": "E", "l": 2}, {"id": 77, "w": "helfen", "pre": "h", "seg": "e", "post": "lfen", "g": "E", "l": 2}, {"id": 78, "w": "gern", "pre": "g", "seg": "e", "post": "rn", "g": "E", "l": 2}, {"id": 79, "w": "Formular", "pre": "F", "seg": "o", "post": "rmular", "g": "O", "l": 2}, {"id": 80, "w": "Vorname", "pre": "V", "seg": "o", "post": "rname", "g": "O", "l": 2}, {"id": 81, "w": "Nachname", "pre": "N", "seg": "a", "post": "chname", "g": "A", "l": 2}, {"id": 82, "w": "Adresse", "pre": "", "seg": "a", "post": "dresse", "g": "A", "l": 2}, {"id": 83, "w": "Straße", "pre": "Str", "seg": "a", "post": "ße", "g": "A", "l": 2}, {"id": 84, "w": "Hausnummer", "pre": "H", "seg": "au", "post": "snummer", "g": "AU", "l": 2}, {"id": 85, "w": "Ort", "pre": "", "seg": "o", "post": "rt", "g": "O", "l": 2}, {"id": 86, "w": "Postleitzahl", "pre": "P", "seg": "o", "post": "stleitzahl", "g": "O", "l": 2}, {"id": 87, "w": "Telefonnummer", "pre": "T", "seg": "e", "post": "lefonnummer", "g": "E", "l": 2}, {"id": 88, "w": "Arbeit", "pre": "", "seg": "a", "post": "rbeit", "g": "A", "l": 2}, {"id": 89, "w": "ihr", "pre": "", "seg": "ih", "post": "r", "g": "I", "l": 2}, {"id": 90, "w": "wir", "pre": "w", "seg": "i", "post": "r", "g": "I", "l": 2}, {"id": 91, "w": "Tasche", "pre": "T", "seg": "a", "post": "sche", "g": "A", "l": 3}, {"id": 92, "w": "Taschen", "pre": "T", "seg": "a", "post": "schen", "g": "A", "l": 3}, {"id": 93, "w": "Tisch", "pre": "T", "seg": "i", "post": "sch", "g": "I", "l": 3}, {"id": 94, "w": "Tische", "pre": "T", "seg": "i", "post": "sche", "g": "I", "l": 3}, {"id": 95, "w": "Stuhl", "pre": "St", "seg": "uh", "post": "l", "g": "U", "l": 3}, {"id": 96, "w": "Stühle", "pre": "St", "seg": "üh", "post": "le", "g": "UE", "l": 3}, {"id": 97, "w": "Bank", "pre": "B", "seg": "a", "post": "nk", "g": "A", "l": 3}, {"id": 98, "w": "Bänke", "pre": "B", "seg": "ä", "post": "nke", "g": "E", "l": 3}, {"id": 99, "w": "Sofa", "pre": "S", "seg": "o", "post": "fa", "g": "O", "l": 3}, {"id": 100, "w": "Sofas", "pre": "S", "seg": "o", "post": "fas", "g": "O", "l": 3}, {"id": 101, "w": "Bett", "pre": "B", "seg": "e", "post": "tt", "g": "E", "l": 3}, {"id": 102, "w": "Regal", "pre": "R", "seg": "e", "post": "gal", "g": "E", "l": 3}, {"id": 103, "w": "Regale", "pre": "R", "seg": "e", "post": "gale", "g": "E", "l": 3}, {"id": 104, "w": "Schrank", "pre": "Schr", "seg": "a", "post": "nk", "g": "A", "l": 3}, {"id": 105, "w": "Schränke", "pre": "Schr", "seg": "ä", "post": "nke", "g": "E", "l": 3}, {"id": 106, "w": "Herd", "pre": "H", "seg": "e", "post": "rd", "g": "E", "l": 3}, {"id": 107, "w": "Herde", "pre": "H", "seg": "e", "post": "rde", "g": "E", "l": 3}, {"id": 108, "w": "Bleistift", "pre": "Bl", "seg": "ei", "post": "stift", "g": "EI", "l": 3}, {"id": 109, "w": "Bleistifte", "pre": "Bl", "seg": "ei", "post": "stifte", "g": "EI", "l": 3}, {"id": 110, "w": "Heft", "pre": "H", "seg": "e", "post": "ft", "g": "E", "l": 3}, {"id": 111, "w": "Hefte", "pre": "H", "seg": "e", "post": "fte", "g": "E", "l": 3}, {"id": 112, "w": "Plakat", "pre": "Pl", "seg": "a", "post": "kat", "g": "A", "l": 3}, {"id": 113, "w": "Plakate", "pre": "Pl", "seg": "a", "post": "kate", "g": "A", "l": 3}, {"id": 114, "w": "Hausaufgabe", "pre": "H", "seg": "au", "post": "saufgabe", "g": "AU", "l": 3}, {"id": 115, "w": "Hausaufgaben", "pre": "H", "seg": "au", "post": "saufgaben", "g": "AU", "l": 3}, {"id": 116, "w": "hören", "pre": "h", "seg": "ö", "post": "ren", "g": "OE", "l": 3}, {"id": 117, "w": "Kind", "pre": "K", "seg": "i", "post": "nd", "g": "I", "l": 3}, {"id": 118, "w": "Kinder", "pre": "K", "seg": "i", "post": "nder", "g": "I", "l": 3}, {"id": 119, "w": "Foto", "pre": "F", "seg": "o", "post": "to", "g": "O", "l": 3}, {"id": 120, "w": "Fotos", "pre": "F", "seg": "o", "post": "tos", "g": "O", "l": 3}, {"id": 121, "w": "spielen", "pre": "sp", "seg": "ie", "post": "len", "g": "I", "l": 3}, {"id": 122, "w": "stehen", "pre": "st", "seg": "eh", "post": "en", "g": "E", "l": 3}, {"id": 123, "w": "viel", "pre": "v", "seg": "ie", "post": "l", "g": "I", "l": 3}, {"id": 124, "w": "viele", "pre": "v", "seg": "ie", "post": "le", "g": "I", "l": 3}, {"id": 125, "w": "Kaffee", "pre": "K", "seg": "a", "post": "ffee", "g": "A", "l": 3}, {"id": 126, "w": "Kaffeemaschine", "pre": "K", "seg": "a", "post": "ffeemaschine", "g": "A", "l": 3}, {"id": 127, "w": "Kaffeemaschinen", "pre": "K", "seg": "a", "post": "ffeemaschinen", "g": "A", "l": 3}, {"id": 128, "w": "Kasse", "pre": "K", "seg": "a", "post": "sse", "g": "A", "l": 3}, {"id": 129, "w": "Kassen", "pre": "K", "seg": "a", "post": "ssen", "g": "A", "l": 3}, {"id": 130, "w": "Laptop", "pre": "L", "seg": "a", "post": "ptop", "g": "A", "l": 3}, {"id": 131, "w": "Laptops", "pre": "L", "seg": "a", "post": "ptops", "g": "A", "l": 3}, {"id": 132, "w": "groß", "pre": "gr", "seg": "o", "post": "ß", "g": "O", "l": 3}, {"id": 133, "w": "klein", "pre": "kl", "seg": "ei", "post": "n", "g": "EI", "l": 3}, {"id": 134, "w": "neu", "pre": "n", "seg": "eu", "post": "", "g": "EU", "l": 3}, {"id": 135, "w": "alt", "pre": "", "seg": "a", "post": "lt", "g": "A", "l": 3}, {"id": 136, "w": "schön", "pre": "sch", "seg": "ö", "post": "n", "g": "OE", "l": 3}, {"id": 137, "w": "Tafel", "pre": "T", "seg": "a", "post": "fel", "g": "A", "l": 3}, {"id": 138, "w": "Tafeln", "pre": "T", "seg": "a", "post": "feln", "g": "A", "l": 3}, {"id": 139, "w": "Tür", "pre": "T", "seg": "ü", "post": "r", "g": "UE", "l": 3}, {"id": 140, "w": "Türen", "pre": "T", "seg": "ü", "post": "ren", "g": "UE", "l": 3}, {"id": 141, "w": "Schlüssel", "pre": "Schl", "seg": "ü", "post": "ssel", "g": "UE", "l": 3}, {"id": 142, "w": "Fenster", "pre": "F", "seg": "e", "post": "nster", "g": "E", "l": 3}, {"id": 143, "w": "Kühlschrank", "pre": "K", "seg": "üh", "post": "lschrank", "g": "UE", "l": 3}, {"id": 144, "w": "Kühlschränke", "pre": "K", "seg": "üh", "post": "lschränke", "g": "UE", "l": 3}, {"id": 145, "w": "praktisch", "pre": "pr", "seg": "a", "post": "ktisch", "g": "A", "l": 3}, {"id": 146, "w": "wichtig", "pre": "w", "seg": "i", "post": "chtig", "g": "I", "l": 3}, {"id": 147, "w": "kaputt", "pre": "k", "seg": "a", "post": "putt", "g": "A", "l": 3}, {"id": 148, "w": "hoch", "pre": "h", "seg": "o", "post": "ch", "g": "O", "l": 3}, {"id": 149, "w": "breit", "pre": "br", "seg": "ei", "post": "t", "g": "EI", "l": 3}, {"id": 150, "w": "Zentimeter", "pre": "Z", "seg": "e", "post": "ntimeter", "g": "E", "l": 3}, {"id": 151, "w": "Meter", "pre": "M", "seg": "e", "post": "ter", "g": "E", "l": 3}, {"id": 152, "w": "Euro", "pre": "", "seg": "eu", "post": "ro", "g": "EU", "l": 3}, {"id": 153, "w": "Spülmaschine", "pre": "Sp", "seg": "ü", "post": "lmaschine", "g": "UE", "l": 3}, {"id": 154, "w": "Spülmaschinen", "pre": "Sp", "seg": "ü", "post": "lmaschinen", "g": "UE", "l": 3}, {"id": 155, "w": "Waschmaschine", "pre": "W", "seg": "a", "post": "schmaschine", "g": "A", "l": 3}, {"id": 156, "w": "Waschmaschinen", "pre": "W", "seg": "a", "post": "schmaschinen", "g": "A", "l": 3}, {"id": 157, "w": "Alter", "pre": "", "seg": "a", "post": "lter", "g": "A", "l": 3}, {"id": 158, "w": "Preis", "pre": "Pr", "seg": "ei", "post": "s", "g": "EI", "l": 3}, {"id": 159, "w": "Preise", "pre": "Pr", "seg": "ei", "post": "se", "g": "EI", "l": 3}, {"id": 160, "w": "kosten", "pre": "k", "seg": "o", "post": "sten", "g": "O", "l": 3}, {"id": 161, "w": "noch", "pre": "n", "seg": "o", "post": "ch", "g": "O", "l": 3}, {"id": 162, "w": "Frage", "pre": "Fr", "seg": "a", "post": "ge", "g": "A", "l": 3}, {"id": 163, "w": "Fragen", "pre": "Fr", "seg": "a", "post": "gen", "g": "A", "l": 3}, {"id": 164, "w": "denken", "pre": "d", "seg": "e", "post": "nken", "g": "E", "l": 4}, {"id": 165, "w": "Freund", "pre": "Fr", "seg": "eu", "post": "nd", "g": "EU", "l": 4}, {"id": 166, "w": "Freunde", "pre": "Fr", "seg": "eu", "post": "nde", "g": "EU", "l": 4}, {"id": 167, "w": "Freundin", "pre": "Fr", "seg": "eu", "post": "ndin", "g": "EU", "l": 4}, {"id": 168, "w": "Freundinnen", "pre": "Fr", "seg": "eu", "post": "ndinnen", "g": "EU", "l": 4}, {"id": 169, "w": "Familie", "pre": "F", "seg": "a", "post": "milie", "g": "A", "l": 4}, {"id": 170, "w": "Familien", "pre": "F", "seg": "a", "post": "milien", "g": "A", "l": 4}, {"id": 171, "w": "Eltern", "pre": "", "seg": "e", "post": "ltern", "g": "E", "l": 4}, {"id": 172, "w": "Mutter", "pre": "M", "seg": "u", "post": "tter", "g": "U", "l": 4}, {"id": 173, "w": "Mütter", "pre": "M", "seg": "ü", "post": "tter", "g": "UE", "l": 4}, {"id": 174, "w": "Vater", "pre": "V", "seg": "a", "post": "ter", "g": "A", "l": 4}, {"id": 175, "w": "Väter", "pre": "V", "seg": "ä", "post": "ter", "g": "E", "l": 4}, {"id": 176, "w": "Geschwister", "pre": "Geschw", "seg": "i", "post": "ster", "g": "I", "l": 4}, {"id": 177, "w": "Schwester", "pre": "Schw", "seg": "e", "post": "ster", "g": "E", "l": 4}, {"id": 178, "w": "Schwestern", "pre": "Schw", "seg": "e", "post": "stern", "g": "E", "l": 4}, {"id": 179, "w": "Bruder", "pre": "Br", "seg": "u", "post": "der", "g": "U", "l": 4}, {"id": 180, "w": "Brüder", "pre": "Br", "seg": "ü", "post": "der", "g": "UE", "l": 4}, {"id": 181, "w": "Großeltern", "pre": "Gr", "seg": "o", "post": "ßeltern", "g": "O", "l": 4}, {"id": 182, "w": "Großmutter", "pre": "Gr", "seg": "o", "post": "ßmutter", "g": "O", "l": 4}, {"id": 183, "w": "Großmütter", "pre": "Gr", "seg": "o", "post": "ßmütter", "g": "O", "l": 4}, {"id": 184, "w": "Oma", "pre": "", "seg": "o", "post": "ma", "g": "O", "l": 4}, {"id": 185, "w": "Omas", "pre": "", "seg": "o", "post": "mas", "g": "O", "l": 4}, {"id": 186, "w": "Großvater", "pre": "Gr", "seg": "o", "post": "ßvater", "g": "O", "l": 4}, {"id": 187, "w": "Großväter", "pre": "Gr", "seg": "o", "post": "ßväter", "g": "O", "l": 4}, {"id": 188, "w": "Opa", "pre": "", "seg": "o", "post": "pa", "g": "O", "l": 4}, {"id": 189, "w": "Opas", "pre": "", "seg": "o", "post": "pas", "g": "O", "l": 4}, {"id": 190, "w": "Tante", "pre": "T", "seg": "a", "post": "nte", "g": "A", "l": 4}, {"id": 191, "w": "Tanten", "pre": "T", "seg": "a", "post": "nten", "g": "A", "l": 4}, {"id": 192, "w": "Onkel", "pre": "", "seg": "o", "post": "nkel", "g": "O", "l": 4}, {"id": 193, "w": "Sohn", "pre": "S", "seg": "oh", "post": "n", "g": "O", "l": 4}, {"id": 194, "w": "Söhne", "pre": "S", "seg": "öh", "post": "ne", "g": "OE", "l": 4}, {"id": 195, "w": "Tochter", "pre": "T", "seg": "o", "post": "chter", "g": "O", "l": 4}, {"id": 196, "w": "Töchter", "pre": "T", "seg": "ö", "post": "chter", "g": "OE", "l": 4}, {"id": 197, "w": "Familienstand", "pre": "F", "seg": "a", "post": "milienstand", "g": "A", "l": 4}, {"id": 198, "w": "geschieden", "pre": "gesch", "seg": "ie", "post": "den", "g": "I", "l": 4}, {"id": 199, "w": "ledig", "pre": "l", "seg": "e", "post": "dig", "g": "E", "l": 4}, {"id": 200, "w": "verheiratet", "pre": "verh", "seg": "ei", "post": "ratet", "g": "EI", "l": 4}, {"id": 201, "w": "haben", "pre": "h", "seg": "a", "post": "ben", "g": "A", "l": 4}, {"id": 202, "w": "zusammen", "pre": "z", "seg": "u", "post": "sammen", "g": "U", "l": 4}, {"id": 203, "w": "alles", "pre": "", "seg": "a", "post": "lles", "g": "A", "l": 4}, {"id": 204, "w": "bestimmt", "pre": "best", "seg": "i", "post": "mmt", "g": "I", "l": 4}, {"id": 205, "w": "Chef", "pre": "Ch", "seg": "e", "post": "f", "g": "E", "l": 4}, {"id": 206, "w": "Chefs", "pre": "Ch", "seg": "e", "post": "fs", "g": "E", "l": 4}, {"id": 207, "w": "Chefin", "pre": "Ch", "seg": "e", "post": "fin", "g": "E", "l": 4}, {"id": 208, "w": "Chefinnen", "pre": "Ch", "seg": "e", "post": "finnen", "g": "E", "l": 4}, {"id": 209, "w": "dann", "pre": "d", "seg": "a", "post": "nn", "g": "A", "l": 4}, {"id": 210, "w": "Ehemann", "pre": "", "seg": "eh", "post": "emann", "g": "E", "l": 4}, {"id": 211, "w": "Ehemänner", "pre": "", "seg": "eh", "post": "emänner", "g": "E", "l": 4}, {"id": 212, "w": "Job", "pre": "J", "seg": "o", "post": "b", "g": "O", "l": 4}, {"id": 213, "w": "Jobs", "pre": "J", "seg": "o", "post": "bs", "g": "O", "l": 4}, {"id": 214, "w": "nett", "pre": "n", "seg": "e", "post": "tt", "g": "E", "l": 4}, {"id": 215, "w": "nur", "pre": "n", "seg": "u", "post": "r", "g": "U", "l": 4}, {"id": 216, "w": "später", "pre": "sp", "seg": "ä", "post": "ter", "g": "E", "l": 4}, {"id": 217, "w": "Ehefrau", "pre": "", "seg": "eh", "post": "efrau", "g": "E", "l": 4}, {"id": 218, "w": "Enkel", "pre": "", "seg": "e", "post": "nkel", "g": "E", "l": 4}, {"id": 219, "w": "Enkelin", "pre": "", "seg": "e", "post": "nkelin", "g": "E", "l": 4}, {"id": 220, "w": "Enkelinnen", "pre": "", "seg": "e", "post": "nkelinnen", "g": "E", "l": 4}, {"id": 221, "w": "Garten", "pre": "G", "seg": "a", "post": "rten", "g": "A", "l": 4}, {"id": 222, "w": "Gärten", "pre": "G", "seg": "ä", "post": "rten", "g": "E", "l": 4}, {"id": 223, "w": "Haus", "pre": "H", "seg": "au", "post": "s", "g": "AU", "l": 4}, {"id": 224, "w": "Häuser", "pre": "H", "seg": "äu", "post": "ser", "g": "EU", "l": 4}, {"id": 225, "w": "vielleicht", "pre": "v", "seg": "ie", "post": "lleicht", "g": "I", "l": 4}, {"id": 226, "w": "allein", "pre": "", "seg": "a", "post": "llein", "g": "A", "l": 4}, {"id": 227, "w": "alleine", "pre": "", "seg": "a", "post": "lleine", "g": "A", "l": 4}, {"id": 228, "w": "besuchen", "pre": "bes", "seg": "u", "post": "chen", "g": "U", "l": 4}, {"id": 229, "w": "bunt", "pre": "b", "seg": "u", "post": "nt", "g": "U", "l": 4}, {"id": 230, "w": "Gespräch", "pre": "Gespr", "seg": "ä", "post": "ch", "g": "E", "l": 4}, {"id": 231, "w": "Gespräche", "pre": "Gespr", "seg": "ä", "post": "che", "g": "E", "l": 4}, {"id": 232, "w": "kennen", "pre": "k", "seg": "e", "post": "nnen", "g": "E", "l": 4}, {"id": 233, "w": "leben", "pre": "l", "seg": "e", "post": "ben", "g": "E", "l": 4}, {"id": 234, "w": "Nachbar", "pre": "N", "seg": "a", "post": "chbar", "g": "A", "l": 4}, {"id": 235, "w": "Nachbarn", "pre": "N", "seg": "a", "post": "chbarn", "g": "A", "l": 4}, {"id": 236, "w": "Nachbarin", "pre": "N", "seg": "a", "post": "chbarin", "g": "A", "l": 4}, {"id": 237, "w": "Nachbarinnen", "pre": "N", "seg": "a", "post": "chbarinnen", "g": "A", "l": 4}, {"id": 238, "w": "oft", "pre": "", "seg": "o", "post": "ft", "g": "O", "l": 4}, {"id": 239, "w": "toll", "pre": "t", "seg": "o", "post": "ll", "g": "O", "l": 4}, {"id": 240, "w": "Wörterbuch", "pre": "W", "seg": "ö", "post": "rterbuch", "g": "OE", "l": 4}, {"id": 241, "w": "Wörterbücher", "pre": "W", "seg": "ö", "post": "rterbücher", "g": "OE", "l": 4}, {"id": 242, "w": "Hause", "pre": "H", "seg": "au", "post": "se", "g": "AU", "l": 4}, {"id": 243, "w": "privat", "pre": "pr", "seg": "i", "post": "vat", "g": "I", "l": 4}, {"id": 244, "w": "duschen", "pre": "d", "seg": "u", "post": "schen", "g": "U", "l": 5}, {"id": 245, "w": "frühstücken", "pre": "fr", "seg": "üh", "post": "stücken", "g": "UE", "l": 5}, {"id": 246, "w": "gehen", "pre": "g", "seg": "eh", "post": "en", "g": "E", "l": 5}, {"id": 247, "w": "ins", "pre": "", "seg": "i", "post": "ns", "g": "I", "l": 5}, {"id": 248, "w": "Internet", "pre": "", "seg": "i", "post": "nternet", "g": "I", "l": 5}, {"id": 249, "w": "kochen", "pre": "k", "seg": "o", "post": "chen", "g": "O", "l": 5}, {"id": 250, "w": "kaufen", "pre": "k", "seg": "au", "post": "fen", "g": "AU", "l": 5}, {"id": 251, "w": "Lebensmittel", "pre": "L", "seg": "e", "post": "bensmittel", "g": "E", "l": 5}, {"id": 252, "w": "Musik", "pre": "M", "seg": "u", "post": "sik", "g": "U", "l": 5}, {"id": 253, "w": "putzen", "pre": "p", "seg": "u", "post": "tzen", "g": "U", "l": 5}, {"id": 254, "w": "schlafen", "pre": "schl", "seg": "a", "post": "fen", "g": "A", "l": 5}, {"id": 255, "w": "telefonieren", "pre": "t", "seg": "e", "post": "lefonieren", "g": "E", "l": 5}, {"id": 256, "w": "Tischtennis", "pre": "T", "seg": "i", "post": "schtennis", "g": "I", "l": 5}, {"id": 257, "w": "Morgen", "pre": "M", "seg": "o", "post": "rgen", "g": "O", "l": 5}, {"id": 258, "w": "Vormittag", "pre": "V", "seg": "o", "post": "rmittag", "g": "O", "l": 5}, {"id": 259, "w": "Vormittage", "pre": "V", "seg": "o", "post": "rmittage", "g": "O", "l": 5}, {"id": 260, "w": "Mittag", "pre": "M", "seg": "i", "post": "ttag", "g": "I", "l": 5}, {"id": 261, "w": "Mittage", "pre": "M", "seg": "i", "post": "ttage", "g": "I", "l": 5}, {"id": 262, "w": "Nachmittag", "pre": "N", "seg": "a", "post": "chmittag", "g": "A", "l": 5}, {"id": 263, "w": "Nachmittage", "pre": "N", "seg": "a", "post": "chmittage", "g": "A", "l": 5}, {"id": 264, "w": "Abend", "pre": "", "seg": "a", "post": "bend", "g": "A", "l": 5}, {"id": 265, "w": "Abende", "pre": "", "seg": "a", "post": "bende", "g": "A", "l": 5}, {"id": 266, "w": "Nacht", "pre": "N", "seg": "a", "post": "cht", "g": "A", "l": 5}, {"id": 267, "w": "Nächte", "pre": "N", "seg": "ä", "post": "chte", "g": "E", "l": 5}, {"id": 268, "w": "wann", "pre": "w", "seg": "a", "post": "nn", "g": "A", "l": 5}, {"id": 269, "w": "heute", "pre": "h", "seg": "eu", "post": "te", "g": "EU", "l": 5}, {"id": 270, "w": "Zeit", "pre": "Z", "seg": "ei", "post": "t", "g": "EI", "l": 5}, {"id": 271, "w": "frei", "pre": "fr", "seg": "ei", "post": "", "g": "EI", "l": 5}, {"id": 272, "w": "schade", "pre": "sch", "seg": "a", "post": "de", "g": "A", "l": 5}, {"id": 273, "w": "Sport", "pre": "Sp", "seg": "o", "post": "rt", "g": "O", "l": 5}, {"id": 274, "w": "Tag", "pre": "T", "seg": "a", "post": "g", "g": "A", "l": 5}, {"id": 275, "w": "Tage", "pre": "T", "seg": "a", "post": "ge", "g": "A", "l": 5}, {"id": 276, "w": "essen", "pre": "", "seg": "e", "post": "ssen", "g": "E", "l": 5}, {"id": 277, "w": "Fahrrad", "pre": "F", "seg": "ah", "post": "rrad", "g": "A", "l": 5}, {"id": 278, "w": "Fahrräder", "pre": "F", "seg": "ah", "post": "rräder", "g": "A", "l": 5}, {"id": 279, "w": "fahren", "pre": "f", "seg": "ah", "post": "ren", "g": "A", "l": 5}, {"id": 280, "w": "Fußball", "pre": "F", "seg": "u", "post": "ßball", "g": "U", "l": 5}, {"id": 281, "w": "grillen", "pre": "gr", "seg": "i", "post": "llen", "g": "I", "l": 5}, {"id": 282, "w": "laufen", "pre": "l", "seg": "au", "post": "fen", "g": "AU", "l": 5}, {"id": 283, "w": "lesen", "pre": "l", "seg": "e", "post": "sen", "g": "E", "l": 5}, {"id": 284, "w": "Leute", "pre": "L", "seg": "eu", "post": "te", "g": "EU", "l": 5}, {"id": 285, "w": "Picknick", "pre": "P", "seg": "i", "post": "cknick", "g": "I", "l": 5}, {"id": 286, "w": "schwimmen", "pre": "schw", "seg": "i", "post": "mmen", "g": "I", "l": 5}, {"id": 287, "w": "sehen", "pre": "s", "seg": "eh", "post": "en", "g": "E", "l": 5}, {"id": 288, "w": "Spaziergang", "pre": "Sp", "seg": "a", "post": "ziergang", "g": "A", "l": 5}, {"id": 289, "w": "treffen", "pre": "tr", "seg": "e", "post": "ffen", "g": "E", "l": 5}, {"id": 290, "w": "Eintritt", "pre": "", "seg": "ei", "post": "ntritt", "g": "EI", "l": 5}, {"id": 291, "w": "finden", "pre": "f", "seg": "i", "post": "nden", "g": "I", "l": 5}, {"id": 292, "w": "Kino", "pre": "K", "seg": "i", "post": "no", "g": "I", "l": 5}, {"id": 293, "w": "Kinos", "pre": "K", "seg": "i", "post": "nos", "g": "I", "l": 5}, {"id": 294, "w": "langweilig", "pre": "l", "seg": "a", "post": "ngweilig", "g": "A", "l": 5}, {"id": 295, "w": "lecker", "pre": "l", "seg": "e", "post": "cker", "g": "E", "l": 5}, {"id": 296, "w": "modern", "pre": "m", "seg": "o", "post": "dern", "g": "O", "l": 5}, {"id": 297, "w": "nie", "pre": "n", "seg": "ie", "post": "", "g": "I", "l": 5}, {"id": 298, "w": "Park", "pre": "P", "seg": "a", "post": "rk", "g": "A", "l": 5}, {"id": 299, "w": "Parks", "pre": "P", "seg": "a", "post": "rks", "g": "A", "l": 5}, {"id": 300, "w": "perfekt", "pre": "p", "seg": "e", "post": "rfekt", "g": "E", "l": 5}, {"id": 301, "w": "Schwimmbad", "pre": "Schw", "seg": "i", "post": "mmbad", "g": "I", "l": 5}, {"id": 302, "w": "Schwimmbäder", "pre": "Schw", "seg": "i", "post": "mmbäder", "g": "I", "l": 5}, {"id": 303, "w": "Spaß", "pre": "Sp", "seg": "a", "post": "ß", "g": "A", "l": 5}, {"id": 304, "w": "Stadt", "pre": "St", "seg": "a", "post": "dt", "g": "A", "l": 5}, {"id": 305, "w": "Städte", "pre": "St", "seg": "ä", "post": "dte", "g": "E", "l": 5}, {"id": 306, "w": "Tipp", "pre": "T", "seg": "i", "post": "pp", "g": "I", "l": 5}, {"id": 307, "w": "Tipps", "pre": "T", "seg": "i", "post": "pps", "g": "I", "l": 5}, {"id": 308, "w": "Zoo", "pre": "Z", "seg": "oo", "post": "", "g": "O", "l": 5}, {"id": 309, "w": "Zoos", "pre": "Z", "seg": "oo", "post": "s", "g": "O", "l": 5}, {"id": 310, "w": "Freizeit", "pre": "Fr", "seg": "ei", "post": "zeit", "g": "EI", "l": 5}, {"id": 311, "w": "alle", "pre": "", "seg": "a", "post": "lle", "g": "A", "l": 5}, {"id": 312, "w": "bis", "pre": "b", "seg": "i", "post": "s", "g": "I", "l": 5}, {"id": 313, "w": "boxen", "pre": "b", "seg": "o", "post": "xen", "g": "O", "l": 5}, {"id": 314, "w": "Montag", "pre": "M", "seg": "o", "post": "ntag", "g": "O", "l": 5}, {"id": 315, "w": "Dienstag", "pre": "D", "seg": "ie", "post": "nstag", "g": "I", "l": 5}, {"id": 316, "w": "Mittwoch", "pre": "M", "seg": "i", "post": "ttwoch", "g": "I", "l": 5}, {"id": 317, "w": "Donnerstag", "pre": "D", "seg": "o", "post": "nnerstag", "g": "O", "l": 5}, {"id": 318, "w": "Freitag", "pre": "Fr", "seg": "ei", "post": "tag", "g": "EI", "l": 5}, {"id": 319, "w": "Samstag", "pre": "S", "seg": "a", "post": "mstag", "g": "A", "l": 5}, {"id": 320, "w": "Sonntag", "pre": "S", "seg": "o", "post": "nntag", "g": "O", "l": 5}, {"id": 321, "w": "Wochenende", "pre": "W", "seg": "o", "post": "chenende", "g": "O", "l": 5}, {"id": 322, "w": "Wochenenden", "pre": "W", "seg": "o", "post": "chenenden", "g": "O", "l": 5}, {"id": 323, "w": "Woche", "pre": "W", "seg": "o", "post": "che", "g": "O", "l": 5}, {"id": 324, "w": "Wochen", "pre": "W", "seg": "o", "post": "chen", "g": "O", "l": 5}, {"id": 325, "w": "der", "pre": "d", "seg": "e", "post": "r", "g": "E", "l": 5}, {"id": 326, "w": "Jugendliche", "pre": "J", "seg": "u", "post": "gendliche", "g": "U", "l": 5}, {"id": 327, "w": "Jugendlichen", "pre": "J", "seg": "u", "post": "gendlichen", "g": "U", "l": 5}, {"id": 328, "w": "Verein", "pre": "Ver", "seg": "ei", "post": "n", "g": "EI", "l": 5}, {"id": 329, "w": "Vereine", "pre": "Ver", "seg": "ei", "post": "ne", "g": "EI", "l": 5}, {"id": 330, "w": "Uhr", "pre": "", "seg": "uh", "post": "r", "g": "U", "l": 6}, {"id": 331, "w": "Uhren", "pre": "", "seg": "uh", "post": "ren", "g": "U", "l": 6}, {"id": 332, "w": "nach", "pre": "n", "seg": "a", "post": "ch", "g": "A", "l": 6}, {"id": 333, "w": "vor", "pre": "v", "seg": "o", "post": "r", "g": "O", "l": 6}, {"id": 334, "w": "Viertel", "pre": "V", "seg": "ie", "post": "rtel", "g": "I", "l": 6}, {"id": 335, "w": "halb", "pre": "h", "seg": "a", "post": "lb", "g": "A", "l": 6}, {"id": 336, "w": "dort", "pre": "d", "seg": "o", "post": "rt", "g": "O", "l": 6}, {"id": 337, "w": "Küche", "pre": "K", "seg": "ü", "post": "che", "g": "UE", "l": 6}, {"id": 338, "w": "Küchen", "pre": "K", "seg": "ü", "post": "chen", "g": "UE", "l": 6}, {"id": 339, "w": "Kollege", "pre": "K", "seg": "o", "post": "llege", "g": "O", "l": 6}, {"id": 340, "w": "Kollegen", "pre": "K", "seg": "o", "post": "llegen", "g": "O", "l": 6}, {"id": 341, "w": "Kollegin", "pre": "K", "seg": "o", "post": "llegin", "g": "O", "l": 6}, {"id": 342, "w": "Kolleginnen", "pre": "K", "seg": "o", "post": "lleginnen", "g": "O", "l": 6}, {"id": 343, "w": "Pause", "pre": "P", "seg": "au", "post": "se", "g": "AU", "l": 6}, {"id": 344, "w": "Pausen", "pre": "P", "seg": "au", "post": "sen", "g": "AU", "l": 6}, {"id": 345, "w": "Mittagspause", "pre": "M", "seg": "i", "post": "ttagspause", "g": "I", "l": 6}, {"id": 346, "w": "Mittagspausen", "pre": "M", "seg": "i", "post": "ttagspausen", "g": "I", "l": 6}, {"id": 347, "w": "beginnen", "pre": "beg", "seg": "i", "post": "nnen", "g": "I", "l": 6}, {"id": 348, "w": "aufmachen", "pre": "", "seg": "au", "post": "fmachen", "g": "AU", "l": 6}, {"id": 349, "w": "zumachen", "pre": "z", "seg": "u", "post": "machen", "g": "U", "l": 6}, {"id": 350, "w": "einkaufen", "pre": "", "seg": "ei", "post": "nkaufen", "g": "EI", "l": 6}, {"id": 351, "w": "anmachen", "pre": "", "seg": "a", "post": "nmachen", "g": "A", "l": 6}, {"id": 352, "w": "ausmachen", "pre": "", "seg": "au", "post": "smachen", "g": "AU", "l": 6}, {"id": 353, "w": "anziehen", "pre": "", "seg": "a", "post": "nziehen", "g": "A", "l": 6}, {"id": 354, "w": "ausziehen", "pre": "", "seg": "au", "post": "sziehen", "g": "AU", "l": 6}, {"id": 355, "w": "aufräumen", "pre": "", "seg": "au", "post": "fräumen", "g": "AU", "l": 6}, {"id": 356, "w": "vorbereiten", "pre": "v", "seg": "o", "post": "rbereiten", "g": "O", "l": 6}, {"id": 357, "w": "anrufen", "pre": "", "seg": "a", "post": "nrufen", "g": "A", "l": 6}, {"id": 358, "w": "Arbeitskleidung", "pre": "", "seg": "a", "post": "rbeitskleidung", "g": "A", "l": 6}, {"id": 359, "w": "Licht", "pre": "L", "seg": "i", "post": "cht", "g": "I", "l": 6}, {"id": 360, "w": "Lichter", "pre": "L", "seg": "i", "post": "chter", "g": "I", "l": 6}, {"id": 361, "w": "Supermarkt", "pre": "S", "seg": "u", "post": "permarkt", "g": "U", "l": 6}, {"id": 362, "w": "Supermärkte", "pre": "S", "seg": "u", "post": "permärkte", "g": "U", "l": 6}, {"id": 363, "w": "Paket", "pre": "P", "seg": "a", "post": "ket", "g": "A", "l": 6}, {"id": 364, "w": "Pakete", "pre": "P", "seg": "a", "post": "kete", "g": "A", "l": 6}, {"id": 365, "w": "abholen", "pre": "", "seg": "a", "post": "bholen", "g": "A", "l": 6}, {"id": 366, "w": "spät", "pre": "sp", "seg": "ä", "post": "t", "g": "E", "l": 6}, {"id": 367, "w": "aufstehen", "pre": "", "seg": "au", "post": "fstehen", "g": "AU", "l": 6}, {"id": 368, "w": "Geschäft", "pre": "Gesch", "seg": "ä", "post": "ft", "g": "E", "l": 6}, {"id": 369, "w": "Geschäfte", "pre": "Gesch", "seg": "ä", "post": "fte", "g": "E", "l": 6}, {"id": 370, "w": "geschlossen", "pre": "geschl", "seg": "o", "post": "ssen", "g": "O", "l": 6}, {"id": 371, "w": "aufhören", "pre": "", "seg": "au", "post": "fhören", "g": "AU", "l": 6}, {"id": 372, "w": "glauben", "pre": "gl", "seg": "au", "post": "ben", "g": "AU", "l": 6}, {"id": 373, "w": "Dienstplan", "pre": "D", "seg": "ie", "post": "nstplan", "g": "I", "l": 6}, {"id": 374, "w": "Dienstpläne", "pre": "D", "seg": "ie", "post": "nstpläne", "g": "I", "l": 6}, {"id": 375, "w": "Frühschicht", "pre": "Fr", "seg": "üh", "post": "schicht", "g": "UE", "l": 6}, {"id": 376, "w": "Spätschicht", "pre": "Sp", "seg": "ä", "post": "tschicht", "g": "E", "l": 6}, {"id": 377, "w": "Nachtschicht", "pre": "N", "seg": "a", "post": "chtschicht", "g": "A", "l": 6}, {"id": 378, "w": "Urlaub", "pre": "", "seg": "u", "post": "rlaub", "g": "U", "l": 6}, {"id": 379, "w": "von", "pre": "v", "seg": "o", "post": "n", "g": "O", "l": 6}, {"id": 380, "w": "Arbeitstag", "pre": "", "seg": "a", "post": "rbeitstag", "g": "A", "l": 6}, {"id": 381, "w": "Arbeitstage", "pre": "", "seg": "a", "post": "rbeitstage", "g": "A", "l": 6}, {"id": 382, "w": "Aufgabe", "pre": "", "seg": "au", "post": "fgabe", "g": "AU", "l": 6}, {"id": 383, "w": "Aufgaben", "pre": "", "seg": "au", "post": "fgaben", "g": "AU", "l": 6}, {"id": 384, "w": "Arbeitszeit", "pre": "", "seg": "a", "post": "rbeitszeit", "g": "A", "l": 6}, {"id": 385, "w": "Arbeitszeiten", "pre": "", "seg": "a", "post": "rbeitszeiten", "g": "A", "l": 6}, {"id": 386, "w": "suchen", "pre": "s", "seg": "u", "post": "chen", "g": "U", "l": 6}, {"id": 387, "w": "pro", "pre": "pr", "seg": "o", "post": "", "g": "O", "l": 6}, {"id": 388, "w": "Schichtdienst", "pre": "Sch", "seg": "i", "post": "chtdienst", "g": "I", "l": 6}, {"id": 389, "w": "anfangen", "pre": "", "seg": "a", "post": "nfangen", "g": "A", "l": 6}, {"id": 390, "w": "kontrollieren", "pre": "k", "seg": "o", "post": "ntrollieren", "g": "O", "l": 6}, {"id": 391, "w": "Ausweis", "pre": "", "seg": "au", "post": "sweis", "g": "AU", "l": 6}, {"id": 392, "w": "Ausweise", "pre": "", "seg": "au", "post": "sweise", "g": "AU", "l": 6}, {"id": 393, "w": "schließen", "pre": "schl", "seg": "ie", "post": "ßen", "g": "I", "l": 6}, {"id": 394, "w": "manchmal", "pre": "m", "seg": "a", "post": "nchmal", "g": "A", "l": 6}, {"id": 395, "w": "Apfel", "pre": "", "seg": "a", "post": "pfel", "g": "A", "l": 7}, {"id": 396, "w": "Äpfel", "pre": "", "seg": "ä", "post": "pfel", "g": "E", "l": 7}, {"id": 397, "w": "Birne", "pre": "B", "seg": "i", "post": "rne", "g": "I", "l": 7}, {"id": 398, "w": "Birnen", "pre": "B", "seg": "i", "post": "rnen", "g": "I", "l": 7}, {"id": 399, "w": "Tomate", "pre": "T", "seg": "o", "post": "mate", "g": "O", "l": 7}, {"id": 400, "w": "Tomaten", "pre": "T", "seg": "o", "post": "maten", "g": "O", "l": 7}, {"id": 401, "w": "Salat", "pre": "S", "seg": "a", "post": "lat", "g": "A", "l": 7}, {"id": 402, "w": "Salate", "pre": "S", "seg": "a", "post": "late", "g": "A", "l": 7}, {"id": 403, "w": "Fleisch", "pre": "Fl", "seg": "ei", "post": "sch", "g": "EI", "l": 7}, {"id": 404, "w": "Hähnchen", "pre": "H", "seg": "äh", "post": "nchen", "g": "E", "l": 7}, {"id": 405, "w": "Fisch", "pre": "F", "seg": "i", "post": "sch", "g": "I", "l": 7}, {"id": 406, "w": "Fische", "pre": "F", "seg": "i", "post": "sche", "g": "I", "l": 7}, {"id": 407, "w": "Reis", "pre": "R", "seg": "ei", "post": "s", "g": "EI", "l": 7}, {"id": 408, "w": "Nudeln", "pre": "N", "seg": "u", "post": "deln", "g": "U", "l": 7}, {"id": 409, "w": "Brot", "pre": "Br", "seg": "o", "post": "t", "g": "O", "l": 7}, {"id": 410, "w": "Brote", "pre": "Br", "seg": "o", "post": "te", "g": "O", "l": 7}, {"id": 411, "w": "Wasser", "pre": "W", "seg": "a", "post": "sser", "g": "A", "l": 7}, {"id": 412, "w": "Saft", "pre": "S", "seg": "a", "post": "ft", "g": "A", "l": 7}, {"id": 413, "w": "Säfte", "pre": "S", "seg": "ä", "post": "fte", "g": "E", "l": 7}, {"id": 414, "w": "Wein", "pre": "W", "seg": "ei", "post": "n", "g": "EI", "l": 7}, {"id": 415, "w": "Weine", "pre": "W", "seg": "ei", "post": "ne", "g": "EI", "l": 7}, {"id": 416, "w": "Bier", "pre": "B", "seg": "ie", "post": "r", "g": "I", "l": 7}, {"id": 417, "w": "Biere", "pre": "B", "seg": "ie", "post": "re", "g": "I", "l": 7}, {"id": 418, "w": "Ananas", "pre": "", "seg": "a", "post": "nanas", "g": "A", "l": 7}, {"id": 419, "w": "anderes", "pre": "", "seg": "a", "post": "nderes", "g": "A", "l": 7}, {"id": 420, "w": "Gemüse", "pre": "Gem", "seg": "ü", "post": "se", "g": "UE", "l": 7}, {"id": 421, "w": "Getränk", "pre": "Getr", "seg": "ä", "post": "nk", "g": "E", "l": 7}, {"id": 422, "w": "Getränke", "pre": "Getr", "seg": "ä", "post": "nke", "g": "E", "l": 7}, {"id": 423, "w": "Käse", "pre": "K", "seg": "ä", "post": "se", "g": "E", "l": 7}, {"id": 424, "w": "Lammfleisch", "pre": "L", "seg": "a", "post": "mmfleisch", "g": "A", "l": 7}, {"id": 425, "w": "mit", "pre": "m", "seg": "i", "post": "t", "g": "I", "l": 7}, {"id": 426, "w": "mögen", "pre": "m", "seg": "ö", "post": "gen", "g": "OE", "l": 7}, {"id": 427, "w": "Obst", "pre": "", "seg": "o", "post": "bst", "g": "O", "l": 7}, {"id": 428, "w": "Paprika", "pre": "P", "seg": "a", "post": "prika", "g": "A", "l": 7}, {"id": 429, "w": "Rindfleisch", "pre": "R", "seg": "i", "post": "ndfleisch", "g": "I", "l": 7}, {"id": 430, "w": "Schweinefleisch", "pre": "Schw", "seg": "ei", "post": "nefleisch", "g": "EI", "l": 7}, {"id": 431, "w": "Wurst", "pre": "W", "seg": "u", "post": "rst", "g": "U", "l": 7}, {"id": 432, "w": "Würste", "pre": "W", "seg": "ü", "post": "rste", "g": "UE", "l": 7}, {"id": 433, "w": "zum", "pre": "z", "seg": "u", "post": "m", "g": "U", "l": 7}, {"id": 434, "w": "Beispiel", "pre": "B", "seg": "ei", "post": "spiel", "g": "EI", "l": 7}, {"id": 435, "w": "beliebt", "pre": "bel", "seg": "ie", "post": "bt", "g": "I", "l": 7}, {"id": 436, "w": "Brötchen", "pre": "Br", "seg": "ö", "post": "tchen", "g": "OE", "l": 7}, {"id": 437, "w": "gesund", "pre": "ges", "seg": "u", "post": "nd", "g": "U", "l": 7}, {"id": 438, "w": "Kartoffel", "pre": "K", "seg": "a", "post": "rtoffel", "g": "A", "l": 7}, {"id": 439, "w": "Kartoffeln", "pre": "K", "seg": "a", "post": "rtoffeln", "g": "A", "l": 7}, {"id": 440, "w": "Kilo", "pre": "K", "seg": "i", "post": "lo", "g": "I", "l": 7}, {"id": 441, "w": "lieber", "pre": "l", "seg": "ie", "post": "ber", "g": "I", "l": 7}, {"id": 442, "w": "man", "pre": "m", "seg": "a", "post": "n", "g": "A", "l": 7}, {"id": 443, "w": "Person", "pre": "P", "seg": "e", "post": "rson", "g": "E", "l": 7}, {"id": 444, "w": "Personen", "pre": "P", "seg": "e", "post": "rsonen", "g": "E", "l": 7}, {"id": 445, "w": "vegan", "pre": "v", "seg": "e", "post": "gan", "g": "E", "l": 7}, {"id": 446, "w": "vegetarisch", "pre": "v", "seg": "e", "post": "getarisch", "g": "E", "l": 7}, {"id": 447, "w": "Butter", "pre": "B", "seg": "u", "post": "tter", "g": "U", "l": 7}, {"id": 448, "w": "Pfeffer", "pre": "Pf", "seg": "e", "post": "ffer", "g": "E", "l": 7}, {"id": 449, "w": "Salz", "pre": "S", "seg": "a", "post": "lz", "g": "A", "l": 7}, {"id": 450, "w": "Flasche", "pre": "Fl", "seg": "a", "post": "sche", "g": "A", "l": 7}, {"id": 451, "w": "Flaschen", "pre": "Fl", "seg": "a", "post": "schen", "g": "A", "l": 7}, {"id": 452, "w": "Gramm", "pre": "Gr", "seg": "a", "post": "mm", "g": "A", "l": 7}, {"id": 453, "w": "Liter", "pre": "L", "seg": "i", "post": "ter", "g": "I", "l": 7}, {"id": 454, "w": "Stück", "pre": "St", "seg": "ü", "post": "ck", "g": "UE", "l": 7}, {"id": 455, "w": "Stücke", "pre": "St", "seg": "ü", "post": "cke", "g": "UE", "l": 7}, {"id": 456, "w": "Bäckerei", "pre": "B", "seg": "ä", "post": "ckerei", "g": "E", "l": 7}, {"id": 457, "w": "Gemüseladen", "pre": "Gem", "seg": "ü", "post": "seladen", "g": "UE", "l": 7}, {"id": 458, "w": "Gemüseläden", "pre": "Gem", "seg": "ü", "post": "seläden", "g": "UE", "l": 7}, {"id": 459, "w": "Laden", "pre": "L", "seg": "a", "post": "den", "g": "A", "l": 7}, {"id": 460, "w": "Läden", "pre": "L", "seg": "ä", "post": "den", "g": "E", "l": 7}, {"id": 461, "w": "Markt", "pre": "M", "seg": "a", "post": "rkt", "g": "A", "l": 7}, {"id": 462, "w": "Märkte", "pre": "M", "seg": "ä", "post": "rkte", "g": "E", "l": 7}, {"id": 463, "w": "Milch", "pre": "M", "seg": "i", "post": "lch", "g": "I", "l": 7}, {"id": 464, "w": "ohne", "pre": "", "seg": "oh", "post": "ne", "g": "O", "l": 7}, {"id": 465, "w": "Zucker", "pre": "Z", "seg": "u", "post": "cker", "g": "U", "l": 7}, {"id": 466, "w": "Schinken", "pre": "Sch", "seg": "i", "post": "nken", "g": "I", "l": 7}, {"id": 467, "w": "Kunde", "pre": "K", "seg": "u", "post": "nde", "g": "U", "l": 7}, {"id": 468, "w": "Kunden", "pre": "K", "seg": "u", "post": "nden", "g": "U", "l": 7}, {"id": 469, "w": "Kundin", "pre": "K", "seg": "u", "post": "ndin", "g": "U", "l": 7}, {"id": 470, "w": "Kundinnen", "pre": "K", "seg": "u", "post": "ndinnen", "g": "U", "l": 7}, {"id": 471, "w": "machen", "pre": "m", "seg": "a", "post": "chen", "g": "A", "l": 7}, {"id": 472, "w": "Wunsch", "pre": "W", "seg": "u", "post": "nsch", "g": "U", "l": 7}, {"id": 473, "w": "Wünsche", "pre": "W", "seg": "ü", "post": "nsche", "g": "UE", "l": 7}, {"id": 474, "w": "etwas", "pre": "", "seg": "e", "post": "twas", "g": "E", "l": 7}, {"id": 475, "w": "Moment", "pre": "M", "seg": "o", "post": "ment", "g": "O", "l": 7}, {"id": 476, "w": "zurück", "pre": "z", "seg": "u", "post": "rück", "g": "U", "l": 7}, {"id": 477, "w": "Frühstück", "pre": "Fr", "seg": "üh", "post": "stück", "g": "UE", "l": 8}, {"id": 478, "w": "Mittagessen", "pre": "M", "seg": "i", "post": "ttagessen", "g": "I", "l": 8}, {"id": 479, "w": "Kaffeepause", "pre": "K", "seg": "a", "post": "ffeepause", "g": "A", "l": 8}, {"id": 480, "w": "Kaffeepausen", "pre": "K", "seg": "a", "post": "ffeepausen", "g": "A", "l": 8}, {"id": 481, "w": "Abendessen", "pre": "", "seg": "a", "post": "bendessen", "g": "A", "l": 8}, {"id": 482, "w": "pünktlich", "pre": "p", "seg": "ü", "post": "nktlich", "g": "UE", "l": 8}, {"id": 483, "w": "früh", "pre": "fr", "seg": "üh", "post": "", "g": "UE", "l": 8}, {"id": 484, "w": "kalt", "pre": "k", "seg": "a", "post": "lt", "g": "A", "l": 8}, {"id": 485, "w": "Kantine", "pre": "K", "seg": "a", "post": "ntine", "g": "A", "l": 8}, {"id": 486, "w": "Kantinen", "pre": "K", "seg": "a", "post": "ntinen", "g": "A", "l": 8}, {"id": 487, "w": "meistens", "pre": "m", "seg": "ei", "post": "stens", "g": "EI", "l": 8}, {"id": 488, "w": "Restaurant", "pre": "R", "seg": "e", "post": "staurant", "g": "E", "l": 8}, {"id": 489, "w": "Restaurants", "pre": "R", "seg": "e", "post": "staurants", "g": "E", "l": 8}, {"id": 490, "w": "warm", "pre": "w", "seg": "a", "post": "rm", "g": "A", "l": 8}, {"id": 491, "w": "wirklich", "pre": "w", "seg": "i", "post": "rklich", "g": "I", "l": 8}, {"id": 492, "w": "Joghurt", "pre": "J", "seg": "o", "post": "ghurt", "g": "O", "l": 8}, {"id": 493, "w": "Joghurts", "pre": "J", "seg": "o", "post": "ghurts", "g": "O", "l": 8}, {"id": 494, "w": "nichts", "pre": "n", "seg": "i", "post": "chts", "g": "I", "l": 8}, {"id": 495, "w": "Suppe", "pre": "S", "seg": "u", "post": "ppe", "g": "U", "l": 8}, {"id": 496, "w": "Suppen", "pre": "S", "seg": "u", "post": "ppen", "g": "U", "l": 8}, {"id": 497, "w": "Kuchen", "pre": "K", "seg": "u", "post": "chen", "g": "U", "l": 8}, {"id": 498, "w": "Hunger", "pre": "H", "seg": "u", "post": "nger", "g": "U", "l": 8}, {"id": 499, "w": "aussehen", "pre": "", "seg": "au", "post": "ssehen", "g": "AU", "l": 8}, {"id": 500, "w": "Hochzeit", "pre": "H", "seg": "o", "post": "chzeit", "g": "O", "l": 8}, {"id": 501, "w": "Hochzeiten", "pre": "H", "seg": "o", "post": "chzeiten", "g": "O", "l": 8}, {"id": 502, "w": "Programm", "pre": "Pr", "seg": "o", "post": "gramm", "g": "O", "l": 8}, {"id": 503, "w": "Programme", "pre": "Pr", "seg": "o", "post": "gramme", "g": "O", "l": 8}, {"id": 504, "w": "backen", "pre": "b", "seg": "a", "post": "cken", "g": "A", "l": 8}, {"id": 505, "w": "können", "pre": "k", "seg": "ö", "post": "nnen", "g": "OE", "l": 8}, {"id": 506, "w": "mitbringen", "pre": "m", "seg": "i", "post": "tbringen", "g": "I", "l": 8}, {"id": 507, "w": "organisieren", "pre": "", "seg": "o", "post": "rganisieren", "g": "O", "l": 8}, {"id": 508, "w": "möglich", "pre": "m", "seg": "ö", "post": "glich", "g": "OE", "l": 8}, {"id": 509, "w": "bestellen", "pre": "best", "seg": "e", "post": "llen", "g": "E", "l": 8}, {"id": 510, "w": "Einladung", "pre": "", "seg": "ei", "post": "nladung", "g": "EI", "l": 8}, {"id": 511, "w": "Einladungen", "pre": "", "seg": "ei", "post": "nladungen", "g": "EI", "l": 8}, {"id": 512, "w": "Glas", "pre": "Gl", "seg": "a", "post": "s", "g": "A", "l": 8}, {"id": 513, "w": "Gläser", "pre": "Gl", "seg": "ä", "post": "ser", "g": "E", "l": 8}, {"id": 514, "w": "Spiel", "pre": "Sp", "seg": "ie", "post": "l", "g": "I", "l": 8}, {"id": 515, "w": "Spiele", "pre": "Sp", "seg": "ie", "post": "le", "g": "I", "l": 8}, {"id": 516, "w": "antworten", "pre": "", "seg": "a", "post": "ntworten", "g": "A", "l": 8}, {"id": 517, "w": "einladen", "pre": "", "seg": "ei", "post": "nladen", "g": "EI", "l": 8}, {"id": 518, "w": "Gericht", "pre": "Ger", "seg": "i", "post": "cht", "g": "I", "l": 8}, {"id": 519, "w": "Gerichte", "pre": "Ger", "seg": "i", "post": "chte", "g": "I", "l": 8}, {"id": 520, "w": "klar", "pre": "kl", "seg": "a", "post": "r", "g": "A", "l": 8}, {"id": 521, "w": "Alkohol", "pre": "", "seg": "a", "post": "lkohol", "g": "A", "l": 8}, {"id": 522, "w": "probieren", "pre": "pr", "seg": "o", "post": "bieren", "g": "O", "l": 8}, {"id": 523, "w": "nehmen", "pre": "n", "seg": "eh", "post": "men", "g": "E", "l": 8}, {"id": 524, "w": "schmecken", "pre": "schm", "seg": "e", "post": "cken", "g": "E", "l": 8}, {"id": 525, "w": "abgeben", "pre": "", "seg": "a", "post": "bgeben", "g": "A", "l": 9}, {"id": 526, "w": "Agentur", "pre": "", "seg": "a", "post": "gentur", "g": "A", "l": 9}, {"id": 527, "w": "für", "pre": "f", "seg": "ü", "post": "r", "g": "UE", "l": 9}, {"id": 528, "w": "anmelden", "pre": "", "seg": "a", "post": "nmelden", "g": "A", "l": 9}, {"id": 529, "w": "Medikament", "pre": "M", "seg": "e", "post": "dikament", "g": "E", "l": 9}, {"id": 530, "w": "Medikamente", "pre": "M", "seg": "e", "post": "dikamente", "g": "E", "l": 9}, {"id": 531, "w": "Banken", "pre": "B", "seg": "a", "post": "nken", "g": "A", "l": 9}, {"id": 532, "w": "Geld", "pre": "G", "seg": "e", "post": "ld", "g": "E", "l": 9}, {"id": 533, "w": "überweisen", "pre": "", "seg": "ü", "post": "berweisen", "g": "UE", "l": 9}, {"id": 534, "w": "Bürgerbüro", "pre": "B", "seg": "ü", "post": "rgerbüro", "g": "UE", "l": 9}, {"id": 535, "w": "Bürgerbüros", "pre": "B", "seg": "ü", "post": "rgerbüros", "g": "UE", "l": 9}, {"id": 536, "w": "Post", "pre": "P", "seg": "o", "post": "st", "g": "O", "l": 9}, {"id": 537, "w": "Schule", "pre": "Sch", "seg": "u", "post": "le", "g": "U", "l": 9}, {"id": 538, "w": "Schulen", "pre": "Sch", "seg": "u", "post": "len", "g": "U", "l": 9}, {"id": 539, "w": "Volkshochschule", "pre": "V", "seg": "o", "post": "lkshochschule", "g": "O", "l": 9}, {"id": 540, "w": "Volkshochschulen", "pre": "V", "seg": "o", "post": "lkshochschulen", "g": "O", "l": 9}, {"id": 541, "w": "Wohnung", "pre": "W", "seg": "oh", "post": "nung", "g": "O", "l": 9}, {"id": 542, "w": "Wohnungen", "pre": "W", "seg": "oh", "post": "nungen", "g": "O", "l": 9}, {"id": 543, "w": "Termin", "pre": "T", "seg": "e", "post": "rmin", "g": "E", "l": 9}, {"id": 544, "w": "Termine", "pre": "T", "seg": "e", "post": "rmine", "g": "E", "l": 9}, {"id": 545, "w": "zwischen", "pre": "zw", "seg": "i", "post": "schen", "g": "I", "l": 9}, {"id": 546, "w": "einmal", "pre": "", "seg": "ei", "post": "nmal", "g": "EI", "l": 9}, {"id": 547, "w": "vereinbaren", "pre": "ver", "seg": "ei", "post": "nbaren", "g": "EI", "l": 9}, {"id": 548, "w": "müssen", "pre": "m", "seg": "ü", "post": "ssen", "g": "UE", "l": 9}, {"id": 549, "w": "Einkaufszettel", "pre": "", "seg": "ei", "post": "nkaufszettel", "g": "EI", "l": 9}, {"id": 550, "w": "Pass", "pre": "P", "seg": "a", "post": "ss", "g": "A", "l": 9}, {"id": 551, "w": "Pässe", "pre": "P", "seg": "ä", "post": "sse", "g": "E", "l": 9}, {"id": 552, "w": "fertig", "pre": "f", "seg": "e", "post": "rtig", "g": "E", "l": 9}, {"id": 553, "w": "gleich", "pre": "gl", "seg": "ei", "post": "ch", "g": "EI", "l": 9}, {"id": 554, "w": "vergessen", "pre": "verg", "seg": "e", "post": "ssen", "g": "E", "l": 9}, {"id": 555, "w": "Bäcker", "pre": "B", "seg": "ä", "post": "cker", "g": "E", "l": 9}, {"id": 556, "w": "Kaufhaus", "pre": "K", "seg": "au", "post": "fhaus", "g": "AU", "l": 9}, {"id": 557, "w": "Kaufhäuser", "pre": "K", "seg": "au", "post": "fhäuser", "g": "AU", "l": 9}, {"id": 558, "w": "wieder", "pre": "w", "seg": "ie", "post": "der", "g": "I", "l": 9}, {"id": 559, "w": "Idee", "pre": "", "seg": "i", "post": "dee", "g": "I", "l": 9}, {"id": 560, "w": "Ideen", "pre": "", "seg": "i", "post": "deen", "g": "I", "l": 9}, {"id": 561, "w": "Lust", "pre": "L", "seg": "u", "post": "st", "g": "U", "l": 9}, {"id": 562, "w": "mitkommen", "pre": "m", "seg": "i", "post": "tkommen", "g": "I", "l": 9}, {"id": 563, "w": "Nachricht", "pre": "N", "seg": "a", "post": "chricht", "g": "A", "l": 9}, {"id": 564, "w": "Nachrichten", "pre": "N", "seg": "a", "post": "chrichten", "g": "A", "l": 9}, {"id": 565, "w": "Brille", "pre": "Br", "seg": "i", "post": "lle", "g": "I", "l": 9}, {"id": 566, "w": "Brillen", "pre": "Br", "seg": "i", "post": "llen", "g": "I", "l": 9}, {"id": 567, "w": "Rucksack", "pre": "R", "seg": "u", "post": "cksack", "g": "U", "l": 9}, {"id": 568, "w": "Rucksäcke", "pre": "R", "seg": "u", "post": "cksäcke", "g": "U", "l": 9}, {"id": 569, "w": "Schuh", "pre": "Sch", "seg": "uh", "post": "", "g": "U", "l": 9}, {"id": 570, "w": "Schuhe", "pre": "Sch", "seg": "uh", "post": "e", "g": "U", "l": 9}, {"id": 571, "w": "Ticket", "pre": "T", "seg": "i", "post": "cket", "g": "I", "l": 9}, {"id": 572, "w": "Tickets", "pre": "T", "seg": "i", "post": "ckets", "g": "I", "l": 9}, {"id": 573, "w": "höflich", "pre": "h", "seg": "ö", "post": "flich", "g": "OE", "l": 9}, {"id": 574, "w": "unhöflich", "pre": "", "seg": "u", "post": "nhöflich", "g": "U", "l": 9}, {"id": 575, "w": "Test", "pre": "T", "seg": "e", "post": "st", "g": "E", "l": 9}, {"id": 576, "w": "Tests", "pre": "T", "seg": "e", "post": "sts", "g": "E", "l": 9}, {"id": 577, "w": "Karte", "pre": "K", "seg": "a", "post": "rte", "g": "A", "l": 9}, {"id": 578, "w": "Karten", "pre": "K", "seg": "a", "post": "rten", "g": "A", "l": 9}, {"id": 579, "w": "Bus", "pre": "B", "seg": "u", "post": "s", "g": "U", "l": 10}, {"id": 580, "w": "Busse", "pre": "B", "seg": "u", "post": "sse", "g": "U", "l": 10}, {"id": 581, "w": "Flugzeug", "pre": "Fl", "seg": "u", "post": "gzeug", "g": "U", "l": 10}, {"id": 582, "w": "Flugzeuge", "pre": "Fl", "seg": "u", "post": "gzeuge", "g": "U", "l": 10}, {"id": 583, "w": "Straßenbahn", "pre": "Str", "seg": "a", "post": "ßenbahn", "g": "A", "l": 10}, {"id": 584, "w": "Taxi", "pre": "T", "seg": "a", "post": "xi", "g": "A", "l": 10}, {"id": 585, "w": "Taxis", "pre": "T", "seg": "a", "post": "xis", "g": "A", "l": 10}, {"id": 586, "w": "Fuß", "pre": "F", "seg": "u", "post": "ß", "g": "U", "l": 10}, {"id": 587, "w": "Zug", "pre": "Z", "seg": "u", "post": "g", "g": "U", "l": 10}, {"id": 588, "w": "Züge", "pre": "Z", "seg": "ü", "post": "ge", "g": "UE", "l": 10}, {"id": 589, "w": "Bahnhof", "pre": "B", "seg": "ah", "post": "nhof", "g": "A", "l": 10}, {"id": 590, "w": "Bahnhöfe", "pre": "B", "seg": "ah", "post": "nhöfe", "g": "A", "l": 10}, {"id": 591, "w": "unbequem", "pre": "", "seg": "u", "post": "nbequem", "g": "U", "l": 10}, {"id": 592, "w": "billig", "pre": "b", "seg": "i", "post": "llig", "g": "I", "l": 10}, {"id": 593, "w": "Umwelt", "pre": "", "seg": "u", "post": "mwelt", "g": "U", "l": 10}, {"id": 594, "w": "Büro", "pre": "B", "seg": "ü", "post": "ro", "g": "UE", "l": 10}, {"id": 595, "w": "Büros", "pre": "B", "seg": "ü", "post": "ros", "g": "UE", "l": 10}, {"id": 596, "w": "bei", "pre": "b", "seg": "ei", "post": "", "g": "EI", "l": 10}, {"id": 597, "w": "kurz", "pre": "k", "seg": "u", "post": "rz", "g": "U", "l": 10}, {"id": 598, "w": "lang", "pre": "l", "seg": "a", "post": "ng", "g": "A", "l": 10}, {"id": 599, "w": "Mensch", "pre": "M", "seg": "e", "post": "nsch", "g": "E", "l": 10}, {"id": 600, "w": "Menschen", "pre": "M", "seg": "e", "post": "nschen", "g": "E", "l": 10}, {"id": 601, "w": "jeden", "pre": "j", "seg": "e", "post": "den", "g": "E", "l": 10}, {"id": 602, "w": "Stunde", "pre": "St", "seg": "u", "post": "nde", "g": "U", "l": 10}, {"id": 603, "w": "Stunden", "pre": "St", "seg": "u", "post": "nden", "g": "U", "l": 10}, {"id": 604, "w": "Weg", "pre": "W", "seg": "e", "post": "g", "g": "E", "l": 10}, {"id": 605, "w": "Wege", "pre": "W", "seg": "e", "post": "ge", "g": "E", "l": 10}, {"id": 606, "w": "weit", "pre": "w", "seg": "ei", "post": "t", "g": "EI", "l": 10}, {"id": 607, "w": "Tierpark", "pre": "T", "seg": "ie", "post": "rpark", "g": "I", "l": 10}, {"id": 608, "w": "Tierparks", "pre": "T", "seg": "ie", "post": "rparks", "g": "I", "l": 10}, {"id": 609, "w": "Aufzug", "pre": "", "seg": "au", "post": "fzug", "g": "AU", "l": 10}, {"id": 610, "w": "Aufzüge", "pre": "", "seg": "au", "post": "fzüge", "g": "AU", "l": 10}, {"id": 611, "w": "aussteigen", "pre": "", "seg": "au", "post": "ssteigen", "g": "AU", "l": 10}, {"id": 612, "w": "zur", "pre": "z", "seg": "u", "post": "r", "g": "U", "l": 10}, {"id": 613, "w": "direkt", "pre": "d", "seg": "i", "post": "rekt", "g": "I", "l": 10}, {"id": 614, "w": "einfach", "pre": "", "seg": "ei", "post": "nfach", "g": "EI", "l": 10}, {"id": 615, "w": "Hauptbahnhof", "pre": "H", "seg": "au", "post": "ptbahnhof", "g": "AU", "l": 10}, {"id": 616, "w": "Platz", "pre": "Pl", "seg": "a", "post": "tz", "g": "A", "l": 10}, {"id": 617, "w": "Plätze", "pre": "Pl", "seg": "ä", "post": "tze", "g": "E", "l": 10}, {"id": 618, "w": "Richtung", "pre": "R", "seg": "i", "post": "chtung", "g": "I", "l": 10}, {"id": 619, "w": "Richtungen", "pre": "R", "seg": "i", "post": "chtungen", "g": "I", "l": 10}, {"id": 620, "w": "umsteigen", "pre": "", "seg": "u", "post": "msteigen", "g": "U", "l": 10}, {"id": 621, "w": "nah", "pre": "n", "seg": "ah", "post": "", "g": "A", "l": 10}, {"id": 622, "w": "nahe", "pre": "n", "seg": "ah", "post": "e", "g": "A", "l": 10}, {"id": 623, "w": "online", "pre": "", "seg": "o", "post": "nline", "g": "O", "l": 10}, {"id": 624, "w": "schnell", "pre": "schn", "seg": "e", "post": "ll", "g": "E", "l": 10}, {"id": 625, "w": "laut", "pre": "l", "seg": "au", "post": "t", "g": "AU", "l": 10}, {"id": 626, "w": "Automat", "pre": "", "seg": "au", "post": "tomat", "g": "AU", "l": 10}, {"id": 627, "w": "Automaten", "pre": "", "seg": "au", "post": "tomaten", "g": "AU", "l": 10}, {"id": 628, "w": "Fahrkarte", "pre": "F", "seg": "ah", "post": "rkarte", "g": "A", "l": 10}, {"id": 629, "w": "Fahrkarten", "pre": "F", "seg": "ah", "post": "rkarten", "g": "A", "l": 10}, {"id": 630, "w": "erlaubt", "pre": "", "seg": "e", "post": "rlaubt", "g": "E", "l": 10}, {"id": 631, "w": "verboten", "pre": "verb", "seg": "o", "post": "ten", "g": "O", "l": 10}, {"id": 632, "w": "dürfen", "pre": "d", "seg": "ü", "post": "rfen", "g": "UE", "l": 10}, {"id": 633, "w": "rauchen", "pre": "r", "seg": "au", "post": "chen", "g": "AU", "l": 10}, {"id": 634, "w": "mitnehmen", "pre": "m", "seg": "i", "post": "tnehmen", "g": "I", "l": 10}, {"id": 635, "w": "Schild", "pre": "Sch", "seg": "i", "post": "ld", "g": "I", "l": 10}, {"id": 636, "w": "Schilder", "pre": "Sch", "seg": "i", "post": "lder", "g": "I", "l": 10}, {"id": 637, "w": "baden", "pre": "b", "seg": "a", "post": "den", "g": "A", "l": 10}, {"id": 638, "w": "Angst", "pre": "", "seg": "a", "post": "ngst", "g": "A", "l": 10}, {"id": 639, "w": "erst", "pre": "", "seg": "e", "post": "rst", "g": "E", "l": 10}, {"id": 640, "w": "Hund", "pre": "H", "seg": "u", "post": "nd", "g": "U", "l": 10}, {"id": 641, "w": "Hunde", "pre": "H", "seg": "u", "post": "nde", "g": "U", "l": 10}, {"id": 642, "w": "komisch", "pre": "k", "seg": "o", "post": "misch", "g": "O", "l": 10}, {"id": 643, "w": "Musiker", "pre": "M", "seg": "u", "post": "siker", "g": "U", "l": 10}, {"id": 644, "w": "Regel", "pre": "R", "seg": "e", "post": "gel", "g": "E", "l": 10}, {"id": 645, "w": "Regeln", "pre": "R", "seg": "e", "post": "geln", "g": "E", "l": 10}, {"id": 646, "w": "Spielplatz", "pre": "Sp", "seg": "ie", "post": "lplatz", "g": "I", "l": 10}, {"id": 647, "w": "Spielplätze", "pre": "Sp", "seg": "ie", "post": "lplätze", "g": "I", "l": 10}, {"id": 648, "w": "Verbot", "pre": "Verb", "seg": "o", "post": "t", "g": "O", "l": 10}, {"id": 649, "w": "Verbote", "pre": "Verb", "seg": "o", "post": "te", "g": "O", "l": 10}, {"id": 650, "w": "warum", "pre": "w", "seg": "a", "post": "rum", "g": "A", "l": 10}, {"id": 651, "w": "lustig", "pre": "l", "seg": "u", "post": "stig", "g": "U", "l": 10}, {"id": 652, "w": "Unterricht", "pre": "", "seg": "u", "post": "nterricht", "g": "U", "l": 10}, {"id": 653, "w": "Wohngemeinschaft", "pre": "W", "seg": "oh", "post": "ngemeinschaft", "g": "O", "l": 11}, {"id": 654, "w": "Wohngemeinschaften", "pre": "W", "seg": "oh", "post": "ngemeinschaften", "g": "O", "l": 11}, {"id": 655, "w": "Zimmer", "pre": "Z", "seg": "i", "post": "mmer", "g": "I", "l": 11}, {"id": 656, "w": "Schlafzimmer", "pre": "Schl", "seg": "a", "post": "fzimmer", "g": "A", "l": 11}, {"id": 657, "w": "Wohnzimmer", "pre": "W", "seg": "oh", "post": "nzimmer", "g": "O", "l": 11}, {"id": 658, "w": "Kinderzimmer", "pre": "K", "seg": "i", "post": "nderzimmer", "g": "I", "l": 11}, {"id": 659, "w": "Bad", "pre": "B", "seg": "a", "post": "d", "g": "A", "l": 11}, {"id": 660, "w": "Bäder", "pre": "B", "seg": "ä", "post": "der", "g": "E", "l": 11}, {"id": 661, "w": "Dusche", "pre": "D", "seg": "u", "post": "sche", "g": "U", "l": 11}, {"id": 662, "w": "Balkon", "pre": "B", "seg": "a", "post": "lkon", "g": "A", "l": 11}, {"id": 663, "w": "Balkone", "pre": "B", "seg": "a", "post": "lkone", "g": "A", "l": 11}, {"id": 664, "w": "Flur", "pre": "Fl", "seg": "u", "post": "r", "g": "U", "l": 11}, {"id": 665, "w": "Flure", "pre": "Fl", "seg": "u", "post": "re", "g": "U", "l": 11}, {"id": 666, "w": "Möbel", "pre": "M", "seg": "ö", "post": "bel", "g": "OE", "l": 11}, {"id": 667, "w": "Quadratmeter", "pre": "Qu", "seg": "a", "post": "dratmeter", "g": "A", "l": 11}, {"id": 668, "w": "unser", "pre": "", "seg": "u", "post": "nser", "g": "U", "l": 11}, {"id": 669, "w": "eure", "pre": "", "seg": "eu", "post": "re", "g": "EU", "l": 11}, {"id": 670, "w": "hell", "pre": "h", "seg": "e", "post": "ll", "g": "E", "l": 11}, {"id": 671, "w": "dunkel", "pre": "d", "seg": "u", "post": "nkel", "g": "U", "l": 11}, {"id": 672, "w": "ruhig", "pre": "r", "seg": "uh", "post": "ig", "g": "U", "l": 11}, {"id": 673, "w": "hässlich", "pre": "h", "seg": "ä", "post": "sslich", "g": "E", "l": 11}, {"id": 674, "w": "Miete", "pre": "M", "seg": "ie", "post": "te", "g": "I", "l": 11}, {"id": 675, "w": "Mieten", "pre": "M", "seg": "ie", "post": "ten", "g": "I", "l": 11}, {"id": 676, "w": "Lampe", "pre": "L", "seg": "a", "post": "mpe", "g": "A", "l": 11}, {"id": 677, "w": "Lampen", "pre": "L", "seg": "a", "post": "mpen", "g": "A", "l": 11}, {"id": 678, "w": "mal", "pre": "m", "seg": "a", "post": "l", "g": "A", "l": 11}, {"id": 679, "w": "Anzeige", "pre": "", "seg": "a", "post": "nzeige", "g": "A", "l": 11}, {"id": 680, "w": "Anzeigen", "pre": "", "seg": "a", "post": "nzeigen", "g": "A", "l": 11}, {"id": 681, "w": "Zeitung", "pre": "Z", "seg": "ei", "post": "tung", "g": "EI", "l": 11}, {"id": 682, "w": "Zeitungen", "pre": "Z", "seg": "ei", "post": "tungen", "g": "EI", "l": 11}, {"id": 683, "w": "Zettel", "pre": "Z", "seg": "e", "post": "ttel", "g": "E", "l": 11}, {"id": 684, "w": "sofort", "pre": "s", "seg": "o", "post": "fort", "g": "O", "l": 11}, {"id": 685, "w": "hängen", "pre": "h", "seg": "ä", "post": "ngen", "g": "E", "l": 11}, {"id": 686, "w": "kennenlernen", "pre": "k", "seg": "e", "post": "nnenlernen", "g": "E", "l": 11}, {"id": 687, "w": "Kiste", "pre": "K", "seg": "i", "post": "ste", "g": "I", "l": 11}, {"id": 688, "w": "Kisten", "pre": "K", "seg": "i", "post": "sten", "g": "I", "l": 11}, {"id": 689, "w": "reden", "pre": "r", "seg": "e", "post": "den", "g": "E", "l": 11}, {"id": 690, "w": "Umzug", "pre": "", "seg": "u", "post": "mzug", "g": "U", "l": 11}, {"id": 691, "w": "Umzüge", "pre": "", "seg": "u", "post": "mzüge", "g": "U", "l": 11}, {"id": 692, "w": "Anrede", "pre": "", "seg": "a", "post": "nrede", "g": "A", "l": 11}, {"id": 693, "w": "Gruß", "pre": "Gr", "seg": "u", "post": "ß", "g": "U", "l": 11}, {"id": 694, "w": "Grüße", "pre": "Gr", "seg": "ü", "post": "ße", "g": "UE", "l": 11}, {"id": 695, "w": "abstellen", "pre": "", "seg": "a", "post": "bstellen", "g": "A", "l": 11}, {"id": 696, "w": "ablesen", "pre": "", "seg": "a", "post": "blesen", "g": "A", "l": 11}, {"id": 697, "w": "Hausmeister", "pre": "H", "seg": "au", "post": "smeister", "g": "AU", "l": 11}, {"id": 698, "w": "Heizung", "pre": "H", "seg": "ei", "post": "zung", "g": "EI", "l": 11}, {"id": 699, "w": "Heizungen", "pre": "H", "seg": "ei", "post": "zungen", "g": "EI", "l": 11}, {"id": 700, "w": "Keller", "pre": "K", "seg": "e", "post": "ller", "g": "E", "l": 11}, {"id": 701, "w": "Kinderwagen", "pre": "K", "seg": "i", "post": "nderwagen", "g": "I", "l": 11}, {"id": 702, "w": "Treppenhaus", "pre": "Tr", "seg": "e", "post": "ppenhaus", "g": "E", "l": 11}, {"id": 703, "w": "Treppenhäuser", "pre": "Tr", "seg": "e", "post": "ppenhäuser", "g": "E", "l": 11}, {"id": 704, "w": "Firma", "pre": "F", "seg": "i", "post": "rma", "g": "I", "l": 11}, {"id": 705, "w": "Firmen", "pre": "F", "seg": "i", "post": "rmen", "g": "I", "l": 11}, {"id": 706, "w": "Blume", "pre": "Bl", "seg": "u", "post": "me", "g": "U", "l": 11}, {"id": 707, "w": "Blumen", "pre": "Bl", "seg": "u", "post": "men", "g": "U", "l": 11}, {"id": 708, "w": "gießen", "pre": "g", "seg": "ie", "post": "ßen", "g": "I", "l": 11}, {"id": 709, "w": "freundlich", "pre": "fr", "seg": "eu", "post": "ndlich", "g": "EU", "l": 11}, {"id": 710, "w": "Bitten", "pre": "B", "seg": "i", "post": "tten", "g": "I", "l": 11}, {"id": 711, "w": "Hammer", "pre": "H", "seg": "a", "post": "mmer", "g": "A", "l": 11}, {"id": 712, "w": "Hämmer", "pre": "H", "seg": "ä", "post": "mmer", "g": "E", "l": 11}, {"id": 713, "w": "Tasse", "pre": "T", "seg": "a", "post": "sse", "g": "A", "l": 11}, {"id": 714, "w": "Tassen", "pre": "T", "seg": "a", "post": "ssen", "g": "A", "l": 11}, {"id": 715, "w": "Wand", "pre": "W", "seg": "a", "post": "nd", "g": "A", "l": 11}, {"id": 716, "w": "Wände", "pre": "W", "seg": "ä", "post": "nde", "g": "E", "l": 11}, {"id": 717, "w": "sein", "pre": "s", "seg": "ei", "post": "n", "g": "EI", "l": 11}, {"id": 718, "w": "Kissen", "pre": "K", "seg": "i", "post": "ssen", "g": "I", "l": 0}, {"id": 719, "w": "Himmel", "pre": "H", "seg": "i", "post": "mmel", "g": "I", "l": 0}, {"id": 720, "w": "Winter", "pre": "W", "seg": "i", "post": "nter", "g": "I", "l": 0}, {"id": 721, "w": "Insel", "pre": "", "seg": "i", "post": "nsel", "g": "I", "l": 0}, {"id": 722, "w": "Kirche", "pre": "K", "seg": "i", "post": "rche", "g": "I", "l": 0}, {"id": 723, "w": "Silber", "pre": "S", "seg": "i", "post": "lber", "g": "I", "l": 0}, {"id": 724, "w": "Zimt", "pre": "Z", "seg": "i", "post": "mt", "g": "I", "l": 0}, {"id": 725, "w": "Pinsel", "pre": "P", "seg": "i", "post": "nsel", "g": "I", "l": 0}, {"id": 726, "w": "Wind", "pre": "W", "seg": "i", "post": "nd", "g": "I", "l": 0}, {"id": 727, "w": "Spinne", "pre": "Sp", "seg": "i", "post": "nne", "g": "I", "l": 0}, {"id": 728, "w": "Glimmer", "pre": "Gl", "seg": "i", "post": "mmer", "g": "I", "l": 0}, {"id": 729, "w": "Liebe", "pre": "L", "seg": "ie", "post": "be", "g": "I", "l": 0}, {"id": 730, "w": "Spiegel", "pre": "Sp", "seg": "ie", "post": "gel", "g": "I", "l": 0}, {"id": 731, "w": "Zwiebel", "pre": "Zw", "seg": "ie", "post": "bel", "g": "I", "l": 0}, {"id": 732, "w": "Ziege", "pre": "Z", "seg": "ie", "post": "ge", "g": "I", "l": 0}, {"id": 733, "w": "Biene", "pre": "B", "seg": "ie", "post": "ne", "g": "I", "l": 0}, {"id": 734, "w": "Sieg", "pre": "S", "seg": "ie", "post": "g", "g": "I", "l": 0}, {"id": 735, "w": "Brief", "pre": "Br", "seg": "ie", "post": "f", "g": "I", "l": 0}, {"id": 736, "w": "Fliege", "pre": "Fl", "seg": "ie", "post": "ge", "g": "I", "l": 0}, {"id": 737, "w": "Glied", "pre": "Gl", "seg": "ie", "post": "d", "g": "I", "l": 0}, {"id": 738, "w": "Krieg", "pre": "Kr", "seg": "ie", "post": "g", "g": "I", "l": 0}, {"id": 739, "w": "Schiene", "pre": "Sch", "seg": "ie", "post": "ne", "g": "I", "l": 0}, {"id": 740, "w": "Ziel", "pre": "Z", "seg": "ie", "post": "l", "g": "I", "l": 0}, {"id": 741, "w": "Frieden", "pre": "Fr", "seg": "ie", "post": "den", "g": "I", "l": 0}, {"id": 742, "w": "Papier", "pre": "Pap", "seg": "ie", "post": "r", "g": "I", "l": 0}, {"id": 743, "w": "Fieber", "pre": "F", "seg": "ie", "post": "ber", "g": "I", "l": 0}, {"id": 744, "w": "Tiger", "pre": "T", "seg": "i", "post": "ger", "g": "I", "l": 0}, {"id": 745, "w": "Klima", "pre": "Kl", "seg": "i", "post": "ma", "g": "I", "l": 0}, {"id": 746, "w": "Mine", "pre": "M", "seg": "i", "post": "ne", "g": "I", "l": 0}, {"id": 747, "w": "Miene", "pre": "M", "seg": "ie", "post": "ne", "g": "I", "l": 0}, {"id": 748, "w": "Lid", "pre": "L", "seg": "i", "post": "d", "g": "I", "l": 0}, {"id": 749, "w": "Stil", "pre": "St", "seg": "i", "post": "l", "g": "I", "l": 0}, {"id": 750, "w": "Stiel", "pre": "St", "seg": "ie", "post": "l", "g": "I", "l": 0}, {"id": 751, "w": "Krise", "pre": "Kr", "seg": "i", "post": "se", "g": "I", "l": 0}, {"id": 752, "w": "Biber", "pre": "B", "seg": "i", "post": "ber", "g": "I", "l": 0}, {"id": 753, "w": "Motiv", "pre": "Mot", "seg": "i", "post": "v", "g": "I", "l": 0}, {"id": 754, "w": "ihn", "pre": "", "seg": "ih", "post": "n", "g": "I", "l": 0}, {"id": 755, "w": "ihm", "pre": "", "seg": "ih", "post": "m", "g": "I", "l": 0}, {"id": 756, "w": "ihnen", "pre": "", "seg": "ih", "post": "nen", "g": "I", "l": 0}, {"id": 757, "w": "ihre", "pre": "", "seg": "ih", "post": "re", "g": "I", "l": 0}, {"id": 758, "w": "ihrer", "pre": "", "seg": "ih", "post": "rer", "g": "I", "l": 0}, {"id": 759, "w": "sieht", "pre": "s", "seg": "ieh", "post": "t", "g": "I", "l": 0}, {"id": 760, "w": "Vieh", "pre": "V", "seg": "ieh", "post": "", "g": "I", "l": 0}, {"id": 761, "w": "fliehen", "pre": "fl", "seg": "ieh", "post": "en", "g": "I", "l": 0}, {"id": 762, "w": "ziehen", "pre": "z", "seg": "ieh", "post": "en", "g": "I", "l": 0}, {"id": 763, "w": "Beziehung", "pre": "Bez", "seg": "ieh", "post": "ung", "g": "I", "l": 0}, {"id": 764, "w": "Hemd", "pre": "H", "seg": "e", "post": "md", "g": "E", "l": 0}, {"id": 765, "w": "Herz", "pre": "H", "seg": "e", "post": "rz", "g": "E", "l": 0}, {"id": 766, "w": "Fest", "pre": "F", "seg": "e", "post": "st", "g": "E", "l": 0}, {"id": 767, "w": "Welt", "pre": "W", "seg": "e", "post": "lt", "g": "E", "l": 0}, {"id": 768, "w": "Pferd", "pre": "Pf", "seg": "e", "post": "rd", "g": "E", "l": 0}, {"id": 769, "w": "Wetter", "pre": "W", "seg": "e", "post": "tter", "g": "E", "l": 0}, {"id": 770, "w": "Zelt", "pre": "Z", "seg": "e", "post": "lt", "g": "E", "l": 0}, {"id": 771, "w": "Schere", "pre": "Sch", "seg": "e", "post": "re", "g": "E", "l": 0}, {"id": 772, "w": "Pech", "pre": "P", "seg": "e", "post": "ch", "g": "E", "l": 0}, {"id": 773, "w": "Geschenk", "pre": "Gesch", "seg": "e", "post": "nk", "g": "E", "l": 0}, {"id": 774, "w": "Erde", "pre": "", "seg": "e", "post": "rde", "g": "E", "l": 0}, {"id": 775, "w": "Besen", "pre": "B", "seg": "e", "post": "sen", "g": "E", "l": 0}, {"id": 776, "w": "See", "pre": "S", "seg": "ee", "post": "", "g": "E", "l": 0}, {"id": 777, "w": "Schnee", "pre": "Schn", "seg": "ee", "post": "", "g": "E", "l": 0}, {"id": 778, "w": "Beere", "pre": "B", "seg": "ee", "post": "re", "g": "E", "l": 0}, {"id": 779, "w": "Meer", "pre": "M", "seg": "ee", "post": "r", "g": "E", "l": 0}, {"id": 780, "w": "leer", "pre": "l", "seg": "ee", "post": "r", "g": "E", "l": 0}, {"id": 781, "w": "Heer", "pre": "H", "seg": "ee", "post": "r", "g": "E", "l": 0}, {"id": 782, "w": "Klee", "pre": "Kl", "seg": "ee", "post": "", "g": "E", "l": 0}, {"id": 783, "w": "Seele", "pre": "S", "seg": "ee", "post": "le", "g": "E", "l": 0}, {"id": 784, "w": "Speer", "pre": "Sp", "seg": "ee", "post": "r", "g": "E", "l": 0}, {"id": 785, "w": "Teer", "pre": "T", "seg": "ee", "post": "r", "g": "E", "l": 0}, {"id": 786, "w": "Fee", "pre": "F", "seg": "ee", "post": "", "g": "E", "l": 0}, {"id": 787, "w": "mehr", "pre": "m", "seg": "eh", "post": "r", "g": "E", "l": 0}, {"id": 788, "w": "Lehre", "pre": "L", "seg": "eh", "post": "re", "g": "E", "l": 0}, {"id": 789, "w": "Mehl", "pre": "M", "seg": "eh", "post": "l", "g": "E", "l": 0}, {"id": 790, "w": "Ehe", "pre": "", "seg": "eh", "post": "e", "g": "E", "l": 0}, {"id": 791, "w": "Ehre", "pre": "", "seg": "eh", "post": "re", "g": "E", "l": 0}, {"id": 792, "w": "zehn", "pre": "z", "seg": "eh", "post": "n", "g": "E", "l": 0}, {"id": 793, "w": "Fehler", "pre": "F", "seg": "eh", "post": "ler", "g": "E", "l": 0}, {"id": 794, "w": "sehr", "pre": "s", "seg": "eh", "post": "r", "g": "E", "l": 0}, {"id": 795, "w": "Wehr", "pre": "W", "seg": "eh", "post": "r", "g": "E", "l": 0}, {"id": 796, "w": "Kehle", "pre": "K", "seg": "eh", "post": "le", "g": "E", "l": 0}, {"id": 797, "w": "Bär", "pre": "B", "seg": "ä", "post": "r", "g": "E", "l": 0}, {"id": 798, "w": "Mädchen", "pre": "M", "seg": "ä", "post": "dchen", "g": "E", "l": 0}, {"id": 799, "w": "Träne", "pre": "Tr", "seg": "ä", "post": "ne", "g": "E", "l": 0}, {"id": 800, "w": "Ärmel", "pre": "", "seg": "ä", "post": "rmel", "g": "E", "l": 0}, {"id": 801, "w": "Hälfte", "pre": "H", "seg": "ä", "post": "lfte", "g": "E", "l": 0}, {"id": 802, "w": "Wärme", "pre": "W", "seg": "ä", "post": "rme", "g": "E", "l": 0}, {"id": 803, "w": "Kälte", "pre": "K", "seg": "ä", "post": "lte", "g": "E", "l": 0}, {"id": 804, "w": "Schäfer", "pre": "Sch", "seg": "ä", "post": "fer", "g": "E", "l": 0}, {"id": 805, "w": "Händler", "pre": "H", "seg": "ä", "post": "ndler", "g": "E", "l": 0}, {"id": 806, "w": "ähnlich", "pre": "", "seg": "äh", "post": "nlich", "g": "E", "l": 0}, {"id": 807, "w": "Lärche", "pre": "L", "seg": "ä", "post": "rche", "g": "E", "l": 0}, {"id": 808, "w": "Ähre", "pre": "", "seg": "äh", "post": "re", "g": "E", "l": 0}, {"id": 809, "w": "Zähne", "pre": "Z", "seg": "äh", "post": "ne", "g": "E", "l": 0}, {"id": 810, "w": "Nähe", "pre": "N", "seg": "äh", "post": "e", "g": "E", "l": 0}, {"id": 811, "w": "wählen", "pre": "w", "seg": "äh", "post": "len", "g": "E", "l": 0}, {"id": 812, "w": "Fähre", "pre": "F", "seg": "äh", "post": "re", "g": "E", "l": 0}, {"id": 813, "w": "gefährlich", "pre": "gef", "seg": "äh", "post": "rlich", "g": "E", "l": 0}, {"id": 814, "w": "spähen", "pre": "sp", "seg": "äh", "post": "en", "g": "E", "l": 0}, {"id": 815, "w": "Sack", "pre": "S", "seg": "a", "post": "ck", "g": "A", "l": 0}, {"id": 816, "w": "Katze", "pre": "K", "seg": "a", "post": "tze", "g": "A", "l": 0}, {"id": 817, "w": "Nase", "pre": "N", "seg": "a", "post": "se", "g": "A", "l": 0}, {"id": 818, "w": "Planet", "pre": "Pl", "seg": "a", "post": "net", "g": "A", "l": 0}, {"id": 819, "w": "Rabe", "pre": "R", "seg": "a", "post": "be", "g": "A", "l": 0}, {"id": 820, "w": "Spaten", "pre": "Sp", "seg": "a", "post": "ten", "g": "A", "l": 0}, {"id": 821, "w": "Kragen", "pre": "Kr", "seg": "a", "post": "gen", "g": "A", "l": 0}, {"id": 822, "w": "Plan", "pre": "Pl", "seg": "a", "post": "n", "g": "A", "l": 0}, {"id": 823, "w": "Schaf", "pre": "Sch", "seg": "a", "post": "f", "g": "A", "l": 0}, {"id": 824, "w": "Wal", "pre": "W", "seg": "a", "post": "l", "g": "A", "l": 0}, {"id": 825, "w": "Saal", "pre": "S", "seg": "aa", "post": "l", "g": "A", "l": 0}, {"id": 826, "w": "Haar", "pre": "H", "seg": "aa", "post": "r", "g": "A", "l": 0}, {"id": 827, "w": "Paar", "pre": "P", "seg": "aa", "post": "r", "g": "A", "l": 0}, {"id": 828, "w": "Staat", "pre": "St", "seg": "aa", "post": "t", "g": "A", "l": 0}, {"id": 829, "w": "Aal", "pre": "", "seg": "aa", "post": "l", "g": "A", "l": 0}, {"id": 830, "w": "Saat", "pre": "S", "seg": "aa", "post": "t", "g": "A", "l": 0}, {"id": 831, "w": "Zahl", "pre": "Z", "seg": "ah", "post": "l", "g": "A", "l": 0}, {"id": 832, "w": "Bahn", "pre": "B", "seg": "ah", "post": "n", "g": "A", "l": 0}, {"id": 833, "w": "Wahl", "pre": "W", "seg": "ah", "post": "l", "g": "A", "l": 0}, {"id": 834, "w": "Jahr", "pre": "J", "seg": "ah", "post": "r", "g": "A", "l": 0}, {"id": 835, "w": "Hahn", "pre": "H", "seg": "ah", "post": "n", "g": "A", "l": 0}, {"id": 836, "w": "Sahne", "pre": "S", "seg": "ah", "post": "ne", "g": "A", "l": 0}, {"id": 837, "w": "Zahn", "pre": "Z", "seg": "ah", "post": "n", "g": "A", "l": 0}, {"id": 838, "w": "Strahl", "pre": "Str", "seg": "ah", "post": "l", "g": "A", "l": 0}, {"id": 839, "w": "Wahrheit", "pre": "W", "seg": "ah", "post": "rheit", "g": "A", "l": 0}, {"id": 840, "w": "Nahrung", "pre": "N", "seg": "ah", "post": "rung", "g": "A", "l": 0}, {"id": 841, "w": "Ahnung", "pre": "", "seg": "ah", "post": "nung", "g": "A", "l": 0}, {"id": 842, "w": "Kopf", "pre": "K", "seg": "o", "post": "pf", "g": "O", "l": 0}, {"id": 843, "w": "Topf", "pre": "T", "seg": "o", "post": "pf", "g": "O", "l": 0}, {"id": 844, "w": "Form", "pre": "F", "seg": "o", "post": "rm", "g": "O", "l": 0}, {"id": 845, "w": "Holz", "pre": "H", "seg": "o", "post": "lz", "g": "O", "l": 0}, {"id": 846, "w": "Dorf", "pre": "D", "seg": "o", "post": "rf", "g": "O", "l": 0}, {"id": 847, "w": "Socke", "pre": "S", "seg": "o", "post": "cke", "g": "O", "l": 0}, {"id": 848, "w": "Korb", "pre": "K", "seg": "o", "post": "rb", "g": "O", "l": 0}, {"id": 849, "w": "Wolke", "pre": "W", "seg": "o", "post": "lke", "g": "O", "l": 0}, {"id": 850, "w": "Ton", "pre": "T", "seg": "o", "post": "n", "g": "O", "l": 0}, {"id": 851, "w": "Bogen", "pre": "B", "seg": "o", "post": "gen", "g": "O", "l": 0}, {"id": 852, "w": "Probe", "pre": "Pr", "seg": "o", "post": "be", "g": "O", "l": 0}, {"id": 853, "w": "Rose", "pre": "R", "seg": "o", "post": "se", "g": "O", "l": 0}, {"id": 854, "w": "Note", "pre": "N", "seg": "o", "post": "te", "g": "O", "l": 0}, {"id": 855, "w": "Zone", "pre": "Z", "seg": "o", "post": "ne", "g": "O", "l": 0}, {"id": 856, "w": "Motor", "pre": "M", "seg": "o", "post": "tor", "g": "O", "l": 0}, {"id": 857, "w": "Boot", "pre": "B", "seg": "oo", "post": "t", "g": "O", "l": 0}, {"id": 858, "w": "Moos", "pre": "M", "seg": "oo", "post": "s", "g": "O", "l": 0}, {"id": 859, "w": "Moor", "pre": "M", "seg": "oo", "post": "r", "g": "O", "l": 0}, {"id": 860, "w": "Lohn", "pre": "L", "seg": "oh", "post": "n", "g": "O", "l": 0}, {"id": 861, "w": "Bohne", "pre": "B", "seg": "oh", "post": "ne", "g": "O", "l": 0}, {"id": 862, "w": "Ohr", "pre": "", "seg": "oh", "post": "r", "g": "O", "l": 0}, {"id": 863, "w": "Rohr", "pre": "R", "seg": "oh", "post": "r", "g": "O", "l": 0}, {"id": 864, "w": "Hohn", "pre": "H", "seg": "oh", "post": "n", "g": "O", "l": 0}, {"id": 865, "w": "froh", "pre": "fr", "seg": "oh", "post": "", "g": "O", "l": 0}, {"id": 866, "w": "Mohn", "pre": "M", "seg": "oh", "post": "n", "g": "O", "l": 0}, {"id": 867, "w": "Mohr", "pre": "M", "seg": "oh", "post": "r", "g": "O", "l": 0}, {"id": 868, "w": "Durst", "pre": "D", "seg": "u", "post": "rst", "g": "U", "l": 0}, {"id": 869, "w": "Wunder", "pre": "W", "seg": "u", "post": "nder", "g": "U", "l": 0}, {"id": 870, "w": "Schuld", "pre": "Sch", "seg": "u", "post": "ld", "g": "U", "l": 0}, {"id": 871, "w": "Pfund", "pre": "Pf", "seg": "u", "post": "nd", "g": "U", "l": 0}, {"id": 872, "w": "Runde", "pre": "R", "seg": "u", "post": "nde", "g": "U", "l": 0}, {"id": 873, "w": "Mut", "pre": "M", "seg": "u", "post": "t", "g": "U", "l": 0}, {"id": 874, "w": "Hut", "pre": "H", "seg": "u", "post": "t", "g": "U", "l": 0}, {"id": 875, "w": "Tuch", "pre": "T", "seg": "u", "post": "ch", "g": "U", "l": 0}, {"id": 876, "w": "Spur", "pre": "Sp", "seg": "u", "post": "r", "g": "U", "l": 0}, {"id": 877, "w": "Bluse", "pre": "Bl", "seg": "u", "post": "se", "g": "U", "l": 0}, {"id": 878, "w": "Flut", "pre": "Fl", "seg": "u", "post": "t", "g": "U", "l": 0}, {"id": 879, "w": "Kuh", "pre": "K", "seg": "uh", "post": "", "g": "U", "l": 0}, {"id": 880, "w": "Ruhe", "pre": "R", "seg": "uh", "post": "e", "g": "U", "l": 0}, {"id": 881, "w": "Huhn", "pre": "H", "seg": "uh", "post": "n", "g": "U", "l": 0}, {"id": 882, "w": "Ruhm", "pre": "R", "seg": "uh", "post": "m", "g": "U", "l": 0}, {"id": 883, "w": "Schnuhr", "pre": "Schn", "seg": "uh", "post": "r", "g": "U", "l": 0}, {"id": 884, "w": "Löffel", "pre": "L", "seg": "ö", "post": "ffel", "g": "OE", "l": 0}, {"id": 885, "w": "Töpfer", "pre": "T", "seg": "ö", "post": "pfer", "g": "OE", "l": 0}, {"id": 886, "w": "öffnen", "pre": "", "seg": "ö", "post": "ffnen", "g": "OE", "l": 0}, {"id": 887, "w": "Hölle", "pre": "H", "seg": "ö", "post": "lle", "g": "OE", "l": 0}, {"id": 888, "w": "Mörder", "pre": "M", "seg": "ö", "post": "rder", "g": "OE", "l": 0}, {"id": 889, "w": "Glöckchen", "pre": "Gl", "seg": "ö", "post": "ckchen", "g": "OE", "l": 0}, {"id": 890, "w": "böse", "pre": "b", "seg": "ö", "post": "se", "g": "OE", "l": 0}, {"id": 891, "w": "Löwe", "pre": "L", "seg": "ö", "post": "we", "g": "OE", "l": 0}, {"id": 892, "w": "Flöte", "pre": "Fl", "seg": "ö", "post": "te", "g": "OE", "l": 0}, {"id": 893, "w": "Größe", "pre": "Gr", "seg": "ö", "post": "ße", "g": "OE", "l": 0}, {"id": 894, "w": "Schlösser", "pre": "Schl", "seg": "ö", "post": "sser", "g": "OE", "l": 0}, {"id": 895, "w": "Höhle", "pre": "H", "seg": "öh", "post": "le", "g": "OE", "l": 0}, {"id": 896, "w": "Möhre", "pre": "M", "seg": "öh", "post": "re", "g": "OE", "l": 0}, {"id": 897, "w": "Löhne", "pre": "L", "seg": "öh", "post": "ne", "g": "OE", "l": 0}, {"id": 898, "w": "Föhn", "pre": "F", "seg": "öh", "post": "n", "g": "OE", "l": 0}, {"id": 899, "w": "Köhler", "pre": "K", "seg": "öh", "post": "ler", "g": "OE", "l": 0}, {"id": 900, "w": "fröhlich", "pre": "fr", "seg": "öh", "post": "lich", "g": "OE", "l": 0}, {"id": 901, "w": "über", "pre": "", "seg": "ü", "post": "ber", "g": "UE", "l": 0}, {"id": 902, "w": "Bücher", "pre": "B", "seg": "ü", "post": "cher", "g": "UE", "l": 0}, {"id": 903, "w": "müde", "pre": "m", "seg": "ü", "post": "de", "g": "UE", "l": 0}, {"id": 904, "w": "Glück", "pre": "Gl", "seg": "ü", "post": "ck", "g": "UE", "l": 0}, {"id": 905, "w": "Brücke", "pre": "Br", "seg": "ü", "post": "cke", "g": "UE", "l": 0}, {"id": 906, "w": "Gürtel", "pre": "G", "seg": "ü", "post": "rtel", "g": "UE", "l": 0}, {"id": 907, "w": "Flügel", "pre": "Fl", "seg": "ü", "post": "gel", "g": "UE", "l": 0}, {"id": 908, "w": "Kürbis", "pre": "K", "seg": "ü", "post": "rbis", "g": "UE", "l": 0}, {"id": 909, "w": "kühl", "pre": "k", "seg": "üh", "post": "l", "g": "UE", "l": 0}, {"id": 910, "w": "Mühe", "pre": "M", "seg": "üh", "post": "e", "g": "UE", "l": 0}, {"id": 911, "w": "Gefühl", "pre": "Gef", "seg": "üh", "post": "l", "g": "UE", "l": 0}, {"id": 912, "w": "Bühne", "pre": "B", "seg": "üh", "post": "ne", "g": "UE", "l": 0}, {"id": 913, "w": "Brühe", "pre": "Br", "seg": "üh", "post": "e", "g": "UE", "l": 0}, {"id": 914, "w": "führen", "pre": "f", "seg": "üh", "post": "ren", "g": "UE", "l": 0}, {"id": 915, "w": "Frühling", "pre": "Fr", "seg": "üh", "post": "ling", "g": "UE", "l": 0}, {"id": 916, "w": "rühren", "pre": "r", "seg": "üh", "post": "ren", "g": "UE", "l": 0}, {"id": 917, "w": "Typ", "pre": "T", "seg": "y", "post": "p", "g": "UE", "l": 0}, {"id": 918, "w": "System", "pre": "S", "seg": "y", "post": "stem", "g": "UE", "l": 0}, {"id": 919, "w": "Gymnasium", "pre": "G", "seg": "y", "post": "mnasium", "g": "UE", "l": 0}, {"id": 920, "w": "Zylinder", "pre": "Z", "seg": "y", "post": "linder", "g": "UE", "l": 0}, {"id": 921, "w": "Symbol", "pre": "S", "seg": "y", "post": "mbol", "g": "UE", "l": 0}, {"id": 922, "w": "Pyramide", "pre": "P", "seg": "y", "post": "ramide", "g": "UE", "l": 0}, {"id": 923, "w": "Lyrik", "pre": "L", "seg": "y", "post": "rik", "g": "UE", "l": 0}, {"id": 924, "w": "Mythos", "pre": "M", "seg": "y", "post": "thos", "g": "UE", "l": 0}, {"id": 925, "w": "Analyse", "pre": "Anal", "seg": "y", "post": "se", "g": "UE", "l": 0}, {"id": 926, "w": "Physik", "pre": "Ph", "seg": "y", "post": "sik", "g": "UE", "l": 0}, {"id": 927, "w": "Zyklus", "pre": "Z", "seg": "y", "post": "klus", "g": "UE", "l": 0}, {"id": 928, "w": "typisch", "pre": "t", "seg": "y", "post": "pisch", "g": "UE", "l": 0}, {"id": 929, "w": "Maus", "pre": "M", "seg": "au", "post": "s", "g": "AU", "l": 0}, {"id": 930, "w": "Laub", "pre": "L", "seg": "au", "post": "b", "g": "AU", "l": 0}, {"id": 931, "w": "Bauch", "pre": "B", "seg": "au", "post": "ch", "g": "AU", "l": 0}, {"id": 932, "w": "Raum", "pre": "R", "seg": "au", "post": "m", "g": "AU", "l": 0}, {"id": 933, "w": "Zaun", "pre": "Z", "seg": "au", "post": "n", "g": "AU", "l": 0}, {"id": 934, "w": "Traum", "pre": "Tr", "seg": "au", "post": "m", "g": "AU", "l": 0}, {"id": 935, "w": "Schaum", "pre": "Sch", "seg": "au", "post": "m", "g": "AU", "l": 0}, {"id": 936, "w": "braun", "pre": "br", "seg": "au", "post": "n", "g": "AU", "l": 0}, {"id": 937, "w": "Glaube", "pre": "Gl", "seg": "au", "post": "be", "g": "AU", "l": 0}, {"id": 938, "w": "Kaugummi", "pre": "K", "seg": "au", "post": "gummi", "g": "AU", "l": 0}, {"id": 939, "w": "Schein", "pre": "Sch", "seg": "ei", "post": "n", "g": "EI", "l": 0}, {"id": 940, "w": "Kleid", "pre": "Kl", "seg": "ei", "post": "d", "g": "EI", "l": 0}, {"id": 941, "w": "Bein", "pre": "B", "seg": "ei", "post": "n", "g": "EI", "l": 0}, {"id": 942, "w": "Stein", "pre": "St", "seg": "ei", "post": "n", "g": "EI", "l": 0}, {"id": 943, "w": "Zeichen", "pre": "Z", "seg": "ei", "post": "chen", "g": "EI", "l": 0}, {"id": 944, "w": "weiß", "pre": "w", "seg": "ei", "post": "ß", "g": "EI", "l": 0}, {"id": 945, "w": "Leiter", "pre": "L", "seg": "ei", "post": "ter", "g": "EI", "l": 0}, {"id": 946, "w": "Scheibe", "pre": "Sch", "seg": "ei", "post": "be", "g": "EI", "l": 0}, {"id": 947, "w": "Mai", "pre": "M", "seg": "ai", "post": "", "g": "EI", "l": 0}, {"id": 948, "w": "Hai", "pre": "H", "seg": "ai", "post": "", "g": "EI", "l": 0}, {"id": 949, "w": "Kaiser", "pre": "K", "seg": "ai", "post": "ser", "g": "EI", "l": 0}, {"id": 950, "w": "Laib", "pre": "L", "seg": "ai", "post": "b", "g": "EI", "l": 0}, {"id": 951, "w": "Mais", "pre": "M", "seg": "ai", "post": "s", "g": "EI", "l": 0}, {"id": 952, "w": "Waise", "pre": "W", "seg": "ai", "post": "se", "g": "EI", "l": 0}, {"id": 953, "w": "Saite", "pre": "S", "seg": "ai", "post": "te", "g": "EI", "l": 0}, {"id": 954, "w": "Seite", "pre": "S", "seg": "ei", "post": "te", "g": "EI", "l": 0}, {"id": 955, "w": "Leib", "pre": "L", "seg": "ei", "post": "b", "g": "EI", "l": 0}, {"id": 956, "w": "Weise", "pre": "W", "seg": "ei", "post": "se", "g": "EI", "l": 0}, {"id": 957, "w": "Zeuge", "pre": "Z", "seg": "eu", "post": "ge", "g": "EU", "l": 0}, {"id": 958, "w": "Feuer", "pre": "F", "seg": "eu", "post": "er", "g": "EU", "l": 0}, {"id": 959, "w": "Heu", "pre": "H", "seg": "eu", "post": "", "g": "EU", "l": 0}, {"id": 960, "w": "Scheune", "pre": "Sch", "seg": "eu", "post": "ne", "g": "EU", "l": 0}, {"id": 961, "w": "Kreuz", "pre": "Kr", "seg": "eu", "post": "z", "g": "EU", "l": 0}, {"id": 962, "w": "Reue", "pre": "R", "seg": "eu", "post": "e", "g": "EU", "l": 0}, {"id": 963, "w": "treu", "pre": "tr", "seg": "eu", "post": "", "g": "EU", "l": 0}, {"id": 964, "w": "Bäume", "pre": "B", "seg": "äu", "post": "me", "g": "EU", "l": 0}, {"id": 965, "w": "Räuber", "pre": "R", "seg": "äu", "post": "ber", "g": "EU", "l": 0}, {"id": 966, "w": "Säule", "pre": "S", "seg": "äu", "post": "le", "g": "EU", "l": 0}, {"id": 967, "w": "Mäuse", "pre": "M", "seg": "äu", "post": "se", "g": "EU", "l": 0}, {"id": 968, "w": "träumen", "pre": "tr", "seg": "äu", "post": "men", "g": "EU", "l": 0}, {"id": 969, "w": "Kräuter", "pre": "Kr", "seg": "äu", "post": "ter", "g": "EU", "l": 0}, {"id": 970, "w": "Zäune", "pre": "Z", "seg": "äu", "post": "ne", "g": "EU", "l": 0}, {"id": 971, "w": "Käufer", "pre": "K", "seg": "äu", "post": "fer", "g": "EU", "l": 0}, {"id": 972, "w": "Fräulein", "pre": "Fr", "seg": "äu", "post": "lein", "g": "EU", "l": 0}, {"id": 973, "w": "Läufer", "pre": "L", "seg": "äu", "post": "fer", "g": "EU", "l": 0}, {"id": 974, "w": "Tier", "pre": "T", "seg": "ie", "post": "r", "g": "I", "l": 0}, {"id": 975, "w": "Sieb", "pre": "S", "seg": "ie", "post": "b", "g": "I", "l": 0}, {"id": 976, "w": "Dieb", "pre": "D", "seg": "ie", "post": "b", "g": "I", "l": 0}, {"id": 977, "w": "Kiel", "pre": "K", "seg": "ie", "post": "l", "g": "I", "l": 0}, {"id": 978, "w": "Wiese", "pre": "W", "seg": "ie", "post": "se", "g": "I", "l": 0}, {"id": 979, "w": "Riese", "pre": "R", "seg": "ie", "post": "se", "g": "I", "l": 0}, {"id": 980, "w": "Wien", "pre": "W", "seg": "ie", "post": "n", "g": "I", "l": 0}, {"id": 981, "w": "lieben", "pre": "l", "seg": "ie", "post": "ben", "g": "I", "l": 0}, {"id": 982, "w": "liegen", "pre": "l", "seg": "ie", "post": "gen", "g": "I", "l": 0}, {"id": 983, "w": "bieten", "pre": "b", "seg": "ie", "post": "ten", "g": "I", "l": 0}, {"id": 984, "w": "frieren", "pre": "fr", "seg": "ie", "post": "ren", "g": "I", "l": 0}, {"id": 985, "w": "schrieb", "pre": "schr", "seg": "ie", "post": "b", "g": "I", "l": 0}, {"id": 986, "w": "blieb", "pre": "bl", "seg": "ie", "post": "b", "g": "I", "l": 0}, {"id": 987, "w": "Kiefer", "pre": "K", "seg": "ie", "post": "fer", "g": "I", "l": 0}, {"id": 988, "w": "Priester", "pre": "Pr", "seg": "ie", "post": "ster", "g": "I", "l": 0}, {"id": 989, "w": "Schließfach", "pre": "Schl", "seg": "ie", "post": "ßfach", "g": "I", "l": 0}, {"id": 990, "w": "Ziegel", "pre": "Z", "seg": "ie", "post": "gel", "g": "I", "l": 0}, {"id": 991, "w": "Niere", "pre": "N", "seg": "ie", "post": "re", "g": "I", "l": 0}, {"id": 992, "w": "fiel", "pre": "f", "seg": "ie", "post": "l", "g": "I", "l": 0}, {"id": 993, "w": "Spieß", "pre": "Sp", "seg": "ie", "post": "ß", "g": "I", "l": 0}, {"id": 994, "w": "Fliese", "pre": "Fl", "seg": "ie", "post": "se", "g": "I", "l": 0}, {"id": 995, "w": "Briefmarke", "pre": "Br", "seg": "ie", "post": "fmarke", "g": "I", "l": 0}, {"id": 996, "w": "Zeile", "pre": "Z", "seg": "ei", "post": "le", "g": "EI", "l": 0}, {"id": 997, "w": "Leid", "pre": "L", "seg": "ei", "post": "d", "g": "EI", "l": 0}, {"id": 998, "w": "leider", "pre": "l", "seg": "ei", "post": "der", "g": "EI", "l": 0}, {"id": 999, "w": "Keil", "pre": "K", "seg": "ei", "post": "l", "g": "EI", "l": 0}, {"id": 1000, "w": "Scheine", "pre": "Sch", "seg": "ei", "post": "ne", "g": "EI", "l": 0}, {"id": 1001, "w": "Reise", "pre": "R", "seg": "ei", "post": "se", "g": "EI", "l": 0}, {"id": 1002, "w": "Reifen", "pre": "R", "seg": "ei", "post": "fen", "g": "EI", "l": 0}, {"id": 1003, "w": "Fleiß", "pre": "Fl", "seg": "ei", "post": "ß", "g": "EI", "l": 0}, {"id": 1004, "w": "Gleis", "pre": "Gl", "seg": "ei", "post": "s", "g": "EI", "l": 0}, {"id": 1005, "w": "Scheitel", "pre": "Sch", "seg": "ei", "post": "tel", "g": "EI", "l": 0}, {"id": 1006, "w": "Freiheit", "pre": "Fr", "seg": "ei", "post": "heit", "g": "EI", "l": 0}, {"id": 1007, "w": "weinen", "pre": "w", "seg": "ei", "post": "nen", "g": "EI", "l": 0}, {"id": 1008, "w": "Speise", "pre": "Sp", "seg": "ei", "post": "se", "g": "EI", "l": 0}, {"id": 1009, "w": "keine", "pre": "k", "seg": "ei", "post": "ne", "g": "EI", "l": 0}, {"id": 1010, "w": "Teil", "pre": "T", "seg": "ei", "post": "l", "g": "EI", "l": 0}, {"id": 1011, "w": "Heirat", "pre": "H", "seg": "ei", "post": "rat", "g": "EI", "l": 0}, {"id": 1012, "w": "beide", "pre": "b", "seg": "ei", "post": "de", "g": "EI", "l": 0}, {"id": 1013, "w": "drei", "pre": "dr", "seg": "ei", "post": "", "g": "EI", "l": 0}, {"id": 1014, "w": "zeigen", "pre": "z", "seg": "ei", "post": "gen", "g": "EI", "l": 0}, {"id": 1015, "w": "Ei", "pre": "", "seg": "ei", "post": "", "g": "EI", "l": 0}, {"id": 1016, "w": "Eis", "pre": "", "seg": "ei", "post": "s", "g": "EI", "l": 0}, {"id": 1017, "w": "Eisen", "pre": "", "seg": "ei", "post": "sen", "g": "EI", "l": 0}, {"id": 1018, "w": "einsam", "pre": "", "seg": "ei", "post": "nsam", "g": "EI", "l": 0}, {"id": 1019, "w": "eilig", "pre": "", "seg": "ei", "post": "lig", "g": "EI", "l": 0}, {"id": 1020, "w": "Seife", "pre": "S", "seg": "ei", "post": "fe", "g": "EI", "l": 0}, {"id": 1021, "w": "Blei", "pre": "Bl", "seg": "ei", "post": "", "g": "EI", "l": 0}, {"id": 1022, "w": "Steig", "pre": "St", "seg": "ei", "post": "g", "g": "EI", "l": 0}, {"id": 1023, "w": "Kreide", "pre": "Kr", "seg": "ei", "post": "de", "g": "EI", "l": 0}, {"id": 1024, "w": "Schleife", "pre": "Schl", "seg": "ei", "post": "fe", "g": "EI", "l": 0}, {"id": 1025, "w": "Pfeife", "pre": "Pf", "seg": "ei", "post": "fe", "g": "EI", "l": 0}, {"id": 1026, "w": "Greifen", "pre": "Gr", "seg": "ei", "post": "fen", "g": "EI", "l": 0}, {"id": 1027, "w": "mein", "pre": "m", "seg": "ei", "post": "n", "g": "EI", "l": 0}, {"id": 1028, "w": "dein", "pre": "d", "seg": "ei", "post": "n", "g": "EI", "l": 0}, {"id": 1029, "w": "Beine", "pre": "B", "seg": "ei", "post": "ne", "g": "EI", "l": 0}, {"id": 1030, "w": "Stern", "pre": "St", "seg": "e", "post": "rn", "g": "E", "l": 0}, {"id": 1031, "w": "Feld", "pre": "F", "seg": "e", "post": "ld", "g": "E", "l": 0}, {"id": 1032, "w": "Berg", "pre": "B", "seg": "e", "post": "rg", "g": "E", "l": 0}, {"id": 1033, "w": "Held", "pre": "H", "seg": "e", "post": "ld", "g": "E", "l": 0}, {"id": 1034, "w": "Kette", "pre": "K", "seg": "e", "post": "tte", "g": "E", "l": 0}, {"id": 1035, "w": "Messer", "pre": "M", "seg": "e", "post": "sser", "g": "E", "l": 0}, {"id": 1036, "w": "rennen", "pre": "r", "seg": "e", "post": "nnen", "g": "E", "l": 0}, {"id": 1037, "w": "sechs", "pre": "s", "seg": "e", "post": "chs", "g": "E", "l": 0}, {"id": 1038, "w": "Wechsel", "pre": "W", "seg": "e", "post": "chsel", "g": "E", "l": 0}, {"id": 1039, "w": "Text", "pre": "T", "seg": "e", "post": "xt", "g": "E", "l": 0}, {"id": 1040, "w": "besser", "pre": "b", "seg": "e", "post": "sser", "g": "E", "l": 0}, {"id": 1041, "w": "wenig", "pre": "w", "seg": "e", "post": "nig", "g": "E", "l": 0}, {"id": 1042, "w": "neben", "pre": "n", "seg": "e", "post": "ben", "g": "E", "l": 0}, {"id": 1043, "w": "fern", "pre": "f", "seg": "e", "post": "rn", "g": "E", "l": 0}, {"id": 1044, "w": "wer", "pre": "w", "seg": "e", "post": "r", "g": "E", "l": 0}, {"id": 1045, "w": "dem", "pre": "d", "seg": "e", "post": "m", "g": "E", "l": 0}, {"id": 1046, "w": "den", "pre": "d", "seg": "e", "post": "n", "g": "E", "l": 0}, {"id": 1047, "w": "setzen", "pre": "s", "seg": "e", "post": "tzen", "g": "E", "l": 0}, {"id": 1048, "w": "legen", "pre": "l", "seg": "e", "post": "gen", "g": "E", "l": 0}, {"id": 1049, "w": "regnen", "pre": "r", "seg": "e", "post": "gnen", "g": "E", "l": 0}, {"id": 1050, "w": "Fleck", "pre": "Fl", "seg": "e", "post": "ck", "g": "E", "l": 0}, {"id": 1051, "w": "Fell", "pre": "F", "seg": "e", "post": "ll", "g": "E", "l": 0}, {"id": 1052, "w": "Grenze", "pre": "Gr", "seg": "e", "post": "nze", "g": "E", "l": 0}, {"id": 1053, "w": "Sekunde", "pre": "S", "seg": "e", "post": "kunde", "g": "E", "l": 0}, {"id": 1054, "w": "Ferien", "pre": "F", "seg": "e", "post": "rien", "g": "E", "l": 0}, {"id": 1055, "w": "Kern", "pre": "K", "seg": "e", "post": "rn", "g": "E", "l": 0}, {"id": 1056, "w": "Werk", "pre": "W", "seg": "e", "post": "rk", "g": "E", "l": 0}, {"id": 1057, "w": "Leere", "pre": "L", "seg": "ee", "post": "re", "g": "E", "l": 0}, {"id": 1058, "w": "Beet", "pre": "B", "seg": "ee", "post": "t", "g": "E", "l": 0}, {"id": 1059, "w": "kehren", "pre": "k", "seg": "eh", "post": "ren", "g": "E", "l": 0}, {"id": 1060, "w": "lehren", "pre": "l", "seg": "eh", "post": "ren", "g": "E", "l": 0}, {"id": 1061, "w": "lehnen", "pre": "l", "seg": "eh", "post": "nen", "g": "E", "l": 0}, {"id": 1062, "w": "wehren", "pre": "w", "seg": "eh", "post": "ren", "g": "E", "l": 0}, {"id": 1063, "w": "Gehalt", "pre": "G", "seg": "eh", "post": "alt", "g": "E", "l": 0}, {"id": 1064, "w": "gehören", "pre": "g", "seg": "eh", "post": "ören", "g": "E", "l": 0}, {"id": 1065, "w": "Mehrheit", "pre": "M", "seg": "eh", "post": "rheit", "g": "E", "l": 0}, {"id": 1066, "w": "Ding", "pre": "D", "seg": "i", "post": "ng", "g": "I", "l": 0}, {"id": 1067, "w": "Kinn", "pre": "K", "seg": "i", "post": "nn", "g": "I", "l": 0}, {"id": 1068, "w": "Zinn", "pre": "Z", "seg": "i", "post": "nn", "g": "I", "l": 0}, {"id": 1069, "w": "Zink", "pre": "Z", "seg": "i", "post": "nk", "g": "I", "l": 0}, {"id": 1070, "w": "Hirt", "pre": "H", "seg": "i", "post": "rt", "g": "I", "l": 0}, {"id": 1071, "w": "Stirn", "pre": "St", "seg": "i", "post": "rn", "g": "I", "l": 0}, {"id": 1072, "w": "First", "pre": "F", "seg": "i", "post": "rst", "g": "I", "l": 0}, {"id": 1073, "w": "mir", "pre": "m", "seg": "i", "post": "r", "g": "I", "l": 0}, {"id": 1074, "w": "dir", "pre": "d", "seg": "i", "post": "r", "g": "I", "l": 0}, {"id": 1075, "w": "Ring", "pre": "R", "seg": "i", "post": "ng", "g": "I", "l": 0}, {"id": 1076, "w": "singen", "pre": "s", "seg": "i", "post": "ngen", "g": "I", "l": 0}, {"id": 1077, "w": "sitzen", "pre": "s", "seg": "i", "post": "tzen", "g": "I", "l": 0}, {"id": 1078, "w": "wissen", "pre": "w", "seg": "i", "post": "ssen", "g": "I", "l": 0}, {"id": 1079, "w": "bitter", "pre": "b", "seg": "i", "post": "tter", "g": "I", "l": 0}, {"id": 1080, "w": "Minute", "pre": "M", "seg": "i", "post": "nute", "g": "I", "l": 0}, {"id": 1081, "w": "Spitze", "pre": "Sp", "seg": "i", "post": "tze", "g": "I", "l": 0}, {"id": 1082, "w": "Film", "pre": "F", "seg": "i", "post": "lm", "g": "I", "l": 0}, {"id": 1083, "w": "Griff", "pre": "Gr", "seg": "i", "post": "ff", "g": "I", "l": 0}, {"id": 1084, "w": "Rinde", "pre": "R", "seg": "i", "post": "nde", "g": "I", "l": 0}, {"id": 1085, "w": "Bild", "pre": "B", "seg": "i", "post": "ld", "g": "I", "l": 0}, {"id": 1086, "w": "Schiff", "pre": "Sch", "seg": "i", "post": "ff", "g": "I", "l": 0}, {"id": 1087, "w": "Stift", "pre": "St", "seg": "i", "post": "ft", "g": "I", "l": 0}, {"id": 1088, "w": "Boden", "pre": "B", "seg": "o", "post": "den", "g": "O", "l": 0}, {"id": 1089, "w": "Hof", "pre": "H", "seg": "o", "post": "f", "g": "O", "l": 0}, {"id": 1090, "w": "Floh", "pre": "Fl", "seg": "oh", "post": "", "g": "O", "l": 0}, {"id": 1091, "w": "Globe", "pre": "Gl", "seg": "o", "post": "be", "g": "O", "l": 0}, {"id": 1092, "w": "Glocke", "pre": "Gl", "seg": "o", "post": "cke", "g": "O", "l": 0}, {"id": 1093, "w": "Frosch", "pre": "Fr", "seg": "o", "post": "sch", "g": "O", "l": 0}, {"id": 1094, "w": "Profi", "pre": "Pr", "seg": "o", "post": "fi", "g": "O", "l": 0}, {"id": 1095, "w": "Tor", "pre": "T", "seg": "o", "post": "r", "g": "O", "l": 0}, {"id": 1096, "w": "Hose", "pre": "H", "seg": "o", "post": "se", "g": "O", "l": 0}, {"id": 1097, "w": "Lob", "pre": "L", "seg": "o", "post": "b", "g": "O", "l": 0}, {"id": 1098, "w": "Tod", "pre": "T", "seg": "o", "post": "d", "g": "O", "l": 0}, {"id": 1099, "w": "Rost", "pre": "R", "seg": "o", "post": "st", "g": "O", "l": 0}, {"id": 1100, "w": "Kost", "pre": "K", "seg": "o", "post": "st", "g": "O", "l": 0}, {"id": 1101, "w": "Doktor", "pre": "D", "seg": "o", "post": "ktor", "g": "O", "l": 0}, {"id": 1102, "w": "Sommer", "pre": "S", "seg": "o", "post": "mmer", "g": "O", "l": 0}, {"id": 1103, "w": "Honig", "pre": "H", "seg": "o", "post": "nig", "g": "O", "l": 0}, {"id": 1104, "w": "Monat", "pre": "M", "seg": "o", "post": "nat", "g": "O", "l": 0}, {"id": 1105, "w": "Mond", "pre": "M", "seg": "o", "post": "nd", "g": "O", "l": 0}, {"id": 1106, "w": "oben", "pre": "", "seg": "o", "post": "ben", "g": "O", "l": 0}, {"id": 1107, "w": "holen", "pre": "h", "seg": "o", "post": "len", "g": "O", "l": 0}, {"id": 1108, "w": "wollen", "pre": "w", "seg": "o", "post": "llen", "g": "O", "l": 0}, {"id": 1109, "w": "sollen", "pre": "s", "seg": "o", "post": "llen", "g": "O", "l": 0}, {"id": 1110, "w": "rot", "pre": "r", "seg": "o", "post": "t", "g": "O", "l": 0}, {"id": 1111, "w": "tot", "pre": "t", "seg": "o", "post": "t", "g": "O", "l": 0}, {"id": 1112, "w": "Kohle", "pre": "K", "seg": "oh", "post": "le", "g": "O", "l": 0}, {"id": 1113, "w": "Flug", "pre": "Fl", "seg": "u", "post": "g", "g": "U", "l": 0}, {"id": 1114, "w": "Mund", "pre": "M", "seg": "u", "post": "nd", "g": "U", "l": 0}, {"id": 1115, "w": "Grund", "pre": "Gr", "seg": "u", "post": "nd", "g": "U", "l": 0}, {"id": 1116, "w": "Wurm", "pre": "W", "seg": "u", "post": "rm", "g": "U", "l": 0}, {"id": 1117, "w": "Turm", "pre": "T", "seg": "u", "post": "rm", "g": "U", "l": 0}, {"id": 1118, "w": "Burg", "pre": "B", "seg": "u", "post": "rg", "g": "U", "l": 0}, {"id": 1119, "w": "Luft", "pre": "L", "seg": "u", "post": "ft", "g": "U", "l": 0}, {"id": 1120, "w": "Kugel", "pre": "K", "seg": "u", "post": "gel", "g": "U", "l": 0}, {"id": 1121, "w": "Fluss", "pre": "Fl", "seg": "u", "post": "ss", "g": "U", "l": 0}, {"id": 1122, "w": "Schluss", "pre": "Schl", "seg": "u", "post": "ss", "g": "U", "l": 0}, {"id": 1123, "w": "Kuss", "pre": "K", "seg": "u", "post": "ss", "g": "U", "l": 0}, {"id": 1124, "w": "Busch", "pre": "B", "seg": "u", "post": "sch", "g": "U", "l": 0}, {"id": 1125, "w": "Druck", "pre": "Dr", "seg": "u", "post": "ck", "g": "U", "l": 0}, {"id": 1126, "w": "Strumpf", "pre": "Str", "seg": "u", "post": "mpf", "g": "U", "l": 0}, {"id": 1127, "w": "Nummer", "pre": "N", "seg": "u", "post": "mmer", "g": "U", "l": 0}, {"id": 1128, "w": "Kurve", "pre": "K", "seg": "u", "post": "rve", "g": "U", "l": 0}, {"id": 1129, "w": "Summe", "pre": "S", "seg": "u", "post": "mme", "g": "U", "l": 0}, {"id": 1130, "w": "Punkt", "pre": "P", "seg": "u", "post": "nkt", "g": "U", "l": 0}, {"id": 1131, "w": "Pulli", "pre": "P", "seg": "u", "post": "lli", "g": "U", "l": 0}, {"id": 1132, "w": "Huste", "pre": "H", "seg": "u", "post": "ste", "g": "U", "l": 0}, {"id": 1133, "w": "Gummi", "pre": "G", "seg": "u", "post": "mmi", "g": "U", "l": 0}, {"id": 1134, "w": "Hände", "pre": "H", "seg": "ä", "post": "nde", "g": "E", "l": 0}, {"id": 1135, "w": "Bälle", "pre": "B", "seg": "ä", "post": "lle", "g": "E", "l": 0}, {"id": 1136, "w": "Fälle", "pre": "F", "seg": "ä", "post": "lle", "g": "E", "l": 0}, {"id": 1137, "w": "Käfer", "pre": "K", "seg": "ä", "post": "fer", "g": "E", "l": 0}, {"id": 1138, "w": "Länder", "pre": "L", "seg": "ä", "post": "nder", "g": "E", "l": 0}, {"id": 1139, "w": "Nägel", "pre": "N", "seg": "ä", "post": "gel", "g": "E", "l": 0}, {"id": 1140, "w": "Männer", "pre": "M", "seg": "ä", "post": "nner", "g": "E", "l": 0}, {"id": 1141, "w": "Pläne", "pre": "Pl", "seg": "ä", "post": "ne", "g": "E", "l": 0}, {"id": 1142, "w": "Päckchen", "pre": "P", "seg": "ä", "post": "ckchen", "g": "E", "l": 0}, {"id": 1143, "w": "Blätter", "pre": "Bl", "seg": "ä", "post": "tter", "g": "E", "l": 0}, {"id": 1144, "w": "Schätze", "pre": "Sch", "seg": "ä", "post": "tze", "g": "E", "l": 0}, {"id": 1145, "w": "Kämme", "pre": "K", "seg": "ä", "post": "mme", "g": "E", "l": 0}, {"id": 1146, "w": "Räder", "pre": "R", "seg": "ä", "post": "der", "g": "E", "l": 0}, {"id": 1147, "w": "Gäste", "pre": "G", "seg": "ä", "post": "ste", "g": "E", "l": 0}, {"id": 1148, "w": "Lärm", "pre": "L", "seg": "ä", "post": "rm", "g": "E", "l": 0}, {"id": 1149, "w": "ändern", "pre": "", "seg": "ä", "post": "ndern", "g": "E", "l": 0}, {"id": 1150, "w": "häufig", "pre": "h", "seg": "äu", "post": "fig", "g": "EU", "l": 0}, {"id": 1151, "w": "nämlich", "pre": "n", "seg": "ä", "post": "mlich", "g": "E", "l": 0}, {"id": 1152, "w": "verständlich", "pre": "verst", "seg": "ä", "post": "ndlich", "g": "E", "l": 0}, {"id": 1153, "w": "Präsident", "pre": "Pr", "seg": "ä", "post": "sident", "g": "E", "l": 0}, {"id": 1154, "w": "Sätze", "pre": "S", "seg": "ä", "post": "tze", "g": "E", "l": 0}, {"id": 1155, "w": "stärker", "pre": "st", "seg": "ä", "post": "rker", "g": "E", "l": 0}, {"id": 1156, "w": "nähen", "pre": "n", "seg": "äh", "post": "en", "g": "E", "l": 0}, {"id": 1157, "w": "zählen", "pre": "z", "seg": "äh", "post": "len", "g": "E", "l": 0}, {"id": 1158, "w": "erzählen", "pre": "erz", "seg": "äh", "post": "len", "g": "E", "l": 0}, {"id": 1159, "w": "erwähnen", "pre": "erw", "seg": "äh", "post": "nen", "g": "E", "l": 0}, {"id": 1160, "w": "mähen", "pre": "m", "seg": "äh", "post": "en", "g": "E", "l": 0}, {"id": 1161, "w": "lähmen", "pre": "l", "seg": "äh", "post": "men", "g": "E", "l": 0}, {"id": 1162, "w": "Währung", "pre": "W", "seg": "äh", "post": "rung", "g": "E", "l": 0}, {"id": 1163, "w": "gähnen", "pre": "g", "seg": "äh", "post": "nen", "g": "E", "l": 0}, {"id": 1164, "w": "Körper", "pre": "K", "seg": "ö", "post": "rper", "g": "OE", "l": 0}, {"id": 1165, "w": "Döner", "pre": "D", "seg": "ö", "post": "ner", "g": "OE", "l": 0}, {"id": 1166, "w": "Lösung", "pre": "L", "seg": "ö", "post": "sung", "g": "OE", "l": 0}, {"id": 1167, "w": "Götter", "pre": "G", "seg": "ö", "post": "tter", "g": "OE", "l": 0}, {"id": 1168, "w": "Töpfe", "pre": "T", "seg": "ö", "post": "pfe", "g": "OE", "l": 0}, {"id": 1169, "w": "Knöpfe", "pre": "Kn", "seg": "ö", "post": "pfe", "g": "OE", "l": 0}, {"id": 1170, "w": "König", "pre": "K", "seg": "ö", "post": "nig", "g": "OE", "l": 0}, {"id": 1171, "w": "Löcher", "pre": "L", "seg": "ö", "post": "cher", "g": "OE", "l": 0}, {"id": 1172, "w": "Vögel", "pre": "V", "seg": "ö", "post": "gel", "g": "OE", "l": 0}, {"id": 1173, "w": "Frösche", "pre": "Fr", "seg": "ö", "post": "sche", "g": "OE", "l": 0}, {"id": 1174, "w": "Höfe", "pre": "H", "seg": "ö", "post": "fe", "g": "OE", "l": 0}, {"id": 1175, "w": "Pförtner", "pre": "Pf", "seg": "ö", "post": "rtner", "g": "OE", "l": 0}, {"id": 1176, "w": "Schöpfer", "pre": "Sch", "seg": "ö", "post": "pfer", "g": "OE", "l": 0}, {"id": 1177, "w": "stören", "pre": "st", "seg": "ö", "post": "ren", "g": "OE", "l": 0}, {"id": 1178, "w": "zögern", "pre": "z", "seg": "ö", "post": "gern", "g": "OE", "l": 0}, {"id": 1179, "w": "lösen", "pre": "l", "seg": "ö", "post": "sen", "g": "OE", "l": 0}, {"id": 1180, "w": "gönnen", "pre": "g", "seg": "ö", "post": "nnen", "g": "OE", "l": 0}, {"id": 1181, "w": "töten", "pre": "t", "seg": "ö", "post": "ten", "g": "OE", "l": 0}, {"id": 1182, "w": "könnte", "pre": "k", "seg": "ö", "post": "nnte", "g": "OE", "l": 0}, {"id": 1183, "w": "Höhe", "pre": "H", "seg": "öh", "post": "e", "g": "OE", "l": 0}, {"id": 1184, "w": "gewöhnlich", "pre": "gew", "seg": "öh", "post": "nlich", "g": "OE", "l": 0}, {"id": 1185, "w": "gewöhnen", "pre": "gew", "seg": "öh", "post": "nen", "g": "OE", "l": 0}, {"id": 1186, "w": "stöhnen", "pre": "st", "seg": "öh", "post": "nen", "g": "OE", "l": 0}, {"id": 1187, "w": "verwöhnen", "pre": "verw", "seg": "öh", "post": "nen", "g": "OE", "l": 0}, {"id": 1188, "w": "Flöhe", "pre": "Fl", "seg": "öh", "post": "e", "g": "OE", "l": 0}, {"id": 1189, "w": "Füße", "pre": "F", "seg": "ü", "post": "ße", "g": "UE", "l": 0}, {"id": 1190, "w": "grün", "pre": "gr", "seg": "ü", "post": "n", "g": "UE", "l": 0}, {"id": 1191, "w": "Müll", "pre": "M", "seg": "ü", "post": "ll", "g": "UE", "l": 0}, {"id": 1192, "w": "Hüte", "pre": "H", "seg": "ü", "post": "te", "g": "UE", "l": 0}, {"id": 1193, "w": "Tüte", "pre": "T", "seg": "ü", "post": "te", "g": "UE", "l": 0}, {"id": 1194, "w": "lügen", "pre": "l", "seg": "ü", "post": "gen", "g": "UE", "l": 0}, {"id": 1195, "w": "Süd", "pre": "S", "seg": "ü", "post": "d", "g": "UE", "l": 0}, {"id": 1196, "w": "Nüsse", "pre": "N", "seg": "ü", "post": "sse", "g": "UE", "l": 0}, {"id": 1197, "w": "füllen", "pre": "f", "seg": "ü", "post": "llen", "g": "UE", "l": 0}, {"id": 1198, "w": "Würfel", "pre": "W", "seg": "ü", "post": "rfel", "g": "UE", "l": 0}, {"id": 1199, "w": "Plüsch", "pre": "Pl", "seg": "ü", "post": "sch", "g": "UE", "l": 0}, {"id": 1200, "w": "Schüler", "pre": "Sch", "seg": "ü", "post": "ler", "g": "UE", "l": 0}, {"id": 1201, "w": "schützen", "pre": "sch", "seg": "ü", "post": "tzen", "g": "UE", "l": 0}, {"id": 1202, "w": "Flüsse", "pre": "Fl", "seg": "ü", "post": "sse", "g": "UE", "l": 0}, {"id": 1203, "w": "Blüte", "pre": "Bl", "seg": "ü", "post": "te", "g": "UE", "l": 0}, {"id": 1204, "w": "Mütze", "pre": "M", "seg": "ü", "post": "tze", "g": "UE", "l": 0}, {"id": 1205, "w": "Hügel", "pre": "H", "seg": "ü", "post": "gel", "g": "UE", "l": 0}, {"id": 1206, "w": "Kündigung", "pre": "K", "seg": "ü", "post": "ndigung", "g": "UE", "l": 0}, {"id": 1207, "w": "zünden", "pre": "z", "seg": "ü", "post": "nden", "g": "UE", "l": 0}, {"id": 1208, "w": "Bürger", "pre": "B", "seg": "ü", "post": "rger", "g": "UE", "l": 0}, {"id": 1209, "w": "Prüfung", "pre": "Pr", "seg": "ü", "post": "fung", "g": "UE", "l": 0}, {"id": 1210, "w": "Kühe", "pre": "K", "seg": "üh", "post": "e", "g": "UE", "l": 0}, {"id": 1211, "w": "Mühle", "pre": "M", "seg": "üh", "post": "le", "g": "UE", "l": 0}, {"id": 1212, "w": "glühen", "pre": "gl", "seg": "üh", "post": "en", "g": "UE", "l": 0}, {"id": 1213, "w": "blühen", "pre": "bl", "seg": "üh", "post": "en", "g": "UE", "l": 0}, {"id": 1214, "w": "verführen", "pre": "verf", "seg": "üh", "post": "ren", "g": "UE", "l": 0}, {"id": 1215, "w": "berühren", "pre": "ber", "seg": "üh", "post": "ren", "g": "UE", "l": 0}, {"id": 1216, "w": "Sühne", "pre": "S", "seg": "üh", "post": "ne", "g": "UE", "l": 0}, {"id": 1217, "w": "Glühwein", "pre": "Gl", "seg": "üh", "post": "wein", "g": "UE", "l": 0}, {"id": 1218, "w": "Übung", "pre": "", "seg": "ü", "post": "bung", "g": "UE", "l": 0}, {"id": 1219, "w": "Übersetzung", "pre": "", "seg": "ü", "post": "bersetzung", "g": "UE", "l": 0}, {"id": 1220, "w": "Haut", "pre": "H", "seg": "au", "post": "t", "g": "AU", "l": 0}, {"id": 1221, "w": "Mauer", "pre": "M", "seg": "au", "post": "er", "g": "AU", "l": 0}, {"id": 1222, "w": "Flausch", "pre": "Fl", "seg": "au", "post": "sch", "g": "AU", "l": 0}, {"id": 1223, "w": "Braut", "pre": "Br", "seg": "au", "post": "t", "g": "AU", "l": 0}, {"id": 1224, "w": "Strauß", "pre": "Str", "seg": "au", "post": "ß", "g": "AU", "l": 0}, {"id": 1225, "w": "Bauer", "pre": "B", "seg": "au", "post": "er", "g": "AU", "l": 0}, {"id": 1226, "w": "Lauge", "pre": "L", "seg": "au", "post": "ge", "g": "AU", "l": 0}, {"id": 1227, "w": "Raupe", "pre": "R", "seg": "au", "post": "pe", "g": "AU", "l": 0}, {"id": 1228, "w": "Zauber", "pre": "Z", "seg": "au", "post": "ber", "g": "AU", "l": 0}, {"id": 1229, "w": "Tau", "pre": "T", "seg": "au", "post": "", "g": "AU", "l": 0}, {"id": 1230, "w": "Taube", "pre": "T", "seg": "au", "post": "be", "g": "AU", "l": 0}, {"id": 1231, "w": "sauber", "pre": "s", "seg": "au", "post": "ber", "g": "AU", "l": 0}, {"id": 1232, "w": "Dauer", "pre": "D", "seg": "au", "post": "er", "g": "AU", "l": 0}, {"id": 1233, "w": "Laune", "pre": "L", "seg": "au", "post": "ne", "g": "AU", "l": 0}, {"id": 1234, "w": "Kauf", "pre": "K", "seg": "au", "post": "f", "g": "AU", "l": 0}, {"id": 1235, "w": "Lauf", "pre": "L", "seg": "au", "post": "f", "g": "AU", "l": 0}, {"id": 1236, "w": "Flaute", "pre": "Fl", "seg": "au", "post": "te", "g": "AU", "l": 0}, {"id": 1237, "w": "Traube", "pre": "Tr", "seg": "au", "post": "be", "g": "AU", "l": 0}, {"id": 1238, "w": "Baustelle", "pre": "B", "seg": "au", "post": "stelle", "g": "AU", "l": 0}, {"id": 1239, "w": "Schauspieler", "pre": "Sch", "seg": "au", "post": "spieler", "g": "AU", "l": 0}, {"id": 1240, "w": "blau", "pre": "bl", "seg": "au", "post": "", "g": "AU", "l": 0}, {"id": 1241, "w": "grau", "pre": "gr", "seg": "au", "post": "", "g": "AU", "l": 0}, {"id": 1242, "w": "raus", "pre": "r", "seg": "au", "post": "s", "g": "AU", "l": 0}, {"id": 1243, "w": "draußen", "pre": "dr", "seg": "au", "post": "ßen", "g": "AU", "l": 0}, {"id": 1244, "w": "drauf", "pre": "dr", "seg": "au", "post": "f", "g": "AU", "l": 0}, {"id": 1245, "w": "kauen", "pre": "k", "seg": "au", "post": "en", "g": "AU", "l": 0}, {"id": 1246, "w": "staunen", "pre": "st", "seg": "au", "post": "nen", "g": "AU", "l": 0}, {"id": 1247, "w": "zaubern", "pre": "z", "seg": "au", "post": "bern", "g": "AU", "l": 0}, {"id": 1248, "w": "bauen", "pre": "b", "seg": "au", "post": "en", "g": "AU", "l": 0}, {"id": 1249, "w": "saugen", "pre": "s", "seg": "au", "post": "gen", "g": "AU", "l": 0}, {"id": 1250, "w": "trauen", "pre": "tr", "seg": "au", "post": "en", "g": "AU", "l": 0}, {"id": 1251, "w": "Rum", "pre": "R", "seg": "u", "post": "m", "g": "U", "l": 0}, {"id": 1252, "w": "Maut", "pre": "M", "seg": "au", "post": "t", "g": "AU", "l": 0}, {"id": 1253, "w": "Staub", "pre": "St", "seg": "au", "post": "b", "g": "AU", "l": 0}];
+
+  var STORAGE_KEY = "daz_vokal_hoeren_v1";
+  var LESSONS = 12; /* L1-L11 und Zusatzwoerter */
+
+  /* Lautgruppen: Schreibungen, die gleich klingen, stehen zusammen in einer Gruppe.
+     Als Antwort wird pro Frage immer nur EINE Schreibung aus einer Gruppe angeboten. */
+  var GROUPS = [
+    { id: "I",  variants: ["i", "ie", "ih", "ieh"], conf: ["E", "UE", "OE"],
+      text: "Kurzes i schreibt man i (Kind, Tisch). Langes i schreibt man meist ie (Liebe, Brief), selten i (Tiger, Klima), ih (ihr, ihm) oder ieh (sieht, Vieh)." },
+    { id: "E",  variants: ["e", "ee", "eh", "ä", "äh"], conf: ["I", "OE", "A"],
+      text: "e, ee, eh, ä und äh klingen gleich (kurz: Bett, Hände – lang: See, mehr, Käse, Zähne). Man hört den Unterschied nicht. Hilfe: Gibt es ein verwandtes Wort mit a? Dann schreibt man meist ä (Hände – Hand, Gäste – Gast)." },
+    { id: "A",  variants: ["a", "aa", "ah"], conf: ["O", "E", "AU"],
+      text: "a, aa und ah klingen gleich, kurz oder lang (Mann, Plan – Paar, Saal – Bahn, Jahr). aa ist selten." },
+    { id: "O",  variants: ["o", "oo", "oh"], conf: ["U", "A", "OE"],
+      text: "o, oo und oh klingen gleich (Post, Ton – Boot, Zoo – Sohn, Ohr). oo ist selten." },
+    { id: "U",  variants: ["u", "uh"], conf: ["O", "UE", "AU"],
+      text: "u und uh klingen gleich (Hund, Schule – Uhr, Schuh). Es gibt kein uu." },
+    { id: "OE", variants: ["ö", "öh"], conf: ["UE", "E", "O"],
+      text: "ö und öh klingen gleich (schön, können – Höhle, Söhne). ö klingt anders als e und o: Lippen rund, Zunge wie bei e." },
+    { id: "UE", variants: ["ü", "üh", "y"], conf: ["I", "OE", "U"],
+      text: "ü und üh klingen gleich (Tür, müssen – früh, fühlen). In Fremdwörtern steht oft y mit demselben Laut (Typ, System). ü klingt anders als i und u: Lippen rund, Zunge wie bei i." },
+    { id: "AU", variants: ["au"], conf: ["EU", "EI", "O"],
+      text: "au klingt immer gleich (Haus, Baum) – und anders als äu/eu (Häuser, neu)." },
+    { id: "EI", variants: ["ei", "ai"], conf: ["EU", "AU", "I"],
+      text: "ei und ai klingen gleich. ei ist viel häufiger (Zeit, Eis); ai ist selten (Mai, Kaiser, Saite – Seite)." },
+    { id: "EU", variants: ["eu", "äu"], conf: ["EI", "AU", "OE"],
+      text: "eu und äu klingen gleich (neu, Freund – Häuser, Bäume). Hilfe: Gibt es ein verwandtes Wort mit au? Dann schreibt man äu (Haus – Häuser, Baum – Bäume)." }
+  ];
+  /* Beispielwoerter je Schreibung (zum Vergleichen hoeren) */
+  var EXAMPLE = { i: "Kind", ie: "Liebe", ih: "ihr", ieh: "sieht", e: "Bett", ee: "See", eh: "mehr", "ä": "Käse", "äh": "Zähne",
+    a: "Mann", aa: "Paar", ah: "Bahn", o: "Post", oo: "Boot", oh: "Sohn", u: "Hund", uh: "Uhr",
+    "ö": "schön", "öh": "Höhle", "ü": "Tür", "üh": "früh", y: "Typ", au: "Haus", ei: "Zeit", ai: "Mai", eu: "neu", "äu": "Bäume" };
+  /* Schwerpunkte: haeufige Verwechslungen. PARTNER nennt je Schreibung die Schreibungen, mit denen sie verwechselt wird. */
+  var PARTNER = {
+    e: ["i"], ee: ["ie"], eh: ["ih"], i: ["e"], ih: ["eh"], ie: ["ei", "ee", "eh"], ieh: ["ei", "eh"], ei: ["ie"], ai: ["ie"],
+    o: ["u"], oo: ["u"], oh: ["uh"], u: ["o", "au"], uh: ["oh", "au"], au: ["u", "uh"],
+    "ä": ["ö", "ü"], "äh": ["öh", "üh"], "ö": ["ä", "ü"], "öh": ["äh", "üh"], "ü": ["ä", "ö"], "üh": ["äh", "öh"], y: ["ä", "ö"]
+  };
+  var MODES = [
+    { id: "ie-ei", label: "ie – ei", sides: [["ie", "ieh"], ["ei", "ai"]],
+      text: "ie klingt wie langes i (Tier, Liebe). ei klingt wie a + i (Eis, Zeit)." },
+    { id: "e-i", label: "e – i", sides: [["e", "ee", "eh"], ["i", "ih", "ie", "ieh"]],
+      text: "e / eh: Der Mund ist etwas offener (Bett, mehr). i / ih / ie: Der Mund ist fast zu, die Lippen sind sehr breit (Bitte, ihr, Tier)." },
+    { id: "o-u", label: "o – u", sides: [["o", "oo", "oh"], ["u", "uh"]],
+      text: "o / oh: Die Lippen sind rund, der Mund ist offener (Post, Sohn). u / uh: Die Lippen sind sehr rund, der Mund fast zu (Hund, Uhr)." },
+    { id: "aou", label: "ä – ö – ü", sides: [["ä", "äh"], ["ö", "öh"], ["ü", "üh", "y"]],
+      text: "ä klingt wie e, die Lippen sind breit (Käse). ö: Lippen rund, Zunge wie bei e (schön). ü: Lippen rund, Zunge wie bei i (Tür)." },
+    { id: "u-au", label: "u – au", sides: [["u", "uh"], ["au"]],
+      text: "u ist ein einzelner Laut (Buch). au sind zwei Laute: a + u (Bauch)." }
+  ];
+  var VARIANT_WEIGHT = { y: 0.15, ieh: 0.3, "äh": 0.4, ih: 0.5, oo: 0.5, aa: 0.6 };
+  var WEIGHTS = [3, 2, 1];
+
+  var groupById = {};
+  GROUPS.forEach(function (g, k) { g.idx = k; groupById[g.id] = g; g.label = g.variants.join(" / "); });
+
+  var store = { settings: { lessons: [], groups: [], nopts: 4, size: 20, auto: true, play: true, voice: "", focus: "all", prio: true }, words: {} };
+  var i;
+  for (i = 0; i < LESSONS; i++) { store.settings.lessons.push(true); }
+  for (i = 0; i < GROUPS.length; i++) { store.settings.groups.push(true); }
+  var session = null;
+  var autoTimer = null;
+  var playTimer = null;
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) { e.className = cls; }
+    if (text !== undefined && text !== null) { e.textContent = text; }
+    return e;
+  }
+  function clear(node) { while (node.firstChild) { node.removeChild(node.firstChild); } }
+
+  /* ---------- Speicher ---------- */
+  function load() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) { return; }
+      var s = JSON.parse(raw), k;
+      if (s && s.settings) {
+        var st = s.settings;
+        if (st.lessons && st.lessons.length === LESSONS) { for (k = 0; k < LESSONS; k++) { store.settings.lessons[k] = !!st.lessons[k]; } }
+        if (st.groups && st.groups.length === GROUPS.length) { for (k = 0; k < GROUPS.length; k++) { store.settings.groups[k] = !!st.groups[k]; } }
+        if (typeof st.nopts === "number" && st.nopts >= 3 && st.nopts <= 5) { store.settings.nopts = st.nopts; }
+        if (typeof st.size === "number") { store.settings.size = st.size; }
+        if (typeof st.auto === "boolean") { store.settings.auto = st.auto; }
+        if (typeof st.play === "boolean") { store.settings.play = st.play; }
+        if (typeof st.voice === "string") { store.settings.voice = st.voice; }
+        if (typeof st.focus === "string" && (st.focus === "all" || st.focus === "prio" || modeById(st.focus))) { store.settings.focus = st.focus; }
+        if (typeof st.prio === "boolean") { store.settings.prio = st.prio; }
+      }
+      if (s && s.words) { store.words = s.words; }
+    } catch (e) { /* ohne Speicher weiterarbeiten */ }
+  }
+  function save() { try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); } catch (e) { /* egal */ } }
+
+  /* ---------- Daten ---------- */
+  var byId = {};
+  ITEMS.forEach(function (it) { byId[it.id] = it; });
+  function modeById(id) { for (var k = 0; k < MODES.length; k++) { if (MODES[k].id === id) { return MODES[k]; } } return null; }
+  function segGroup(seg) { for (var k = 0; k < GROUPS.length; k++) { if (GROUPS[k].variants.indexOf(seg) >= 0) { return GROUPS[k].id; } } return ""; }
+  function sideIndex(mode, seg) { for (var k = 0; k < mode.sides.length; k++) { if (mode.sides[k].indexOf(seg) >= 0) { return k; } } return -1; }
+  function modesOf(seg) { return MODES.filter(function (m) { return sideIndex(m, seg) >= 0; }).map(function (m) { return m.id; }); }
+  /* erstes Zeichen gross, wenn die Luecke am Anfang eines Nomens steht */
+  function isCapStart(it) { return it.pre === "" && it.w.charAt(0) !== it.w.charAt(0).toLowerCase(); }
+  function lab(it, text) { return isCapStart(it) ? text.charAt(0).toUpperCase() + text.slice(1) : text; }
+  function lessonIdx(it) { return it.l === 0 ? LESSONS - 1 : it.l - 1; }
+  function rec(id) { return store.words[id] || null; }
+  function weightOf(id) { var r = rec(id); return (!r || r.box === undefined) ? 1 : WEIGHTS[r.box]; }
+  function isSure(id) { var r = rec(id); return !!(r && r.s >= 2); }
+
+  function inFocus(it) {
+    var f = store.settings.focus;
+    if (f === "all") { return store.settings.groups[groupById[it.g].idx]; }
+    if (f === "prio") { return modesOf(it.seg).length > 0; }
+    return modesOf(it.seg).indexOf(f) >= 0;
+  }
+  function poolIds() {
+    var out = [];
+    ITEMS.forEach(function (it) {
+      if (store.settings.lessons[lessonIdx(it)] && inFocus(it)) { out.push(it.id); }
+    });
+    return out;
+  }
+  function sampleWeight(id) {
+    var w = weightOf(id);
+    if (store.settings.focus === "all" && store.settings.prio && modesOf(byId[id].seg).length) { w *= 2; }
+    return w;
+  }
+  function weightedSample(ids, count) {
+    var keyed = ids.map(function (id) { return { id: id, k: Math.pow(Math.random(), 1 / sampleWeight(id)) }; });
+    keyed.sort(function (a, b) { return b.k - a.k; });
+    var n = (count > 0 && count < keyed.length) ? count : keyed.length;
+    var out = [];
+    for (var k = 0; k < n; k++) { out.push(keyed[k].id); }
+    return out;
+  }
+  function shuffle(a) {
+    var r = a.slice();
+    for (var k = r.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)); var t = r[k]; r[k] = r[j]; r[j] = t; }
+    return r;
+  }
+
+  /* Antwortoptionen: die richtige Schreibung + je EINE Schreibung aus anderen Lautgruppen.
+     Nie zwei Schreibungen derselben Gruppe (sie klingen gleich). */
+  function isSingle(v) { return v.length === 1; }
+  function pickVariant(group, wantSingle) {
+    var c = group.variants.filter(function (v) { return isSingle(v) === wantSingle; });
+    if (!c.length) { c = group.variants; }
+    var total = 0, k;
+    for (k = 0; k < c.length; k++) { total += (VARIANT_WEIGHT[c[k]] || 1); }
+    var r = Math.random() * total;
+    for (k = 0; k < c.length; k++) { r -= (VARIANT_WEIGHT[c[k]] || 1); if (r <= 0) { return c[k]; } }
+    return c[c.length - 1];
+  }
+  function buildOptions(it, n) {
+    var correctGroup = groupById[it.g];
+    var opts = [{ text: it.seg, correct: true, group: it.g }];
+    var used = {}; used[it.g] = true;
+    /* 1. Schwerpunkt-Verwechslungen zuerst (bis zu 2) */
+    var pr = [];
+    (PARTNER[it.seg] || []).forEach(function (ps) {
+      var gid = segGroup(ps), k;
+      for (k = 0; k < pr.length; k++) { if (pr[k].g === gid) { pr[k].vs.push(ps); return; } }
+      pr.push({ g: gid, vs: [ps] });
+    });
+    pr = shuffle(pr);
+    var k2;
+    for (k2 = 0; k2 < pr.length && opts.length < n && opts.length < 3; k2++) {
+      if (used[pr[k2].g]) { continue; }
+      used[pr[k2].g] = true;
+      opts.push({ text: pr[k2].vs[Math.floor(Math.random() * pr[k2].vs.length)], correct: false, group: pr[k2].g });
+    }
+    /* 2. aehnlich klingende Laute, 3. beliebige andere */
+    var near = shuffle(correctGroup.conf);
+    var rest = shuffle(GROUPS.filter(function (g) { return g.id !== it.g && correctGroup.conf.indexOf(g.id) < 0; }).map(function (g) { return g.id; }));
+    var order = near.concat(rest);
+    var wantSingle = isSingle(it.seg);
+    if (correctGroup.variants.length === 1 && it.seg.length === 2) { wantSingle = false; }
+    for (k2 = 0; k2 < order.length && opts.length < n; k2++) {
+      if (used[order[k2]]) { continue; }
+      used[order[k2]] = true;
+      var g = groupById[order[k2]];
+      var diph = g.variants.every(function (v) { return v.length === 2; });
+      opts.push({ text: pickVariant(g, diph ? false : wantSingle), correct: false, group: order[k2] });
+    }
+    return shuffle(opts);
+  }
+  /* Schwerpunkt-Training: pro Seite des Paars genau eine Antwort */
+  function buildFocusOptions(it, modeId) {
+    var mode = modeById(modeId);
+    var own = sideIndex(mode, it.seg);
+    var opts = [{ text: it.seg, correct: true, group: it.g }];
+    mode.sides.forEach(function (side, idx) {
+      if (idx === own) { return; }
+      var c = (PARTNER[it.seg] || []).filter(function (p) { return side.indexOf(p) >= 0; });
+      if (!c.length) { c = [side[0]]; }
+      var text = c[Math.floor(Math.random() * c.length)];
+      opts.push({ text: text, correct: false, group: segGroup(text) });
+    });
+    return shuffle(opts);
+  }
+
+  /* Wort mit hervorgehobenem Laut */
+  function wordNode(it) {
+    var s = el("span");
+    s.appendChild(document.createTextNode(it.pre));
+    s.appendChild(el("mark", "seg", it.w.substr(it.pre.length, it.seg.length)));
+    s.appendChild(document.createTextNode(it.post));
+    return s;
+  }
+
+  /* ---------- Sprachausgabe ---------- */
+  function hasSpeech() { return !!(window.speechSynthesis && window.SpeechSynthesisUtterance); }
+  function germanVoices() {
+    var out = [];
+    try {
+      var v = window.speechSynthesis.getVoices();
+      for (var k = 0; k < v.length; k++) {
+        var lg = (v[k].lang || "").toLowerCase().replace("_", "-");
+        if (lg.indexOf("de") === 0) { out.push(v[k]); }
+      }
+      out.sort(function (a, b) {
+        var sa = (a.lang || "").toLowerCase().replace("_", "-") === "de-de" ? 0 : 1;
+        var sb = (b.lang || "").toLowerCase().replace("_", "-") === "de-de" ? 0 : 1;
+        if (sa !== sb) { return sa - sb; }
+        return (a.localService ? 0 : 1) - (b.localService ? 0 : 1);
+      });
+    } catch (e) { /* keine Stimmen */ }
+    return out;
+  }
+  function voiceCount() { try { return window.speechSynthesis.getVoices().length; } catch (e) { return 0; } }
+  function chosenVoice() {
+    var list = germanVoices();
+    if (!list.length) { return null; }
+    for (var k = 0; k < list.length; k++) { if (list[k].voiceURI === store.settings.voice) { return list[k]; } }
+    return list[0];
+  }
+  function speak(text, slow) {
+    if (!hasSpeech()) { return; }
+    try {
+      var u = new window.SpeechSynthesisUtterance(text);
+      u.lang = "de-DE";
+      var v = chosenVoice();
+      if (v) { u.voice = v; if (v.lang) { u.lang = v.lang; } }
+      u.rate = slow ? 0.55 : 0.9;
+      window.speechSynthesis.cancel();
+      if (playTimer) { clearTimeout(playTimer); }
+      playTimer = setTimeout(function () { playTimer = null; try { window.speechSynthesis.speak(u); } catch (e) { /* egal */ } }, 40);
+    } catch (e) { /* egal */ }
+  }
+  function speakMini(word, label) {
+    var b = el("button", "mini", label || "🔊"); b.type = "button"; b.setAttribute("aria-label", "Anhören: " + word);
+    b.addEventListener("click", function (ev) { ev.stopPropagation(); speak(word, false); });
+    return b;
+  }
+
+  /* ---------- Auswahlchips ---------- */
+  function chipsRow(container, labels, getOn, setOn, onChange) {
+    var row = el("div", "row");
+    labels.forEach(function (lab, idx) {
+      var l = el("label", "chip" + (getOn(idx) ? " on" : ""));
+      var inp = document.createElement("input"); inp.type = "checkbox"; inp.checked = getOn(idx);
+      inp.addEventListener("change", function () { setOn(idx, inp.checked); save(); onChange(); });
+      l.appendChild(inp);
+      l.appendChild(document.createTextNode(lab.t + " "));
+      l.appendChild(el("small", null, "(" + lab.n + ")"));
+      row.appendChild(l);
+    });
+    container.appendChild(row);
+    var links = el("div");
+    var all = el("button", "linkbtn", "alle"); all.type = "button";
+    var none = el("button", "linkbtn", "keine"); none.type = "button";
+    all.addEventListener("click", function () { for (var k = 0; k < labels.length; k++) { setOn(k, true); } save(); onChange(); });
+    none.addEventListener("click", function () { for (var k = 0; k < labels.length; k++) { setOn(k, false); } save(); onChange(); });
+    links.appendChild(all); links.appendChild(document.createTextNode(" · ")); links.appendChild(none);
+    container.appendChild(links);
+  }
+  function groupCount(gid) { var c = 0; ITEMS.forEach(function (it) { if (it.g === gid) { c += 1; } }); return c; }
+  function lessonCount(idx) { var c = 0; ITEMS.forEach(function (it) { if (lessonIdx(it) === idx) { c += 1; } }); return c; }
+  function groupChips(container, onChange) {
+    chipsRow(container, GROUPS.map(function (g) { return { t: g.label, n: groupCount(g.id) }; }),
+      function (i2) { return store.settings.groups[i2]; }, function (i2, v) { store.settings.groups[i2] = v; }, onChange);
+  }
+  function lessonChips(container, onChange) {
+    var labels = [];
+    for (var l = 1; l < LESSONS; l++) { labels.push({ t: "L" + l, n: lessonCount(l - 1) }); }
+    labels.push({ t: "Zusatzwörter", n: lessonCount(LESSONS - 1) });
+    chipsRow(container, labels, function (i2) { return store.settings.lessons[i2]; }, function (i2, v) { store.settings.lessons[i2] = v; }, onChange);
+  }
+
+  /* ---------- Üben ---------- */
+  function renderPractice() {
+    var v = $("viewPractice"); clear(v);
+    if (!session) { renderSetup(v); }
+    else if (session.pos >= session.queue.length) { renderEnd(v); }
+    else { renderQuestion(v); }
+  }
+
+  function voicePanel(v) {
+    var p = el("div", "panel"); p.appendChild(el("h2", null, "Stimme"));
+    if (!hasSpeech()) {
+      p.appendChild(el("div", "warn", "Dieser Browser kann keine Sprache ausgeben. Bitte Chrome, Edge, Safari oder Firefox in aktueller Version verwenden."));
+      v.appendChild(p); return;
+    }
+    var gv = germanVoices();
+    if (gv.length) {
+      var cur = chosenVoice();
+      p.appendChild(el("div", null, "Deutsche Stimme: " + (cur ? cur.name : "")));
+      if (gv.length > 1) {
+        var l = el("label", "opt"); l.appendChild(document.createTextNode("Stimme wählen: "));
+        var sel = document.createElement("select");
+        gv.forEach(function (vo) { var o = document.createElement("option"); o.value = vo.voiceURI; o.textContent = vo.name + " (" + vo.lang + ")"; if (cur && vo.voiceURI === cur.voiceURI) { o.selected = true; } sel.appendChild(o); });
+        sel.addEventListener("change", function () { store.settings.voice = sel.value; save(); renderPractice(); });
+        l.appendChild(sel); p.appendChild(l);
+      }
+    } else if (voiceCount() > 0) {
+      p.appendChild(el("div", "warn", "Auf diesem Gerät wurde keine deutsche Stimme gefunden. Bitte eine deutsche Stimme installieren (Windows: Einstellungen › Zeit und Sprache › Sprache › Deutsch; Android: Einstellungen › Sprachausgabe; iPhone/iPad: Einstellungen › Bedienungshilfen › Gesprochene Inhalte › Stimmen). Danach die Seite neu laden."));
+    } else {
+      p.appendChild(el("div", "small", "Die Stimmenliste ist noch leer oder wird vom Browser nicht angezeigt. Teste mit dem Knopf, ob etwas zu hören ist."));
+    }
+    var row = el("div", "row"); row.style.marginTop = "8px";
+    var t = el("button", "sec", "🔊 Stimme testen"); t.type = "button"; t.id = "voiceTest";
+    t.addEventListener("click", function () { speak("Guten Tag. Was hören Sie?", false); });
+    row.appendChild(t); p.appendChild(row);
+    v.appendChild(p);
+  }
+
+  function renderSetup(v) {
+    var intro = el("div", "panel");
+    intro.appendChild(el("div", null, "Sie hören ein Wort. Im Wort fehlt ein Laut. Wählen Sie, welchen Vokal oder Diphthong Sie hören."));
+    intro.appendChild(el("div", "small", "Laute, die gleich klingen (z. B. i / ie / ih oder e / ä oder eu / äu), stehen nie zusammen in den Antworten."));
+    v.appendChild(intro);
+    voicePanel(v);
+
+    var pf = el("div", "panel"); pf.appendChild(el("h2", null, "Schwerpunkt"));
+    var rf = el("div", "row");
+    var FOCI = [{ id: "all", label: "Alle Laute" }];
+    MODES.forEach(function (m) { FOCI.push({ id: m.id, label: m.label }); });
+    FOCI.push({ id: "prio", label: "Alle Schwerpunkte" });
+    FOCI.forEach(function (f) {
+      var on = store.settings.focus === f.id;
+      var l = el("label", "chip" + (on ? " on" : ""));
+      var inp = document.createElement("input"); inp.type = "radio"; inp.name = "focus"; inp.checked = on;
+      inp.addEventListener("change", function () { store.settings.focus = f.id; save(); renderPractice(); });
+      l.appendChild(inp); l.appendChild(document.createTextNode(f.label)); rf.appendChild(l);
+    });
+    pf.appendChild(rf);
+    var fm = modeById(store.settings.focus);
+    if (store.settings.focus === "all") {
+      pf.appendChild(el("div", "small", "Alle Laute gemischt. Die häufigen Verwechslungen ie – ei, e – i, o – u, ä – ö – ü und u – au kommen dabei bevorzugt vor."));
+      var lp = el("label", "opt");
+      var cbp = document.createElement("input"); cbp.type = "checkbox"; cbp.checked = store.settings.prio; cbp.id = "cbPrio";
+      cbp.addEventListener("change", function () { store.settings.prio = cbp.checked; save(); });
+      lp.appendChild(cbp); lp.appendChild(document.createTextNode("Wörter der Schwerpunkte doppelt so oft üben"));
+      pf.appendChild(lp);
+    } else if (fm) {
+      pf.appendChild(el("div", "small", fm.text));
+      pf.appendChild(el("div", "small", "Es gibt nur Antworten aus diesem Paar" + (fm.sides.length === 3 ? " (3 Antworten)." : " (2 Antworten).")));
+    } else {
+      pf.appendChild(el("div", "small", "Alle fünf Paare gemischt: ie – ei, e – i, o – u, ä – ö – ü, u – au. Es gibt nur Antworten aus dem jeweiligen Paar."));
+    }
+    v.appendChild(pf);
+
+    if (store.settings.focus === "all") {
+      var p1 = el("div", "panel"); p1.appendChild(el("h2", null, "Laute")); groupChips(p1, renderPractice); v.appendChild(p1);
+    }
+    var p1b = el("div", "panel"); p1b.appendChild(el("h2", null, "Wörter")); lessonChips(p1b, renderPractice);
+    p1b.appendChild(el("div", "small", "L1–L11: Wörter aus dem Kurs. Zusatzwörter: schwierigere Wörter, die man nur hören muss."));
+    v.appendChild(p1b);
+
+    var p2 = el("div", "panel"); p2.appendChild(el("h2", null, "Einstellungen"));
+    var r1 = el("div", "row");
+    var l1 = el("label", "opt"); l1.appendChild(document.createTextNode("Antworten pro Frage: "));
+    var sel1 = document.createElement("select"); sel1.id = "selN";
+    [3, 4, 5].forEach(function (n) { var o = document.createElement("option"); o.value = String(n); o.textContent = String(n); if (n === store.settings.nopts) { o.selected = true; } sel1.appendChild(o); });
+    sel1.disabled = store.settings.focus !== "all";
+    sel1.addEventListener("change", function () { store.settings.nopts = parseInt(sel1.value, 10); save(); });
+    l1.appendChild(sel1); r1.appendChild(l1);
+    var l2 = el("label", "opt"); l2.appendChild(document.createTextNode("Runde mit: "));
+    var sel2 = document.createElement("select"); sel2.id = "selSize";
+    [[10, "10 Wörtern"], [20, "20 Wörtern"], [40, "40 Wörtern"], [0, "allen Wörtern"]].forEach(function (o) {
+      var op = document.createElement("option"); op.value = String(o[0]); op.textContent = o[1]; if (o[0] === store.settings.size) { op.selected = true; } sel2.appendChild(op);
+    });
+    sel2.addEventListener("change", function () { store.settings.size = parseInt(sel2.value, 10); save(); });
+    l2.appendChild(sel2); r1.appendChild(l2);
+    p2.appendChild(r1);
+    var l3 = el("label", "opt");
+    var cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = store.settings.play; cb.id = "cbPlay";
+    cb.addEventListener("change", function () { store.settings.play = cb.checked; save(); });
+    l3.appendChild(cb); l3.appendChild(document.createTextNode("Wort bei jeder neuen Frage automatisch abspielen"));
+    p2.appendChild(l3);
+    var l4 = el("label", "opt");
+    var cb2 = document.createElement("input"); cb2.type = "checkbox"; cb2.checked = store.settings.auto; cb2.id = "cbAuto";
+    cb2.addEventListener("change", function () { store.settings.auto = cb2.checked; save(); });
+    l4.appendChild(cb2); l4.appendChild(document.createTextNode("Bei richtiger Antwort automatisch weiter"));
+    p2.appendChild(l4);
+    v.appendChild(p2);
+
+    var ids = poolIds();
+    var rep = 0;
+    ids.forEach(function (id) { var r = rec(id); if (r && r.box !== undefined && r.box < 2) { rep += 1; } });
+    var info = el("div", "small", ids.length + " Wörter im Pool" + (rep ? " · " + rep + " davon kommen wegen früherer Fehler häufiger dran." : ". Wörter, die du falsch beantwortest, kommen danach häufiger dran."));
+    info.style.marginBottom = "10px"; v.appendChild(info);
+    var go = el("button", "main", "Start"); go.type = "button"; go.disabled = ids.length === 0 || !hasSpeech();
+    go.addEventListener("click", function () {
+      var chosen = weightedSample(ids, store.settings.size);
+      startSession(chosen.map(function (id) { return makeEntry(id); }), false);
+    });
+    v.appendChild(go);
+    if (go.disabled) { v.appendChild(el("div", "small", !hasSpeech() ? "Ohne Sprachausgabe kann der Trainer nicht starten." : "Bitte mindestens einen Laut und eine Wortgruppe wählen.")); }
+  }
+
+  /* Eintrag einer Runde: Wort + (beim Schwerpunkt-Training) das Verwechslungspaar */
+  function makeEntry(id) {
+    var f = store.settings.focus;
+    if (f === "all") { return { id: id, mode: "" }; }
+    if (f === "prio") { var ms = modesOf(byId[id].seg); return { id: id, mode: ms[Math.floor(Math.random() * ms.length)] }; }
+    return { id: id, mode: f };
+  }
+  function startSession(entries, isReview) {
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+    session = { queue: entries, pos: 0, results: [], answered: false, review: isReview };
+    renderPractice();
+  }
+
+  function renderQuestion(v) {
+    var q = session.queue[session.pos];
+    var it = byId[q.id];
+    var total = session.queue.length;
+    var top = el("div", "top");
+    top.appendChild(el("span", null, (session.review ? "Wiederholung · " : "") + "Frage " + (session.pos + 1) + " / " + total + (q.mode ? " · " + modeById(q.mode).label : "")));
+    var right = 0; session.results.forEach(function (r) { if (r.ok) { right += 1; } });
+    top.appendChild(el("span", null, right + " richtig"));
+    v.appendChild(top);
+    var bar = el("div", "bar"); var fill = el("i"); fill.style.width = Math.round(100 * session.pos / total) + "%"; bar.appendChild(fill); v.appendChild(bar);
+
+    var card = el("div", "panel qcard");
+    card.appendChild(el("div", "qtask", "Was hören Sie?"));
+    var pr = el("div", "playrow");
+    var pb = el("button", "play", "🔊 Anhören"); pb.type = "button"; pb.id = "playBtn";
+    pb.addEventListener("click", function () { speak(it.w, false); });
+    var sb = el("button", "sec", "🐢 Langsam"); sb.type = "button"; sb.id = "slowBtn";
+    sb.addEventListener("click", function () { speak(it.w, true); });
+    pr.appendChild(pb); pr.appendChild(sb); card.appendChild(pr);
+
+    var big = el("div", "qbig"); big.id = "gapWord";
+    big.appendChild(document.createTextNode(it.pre));
+    var g = el("span", "gap", "   "); g.id = "gapSpot"; big.appendChild(g);
+    big.appendChild(document.createTextNode(it.post));
+    card.appendChild(big);
+
+    var opts = q.mode ? buildFocusOptions(it, q.mode) : buildOptions(it, store.settings.nopts);
+    session.current = { it: it, opts: opts, mode: q.mode || "" };
+    var box = el("div", "opts many"); box.id = "optRow";
+    opts.forEach(function (o, k) {
+      var b = el("button", null, lab(it, o.text)); b.type = "button"; b.setAttribute("data-v", o.text); b.setAttribute("data-g", o.group);
+      b.appendChild(el("small", null, "Taste " + (k + 1)));
+      b.addEventListener("click", function () { pick(o); });
+      box.appendChild(b);
+    });
+    card.appendChild(box);
+
+    var fb = el("div"); fb.id = "fbBox"; card.appendChild(fb);
+    var nxt = el("button", "main hidden", session.pos + 1 >= total ? "Auswertung" : "Weiter"); nxt.type = "button"; nxt.id = "nextBtn"; nxt.style.marginTop = "10px";
+    nxt.addEventListener("click", nextQuestion); card.appendChild(nxt);
+    v.appendChild(card);
+    var quit = el("button", "linkbtn", "Runde abbrechen"); quit.type = "button";
+    quit.addEventListener("click", function () { if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; } try { window.speechSynthesis.cancel(); } catch (e) { /* egal */ } session = null; renderPractice(); });
+    v.appendChild(quit);
+    session.answered = false;
+    if (store.settings.play) { speak(it.w, false); }
+  }
+
+  function pick(o) {
+    if (!session || session.answered) { return; }
+    var cur = session.current, it = cur.it;
+    var ok = o.correct;
+    session.answered = true;
+    session.results.push({ id: it.id, ok: ok, pick: lab(it, o.text), mode: cur.mode });
+    var r = store.words[it.id] || { n: 0, c: 0, s: 0 };
+    r.n += 1;
+    if (ok) { r.c += 1; r.s += 1; if (r.box !== undefined && r.box < 2) { r.box += 1; } }
+    else { r.s = 0; r.box = 0; }
+    store.words[it.id] = r; save();
+
+    var spot = $("gapSpot"); if (spot) { spot.textContent = lab(it, o.text); }
+    var btns = $("optRow").getElementsByTagName("button");
+    for (var k = 0; k < btns.length; k++) {
+      var val = btns[k].getAttribute("data-v");
+      btns[k].disabled = true;
+      if (val === it.seg) { btns[k].className = "right"; }
+      else if (!ok && val === o.text) { btns[k].className = "wrong"; }
+    }
+    var fb = $("fbBox"); clear(fb);
+    var box = el("div", "fb " + (ok ? "ok" : "bad"));
+    var big = el("div", "big");
+    big.appendChild(document.createTextNode(ok ? "✓ Richtig: " : "✗ Richtig ist: "));
+    big.appendChild(wordNode(it));
+    box.appendChild(big);
+    var grp = groupById[it.g];
+    if (!ok) {
+      var ex = el("div", "ex");
+      ex.appendChild(document.createTextNode("Sie haben „" + lab(it, o.text) + "“ gewählt. Das hört man z. B. in „" + EXAMPLE[o.text] + "“ "));
+      ex.appendChild(speakMini(EXAMPLE[o.text]));
+      box.appendChild(ex);
+    }
+    var vars = el("div", "ex", "So kann dieser Laut geschrieben werden: " + grp.variants.join(" · "));
+    box.appendChild(vars);
+    var curMode = cur.mode ? modeById(cur.mode) : null;
+    if (!ok) { box.appendChild(el("div", "hint", curMode ? curMode.text : grp.text)); }
+    var again = el("div", "ex"); again.appendChild(speakMini(it.w, "🔊 Wort nochmal hören")); box.appendChild(again);
+    fb.appendChild(box);
+    $("nextBtn").className = "main";
+    if (ok && store.settings.auto) {
+      autoTimer = setTimeout(function () { autoTimer = null; nextQuestion(); }, 1300);
+    }
+  }
+
+  function nextQuestion() {
+    if (!session || !session.answered) { return; }
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+    session.pos += 1;
+    renderPractice();
+  }
+
+  function renderEnd(v) {
+    var total = session.results.length, right = 0, wrong = [];
+    session.results.forEach(function (r) { if (r.ok) { right += 1; } else { wrong.push(r); } });
+    var pct = total ? Math.round(100 * right / total) : 0;
+    var p = el("div", "panel");
+    p.appendChild(el("div", "score", right + " / " + total + " (" + pct + " %)"));
+    var msg = pct === 100 ? "Alles richtig!" : (pct >= 80 ? "Sehr gut." : "Weiter üben – die Fehlerwörter kommen jetzt öfter dran.");
+    var m = el("div", "small", msg); m.style.textAlign = "center"; p.appendChild(m);
+    v.appendChild(p);
+    if (wrong.length) {
+      var pl = el("div", "panel"); pl.appendChild(el("h2", null, "Wiederholungsliste (" + wrong.length + ")"));
+      var ul = el("ul", "rev");
+      wrong.forEach(function (r) {
+        var it = byId[r.id]; var li = el("li");
+        var line = el("div", "w"); line.appendChild(wordNode(it)); line.appendChild(document.createTextNode(" ")); line.appendChild(speakMini(it.w)); li.appendChild(line);
+        li.appendChild(el("div", "pl", "Gewählt: " + r.pick + " · Laut geschrieben: " + groupById[it.g].variants.join(" · ")));
+        ul.appendChild(li);
+      });
+      pl.appendChild(ul); v.appendChild(pl);
+    }
+    var acts = el("div");
+    if (wrong.length) {
+      var rb = el("button", "main", "Fehlerwörter wiederholen (" + wrong.length + ")"); rb.type = "button";
+      rb.addEventListener("click", function () {
+        startSession(shuffle(wrong.map(function (r) { return { id: r.id, mode: r.mode }; })), true);
+      });
+      acts.appendChild(rb);
+    }
+    var again = el("button", "sec", "Neue Runde"); again.type = "button"; again.style.marginTop = "10px"; again.style.width = "100%";
+    again.addEventListener("click", function () { session = null; renderPractice(); });
+    acts.appendChild(again); v.appendChild(acts);
+  }
+
+  /* ---------- Laute & Wörter ---------- */
+  function renderList() {
+    var v = $("viewList"); clear(v);
+    var rules = el("div", "panel");
+    var det = document.createElement("details"); det.open = true;
+    det.appendChild(el("summary", null, "Hören und schreiben – das Wichtigste"));
+    var ul = el("ul", "rules");
+    [
+      "Ein Laut kann verschieden geschrieben werden. Beispiel: Der Laut [iː] steht in Liebe (ie), Tiger (i), ihr (ih) und sieht (ieh).",
+      "Darum fragt der Trainer nur nach dem Laut: Pro Frage steht nur eine Schreibung eines Lauts in den Antworten.",
+      "Die Lücke zeigt, wo der Laut im Wort steht. Die anderen Buchstaben sind schon da.",
+      "Wenn man einen Laut nicht sicher hört, hilft der Knopf „Langsam“ und der Vergleich mit dem Beispielwort.",
+      "Die richtige Schreibung muss man oft lernen oder nachschlagen (z. B. Wortfamilie: Hand – Hände, Haus – Häuser).",
+      "Tipp: Klicke auf ein Wort in der Liste, um es zu hören."
+    ].forEach(function (t) { ul.appendChild(el("li", null, t)); });
+    det.appendChild(ul); rules.appendChild(det); v.appendChild(rules);
+
+    var pm = el("div", "panel");
+    var dm = document.createElement("details");
+    dm.appendChild(el("summary", null, "Schwerpunkte: So klingt der Unterschied"));
+    var um = el("ul", "rules");
+    MODES.forEach(function (m) { var li = el("li"); li.appendChild(el("b", null, m.label + ": ")); li.appendChild(document.createTextNode(m.text)); um.appendChild(li); });
+    dm.appendChild(um); pm.appendChild(dm); v.appendChild(pm);
+
+    var p1 = el("div", "panel"); p1.appendChild(el("h2", null, "Wörter")); lessonChips(p1, renderList); v.appendChild(p1);
+    GROUPS.forEach(function (g) {
+      var items = ITEMS.filter(function (it) { return it.g === g.id && store.settings.lessons[lessonIdx(it)]; });
+      if (!items.length) { return; }
+      var p = el("div", "panel grp vars");
+      p.appendChild(el("h3", null, g.label + " (" + items.length + ")"));
+      p.appendChild(el("p", null, g.text));
+      g.variants.forEach(function (va) {
+        var vi = items.filter(function (it) { return it.seg === va; });
+        if (!vi.length) { return; }
+        vi.sort(function (a, b) { return a.w.localeCompare(b.w, "de"); });
+        var d = document.createElement("details");
+        d.appendChild(el("summary", null, va + " (" + vi.length + ") – wie in „" + EXAMPLE[va] + "“"));
+        var w = el("div", "words");
+        vi.forEach(function (it) {
+          var s = el("span", "clk"); s.appendChild(wordNode(it));
+          s.addEventListener("click", function () { speak(it.w, false); });
+          w.appendChild(s);
+        });
+        d.appendChild(w); p.appendChild(d);
+      });
+      v.appendChild(p);
+    });
+  }
+
+  /* ---------- Fortschritt ---------- */
+  function renderProg() {
+    var v = $("viewProg"); clear(v);
+    var seen = 0, sure = 0, tot = ITEMS.length;
+    var perG = {}; GROUPS.forEach(function (g) { perG[g.id] = { t: 0, s: 0, g: 0 }; });
+    var hard = [];
+    ITEMS.forEach(function (it) {
+      var r = rec(it.id); perG[it.g].t += 1;
+      if (r && r.n > 0) {
+        seen += 1;
+        if (isSure(it.id)) { sure += 1; perG[it.g].s += 1; } else { perG[it.g].g += 1; }
+        if (r.n - r.c > 0) { hard.push({ it: it, wrong: r.n - r.c, all: r.n }); }
+      }
+    });
+    var p = el("div", "panel"); p.appendChild(el("h2", null, "Gesamt"));
+    p.appendChild(el("div", null, sure + " von " + tot + " Wörtern sicher · " + seen + " schon geübt"));
+    var rb = el("div", "rowbar"); rb.style.marginTop = "8px";
+    var s1 = el("i", "seg-s"); s1.style.width = (100 * sure / tot) + "%";
+    var s2 = el("i", "seg-g"); s2.style.width = (100 * (seen - sure) / tot) + "%";
+    rb.appendChild(s1); rb.appendChild(s2); p.appendChild(rb);
+    p.appendChild(el("div", "small", "„sicher“ = zuletzt mindestens zweimal hintereinander richtig. Grün: sicher · Gelb: geübt, aber noch nicht sicher."));
+    v.appendChild(p);
+
+    var p2 = el("div", "panel"); p2.appendChild(el("h2", null, "Nach Laut"));
+    var tb = el("table", "prog");
+    GROUPS.forEach(function (g) {
+      var d = perG[g.id]; var tr = el("tr");
+      tr.appendChild(el("td", "n", g.label));
+      var tdb = el("td"); var bb = el("div", "rowbar");
+      var a1 = el("i", "seg-s"); a1.style.width = (100 * d.s / d.t) + "%";
+      var a2 = el("i", "seg-g"); a2.style.width = (100 * d.g / d.t) + "%";
+      bb.appendChild(a1); bb.appendChild(a2); tdb.appendChild(bb); tr.appendChild(tdb);
+      tr.appendChild(el("td", "c", d.s + " / " + d.t + " sicher")); tb.appendChild(tr);
+    });
+    p2.appendChild(tb); v.appendChild(p2);
+
+    var p2b = el("div", "panel"); p2b.appendChild(el("h2", null, "Schwerpunkte (Verwechslungspaare)"));
+    var tb2 = el("table", "prog");
+    MODES.forEach(function (m) {
+      var tt = 0, ss = 0, gg = 0;
+      ITEMS.forEach(function (it) {
+        if (modesOf(it.seg).indexOf(m.id) < 0) { return; }
+        tt += 1; var r = rec(it.id);
+        if (r && r.n > 0) { if (isSure(it.id)) { ss += 1; } else { gg += 1; } }
+      });
+      var tr = el("tr"); tr.appendChild(el("td", "n", m.label));
+      var tdb = el("td"); var bb = el("div", "rowbar");
+      var a1 = el("i", "seg-s"); a1.style.width = (100 * ss / tt) + "%";
+      var a2 = el("i", "seg-g"); a2.style.width = (100 * gg / tt) + "%";
+      bb.appendChild(a1); bb.appendChild(a2); tdb.appendChild(bb); tr.appendChild(tdb);
+      tr.appendChild(el("td", "c", ss + " / " + tt + " sicher")); tb2.appendChild(tr);
+    });
+    p2b.appendChild(tb2); v.appendChild(p2b);
+
+    var p3 = el("div", "panel"); p3.appendChild(el("h2", null, "Schwierigste Wörter"));
+    hard.sort(function (a, b) { return b.wrong - a.wrong || b.all - a.all; });
+    if (!hard.length) { p3.appendChild(el("div", "small", "Noch keine Fehler – oder noch nichts geübt.")); }
+    else {
+      var ul = el("ul", "rev");
+      hard.slice(0, 10).forEach(function (h) {
+        var li = el("li"); var line = el("div", "w"); line.appendChild(wordNode(h.it)); line.appendChild(document.createTextNode(" ")); line.appendChild(speakMini(h.it.w)); li.appendChild(line);
+        li.appendChild(el("div", "pl", h.wrong + " von " + h.all + " falsch")); ul.appendChild(li);
+      });
+      p3.appendChild(ul);
+    }
+    v.appendChild(p3);
+    var p4 = el("div", "panel");
+    var rs = el("button", "sec", "Fortschritt zurücksetzen"); rs.type = "button";
+    rs.addEventListener("click", function () {
+      if (window.confirm("Gesamten Fortschritt löschen? Das kann nicht rückgängig gemacht werden.")) { store.words = {}; save(); renderProg(); }
+    });
+    p4.appendChild(rs); v.appendChild(p4);
+  }
+
+  /* ---------- Tabs & Tastatur ---------- */
+  var tab = "practice";
+  function showTab(t) {
+    tab = t;
+    $("viewPractice").className = t === "practice" ? "" : "hidden";
+    $("viewList").className = t === "list" ? "" : "hidden";
+    $("viewProg").className = t === "prog" ? "" : "hidden";
+    $("tabPractice").className = "tab" + (t === "practice" ? " on" : "");
+    $("tabList").className = "tab" + (t === "list" ? " on" : "");
+    $("tabProg").className = "tab" + (t === "prog" ? " on" : "");
+    if (t === "practice") { renderPractice(); } else if (t === "list") { renderList(); } else { renderProg(); }
+  }
+  function init() {
+    load();
+    $("tabPractice").addEventListener("click", function () { showTab("practice"); });
+    $("tabList").addEventListener("click", function () { showTab("list"); });
+    $("tabProg").addEventListener("click", function () { showTab("prog"); });
+    document.addEventListener("keydown", function (ev) {
+      if (tab !== "practice" || !session || session.pos >= session.queue.length) { return; }
+      var tag = ev.target && ev.target.tagName;
+      if (tag === "INPUT" || tag === "SELECT") { return; }
+      if (!session.answered) {
+        var row = $("optRow");
+        var n = parseInt(ev.key, 10);
+        if (row && n >= 1 && n <= 5) {
+          var b = row.getElementsByTagName("button")[n - 1];
+          if (b) { b.click(); }
+        } else if (ev.key === "r" || ev.key === "R") { speak(session.current.it.w, false); }
+        else if (ev.key === "l" || ev.key === "L") { speak(session.current.it.w, true); }
+      } else if ((ev.key === "Enter" || ev.key === " ") && tag !== "BUTTON") { ev.preventDefault(); nextQuestion(); }
+    });
+    if (hasSpeech()) {
+      try {
+        window.speechSynthesis.onvoiceschanged = function () { if (tab === "practice" && !session) { renderPractice(); } };
+      } catch (e) { /* egal */ }
+    }
+    showTab("practice");
+  }
+  init();
+})();
+</script>
+</body>
+</html>
