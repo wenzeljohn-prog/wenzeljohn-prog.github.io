@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Genus-Trainer A1 L1–L11</title>
+<style>
+  :root {
+    --bg:#f4f6fa; --card:#fff; --text:#1d2433; --muted:#5b667a; --line:#d5dbe6;
+    --accent:#2b5fd9; --accent-text:#fff; --chip:#e9eef8;
+    --der:#1f5fbf; --der-bg:#e3ecfb; --die:#b3303f; --die-bg:#fbe4e7; --das:#1f7a4d; --das-bg:#e0f3e8;
+    --ok:#1f7a4d; --ok-bg:#e0f3e8; --bad:#b3303f; --bad-bg:#fbe4e7; --warn-bg:#fff4d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#12161f; --card:#1b2130; --text:#e8ecf5; --muted:#9aa5ba; --line:#30394d;
+      --accent:#6b97ff; --accent-text:#0b1226; --chip:#252d40;
+      --der:#7fb0ff; --der-bg:#1b2c4a; --die:#ff8a98; --die-bg:#42202a; --das:#6fd6a2; --das-bg:#183427;
+      --ok:#6fd6a2; --ok-bg:#183427; --bad:#ff8a98; --bad-bg:#42202a; --warn-bg:#3a3118;
+    }
+  }
+  * { box-sizing:border-box; }
+  html,body { margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; line-height:1.45; min-height:100vh; }
+  .wrap { max-width:900px; margin:0 auto; padding:14px; }
+  h1 { font-size:1.2rem; margin:2px 0 10px; }
+  .tabs { display:flex; gap:6px; margin-bottom:12px; }
+  .tab { flex:1; min-height:48px; border-radius:12px; border:2px solid var(--line); background:var(--card); color:var(--text); font-size:1rem; cursor:pointer; font-weight:600; }
+  .tab.on { border-color:var(--accent); background:var(--chip); }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+  .panel h2 { font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 8px; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .chip { display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:6px 14px; border-radius:999px; background:var(--chip); border:2px solid transparent; cursor:pointer; user-select:none; font-size:.95rem; }
+  .chip input { position:absolute; opacity:0; pointer-events:none; }
+  .chip.on { border-color:var(--accent); font-weight:700; }
+  .chip:focus-within { outline:3px solid var(--accent); outline-offset:2px; }
+  .chip small { color:var(--muted); font-weight:400; }
+  .small { color:var(--muted); font-size:.86rem; margin-top:6px; }
+  .linkbtn { background:none; border:none; color:var(--accent); cursor:pointer; font-size:.92rem; padding:6px 4px; min-height:44px; }
+  select, input[type=search] { min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); color:var(--text); font-size:1rem; padding:6px 10px; }
+  label.opt { display:flex; align-items:center; gap:8px; min-height:44px; }
+  button.main { width:100%; min-height:56px; border-radius:14px; border:none; cursor:pointer; font-size:1.15rem; font-weight:700; background:var(--accent); color:var(--accent-text); }
+  button.main:disabled { opacity:.4; cursor:default; }
+  button.sec { min-height:48px; padding:0 18px; border-radius:12px; cursor:pointer; font-size:1rem; background:var(--card); color:var(--text); border:2px solid var(--line); }
+  button:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  .bar { height:10px; background:var(--chip); border-radius:999px; overflow:hidden; }
+  .bar > i { display:block; height:100%; background:var(--accent); }
+  .top { display:flex; justify-content:space-between; font-size:.9rem; color:var(--muted); margin-bottom:6px; }
+  .qcard { text-align:center; padding:22px 10px 12px; }
+  .qlesson { font-size:.8rem; color:var(--muted); }
+  .qword { font-size:clamp(2rem,9vw,3.4rem); font-weight:800; margin:10px 0 4px; word-wrap:break-word; overflow-wrap:anywhere; }
+  .qmean { font-size:1.15rem; color:var(--muted); min-height:1.6em; }
+  .art { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0 8px; }
+  .art button { min-height:72px; border-radius:14px; border:3px solid var(--line); background:var(--card); color:var(--text); font-size:1.5rem; font-weight:800; cursor:pointer; }
+  .art button small { display:block; font-size:.7rem; font-weight:500; color:var(--muted); }
+  .art button[data-a=der] { border-color:var(--der); color:var(--der); }
+  .art button[data-a=die] { border-color:var(--die); color:var(--die); }
+  .art button[data-a=das] { border-color:var(--das); color:var(--das); }
+  .art button.right { background:var(--ok-bg); border-color:var(--ok); color:var(--ok); }
+  .art button.wrong { background:var(--bad-bg); border-color:var(--bad); color:var(--bad); }
+  .art button:disabled { cursor:default; }
+  .art button:disabled:not(.right):not(.wrong) { opacity:.45; }
+  .fb { border-radius:12px; padding:12px 14px; margin-top:6px; text-align:left; }
+  .fb.ok { background:var(--ok-bg); } .fb.bad { background:var(--bad-bg); }
+  .fb .big { font-size:1.25rem; font-weight:800; }
+  .fb .hint { margin-top:6px; padding:8px 10px; border-radius:10px; background:var(--warn-bg); font-size:.95rem; }
+  .fb .hint .ex { margin-top:4px; color:var(--muted); font-size:.9rem; }
+  .hint b.exc { color:var(--bad); }
+  .g-der { color:var(--der); font-weight:800; } .g-die { color:var(--die); font-weight:800; } .g-das { color:var(--das); font-weight:800; }
+  .score { font-size:2.2rem; font-weight:800; text-align:center; }
+  .rev { list-style:none; margin:8px 0 0; padding:0; }
+  .rev li { padding:10px 0; border-top:1px solid var(--line); }
+  .rev .pl { color:var(--muted); font-size:.92rem; }
+  .cols { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .col { border-radius:12px; padding:8px 10px; }
+  .col h3 { margin:0 0 6px; font-size:1.05rem; }
+  .col.der { background:var(--der-bg); } .col.die { background:var(--die-bg); } .col.das { background:var(--das-bg); }
+  .col ul { list-style:none; margin:0; padding:0; }
+  .col li { padding:2px 0; font-size:.95rem; }
+  .col li small { color:var(--muted); }
+  .rowbar { display:flex; height:14px; border-radius:999px; overflow:hidden; background:var(--chip); }
+  .rowbar i { display:block; height:100%; }
+  .seg-s { background:var(--ok); } .seg-g { background:#e0a526; }
+  table.prog { width:100%; border-collapse:collapse; font-size:.95rem; }
+  table.prog td { padding:6px 4px; border-top:1px solid var(--line); vertical-align:middle; }
+  table.prog td.n { width:56px; font-weight:700; white-space:nowrap; }
+  table.prog td.c { width:110px; text-align:right; color:var(--muted); font-size:.85rem; white-space:nowrap; }
+  details summary { cursor:pointer; font-weight:600; min-height:44px; display:flex; align-items:center; }
+  .rules li { margin:4px 0; }
+  .hidden { display:none !important; }
+  [dir=rtl] { direction:rtl; unicode-bidi:isolate; }
+  @media (max-width:560px) { .cols { grid-template-columns:1fr; } .wrap { padding:10px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Genus-Trainer &middot; A1 L1&ndash;L11</h1>
+  <div class="tabs" role="tablist">
+    <button class="tab on" id="tabPractice" type="button">&Uuml;ben</button>
+    <button class="tab" id="tabList" type="button">Lernliste</button>
+    <button class="tab" id="tabProg" type="button">Fortschritt</button>
+  </div>
+
+  <div id="viewPractice"></div>
+  <div id="viewList" class="hidden"></div>
+  <div id="viewProg" class="hidden"></div>
+</div>
+<script>
+(function () {
+  "use strict";
+  var NOUNS = [{"a":"die","w":"Sprache","l":1,"p":"","h":"Nomen auf -e sind meist feminin.","x":["die Adresse","die Straße","die Frage"],"en":"language","tr":"dil","ru":"язык","ar":"اللغة"},{"a":"der","w":"Name","l":1,"p":"","h":"Ausnahme! Nomen auf -e sind meist feminin. Hier aber: der Name.","x":["die Sprache","die Adresse","die Straße"],"en":"name","tr":"isim / ad","ru":"имя","ar":"الاسم"},{"a":"das","w":"Land","l":1,"p":"","h":"","x":[],"en":"country","tr":"ülke","ru":"страна","ar":"البلد"},{"a":"der","w":"Altenpfleger","l":2,"p":"Altenpfleger","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Alten + der Pfleger → der Altenpfleger.","x":[],"en":"elderly caregiver / geriatric nurse assistant","tr":"yaşlı bakım elemanı","ru":"работник по уходу за пожилыми (сиделка)","ar":"مقدّم/ـة رعاية لكبار السن"},{"a":"die","w":"Altenpflegerin","l":2,"p":"Altenpflegerinnen","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Alten + die Pflegerin → die Altenpflegerin.","x":[],"en":"elderly caregiver / geriatric nurse assistant","tr":"yaşlı bakım elemanı","ru":"работник по уходу за пожилыми (сиделка)","ar":"مقدّم/ـة رعاية لكبار السن"},{"a":"der","w":"Arzt","l":2,"p":"Ärzte","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Friseur","der Ingenieur","der Kellner"],"en":"doctor","tr":"doktor","ru":"врач","ar":"طبيب / طبيبة"},{"a":"die","w":"Ärztin","l":2,"p":"Ärztinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"doctor","tr":"doktor","ru":"врач","ar":"طبيب / طبيبة"},{"a":"der","w":"Friseur","l":2,"p":"Friseure","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Ingenieur","der Kellner"],"en":"hairdresser","tr":"kuaför","ru":"парикмахер","ar":"حلاق / مصففة شعر"},{"a":"die","w":"Friseurin","l":2,"p":"Friseurinnen","h":"Weibliche Form auf -in → immer die.","x":["die Ingenieurin","die Kellnerin","die Köchin"],"en":"hairdresser","tr":"kuaför","ru":"парикмахер","ar":"حلاق / مصففة شعر"},{"a":"der","w":"Hausmann","l":2,"p":"Hausmänner","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Haus + der Mann → der Hausmann.","x":[],"en":"stay-at-home dad","tr":"ev erkeği","ru":"домохозяин","ar":"رب منزل"},{"a":"die","w":"Hausfrau","l":2,"p":"Hausfrauen","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Haus + die Frau → die Hausfrau.","x":[],"en":"homemaker (f.)","tr":"ev hanımı","ru":"домохозяйка","ar":"ربة منزل"},{"a":"der","w":"Ingenieur","l":2,"p":"Ingenieure","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Kellner"],"en":"engineer","tr":"mühendis","ru":"инженер","ar":"مهندس / مهندسة"},{"a":"die","w":"Ingenieurin","l":2,"p":"Ingenieurinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Kellnerin","die Köchin"],"en":"engineer","tr":"mühendis","ru":"инженер","ar":"مهندس / مهندسة"},{"a":"der","w":"Koch","l":2,"p":"Köche","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"cook / chef","tr":"aşçı","ru":"повар","ar":"طاهٍ / طاهية"},{"a":"die","w":"Köchin","l":2,"p":"Köchinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"cook / chef","tr":"aşçı","ru":"повар","ar":"طاهٍ / طاهية"},{"a":"der","w":"Lehrer","l":2,"p":"Lehrer","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"teacher","tr":"öğretmen","ru":"учитель / учительница","ar":"معلم / معلمة"},{"a":"die","w":"Lehrerin","l":2,"p":"Lehrerinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"teacher","tr":"öğretmen","ru":"учитель / учительница","ar":"معلم / معلمة"},{"a":"der","w":"Mechatroniker","l":2,"p":"Mechatroniker","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"mechatronics technician","tr":"mekatronik teknisyeni","ru":"специалист по мехатронике","ar":"فني/ة ميكاترونكس"},{"a":"die","w":"Mechatronikerin","l":2,"p":"Mechatronikerinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"mechatronics technician","tr":"mekatronik teknisyeni","ru":"специалист по мехатронике","ar":"فني/ة ميكاترونكس"},{"a":"der","w":"Polizist","l":2,"p":"Polizisten","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"police officer","tr":"polis memuru","ru":"полицейский","ar":"شرطي / شرطية"},{"a":"die","w":"Polizistin","l":2,"p":"Polizistinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"police officer","tr":"polis memuru","ru":"полицейский","ar":"شرطي / شرطية"},{"a":"der","w":"Sänger","l":2,"p":"Sänger","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"singer","tr":"şarkıcı","ru":"певец / певица","ar":"مغني / مغنية"},{"a":"die","w":"Sängerin","l":2,"p":"Sängerinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"singer","tr":"şarkıcı","ru":"певец / певица","ar":"مغني / مغنية"},{"a":"der","w":"Taxifahrer","l":2,"p":"Taxifahrer","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Taxi + der Fahrer → der Taxifahrer.","x":[],"en":"taxi driver","tr":"taksi şoförü","ru":"таксист","ar":"سائق / سائقة تاكسي"},{"a":"die","w":"Taxifahrerin","l":2,"p":"Taxifahrerinnen","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Taxi + die Fahrerin → die Taxifahrerin.","x":[],"en":"taxi driver","tr":"taksi şoförü","ru":"таксист","ar":"سائق / سائقة تاكسي"},{"a":"der","w":"Verkäufer","l":2,"p":"Verkäufer","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"salesperson / shop assistant","tr":"satış elemanı","ru":"продавец / продавщица","ar":"بائع / بائعة"},{"a":"die","w":"Verkäuferin","l":2,"p":"Verkäuferinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"salesperson / shop assistant","tr":"satış elemanı","ru":"продавец / продавщица","ar":"بائع / بائعة"},{"a":"das","w":"Auto","l":2,"p":"","h":"Nomen auf -o sind meist sächlich.","x":["das Foto","das Kino","das Büro"],"en":"car","tr":"araba","ru":"машина","ar":"السيارة"},{"a":"das","w":"Heimatland","l":2,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Heimat + das Land → das Heimatland.","x":[],"en":"home country","tr":"anavatan / memleket","ru":"родина, страна происхождения","ar":"الوطن الأم"},{"a":"der","w":"Kurs","l":2,"p":"","h":"","x":[],"en":"course (e.g. a language course, Deutschkurs)","tr":"kurs (örn. dil kursu, Deutschkurs)","ru":"курс (например, языковые курсы, Deutschkurs)","ar":"الدورة (مثال: دورة لغة، Deutschkurs)"},{"a":"der","w":"Mann","l":2,"p":"Männer","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"man","tr":"erkek","ru":"мужчина","ar":"الرجل"},{"a":"die","w":"Frau","l":2,"p":"Frauen","h":"Weibliche Personen sind meist feminin.","x":["die Cousine","die Mutter","die Oma"],"en":"woman","tr":"kadın","ru":"женщина","ar":"المرأة"},{"a":"der","w":"Busfahrer","l":2,"p":"Busfahrer","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Bus + der Fahrer → der Busfahrer.","x":[],"en":"bus driver","tr":"otobüs şoförü","ru":"водитель автобуса","ar":"سائق / سائقة حافلة"},{"a":"die","w":"Busfahrerin","l":2,"p":"Busfahrerinnen","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Bus + die Fahrerin → die Busfahrerin.","x":[],"en":"bus driver","tr":"otobüs şoförü","ru":"водитель автобуса","ar":"سائق / سائقة حافلة"},{"a":"der","w":"Kellner","l":2,"p":"Kellner","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"waiter / waitress","tr":"garson","ru":"официант / официантка","ar":"نادل / نادلة"},{"a":"die","w":"Kellnerin","l":2,"p":"Kellnerinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Köchin"],"en":"waiter / waitress","tr":"garson","ru":"официант / официантка","ar":"نادل / نادلة"},{"a":"das","w":"Buch","l":2,"p":"","h":"","x":[],"en":"book","tr":"kitap","ru":"книга","ar":"الكتاب"},{"a":"das","w":"Lied","l":2,"p":"","h":"","x":[],"en":"song","tr":"şarkı","ru":"песня","ar":"الأغنية"},{"a":"der","w":"Tee","l":2,"p":"","h":"Viele Getränke sind maskulin.","x":["der Kaffee","der Saft","der Wein"],"en":"tea","tr":"çay","ru":"чай","ar":"الشاي"},{"a":"das","w":"Problem","l":2,"p":"","h":"","x":[],"en":"problem","tr":"sorun / problem","ru":"проблема","ar":"المشكلة"},{"a":"das","w":"Formular","l":2,"p":"","h":"","x":[],"en":"form (document)","tr":"form (belge)","ru":"бланк, форма (документ)","ar":"الاستمارة"},{"a":"der","w":"Vorname","l":2,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Vor + der Name → der Vorname.","x":[],"en":"first name","tr":"ad (isim)","ru":"имя","ar":"الاسم الأول"},{"a":"der","w":"Nachname","l":2,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Nach + der Name → der Nachname.","x":[],"en":"last name / surname","tr":"soyadı","ru":"фамилия","ar":"اسم العائلة"},{"a":"die","w":"Adresse","l":2,"p":"","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Straße","die Frage"],"en":"address","tr":"adres","ru":"адрес","ar":"العنوان"},{"a":"die","w":"Straße","l":2,"p":"","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Frage"],"en":"street","tr":"sokak / cadde","ru":"улица","ar":"الشارع"},{"a":"die","w":"Hausnummer","l":2,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Haus + die Nummer → die Hausnummer.","x":[],"en":"house number","tr":"bina numarası","ru":"номер дома","ar":"رقم المنزل"},{"a":"der","w":"Ort","l":2,"p":"","h":"","x":[],"en":"place / town (e.g. Wohnort = place of residence)","tr":"yer / yerleşim yeri (örn. Wohnort = ikamet yeri)","ru":"место, населённый пункт (например, Wohnort — место жительства)","ar":"المكان / البلدة (مثال: Wohnort = مكان الإقامة)"},{"a":"die","w":"Postleitzahl","l":2,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Postleit + die Zahl → die Postleitzahl.","x":[],"en":"postal code (ZIP code)","tr":"posta kodu","ru":"почтовый индекс","ar":"الرمز البريدي"},{"a":"die","w":"Telefonnummer","l":2,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Telefon + die Nummer → die Telefonnummer.","x":[],"en":"phone number","tr":"telefon numarası","ru":"номер телефона","ar":"رقم الهاتف"},{"a":"die","w":"E-Mail-Adresse","l":2,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. E-Mail + die Adresse → die E-Mail-Adresse.","x":[],"en":"email address","tr":"e-posta adresi","ru":"адрес электронной почты","ar":"عنوان البريد الإلكتروني"},{"a":"die","w":"E-Mail","l":2,"p":"","h":"","x":[],"en":"email","tr":"e-posta","ru":"электронное письмо, имейл","ar":"البريد الإلكتروني"},{"a":"die","w":"Arbeit","l":2,"p":"","h":"","x":[],"en":"work / job","tr":"iş","ru":"работа","ar":"العمل"},{"a":"die","w":"Tasche","l":3,"p":"Taschen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"bag(s)","tr":"çanta","ru":"сумка","ar":"الحقيبة"},{"a":"der","w":"Tisch","l":3,"p":"Tische","h":"","x":[],"en":"table(s)","tr":"masa","ru":"стол","ar":"الطاولة"},{"a":"der","w":"Stuhl","l":3,"p":"Stühle","h":"","x":[],"en":"chair(s)","tr":"sandalye","ru":"стул","ar":"الكرسي"},{"a":"die","w":"Bank","l":3,"p":"Bänke / Banken","h":"Sitzbank und Geld-Bank sind beide feminin: die Bank.","x":[],"en":"bench / bank (money)","tr":"oturma bankı / banka","ru":"скамейка / банк","ar":"المقعد / المصرف"},{"a":"das","w":"Sofa","l":3,"p":"Sofas","h":"","x":[],"en":"sofa(s)","tr":"kanepe","ru":"диван","ar":"الأريكة"},{"a":"das","w":"Bett","l":3,"p":"Betten","h":"","x":[],"en":"bed(s)","tr":"yatak","ru":"кровать","ar":"السرير"},{"a":"das","w":"Regal","l":3,"p":"Regale","h":"","x":[],"en":"shelf / shelves","tr":"raf","ru":"полка, стеллаж","ar":"الرف"},{"a":"der","w":"Schrank","l":3,"p":"Schränke","h":"","x":[],"en":"cupboard(s) / wardrobe(s)","tr":"dolap","ru":"шкаф","ar":"الخزانة"},{"a":"der","w":"Herd","l":3,"p":"Herde","h":"","x":[],"en":"stove(s) / cooker(s) — kitchen appliance, not a fireplace hearth","tr":"ocak (mutfak ocağı — şömine değil)","ru":"плита (кухонная — не камин)","ar":"الموقد (موقد المطبخ — وليس موقد المدفأة)"},{"a":"der","w":"Bleistift","l":3,"p":"Bleistifte","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Blei + der Stift → der Bleistift.","x":[],"en":"pencil(s)","tr":"kurşun kalem","ru":"карандаш","ar":"قلم الرصاص"},{"a":"das","w":"Heft","l":3,"p":"Hefte","h":"","x":[],"en":"notebook(s) / exercise book(s)","tr":"defter","ru":"тетрадь","ar":"الدفتر"},{"a":"das","w":"Plakat","l":3,"p":"Plakate","h":"","x":[],"en":"poster(s)","tr":"poster","ru":"плакат","ar":"الملصق"},{"a":"das","w":"Handy","l":3,"p":"Handys","h":"","x":[],"en":"mobile phone(s) / cell phone(s)","tr":"cep telefonu","ru":"мобильный телефон","ar":"الهاتف المحمول"},{"a":"der","w":"Dialog","l":3,"p":"Dialoge","h":"","x":[],"en":"dialogue(s)","tr":"diyalog","ru":"диалог","ar":"الحوار"},{"a":"die","w":"Hausaufgabe","l":3,"p":"Hausaufgaben","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Haus + die Aufgabe → die Hausaufgabe.","x":[],"en":"homework","tr":"ev ödevi","ru":"домашнее задание","ar":"الواجب المنزلي"},{"a":"das","w":"Kind","l":3,"p":"Kinder","h":"Ausnahme: Kinder sind sächlich – das Kind, auch für Jungen und Mädchen.","x":[],"en":"child(ren)","tr":"çocuk","ru":"ребёнок","ar":"الطفل"},{"a":"das","w":"Foto","l":3,"p":"Fotos","h":"Nomen auf -o sind meist sächlich.","x":["das Auto","das Kino","das Büro"],"en":"photo(s)","tr":"fotoğraf","ru":"фото","ar":"الصورة"},{"a":"der","w":"Kaffee","l":3,"p":"","h":"Viele Getränke sind maskulin.","x":["der Tee","der Saft","der Wein"],"en":"coffee","tr":"kahve","ru":"кофе (во множественном числе используется редко)","ar":"القهوة"},{"a":"der","w":"Computer","l":3,"p":"Computer","h":"","x":[],"en":"computer(s)","tr":"bilgisayar","ru":"компьютер","ar":"الحاسوب"},{"a":"die","w":"Kaffeemaschine","l":3,"p":"Kaffeemaschinen","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Kaffee + die Maschine → die Kaffeemaschine.","x":[],"en":"coffee machine(s)","tr":"kahve makinesi","ru":"кофемашина","ar":"ماكينة القهوة"},{"a":"die","w":"Kasse","l":3,"p":"Kassen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"cash register(s) / checkout","tr":"kasa","ru":"касса","ar":"الصندوق (الكاشير)"},{"a":"der","w":"Laptop","l":3,"p":"Laptops","h":"","x":[],"en":"laptop(s)","tr":"dizüstü bilgisayar","ru":"ноутбук","ar":"الحاسوب المحمول"},{"a":"die","w":"Tafel","l":3,"p":"Tafeln","h":"","x":[],"en":"board(s) (e.g. blackboard/whiteboard) — not a chocolate bar","tr":"tahta (örn. yazı tahtası — çikolata değil)","ru":"доска (например, школьная — не плитка шоколада)","ar":"اللوح (مثال: السبورة — وليس قطعة الشوكولاتة)"},{"a":"der","w":"Kiosk","l":3,"p":"Kioske","h":"","x":[],"en":"kiosk(s)","tr":"büfe","ru":"киоск","ar":"الكشك"},{"a":"die","w":"Tür","l":3,"p":"Türen","h":"","x":[],"en":"door(s)","tr":"kapı","ru":"дверь","ar":"الباب"},{"a":"der","w":"Schlüssel","l":3,"p":"Schlüssel","h":"","x":[],"en":"key(s)","tr":"anahtar","ru":"ключ","ar":"المفتاح"},{"a":"das","w":"Fenster","l":3,"p":"Fenster","h":"","x":[],"en":"window(s)","tr":"pencere","ru":"окно","ar":"النافذة"},{"a":"der","w":"Kühlschrank","l":3,"p":"Kühlschränke","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Kühl + der Schrank → der Kühlschrank.","x":[],"en":"refrigerator(s)","tr":"buzdolabı","ru":"холодильник","ar":"الثلاجة"},{"a":"der","w":"Zentimeter","l":3,"p":"Zentimeter","h":"","x":[],"en":"centimeter(s)","tr":"santimetre","ru":"сантиметр","ar":"السنتيمتر"},{"a":"der","w":"Meter","l":3,"p":"Meter","h":"","x":[],"en":"meter(s)","tr":"metre","ru":"метр","ar":"المتر"},{"a":"der","w":"Euro","l":3,"p":"Euro","h":"Ausnahme! Nomen auf -o sind meist sächlich. Hier aber: der Euro.","x":["das Auto","das Foto","das Kino"],"en":"euro(s)","tr":"avro","ru":"евро","ar":"اليورو"},{"a":"die","w":"Spülmaschine","l":3,"p":"Spülmaschinen","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Spül + die Maschine → die Spülmaschine.","x":[],"en":"dishwasher(s)","tr":"bulaşık makinesi","ru":"посудомоечная машина","ar":"غسالة الصحون"},{"a":"die","w":"Waschmaschine","l":3,"p":"Waschmaschinen","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Wasch + die Maschine → die Waschmaschine.","x":[],"en":"washing machine(s)","tr":"çamaşır makinesi","ru":"стиральная машина","ar":"غسالة الملابس"},{"a":"das","w":"Alter","l":3,"p":"","h":"","x":[],"en":"age","tr":"yaş","ru":"возраст","ar":"العمر"},{"a":"der","w":"Preis","l":3,"p":"Preise","h":"","x":[],"en":"price(s)","tr":"fiyat","ru":"цена","ar":"السعر"},{"a":"die","w":"Frage","l":3,"p":"Fragen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"question(s)","tr":"soru","ru":"вопрос","ar":"السؤال"},{"a":"der","w":"Freund","l":4,"p":"Freunde","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"friend (m.)","tr":"arkadaş (erkek)","ru":"друг","ar":"صديق"},{"a":"die","w":"Freundin","l":4,"p":"Freundinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"friend (f.) — also used to mean \"girlfriend\"","tr":"arkadaş (kadın) (ayrıca \"kız arkadaş\" anlamında da kullanılır)","ru":"подруга (также в значении «девушка, возлюбленная»)","ar":"صديقة (تُستخدم أيضاً بمعنى: حبيبة)"},{"a":"die","w":"Familie","l":4,"p":"Familien","h":"Endung -ie → meist die.","x":[],"en":"family","tr":"aile","ru":"семья","ar":"العائلة"},{"a":"die","w":"Mutter","l":4,"p":"Mütter","h":"Weibliche Personen sind meist feminin.","x":["die Frau","die Cousine","die Oma"],"en":"mother","tr":"anne","ru":"мать","ar":"الأم"},{"a":"der","w":"Vater","l":4,"p":"Väter","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"father","tr":"baba","ru":"отец","ar":"الأب"},{"a":"die","w":"Schwester","l":4,"p":"Schwestern","h":"Weibliche Personen sind meist feminin.","x":["die Frau","die Cousine","die Mutter"],"en":"sister","tr":"kız kardeş","ru":"сестра","ar":"الأخت"},{"a":"der","w":"Bruder","l":4,"p":"Brüder","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"brother","tr":"erkek kardeş","ru":"брат","ar":"الأخ"},{"a":"die","w":"Großmutter","l":4,"p":"Großmütter","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Groß + die Mutter → die Großmutter.","x":[],"en":"grandmother","tr":"büyükanne","ru":"бабушка","ar":"الجدة"},{"a":"die","w":"Oma","l":4,"p":"Omas","h":"Weibliche Personen sind meist feminin.","x":["die Frau","die Cousine","die Mutter"],"en":"grandma","tr":"anneanne / babaanne (samimi)","ru":"бабуля","ar":"الجدة (بشكل ودّي)"},{"a":"der","w":"Großvater","l":4,"p":"Großväter","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Groß + der Vater → der Großvater.","x":[],"en":"grandfather","tr":"büyükbaba","ru":"дедушка","ar":"الجد"},{"a":"der","w":"Opa","l":4,"p":"Opas","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"grandpa","tr":"dede (samimi)","ru":"дедуля","ar":"الجد (بشكل ودّي)"},{"a":"die","w":"Tante","l":4,"p":"Tanten","h":"Weibliche Personen sind meist feminin.","x":["die Frau","die Cousine","die Mutter"],"en":"aunt","tr":"teyze / hala","ru":"тётя","ar":"العمة / الخالة"},{"a":"der","w":"Onkel","l":4,"p":"Onkel","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"uncle","tr":"amca / dayı","ru":"дядя","ar":"العم / الخال"},{"a":"die","w":"Cousine","l":4,"p":"Cousinen","h":"Weibliche Personen sind meist feminin.","x":["die Frau","die Mutter","die Oma"],"en":"cousin (f.)","tr":"kız kuzen","ru":"двоюродная сестра","ar":"ابنة العم / الخال"},{"a":"der","w":"Cousin","l":4,"p":"Cousins","h":"Ausnahme! Weibliche Formen auf -in sind immer die – der Cousin ist aber männlich (die Cousine ist weiblich).","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"cousin (m.)","tr":"erkek kuzen","ru":"двоюродный брат","ar":"ابن العم / الخال"},{"a":"der","w":"Sohn","l":4,"p":"Söhne","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"son","tr":"oğul","ru":"сын","ar":"الابن"},{"a":"die","w":"Tochter","l":4,"p":"Töchter","h":"Weibliche Personen sind meist feminin.","x":["die Frau","die Cousine","die Mutter"],"en":"daughter","tr":"kız (evlat)","ru":"дочь","ar":"الابنة"},{"a":"der","w":"Familienstand","l":4,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Familien + der Stand → der Familienstand.","x":[],"en":"marital status","tr":"medeni durum","ru":"семейное положение","ar":"الحالة الاجتماعية"},{"a":"der","w":"Chef","l":4,"p":"Chefs","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"boss (m.)","tr":"patron (erkek)","ru":"начальник, шеф","ar":"المدير / الرئيس"},{"a":"die","w":"Chefin","l":4,"p":"Chefinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"boss (f.)","tr":"patron (kadın)","ru":"начальница, шеф (женщина)","ar":"المديرة / الرئيسة"},{"a":"der","w":"Ehemann","l":4,"p":"Ehemänner","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Ehe + der Mann → der Ehemann.","x":[],"en":"husband","tr":"koca","ru":"муж","ar":"الزوج"},{"a":"der","w":"Job","l":4,"p":"Jobs","h":"","x":[],"en":"job (colloquial; compare \"die Arbeit\")","tr":"iş (günlük dilde; \"die Arbeit\" ile karşılaştırın)","ru":"работа (разговорное; ср. «die Arbeit»)","ar":"الوظيفة (عامية، قارن بـ«die Arbeit»)"},{"a":"die","w":"Ehefrau","l":4,"p":"Ehefrauen","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Ehe + die Frau → die Ehefrau.","x":[],"en":"wife","tr":"eş (kadın) / karı","ru":"жена","ar":"الزوجة"},{"a":"der","w":"Enkel","l":4,"p":"Enkel","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"grandson","tr":"torun (erkek)","ru":"внук","ar":"الحفيد"},{"a":"die","w":"Enkelin","l":4,"p":"Enkelinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"granddaughter","tr":"torun (kız)","ru":"внучка","ar":"الحفيدة"},{"a":"der","w":"Garten","l":4,"p":"Gärten","h":"","x":[],"en":"garden","tr":"bahçe","ru":"сад","ar":"الحديقة"},{"a":"das","w":"Haus","l":4,"p":"Häuser","h":"","x":[],"en":"house","tr":"ev","ru":"дом","ar":"المنزل"},{"a":"das","w":"Café","l":4,"p":"Cafés","h":"","x":[],"en":"café","tr":"kafe","ru":"кафе","ar":"المقهى"},{"a":"die","w":"Ex-Frau","l":4,"p":"Ex-Frauen","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Ex + die Frau → die Ex-Frau.","x":[],"en":"ex-wife","tr":"eski eş (kadın)","ru":"бывшая жена","ar":"الزوجة السابقة"},{"a":"der","w":"Ex-Mann","l":4,"p":"Ex-Männer","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Ex + der Mann → der Ex-Mann.","x":[],"en":"ex-husband","tr":"eski eş (erkek)","ru":"бывший муж","ar":"الزوج السابق"},{"a":"das","w":"Gespräch","l":4,"p":"Gespräche","h":"Nomen mit Ge- am Anfang sind oft sächlich.","x":["das Geschäft","das Gemüse","das Getränk"],"en":"conversation","tr":"konuşma / sohbet","ru":"разговор","ar":"المحادثة"},{"a":"der","w":"Nachbar","l":4,"p":"Nachbarn","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"neighbor (m.)","tr":"komşu (erkek)","ru":"сосед","ar":"الجار"},{"a":"die","w":"Nachbarin","l":4,"p":"Nachbarinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"neighbor (f.)","tr":"komşu (kadın)","ru":"соседка","ar":"الجارة"},{"a":"das","w":"Wörterbuch","l":4,"p":"Wörterbücher","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Wörter + das Buch → das Wörterbuch.","x":[],"en":"dictionary","tr":"sözlük","ru":"словарь","ar":"القاموس"},{"a":"das","w":"Internet","l":5,"p":"","h":"","x":[],"en":"internet","tr":"internet","ru":"интернет","ar":"الإنترنت"},{"a":"die","w":"Musik","l":5,"p":"","h":"Endung -ik → meist die.","x":[],"en":"music","tr":"müzik","ru":"музыка","ar":"الموسيقى"},{"a":"der","w":"Morgen","l":5,"p":"Morgen","h":"Tageszeiten sind maskulin.","x":["der Abend","der Mittag"],"en":"morning","tr":"sabah","ru":"утро","ar":"الصباح"},{"a":"der","w":"Vormittag","l":5,"p":"Vormittage","h":"Tageszeiten sind maskulin.","x":["der Abend","der Mittag","der Morgen"],"en":"late morning (before noon)","tr":"öğleden önce","ru":"время до обеда, первая половина дня","ar":"قبل الظهر"},{"a":"der","w":"Mittag","l":5,"p":"Mittage","h":"Tageszeiten sind maskulin.","x":["der Abend","der Morgen"],"en":"noon / midday","tr":"öğle (vakti)","ru":"полдень, обеденное время","ar":"الظهر"},{"a":"der","w":"Nachmittag","l":5,"p":"Nachmittage","h":"Tageszeiten sind maskulin.","x":["der Abend","der Mittag","der Morgen"],"en":"afternoon","tr":"öğleden sonra","ru":"время после обеда, вторая половина дня","ar":"بعد الظهر"},{"a":"der","w":"Abend","l":5,"p":"Abende","h":"Tageszeiten sind maskulin.","x":["der Mittag","der Morgen"],"en":"evening","tr":"akşam","ru":"вечер","ar":"المساء"},{"a":"die","w":"Nacht","l":5,"p":"Nächte","h":"Ausnahme! Tageszeiten sind maskulin. Hier aber: die Nacht.","x":["der Abend","der Mittag","der Morgen"],"en":"night","tr":"gece","ru":"ночь","ar":"الليل"},{"a":"die","w":"Zeit","l":5,"p":"","h":"","x":[],"en":"time","tr":"zaman","ru":"время","ar":"الوقت"},{"a":"der","w":"Sport","l":5,"p":"","h":"","x":[],"en":"sport","tr":"spor","ru":"спорт","ar":"الرياضة"},{"a":"der","w":"Tag","l":5,"p":"Tage","h":"","x":[],"en":"day","tr":"gün","ru":"день","ar":"يوم"},{"a":"das","w":"Fahrrad","l":5,"p":"Fahrräder","h":"","x":[],"en":"bicycle","tr":"bisiklet","ru":"велосипед","ar":"الدراجة الهوائية"},{"a":"der","w":"Fußball","l":5,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Fuß + der Ball → der Fußball.","x":[],"en":"football (soccer)","tr":"futbol","ru":"футбол","ar":"كرة القدم"},{"a":"das","w":"Picknick","l":5,"p":"","h":"","x":[],"en":"picnic","tr":"piknik","ru":"пикник","ar":"البيكنيك"},{"a":"der","w":"Spaziergang","l":5,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Spazier + der Gang → der Spaziergang.","x":[],"en":"walk / stroll","tr":"yürüyüş","ru":"прогулка","ar":"نزهة على الأقدام"},{"a":"die","w":"Bibliothek","l":5,"p":"Bibliotheken","h":"Endung -thek / -theke → immer die.","x":["die Apotheke"],"en":"library","tr":"kütüphane","ru":"библиотека","ar":"المكتبة"},{"a":"der","w":"Eintritt","l":5,"p":"","h":"","x":[],"en":"admission / entrance fee","tr":"giriş / giriş ücreti","ru":"вход, входная плата","ar":"رسوم الدخول"},{"a":"das","w":"Hobby","l":5,"p":"Hobbys","h":"","x":[],"en":"hobby","tr":"hobi","ru":"хобби","ar":"الهواية"},{"a":"das","w":"Kino","l":5,"p":"Kinos","h":"Nomen auf -o sind meist sächlich.","x":["das Auto","das Foto","das Büro"],"en":"cinema","tr":"sinema","ru":"кинотеатр","ar":"السينما"},{"a":"die","w":"Million","l":5,"p":"Millionen","h":"Endung -ion → fast immer die.","x":["die Rezeption","die Station"],"en":"million","tr":"milyon","ru":"миллион","ar":"المليون"},{"a":"der","w":"Park","l":5,"p":"Parks","h":"","x":[],"en":"park","tr":"park","ru":"парк","ar":"الحديقة العامة"},{"a":"das","w":"Schwimmbad","l":5,"p":"Schwimmbäder","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Schwimm + das Bad → das Schwimmbad.","x":[],"en":"swimming pool","tr":"yüzme havuzu","ru":"бассейн","ar":"المسبح"},{"a":"die","w":"Stadt","l":5,"p":"Städte","h":"","x":[],"en":"city / town","tr":"şehir","ru":"город","ar":"المدينة"},{"a":"der","w":"Tipp","l":5,"p":"Tipps","h":"","x":[],"en":"tip / piece of advice","tr":"ipucu / tavsiye","ru":"совет, подсказка","ar":"النصيحة"},{"a":"der","w":"Zoo","l":5,"p":"Zoos","h":"","x":[],"en":"zoo","tr":"hayvanat bahçesi","ru":"зоопарк","ar":"حديقة الحيوان"},{"a":"die","w":"Freizeit","l":5,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Frei + die Zeit → die Freizeit.","x":[],"en":"free time / leisure","tr":"boş zaman","ru":"свободное время","ar":"وقت الفراغ"},{"a":"der","w":"Montag","l":5,"p":"","h":"Wochentage sind maskulin.","x":["der Dienstag","der Donnerstag","der Freitag"],"en":"Monday","tr":"pazartesi","ru":"понедельник","ar":"يوم الاثنين"},{"a":"der","w":"Dienstag","l":5,"p":"","h":"Wochentage sind maskulin.","x":["der Donnerstag","der Freitag","der Mittwoch"],"en":"Tuesday","tr":"salı","ru":"вторник","ar":"يوم الثلاثاء"},{"a":"der","w":"Mittwoch","l":5,"p":"","h":"Wochentage sind maskulin.","x":["der Dienstag","der Donnerstag","der Freitag"],"en":"Wednesday","tr":"çarşamba","ru":"среда","ar":"يوم الأربعاء"},{"a":"der","w":"Donnerstag","l":5,"p":"","h":"Wochentage sind maskulin.","x":["der Dienstag","der Freitag","der Mittwoch"],"en":"Thursday","tr":"perşembe","ru":"четверг","ar":"يوم الخميس"},{"a":"der","w":"Freitag","l":5,"p":"","h":"Wochentage sind maskulin.","x":["der Dienstag","der Donnerstag","der Mittwoch"],"en":"Friday","tr":"cuma","ru":"пятница","ar":"يوم الجمعة"},{"a":"der","w":"Samstag","l":5,"p":"","h":"Wochentage sind maskulin.","x":["der Dienstag","der Donnerstag","der Freitag"],"en":"Saturday","tr":"cumartesi","ru":"суббота","ar":"يوم السبت"},{"a":"der","w":"Sonntag","l":5,"p":"","h":"Wochentage sind maskulin.","x":["der Dienstag","der Donnerstag","der Freitag"],"en":"Sunday","tr":"pazar","ru":"воскресенье","ar":"يوم الأحد"},{"a":"das","w":"Wochenende","l":5,"p":"Wochenenden","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Wochen + das Ende → das Wochenende.","x":[],"en":"weekend","tr":"hafta sonu","ru":"выходные","ar":"عطلة نهاية الأسبوع"},{"a":"die","w":"Woche","l":5,"p":"Wochen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"week","tr":"hafta","ru":"неделя","ar":"الأسبوع"},{"a":"der","w":"Verein","l":5,"p":"Vereine","h":"","x":[],"en":"club / association","tr":"dernek / kulüp","ru":"клуб, объединение","ar":"النادي / الجمعية"},{"a":"die","w":"Uhr","l":6,"p":"Uhren","h":"","x":[],"en":"clock(s) / watch(es)","tr":"saat","ru":"часы (прибор)","ar":"الساعة"},{"a":"die","w":"Küche","l":6,"p":"Küchen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"kitchen(s)","tr":"mutfak","ru":"кухня","ar":"المطبخ"},{"a":"das","w":"Essen","l":6,"p":"","h":"","x":[],"en":"food / meal","tr":"yemek","ru":"еда","ar":"الطعام"},{"a":"der","w":"Kollege","l":6,"p":"Kollegen","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"colleague (m.)","tr":"iş arkadaşı (erkek)","ru":"коллега (муж.)","ar":"زميل (مذكر)"},{"a":"die","w":"Kollegin","l":6,"p":"Kolleginnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"colleague (f.)","tr":"iş arkadaşı (kadın)","ru":"коллега (жен.)","ar":"زميلة (مؤنث)"},{"a":"die","w":"Pause","l":6,"p":"Pausen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"break(s)","tr":"mola","ru":"перерыв","ar":"الاستراحة"},{"a":"die","w":"Mittagspause","l":6,"p":"Mittagspausen","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Mittag + die Pause → die Mittagspause.","x":[],"en":"lunch break(s)","tr":"öğle molası","ru":"обеденный перерыв","ar":"استراحة الغداء"},{"a":"der","w":"Feierabend","l":6,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Feier + der Abend → der Feierabend.","x":[],"en":"end of the workday","tr":"iş çıkışı / mesai sonu","ru":"конец рабочего дня","ar":"نهاية الدوام"},{"a":"die","w":"Arbeitskleidung","l":6,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Arbeits + die Kleidung → die Arbeitskleidung.","x":[],"en":"work clothes","tr":"iş kıyafeti","ru":"рабочая одежда","ar":"ملابس العمل"},{"a":"das","w":"Licht","l":6,"p":"Lichter","h":"","x":[],"en":"light(s)","tr":"ışık","ru":"свет, лампа","ar":"الضوء"},{"a":"der","w":"Supermarkt","l":6,"p":"Supermärkte","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Super + der Markt → der Supermarkt.","x":[],"en":"supermarket(s)","tr":"süpermarket","ru":"супермаркет","ar":"السوبر ماركت"},{"a":"das","w":"Paket","l":6,"p":"Pakete","h":"","x":[],"en":"package(s) / parcel(s)","tr":"paket / koli","ru":"посылка, пакет","ar":"الطرد"},{"a":"das","w":"Geschäft","l":6,"p":"Geschäfte","h":"Nomen mit Ge- am Anfang sind oft sächlich.","x":["das Gespräch","das Gemüse","das Getränk"],"en":"shop(s) / store(s)","tr":"dükkân / mağaza","ru":"магазин","ar":"المتجر"},{"a":"der","w":"Dienstplan","l":6,"p":"Dienstpläne","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Dienst + der Plan → der Dienstplan.","x":[],"en":"duty roster(s) / work schedule(s)","tr":"çalışma programı / vardiya planı","ru":"график работы, расписание смен","ar":"جدول العمل"},{"a":"die","w":"Frühschicht","l":6,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Früh + die Schicht → die Frühschicht.","x":[],"en":"early shift","tr":"sabah vardiyası","ru":"утренняя смена","ar":"الوردية الصباحية"},{"a":"die","w":"Spätschicht","l":6,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Spät + die Schicht → die Spätschicht.","x":[],"en":"late shift","tr":"akşam vardiyası","ru":"вечерняя смена","ar":"الوردية المسائية"},{"a":"die","w":"Nachtschicht","l":6,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Nacht + die Schicht → die Nachtschicht.","x":[],"en":"night shift","tr":"gece vardiyası","ru":"ночная смена","ar":"الوردية الليلية"},{"a":"der","w":"Urlaub","l":6,"p":"","h":"","x":[],"en":"vacation / holiday","tr":"tatil / izin","ru":"отпуск","ar":"الإجازة"},{"a":"der","w":"Arbeitstag","l":6,"p":"Arbeitstage","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Arbeits + der Tag → der Arbeitstag.","x":[],"en":"work day(s)","tr":"iş günü","ru":"рабочий день","ar":"يوم العمل"},{"a":"die","w":"Aufgabe","l":6,"p":"Aufgaben","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"task(s)","tr":"görev","ru":"задача, задание","ar":"المهمة"},{"a":"die","w":"Arbeitszeit","l":6,"p":"Arbeitszeiten","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Arbeits + die Zeit → die Arbeitszeit.","x":[],"en":"working hours","tr":"çalışma saatleri","ru":"рабочее время","ar":"وقت العمل / ساعات العمل"},{"a":"der","w":"Schichtdienst","l":6,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Schicht + der Dienst → der Schichtdienst.","x":[],"en":"shift work","tr":"vardiyalı çalışma","ru":"сменная работа","ar":"العمل بنظام الورديات"},{"a":"die","w":"Rezeption","l":6,"p":"Rezeptionen","h":"Endung -ion → fast immer die.","x":["die Million","die Station"],"en":"reception (desk)","tr":"resepsiyon","ru":"ресепшен, стойка регистрации","ar":"الاستقبال (مكتب الاستقبال)"},{"a":"der","w":"Ausweis","l":6,"p":"Ausweise","h":"","x":[],"en":"ID card(s)","tr":"kimlik kartı","ru":"удостоверение личности, пропуск","ar":"بطاقة الهوية"},{"a":"der","w":"Apfel","l":7,"p":"Äpfel","h":"Ausnahme! Viele Obst- und Gemüsesorten sind feminin. Hier aber: der Apfel.","x":["die Ananas","die Birne","die Kartoffel"],"en":"apple(s)","tr":"elma","ru":"яблоко","ar":"التفاح"},{"a":"die","w":"Birne","l":7,"p":"Birnen","h":"Viele Obst- und Gemüsesorten sind feminin.","x":["die Ananas","die Kartoffel","die Paprika"],"en":"pear(s)","tr":"armut","ru":"груша","ar":"الكمثرى (الإجاص)"},{"a":"die","w":"Tomate","l":7,"p":"Tomaten","h":"Viele Obst- und Gemüsesorten sind feminin.","x":["die Ananas","die Birne","die Kartoffel"],"en":"tomato(es)","tr":"domates","ru":"помидор","ar":"الطماطم"},{"a":"der","w":"Salat","l":7,"p":"Salate","h":"Ausnahme! Viele Obst- und Gemüsesorten sind feminin. Hier aber: der Salat.","x":["die Ananas","die Birne","die Kartoffel"],"en":"salad(s) / lettuce","tr":"salata","ru":"салат","ar":"السلطة"},{"a":"das","w":"Fleisch","l":7,"p":"","h":"","x":[],"en":"meat","tr":"et","ru":"мясо","ar":"اللحم"},{"a":"das","w":"Hähnchen","l":7,"p":"Hähnchen","h":"Endung -chen → immer das.","x":["das Brötchen"],"en":"chicken (as food)","tr":"piliç / tavuk (yemek olarak)","ru":"курица, цыплёнок (как блюдо)","ar":"الدجاج"},{"a":"der","w":"Fisch","l":7,"p":"Fische","h":"","x":[],"en":"fish","tr":"balık","ru":"рыба","ar":"السمك"},{"a":"der","w":"Reis","l":7,"p":"","h":"","x":[],"en":"rice","tr":"pirinç","ru":"рис","ar":"الأرز"},{"a":"das","w":"Brot","l":7,"p":"Brote","h":"","x":[],"en":"bread","tr":"ekmek","ru":"хлеб","ar":"الخبز"},{"a":"das","w":"Wasser","l":7,"p":"","h":"Ausnahme! Viele Getränke sind maskulin. Hier aber: das Wasser.","x":["der Tee","der Kaffee","der Saft"],"en":"water","tr":"su","ru":"вода","ar":"الماء"},{"a":"der","w":"Saft","l":7,"p":"Säfte","h":"Viele Getränke sind maskulin.","x":["der Tee","der Kaffee","der Wein"],"en":"juice","tr":"meyve suyu","ru":"сок","ar":"العصير"},{"a":"der","w":"Wein","l":7,"p":"Weine","h":"Viele Getränke sind maskulin.","x":["der Tee","der Kaffee","der Saft"],"en":"wine","tr":"şarap","ru":"вино","ar":"النبيذ"},{"a":"das","w":"Bier","l":7,"p":"Biere","h":"Ausnahme! Viele Getränke sind maskulin. Hier aber: das Bier.","x":["der Tee","der Kaffee","der Saft"],"en":"beer","tr":"bira","ru":"пиво","ar":"البيرة"},{"a":"die","w":"Ananas","l":7,"p":"Ananas","h":"Viele Obst- und Gemüsesorten sind feminin.","x":["die Birne","die Kartoffel","die Paprika"],"en":"pineapple(s)","tr":"ananas","ru":"ананас","ar":"الأناناس"},{"a":"das","w":"Ei","l":7,"p":"Eier","h":"","x":[],"en":"egg(s)","tr":"yumurta","ru":"яйцо","ar":"البيضة"},{"a":"das","w":"Gemüse","l":7,"p":"","h":"Nomen mit Ge- am Anfang sind oft sächlich.","x":["das Gespräch","das Geschäft","das Getränk"],"en":"vegetables","tr":"sebze","ru":"овощи","ar":"الخضروات"},{"a":"das","w":"Getränk","l":7,"p":"Getränke","h":"Nomen mit Ge- am Anfang sind oft sächlich.","x":["das Gespräch","das Geschäft","das Gemüse"],"en":"drink(s) / beverage(s)","tr":"içecek","ru":"напиток","ar":"المشروب"},{"a":"der","w":"Käse","l":7,"p":"","h":"Ausnahme! Nomen auf -e sind meist feminin. Hier aber: der Käse.","x":["die Sprache","die Adresse","die Straße"],"en":"cheese","tr":"peynir","ru":"сыр","ar":"الجبن"},{"a":"das","w":"Lammfleisch","l":7,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Lamm + das Fleisch → das Lammfleisch.","x":[],"en":"lamb","tr":"kuzu eti","ru":"баранина","ar":"لحم الخروف"},{"a":"das","w":"Obst","l":7,"p":"","h":"","x":[],"en":"fruit","tr":"meyve","ru":"фрукты","ar":"الفاكهة"},{"a":"die","w":"Paprika","l":7,"p":"Paprika","h":"Viele Obst- und Gemüsesorten sind feminin.","x":["die Ananas","die Birne","die Kartoffel"],"en":"(bell) pepper(s)","tr":"biber (dolmalık biber)","ru":"перец (болгарский)","ar":"الفلفل (الحلو)"},{"a":"das","w":"Rindfleisch","l":7,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Rind + das Fleisch → das Rindfleisch.","x":[],"en":"beef","tr":"dana/sığır eti","ru":"говядина","ar":"لحم البقر"},{"a":"das","w":"Schweinefleisch","l":7,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Schwein + das Fleisch → das Schweinefleisch.","x":[],"en":"pork","tr":"domuz eti","ru":"свинина","ar":"لحم الخنزير"},{"a":"die","w":"Wurst","l":7,"p":"Würste","h":"","x":[],"en":"sausage(s)","tr":"sosis / sucuk","ru":"колбаса, сосиска","ar":"النقانق"},{"a":"das","w":"Brötchen","l":7,"p":"Brötchen","h":"Endung -chen → immer das.","x":["das Hähnchen"],"en":"bread roll(s)","tr":"küçük ekmek (sandviç ekmeği)","ru":"булочка","ar":"قطعة خبز صغيرة (سندويشة)"},{"a":"die","w":"Kartoffel","l":7,"p":"Kartoffeln","h":"Viele Obst- und Gemüsesorten sind feminin.","x":["die Ananas","die Birne","die Paprika"],"en":"potato(es)","tr":"patates","ru":"картофель","ar":"البطاطا"},{"a":"die","w":"Person","l":7,"p":"Personen","h":"Auch für Männer gilt: die Person.","x":[],"en":"person(s)","tr":"kişi","ru":"человек, персона","ar":"الشخص"},{"a":"die","w":"Butter","l":7,"p":"","h":"","x":[],"en":"butter","tr":"tereyağı","ru":"масло (сливочное)","ar":"الزبدة"},{"a":"das","w":"Öl","l":7,"p":"","h":"","x":[],"en":"oil","tr":"yağ (sıvı yağ)","ru":"масло (растительное)","ar":"الزيت"},{"a":"der","w":"Pfeffer","l":7,"p":"","h":"","x":[],"en":"pepper","tr":"karabiber (baharat)","ru":"перец (специя)","ar":"الفلفل الأسود (التوابل)"},{"a":"das","w":"Salz","l":7,"p":"","h":"","x":[],"en":"salt","tr":"tuz","ru":"соль","ar":"الملح"},{"a":"die","w":"Flasche","l":7,"p":"Flaschen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"bottle(s)","tr":"şişe","ru":"бутылка","ar":"الزجاجة"},{"a":"das","w":"Stück","l":7,"p":"Stücke","h":"","x":[],"en":"piece(s)","tr":"parça / tane","ru":"штука, кусок","ar":"القطعة"},{"a":"die","w":"Bäckerei","l":7,"p":"Bäckereien","h":"Endung -ei → fast immer die.","x":[],"en":"bakery(ies)","tr":"fırın","ru":"пекарня","ar":"المخبز"},{"a":"der","w":"Gemüseladen","l":7,"p":"Gemüseläden","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Gemüse + der Laden → der Gemüseladen.","x":[],"en":"vegetable shop / greengrocer's","tr":"manav","ru":"овощной магазин","ar":"محل الخضروات"},{"a":"der","w":"Laden","l":7,"p":"Läden","h":"","x":[],"en":"shop(s) / store(s)","tr":"dükkân","ru":"магазин, лавка","ar":"المحل / الدكان"},{"a":"der","w":"Markt","l":7,"p":"Märkte","h":"","x":[],"en":"market(s)","tr":"pazar","ru":"рынок","ar":"السوق"},{"a":"die","w":"Milch","l":7,"p":"","h":"Ausnahme! Viele Getränke sind maskulin. Hier aber: die Milch.","x":["der Tee","der Kaffee","der Saft"],"en":"milk","tr":"süt","ru":"молоко","ar":"الحليب"},{"a":"der","w":"Zucker","l":7,"p":"","h":"","x":[],"en":"sugar","tr":"şeker","ru":"сахар","ar":"السكر"},{"a":"der","w":"Schinken","l":7,"p":"Schinken","h":"","x":[],"en":"ham","tr":"jambon","ru":"ветчина","ar":"اللحم المقدد (الجامبون)"},{"a":"der","w":"Kunde","l":7,"p":"Kunden","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"customer (m.)","tr":"müşteri (erkek)","ru":"клиент, покупатель (муж.)","ar":"زبون (مذكر)"},{"a":"die","w":"Kundin","l":7,"p":"Kundinnen","h":"Weibliche Form auf -in → immer die.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"customer (f.)","tr":"müşteri (kadın)","ru":"клиентка, покупательница (жен.)","ar":"زبونة (مؤنث)"},{"a":"der","w":"Wunsch","l":7,"p":"Wünsche","h":"","x":[],"en":"wish(es) / request(s)","tr":"istek / dilek","ru":"желание, пожелание","ar":"الرغبة / الأمنية"},{"a":"das","w":"Frühstück","l":8,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Früh + das Stück → das Frühstück.","x":[],"en":"breakfast","tr":"kahvaltı","ru":"завтрак","ar":"الفطور"},{"a":"das","w":"Mittagessen","l":8,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Mittag + das Essen → das Mittagessen.","x":[],"en":"lunch","tr":"öğle yemeği","ru":"обед","ar":"الغداء"},{"a":"die","w":"Kaffeepause","l":8,"p":"Kaffeepausen","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Kaffee + die Pause → die Kaffeepause.","x":[],"en":"coffee break(s)","tr":"kahve molası","ru":"перерыв на кофе","ar":"استراحة القهوة"},{"a":"das","w":"Abendessen","l":8,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Abend + das Essen → das Abendessen.","x":[],"en":"dinner","tr":"akşam yemeği","ru":"ужин","ar":"العشاء"},{"a":"die","w":"Kantine","l":8,"p":"Kantinen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"canteen(s) / cafeteria(s)","tr":"yemekhane / kantin","ru":"столовая","ar":"المقصف / الكافتيريا"},{"a":"das","w":"Restaurant","l":8,"p":"Restaurants","h":"","x":[],"en":"restaurant(s)","tr":"restoran","ru":"ресторан","ar":"المطعم"},{"a":"der","w":"Joghurt","l":8,"p":"Joghurts","h":"Beides ist gebräuchlich: der Joghurt und das Joghurt.","x":[],"en":"yogurt(s)","tr":"yoğurt","ru":"йогурт","ar":"الزبادي","alt":"das"},{"a":"die","w":"Suppe","l":8,"p":"Suppen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"soup(s)","tr":"çorba","ru":"суп","ar":"الحساء (الشوربة)"},{"a":"der","w":"Kuchen","l":8,"p":"Kuchen","h":"","x":[],"en":"cake(s)","tr":"pasta / kek","ru":"пирог, торт","ar":"الكعكة"},{"a":"der","w":"Hunger","l":8,"p":"","h":"","x":[],"en":"hunger","tr":"açlık","ru":"голод","ar":"الجوع"},{"a":"die","w":"Feier","l":8,"p":"Feiern","h":"","x":[],"en":"celebration(s) / party(ies)","tr":"kutlama / parti","ru":"праздник, торжество","ar":"الاحتفال"},{"a":"die","w":"Hochzeit","l":8,"p":"Hochzeiten","h":"","x":[],"en":"wedding(s)","tr":"düğün","ru":"свадьба","ar":"حفل الزفاف"},{"a":"das","w":"Programm","l":8,"p":"Programme","h":"","x":[],"en":"program(s)","tr":"program","ru":"программа","ar":"البرنامج"},{"a":"die","w":"Einladung","l":8,"p":"Einladungen","h":"Endung -ung → fast immer die.","x":["die Wohnung","die Richtung","die Heizung"],"en":"invitation(s)","tr":"davet / davetiye","ru":"приглашение","ar":"الدعوة"},{"a":"das","w":"Glas","l":8,"p":"Gläser","h":"","x":[],"en":"glass(es)","tr":"bardak","ru":"стакан, бокал","ar":"الكأس (الكوب الزجاجي)"},{"a":"das","w":"Spiel","l":8,"p":"Spiele","h":"","x":[],"en":"game(s)","tr":"oyun","ru":"игра","ar":"اللعبة"},{"a":"das","w":"Gericht","l":8,"p":"Gerichte","h":"Nomen mit Ge- am Anfang sind oft sächlich.","x":["das Gespräch","das Geschäft","das Gemüse"],"en":"dish(es) (food)","tr":"yemek (tabak)","ru":"блюдо (еда)","ar":"الطبق (وجبة)"},{"a":"der","w":"Alkohol","l":8,"p":"","h":"Viele Getränke sind maskulin.","x":["der Tee","der Kaffee","der Saft"],"en":"alcohol","tr":"alkol","ru":"алкоголь","ar":"الكحول"},{"a":"die","w":"Apotheke","l":9,"p":"Apotheken","h":"Endung -thek / -theke → immer die.","x":["die Bibliothek"],"en":"pharmacy(ies)","tr":"eczane","ru":"аптека","ar":"الصيدلية"},{"a":"das","w":"Medikament","l":9,"p":"Medikamente","h":"Endung -ment → meist das.","x":[],"en":"medicine(s) / medication(s)","tr":"ilaç","ru":"лекарство","ar":"الدواء"},{"a":"das","w":"Geld","l":9,"p":"","h":"Nomen mit Ge- am Anfang sind oft sächlich.","x":["das Gespräch","das Geschäft","das Gemüse"],"en":"money","tr":"para","ru":"деньги","ar":"المال"},{"a":"das","w":"Bürgerbüro","l":9,"p":"Bürgerbüros","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Bürger + das Büro → das Bürgerbüro.","x":[],"en":"citizens' registration office(s)","tr":"vatandaşlık işleri bürosu","ru":"центр обслуживания граждан (гражданский офис)","ar":"مكتب خدمة المواطنين"},{"a":"die","w":"Post","l":9,"p":"","h":"","x":[],"en":"post office; mail","tr":"postane; posta","ru":"почта (учреждение и корреспонденция)","ar":"مكتب البريد؛ البريد"},{"a":"die","w":"Schule","l":9,"p":"Schulen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"school(s)","tr":"okul","ru":"школа","ar":"المدرسة"},{"a":"die","w":"Volkshochschule","l":9,"p":"Volkshochschulen","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Volkshoch + die Schule → die Volkshochschule.","x":[],"en":"adult education center(s) (VHS)","tr":"halk eğitim merkezi (VHS)","ru":"народный университет, центр образования для взрослых (VHS)","ar":"مركز التعليم الشعبي للكبار (VHS)"},{"a":"die","w":"Wohnung","l":9,"p":"Wohnungen","h":"Endung -ung → fast immer die.","x":["die Einladung","die Richtung","die Heizung"],"en":"apartment(s) / flat(s)","tr":"daire (ev)","ru":"квартира","ar":"الشقة"},{"a":"der","w":"Termin","l":9,"p":"Termine","h":"Ausnahme! Weibliche Formen auf -in sind immer die – der Termin ist aber keine weibliche Person.","x":["die Friseurin","die Ingenieurin","die Kellnerin"],"en":"appointment(s)","tr":"randevu","ru":"приём, назначенная встреча","ar":"الموعد"},{"a":"der","w":"Einkaufszettel","l":9,"p":"Einkaufszettel","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Einkaufs + der Zettel → der Einkaufszettel.","x":[],"en":"shopping list(s)","tr":"alışveriş listesi","ru":"список покупок","ar":"قائمة التسوق"},{"a":"der","w":"Pass","l":9,"p":"Pässe","h":"","x":[],"en":"passport(s)","tr":"pasaport","ru":"паспорт","ar":"جواز السفر"},{"a":"der","w":"Bäcker","l":9,"p":"Bäcker","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"baker(s)","tr":"fırıncı","ru":"пекарь, булочник","ar":"الخبّاز"},{"a":"das","w":"Kaufhaus","l":9,"p":"Kaufhäuser","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Kauf + das Haus → das Kaufhaus.","x":[],"en":"department store(s)","tr":"büyük mağaza / alışveriş merkezi","ru":"универмаг","ar":"المتجر الكبير (المول)"},{"a":"die","w":"Idee","l":9,"p":"Ideen","h":"","x":[],"en":"idea(s)","tr":"fikir","ru":"идея","ar":"الفكرة"},{"a":"die","w":"Lust","l":9,"p":"","h":"","x":[],"en":"desire","tr":"istek/keyif","ru":"желание, охота","ar":"الرغبة"},{"a":"die","w":"Nachricht","l":9,"p":"Nachrichten","h":"","x":[],"en":"message(s); news","tr":"mesaj; haber","ru":"сообщение; новости","ar":"الرسالة؛ الأخبار"},{"a":"die","w":"Brille","l":9,"p":"Brillen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"(pair of) glasses","tr":"gözlük","ru":"очки","ar":"النظارة"},{"a":"der","w":"Rucksack","l":9,"p":"Rucksäcke","h":"","x":[],"en":"backpack(s)","tr":"sırt çantası","ru":"рюкзак","ar":"حقيبة الظهر"},{"a":"der","w":"Schuh","l":9,"p":"Schuhe","h":"","x":[],"en":"shoe(s)","tr":"ayakkabı","ru":"ботинок, туфля","ar":"الحذاء"},{"a":"das","w":"Ticket","l":9,"p":"Tickets","h":"","x":[],"en":"ticket(s)","tr":"bilet","ru":"билет","ar":"التذكرة"},{"a":"der","w":"Test","l":9,"p":"Tests","h":"","x":[],"en":"test(s)","tr":"test / sınav","ru":"тест, контрольная","ar":"الاختبار"},{"a":"die","w":"Karte","l":9,"p":"Karten","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"card(s); ticket(s)","tr":"kart; bilet","ru":"карта, билет","ar":"البطاقة؛ التذكرة"},{"a":"die","w":"Party","l":9,"p":"Partys","h":"","x":[],"en":"party(ies)","tr":"parti","ru":"вечеринка","ar":"الحفلة"},{"a":"der","w":"Bus","l":10,"p":"Busse","h":"","x":[],"en":"bus(es)","tr":"otobüs","ru":"автобус","ar":"الحافلة (الباص)"},{"a":"das","w":"Flugzeug","l":10,"p":"Flugzeuge","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Flug + das Zeug → das Flugzeug.","x":[],"en":"airplane(s)","tr":"uçak","ru":"самолёт","ar":"الطائرة"},{"a":"die","w":"S-Bahn","l":10,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. S + die Bahn → die S-Bahn.","x":[],"en":"suburban train / S-Bahn","tr":"banliyö treni (S-Bahn)","ru":"городская электричка (S-Bahn)","ar":"قطار الضواحي (S-Bahn)"},{"a":"die","w":"Straßenbahn","l":10,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Straßen + die Bahn → die Straßenbahn.","x":[],"en":"tram","tr":"tramvay","ru":"трамвай","ar":"الترام"},{"a":"das","w":"Taxi","l":10,"p":"Taxis","h":"","x":[],"en":"taxi(s)","tr":"taksi","ru":"такси","ar":"سيارة الأجرة (التاكسي)"},{"a":"die","w":"U-Bahn","l":10,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. U + die Bahn → die U-Bahn.","x":[],"en":"subway / U-Bahn","tr":"metro (U-Bahn)","ru":"метро (U-Bahn)","ar":"مترو الأنفاق (U-Bahn)"},{"a":"der","w":"Zug","l":10,"p":"Züge","h":"","x":[],"en":"train(s)","tr":"tren","ru":"поезд","ar":"القطار"},{"a":"der","w":"Bahnhof","l":10,"p":"Bahnhöfe","h":"","x":[],"en":"(train) station(s)","tr":"tren istasyonu / gar","ru":"вокзал","ar":"محطة القطار"},{"a":"die","w":"Umwelt","l":10,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Um + die Welt → die Umwelt.","x":[],"en":"environment","tr":"çevre","ru":"окружающая среда","ar":"البيئة"},{"a":"das","w":"Büro","l":10,"p":"Büros","h":"Nomen auf -o sind meist sächlich.","x":["das Auto","das Foto","das Kino"],"en":"office(s)","tr":"ofis / büro","ru":"офис","ar":"المكتب"},{"a":"der","w":"Mensch","l":10,"p":"Menschen","h":"Ausnahme: der Mensch gilt für Männer und Frauen.","x":[],"en":"human being(s) / person(s)","tr":"insan","ru":"человек","ar":"الإنسان"},{"a":"die","w":"Stunde","l":10,"p":"Stunden","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"hour(s)","tr":"saat (süre)","ru":"час","ar":"الساعة (مدة زمنية)"},{"a":"der","w":"Weg","l":10,"p":"Wege","h":"","x":[],"en":"way(s) / route(s)","tr":"yol","ru":"путь, дорога","ar":"الطريق"},{"a":"der","w":"Tierpark","l":10,"p":"Tierparks","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Tier + der Park → der Tierpark.","x":[],"en":"zoo(s) / animal park(s)","tr":"hayvanat bahçesi","ru":"зоопарк","ar":"حديقة الحيوان"},{"a":"der","w":"Aufzug","l":10,"p":"Aufzüge","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Auf + der Zug → der Aufzug.","x":[],"en":"elevator(s) / lift(s)","tr":"asansör","ru":"лифт","ar":"المصعد"},{"a":"die","w":"Regionalbahn","l":10,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Regional + die Bahn → die Regionalbahn.","x":[],"en":"regional train","tr":"bölgesel tren","ru":"региональный поезд","ar":"القطار الإقليمي"},{"a":"der","w":"Hauptbahnhof","l":10,"p":"","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Haupt + der Bahnhof → der Hauptbahnhof.","x":[],"en":"central station","tr":"merkez tren istasyonu","ru":"главный вокзал","ar":"المحطة المركزية"},{"a":"der","w":"Platz","l":10,"p":"Plätze","h":"","x":[],"en":"square / seat / space","tr":"meydan / yer, koltuk","ru":"площадь / место","ar":"الساحة / المكان، المقعد"},{"a":"die","w":"Richtung","l":10,"p":"Richtungen","h":"Endung -ung → fast immer die.","x":["die Einladung","die Wohnung","die Heizung"],"en":"direction(s)","tr":"yön","ru":"направление","ar":"الاتجاه"},{"a":"die","w":"Station","l":10,"p":"Stationen","h":"Endung -ion → fast immer die.","x":["die Million","die Rezeption"],"en":"station(s) / stop(s)","tr":"istasyon / durak","ru":"станция, остановка","ar":"المحطة"},{"a":"der","w":"Automat","l":10,"p":"Automaten","h":"","x":[],"en":"(vending/ticket) machine(s)","tr":"otomat (bilet/satış makinesi)","ru":"автомат (торговый/билетный)","ar":"آلة البيع/التذاكر الأوتوماتيكية"},{"a":"die","w":"Fahrkarte","l":10,"p":"Fahrkarten","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Fahr + die Karte → die Fahrkarte.","x":[],"en":"(travel) ticket(s)","tr":"yolculuk bileti","ru":"билет (проездной)","ar":"تذكرة السفر"},{"a":"das","w":"Schild","l":10,"p":"Schilder","h":"","x":[],"en":"sign(s)","tr":"tabela / levha","ru":"табличка, знак (вывеска)","ar":"اللافتة"},{"a":"die","w":"Angst","l":10,"p":"","h":"","x":[],"en":"fear","tr":"korku","ru":"страх","ar":"الخوف"},{"a":"der","w":"Hund","l":10,"p":"Hunde","h":"","x":[],"en":"dog(s)","tr":"köpek","ru":"собака","ar":"الكلب"},{"a":"der","w":"Musiker","l":10,"p":"Musiker","h":"Männliche Personen und Berufe sind meist maskulin.","x":["der Arzt","der Friseur","der Ingenieur"],"en":"musician(s)","tr":"müzisyen","ru":"музыкант","ar":"الموسيقي (عازف)"},{"a":"die","w":"Regel","l":10,"p":"Regeln","h":"","x":[],"en":"rule(s)","tr":"kural","ru":"правило","ar":"القاعدة"},{"a":"der","w":"Spielplatz","l":10,"p":"Spielplätze","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Spiel + der Platz → der Spielplatz.","x":[],"en":"playground(s)","tr":"çocuk oyun alanı","ru":"детская площадка","ar":"ملعب الأطفال"},{"a":"das","w":"Verbot","l":10,"p":"Verbote","h":"","x":[],"en":"prohibition(s) / ban(s)","tr":"yasak (kural olarak)","ru":"запрет","ar":"المنع / الحظر"},{"a":"der","w":"Unterricht","l":10,"p":"","h":"","x":[],"en":"lesson(s) / class(es)","tr":"ders","ru":"урок, занятие","ar":"الدرس / الحصة"},{"a":"die","w":"Wohngemeinschaft","l":11,"p":"Wohngemeinschaften","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Wohn + die Gemeinschaft → die Wohngemeinschaft.","x":[],"en":"shared apartment / flatshare (WG)","tr":"paylaşımlı ev (WG, ev arkadaşlığı)","ru":"квартира с соседями по жилью (WG, коммуна)","ar":"شقة سكن مشترك (WG)"},{"a":"das","w":"Zimmer","l":11,"p":"Zimmer","h":"","x":[],"en":"room(s)","tr":"oda","ru":"комната","ar":"الغرفة"},{"a":"das","w":"Schlafzimmer","l":11,"p":"Schlafzimmer","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Schlaf + das Zimmer → das Schlafzimmer.","x":[],"en":"bedroom(s)","tr":"yatak odası","ru":"спальня","ar":"غرفة النوم"},{"a":"das","w":"Wohnzimmer","l":11,"p":"Wohnzimmer","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Wohn + das Zimmer → das Wohnzimmer.","x":[],"en":"living room(s)","tr":"oturma odası","ru":"гостиная","ar":"غرفة المعيشة"},{"a":"das","w":"Kinderzimmer","l":11,"p":"Kinderzimmer","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Kinder + das Zimmer → das Kinderzimmer.","x":[],"en":"children's room(s) / nursery(ies)","tr":"çocuk odası","ru":"детская комната","ar":"غرفة الأطفال"},{"a":"das","w":"Bad","l":11,"p":"Bäder","h":"","x":[],"en":"bathroom(s)","tr":"banyo","ru":"ванная комната","ar":"الحمام"},{"a":"die","w":"Dusche","l":11,"p":"Duschen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"shower(s)","tr":"duş","ru":"душ","ar":"الدُّش"},{"a":"die","w":"Toilette","l":11,"p":"Toiletten","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"toilet(s)","tr":"tuvalet","ru":"туалет","ar":"المرحاض (الحمام)"},{"a":"der","w":"Balkon","l":11,"p":"Balkone","h":"","x":[],"en":"balcony(ies)","tr":"balkon","ru":"балкон","ar":"الشرفة (البلكونة)"},{"a":"der","w":"Flur","l":11,"p":"Flure","h":"","x":[],"en":"hallway(s) / corridor(s)","tr":"koridor / hol","ru":"коридор, прихожая","ar":"الممر (الرواق)"},{"a":"der","w":"Quadratmeter","l":11,"p":"Quadratmeter","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Quadrat + der Meter → der Quadratmeter.","x":[],"en":"square meter(s)","tr":"metrekare","ru":"квадратный метр","ar":"المتر المربع"},{"a":"die","w":"Miete","l":11,"p":"Mieten","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"rent(s)","tr":"kira","ru":"арендная плата","ar":"الإيجار"},{"a":"die","w":"Lampe","l":11,"p":"Lampen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"lamp(s)","tr":"lamba","ru":"лампа","ar":"المصباح"},{"a":"die","w":"Anzeige","l":11,"p":"Anzeigen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"advertisement(s) / listing(s)","tr":"ilan","ru":"объявление","ar":"الإعلان"},{"a":"die","w":"Zeitung","l":11,"p":"Zeitungen","h":"Endung -ung → fast immer die.","x":["die Einladung","die Wohnung","die Richtung"],"en":"newspaper(s)","tr":"gazete","ru":"газета","ar":"الجريدة"},{"a":"der","w":"Zettel","l":11,"p":"Zettel","h":"","x":[],"en":"note(s) / slip(s) of paper","tr":"not kâğıdı / pusula","ru":"записка, листок","ar":"الورقة (مذكرة)"},{"a":"die","w":"Kiste","l":11,"p":"Kisten","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"box(es) / crate(s)","tr":"sandık / kutu","ru":"ящик, коробка","ar":"الصندوق"},{"a":"der","w":"Umzug","l":11,"p":"Umzüge","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Um + der Zug → der Umzug.","x":[],"en":"move(s) / relocation(s)","tr":"taşınma","ru":"переезд","ar":"الانتقال (تغيير السكن)"},{"a":"die","w":"Anrede","l":11,"p":"","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"salutation(s) / form of address","tr":"hitap şekli","ru":"обращение (форма приветствия)","ar":"صيغة المخاطبة"},{"a":"der","w":"Gruß","l":11,"p":"Grüße","h":"","x":[],"en":"greeting(s)","tr":"selam","ru":"привет, приветствие","ar":"التحية"},{"a":"der","w":"Hausmeister","l":11,"p":"Hausmeister","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Haus + der Meister → der Hausmeister.","x":[],"en":"caretaker(s) / janitor(s)","tr":"kapıcı / bina yöneticisi","ru":"домоуправитель, комендант дома","ar":"حارس المبنى (المسؤول عن الصيانة)"},{"a":"die","w":"Heizung","l":11,"p":"Heizungen","h":"Endung -ung → fast immer die.","x":["die Einladung","die Wohnung","die Richtung"],"en":"heating (system)(s)","tr":"kalorifer / ısıtma","ru":"отопление","ar":"التدفئة"},{"a":"der","w":"Keller","l":11,"p":"Keller","h":"","x":[],"en":"basement(s) / cellar(s)","tr":"bodrum / kiler","ru":"подвал","ar":"القبو (السرداب)"},{"a":"der","w":"Kinderwagen","l":11,"p":"Kinderwagen","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Kinder + der Wagen → der Kinderwagen.","x":[],"en":"stroller(s) / baby carriage(s)","tr":"bebek arabası","ru":"детская коляска","ar":"عربة الأطفال"},{"a":"das","w":"Treppenhaus","l":11,"p":"Treppenhäuser","h":"Zusammengesetztes Nomen: Das letzte Wort bestimmt den Artikel. Treppen + das Haus → das Treppenhaus.","x":[],"en":"stairwell(s) / staircase(s)","tr":"merdiven boşluğu (apartman merdiveni)","ru":"лестничная клетка","ar":"بيت الدرج (السلم)"},{"a":"die","w":"Firma","l":11,"p":"Firmen","h":"","x":[],"en":"company(ies) / firm(s)","tr":"firma / şirket","ru":"фирма, компания","ar":"الشركة"},{"a":"die","w":"Blume","l":11,"p":"Blumen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"flower(s)","tr":"çiçek","ru":"цветок","ar":"الزهرة"},{"a":"die","w":"Bitte","l":11,"p":"Bitten","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"request(s)","tr":"rica / istek","ru":"просьба","ar":"الطلب (الرجاء)"},{"a":"der","w":"Hammer","l":11,"p":"Hämmer","h":"","x":[],"en":"hammer(s)","tr":"çekiç","ru":"молоток","ar":"المطرقة"},{"a":"die","w":"Tasse","l":11,"p":"Tassen","h":"Nomen auf -e sind meist feminin.","x":["die Sprache","die Adresse","die Straße"],"en":"cup(s)","tr":"fincan","ru":"чашка","ar":"الفنجان (الكوب)"},{"a":"die","w":"Wand","l":11,"p":"Wände","h":"","x":[],"en":"wall(s)","tr":"duvar","ru":"стена","ar":"الجدار"}];
+
+  var STORAGE_KEY = "daz_genus_a1_l1_11_v1";
+  var LESSONS = 11;
+  var LANGS = [
+    { id: "", label: "keine Hilfe" },
+    { id: "tr", label: "Türkçe" },
+    { id: "ar", label: "العربية" },
+    { id: "ru", label: "Русский" },
+    { id: "en", label: "English" }
+  ];
+  var WEIGHTS = [3, 2, 1];
+
+  var store = { settings: { lessons: [], lang: "", size: 20, auto: true }, words: {} };
+  var i;
+  for (i = 0; i < LESSONS; i++) { store.settings.lessons.push(true); }
+
+  var session = null;
+  var autoTimer = null;
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) { e.className = cls; }
+    if (text !== undefined && text !== null) { e.textContent = text; }
+    return e;
+  }
+  function clear(node) { while (node.firstChild) { node.removeChild(node.firstChild); } }
+
+  /* ---------- Speicher ---------- */
+  function load() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) { return; }
+      var s = JSON.parse(raw);
+      if (s && s.settings) {
+        if (s.settings.lessons && s.settings.lessons.length === LESSONS) {
+          for (var k = 0; k < LESSONS; k++) { store.settings.lessons[k] = !!s.settings.lessons[k]; }
+        }
+        if (typeof s.settings.lang === "string") { store.settings.lang = s.settings.lang; }
+        if (typeof s.settings.size === "number") { store.settings.size = s.settings.size; }
+        if (typeof s.settings.auto === "boolean") { store.settings.auto = s.settings.auto; }
+      }
+      if (s && s.words) { store.words = s.words; }
+    } catch (e) { /* ohne Speicher weiterarbeiten */ }
+  }
+  function save() {
+    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); } catch (e) { /* egal */ }
+  }
+
+  /* ---------- Daten ---------- */
+  var byId = {};
+  NOUNS.forEach(function (n, idx) { n.id = idx; byId[idx] = n; });
+
+  function rec(id) { return store.words[id] || null; }
+  function weightOf(id) {
+    var r = rec(id);
+    if (!r || r.box === undefined) { return 1; }
+    return WEIGHTS[r.box];
+  }
+  function isSure(id) { var r = rec(id); return !!(r && r.s >= 2); }
+
+  function poolIds() {
+    var out = [];
+    NOUNS.forEach(function (n) { if (store.settings.lessons[n.l - 1]) { out.push(n.id); } });
+    return out;
+  }
+
+  function weightedSample(ids, count) {
+    var keyed = ids.map(function (id) {
+      return { id: id, k: Math.pow(Math.random(), 1 / weightOf(id)) };
+    });
+    keyed.sort(function (a, b) { return b.k - a.k; });
+    var n = (count > 0 && count < keyed.length) ? count : keyed.length;
+    var out = [];
+    for (var k = 0; k < n; k++) { out.push(keyed[k].id); }
+    return out;
+  }
+  function shuffle(a) {
+    var r = a.slice();
+    for (var k = r.length - 1; k > 0; k--) {
+      var j = Math.floor(Math.random() * (k + 1));
+      var t = r[k]; r[k] = r[j]; r[j] = t;
+    }
+    return r;
+  }
+
+  function meaning(n) {
+    var l = store.settings.lang;
+    return l ? (n[l] || "") : "";
+  }
+  function isCorrect(n, pick) { return pick === n.a || (n.alt && pick === n.alt); }
+  function artSpan(a) { return el("span", "g-" + a, a); }
+  /* Regel-Hinweis mit Beispielen; Ausnahmen werden hervorgehoben */
+  function hintNode(n, cls) {
+    var box = el("div", cls || "hint");
+    var isExc = n.h.indexOf("Ausnahme") === 0;
+    var head = el("b", isExc ? "exc" : null, isExc ? "Ausnahme: " : "Regel: ");
+    box.appendChild(head);
+    box.appendChild(document.createTextNode(isExc ? n.h.replace(/^Ausnahme!?\s*/, "") : n.h));
+    if (n.x && n.x.length) {
+      box.appendChild(el("div", "ex", (isExc ? "Zur Regel passen: " : "Beispiele: ") + n.x.join(" \u00b7 ")));
+    }
+    return box;
+  }
+
+  /* ---------- Lektionswahl (gemeinsam für Üben und Lernliste) ---------- */
+  function lessonCount(l) {
+    var c = 0;
+    NOUNS.forEach(function (n) { if (n.l === l) { c += 1; } });
+    return c;
+  }
+  function buildLessonChips(container, onChange) {
+    var row = el("div", "row");
+    for (var l = 1; l <= LESSONS; l++) {
+      (function (lesson) {
+        var cnt = lessonCount(lesson);
+        var lab = el("label", "chip" + (store.settings.lessons[lesson - 1] ? " on" : ""));
+        var inp = document.createElement("input");
+        inp.type = "checkbox"; inp.checked = store.settings.lessons[lesson - 1];
+        inp.addEventListener("change", function () {
+          store.settings.lessons[lesson - 1] = inp.checked; save(); onChange();
+        });
+        lab.appendChild(inp);
+        lab.appendChild(document.createTextNode("L" + lesson + " "));
+        lab.appendChild(el("small", null, "(" + cnt + ")"));
+        row.appendChild(lab);
+      })(l);
+    }
+    container.appendChild(row);
+    var links = el("div");
+    var all = el("button", "linkbtn", "alle"); all.type = "button";
+    var none = el("button", "linkbtn", "keine"); none.type = "button";
+    all.addEventListener("click", function () { for (var k = 0; k < LESSONS; k++) { store.settings.lessons[k] = true; } save(); onChange(); });
+    none.addEventListener("click", function () { for (var k = 0; k < LESSONS; k++) { store.settings.lessons[k] = false; } save(); onChange(); });
+    links.appendChild(all); links.appendChild(document.createTextNode(" · ")); links.appendChild(none);
+    container.appendChild(links);
+  }
+
+  /* ---------- Üben ---------- */
+  function renderPractice() {
+    var v = $("viewPractice");
+    clear(v);
+    if (!session) { renderSetup(v); }
+    else if (session.pos >= session.queue.length) { renderEnd(v); }
+    else { renderQuestion(v); }
+  }
+
+  function renderSetup(v) {
+    var p1 = el("div", "panel");
+    p1.appendChild(el("h2", null, "Lektionen"));
+    buildLessonChips(p1, renderPractice);
+    v.appendChild(p1);
+
+    var p2 = el("div", "panel");
+    p2.appendChild(el("h2", null, "Einstellungen"));
+    var r1 = el("div", "row");
+    var l1 = el("label", "opt"); l1.appendChild(document.createTextNode("Bedeutung zeigen in: "));
+    var sel = document.createElement("select");
+    LANGS.forEach(function (lg) {
+      var o = document.createElement("option"); o.value = lg.id; o.textContent = lg.label;
+      if (lg.id === store.settings.lang) { o.selected = true; }
+      sel.appendChild(o);
+    });
+    sel.addEventListener("change", function () { store.settings.lang = sel.value; save(); });
+    l1.appendChild(sel); r1.appendChild(l1);
+    var l2 = el("label", "opt"); l2.appendChild(document.createTextNode("Runde mit: "));
+    var sel2 = document.createElement("select");
+    [[10, "10 Wörtern"], [20, "20 Wörtern"], [40, "40 Wörtern"], [0, "allen Wörtern"]].forEach(function (o) {
+      var op = document.createElement("option"); op.value = String(o[0]); op.textContent = o[1];
+      if (o[0] === store.settings.size) { op.selected = true; }
+      sel2.appendChild(op);
+    });
+    sel2.addEventListener("change", function () { store.settings.size = parseInt(sel2.value, 10); save(); });
+    l2.appendChild(sel2); r1.appendChild(l2);
+    p2.appendChild(r1);
+    var l3 = el("label", "opt");
+    var cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = store.settings.auto;
+    cb.addEventListener("change", function () { store.settings.auto = cb.checked; save(); });
+    l3.appendChild(cb); l3.appendChild(document.createTextNode("Bei richtiger Antwort automatisch weiter"));
+    p2.appendChild(l3);
+    v.appendChild(p2);
+
+    var ids = poolIds();
+    var rep = 0;
+    ids.forEach(function (id) { var r = rec(id); if (r && r.box !== undefined && r.box < 2) { rep += 1; } });
+    var info = el("div", "small", ids.length + " Wörter im Pool" + (rep ? " · " + rep + " davon kommen wegen früherer Fehler häufiger dran." : ". Wörter, die du falsch beantwortest, kommen danach häufiger dran."));
+    info.style.marginBottom = "10px";
+    v.appendChild(info);
+    var go = el("button", "main", "Start"); go.type = "button";
+    go.disabled = ids.length === 0;
+    go.addEventListener("click", function () { startSession(weightedSample(ids, store.settings.size), false); });
+    v.appendChild(go);
+    if (ids.length === 0) { v.appendChild(el("div", "small", "Bitte mindestens eine Lektion wählen.")); }
+  }
+
+  function startSession(queue, isReview) {
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+    session = { queue: queue, pos: 0, results: [], answered: false, review: isReview };
+    renderPractice();
+  }
+
+  function renderQuestion(v) {
+    var n = byId[session.queue[session.pos]];
+    var total = session.queue.length;
+    var top = el("div", "top");
+    top.appendChild(el("span", null, (session.review ? "Wiederholung · " : "") + "Frage " + (session.pos + 1) + " / " + total));
+    var right = 0;
+    session.results.forEach(function (r) { if (r.ok) { right += 1; } });
+    top.appendChild(el("span", null, right + " richtig"));
+    v.appendChild(top);
+    var bar = el("div", "bar"); var fill = el("i"); fill.style.width = Math.round(100 * session.pos / total) + "%";
+    bar.appendChild(fill); v.appendChild(bar);
+
+    var card = el("div", "panel qcard");
+    card.appendChild(el("div", "qlesson", "Lektion " + n.l));
+    card.appendChild(el("div", "qword", n.w));
+    var m = el("div", "qmean", meaning(n));
+    if (store.settings.lang === "ar") { m.setAttribute("dir", "rtl"); }
+    card.appendChild(m);
+    var art = el("div", "art"); art.id = "artRow";
+    ["der", "die", "das"].forEach(function (a, k) {
+      var b = el("button", null, a); b.type = "button"; b.setAttribute("data-a", a);
+      b.appendChild(el("small", null, "Taste " + (k + 1)));
+      b.addEventListener("click", function () { answer(a); });
+      art.appendChild(b);
+    });
+    card.appendChild(art);
+    var fb = el("div"); fb.id = "fbBox"; card.appendChild(fb);
+    var nxt = el("button", "main hidden", session.pos + 1 >= total ? "Auswertung" : "Weiter"); nxt.type = "button"; nxt.id = "nextBtn";
+    nxt.style.marginTop = "10px";
+    nxt.addEventListener("click", nextQuestion);
+    card.appendChild(nxt);
+    v.appendChild(card);
+    var quit = el("button", "linkbtn", "Runde abbrechen"); quit.type = "button";
+    quit.addEventListener("click", function () { if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; } session = null; renderPractice(); });
+    v.appendChild(quit);
+    session.answered = false;
+  }
+
+  function answer(pick) {
+    if (!session || session.answered) { return; }
+    var n = byId[session.queue[session.pos]];
+    session.answered = true;
+    var ok = isCorrect(n, pick);
+    session.results.push({ id: n.id, ok: ok, pick: pick });
+    /* Fortschritt */
+    var r = store.words[n.id] || { n: 0, c: 0, s: 0 };
+    r.n += 1;
+    if (ok) { r.c += 1; r.s += 1; if (r.box !== undefined && r.box < 2) { r.box += 1; } }
+    else { r.s = 0; r.box = 0; }
+    store.words[n.id] = r; save();
+    /* Anzeige */
+    var btns = $("artRow").getElementsByTagName("button");
+    for (var k = 0; k < btns.length; k++) {
+      var a = btns[k].getAttribute("data-a");
+      btns[k].disabled = true;
+      if (isCorrect(n, a)) { btns[k].className = "right"; }
+      else if (a === pick) { btns[k].className = "wrong"; }
+    }
+    var fb = $("fbBox"); clear(fb);
+    var box = el("div", "fb " + (ok ? "ok" : "bad"));
+    var big = el("div", "big");
+    big.appendChild(document.createTextNode(ok ? "✓ Richtig: " : "✗ Richtig ist: "));
+    big.appendChild(artSpan(n.a)); big.appendChild(document.createTextNode(" " + n.w));
+    box.appendChild(big);
+    if (n.alt) { box.appendChild(el("div", "small", "Auch möglich: " + n.alt + " " + n.w)); }
+    if (n.p) { box.appendChild(el("div", "small", "Plural: die " + n.p)); }
+    if (!ok && n.h) { box.appendChild(hintNode(n)); }
+    fb.appendChild(box);
+    var nb = $("nextBtn"); nb.className = "main";
+    if (ok && store.settings.auto) {
+      autoTimer = setTimeout(function () { autoTimer = null; nextQuestion(); }, 1100);
+    }
+  }
+
+  function nextQuestion() {
+    if (!session || !session.answered) { return; }
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+    session.pos += 1;
+    renderPractice();
+  }
+
+  function renderEnd(v) {
+    var total = session.results.length, right = 0, wrong = [];
+    session.results.forEach(function (r) { if (r.ok) { right += 1; } else { wrong.push(r); } });
+    var pct = total ? Math.round(100 * right / total) : 0;
+    var p = el("div", "panel");
+    p.appendChild(el("div", "score", right + " / " + total + " (" + pct + " %)"));
+    var msg = pct === 100 ? "Alles richtig!" : (pct >= 80 ? "Sehr gut." : (pct >= 50 ? "Solide Basis – die Fehlerwörter kommen jetzt öfter dran." : "Weiter üben – die Fehlerwörter kommen jetzt öfter dran."));
+    var m = el("div", "small", msg); m.style.textAlign = "center"; p.appendChild(m);
+    v.appendChild(p);
+
+    if (wrong.length) {
+      var pl = el("div", "panel");
+      pl.appendChild(el("h2", null, "Wiederholungsliste (" + wrong.length + ")"));
+      var ul = el("ul", "rev");
+      wrong.forEach(function (r) {
+        var n = byId[r.id];
+        var li = el("li");
+        var line = el("div");
+        line.appendChild(artSpan(n.a)); line.appendChild(document.createTextNode(" " + n.w));
+        if (n.p) { var sp = el("span", "pl", " · Pl.: " + n.p); line.appendChild(sp); }
+        line.appendChild(el("span", "pl", "  (du: " + r.pick + ")"));
+        li.appendChild(line);
+        var mm = meaning(n);
+        if (mm) { var md = el("div", "pl", mm); if (store.settings.lang === "ar") { md.setAttribute("dir", "rtl"); } li.appendChild(md); }
+        if (n.h) { li.appendChild(hintNode(n, "pl")); }
+        ul.appendChild(li);
+      });
+      pl.appendChild(ul);
+      v.appendChild(pl);
+    }
+
+    var acts = el("div");
+    if (wrong.length) {
+      var rb = el("button", "main", "Fehlerwörter wiederholen (" + wrong.length + ")"); rb.type = "button";
+      rb.addEventListener("click", function () {
+        startSession(shuffle(wrong.map(function (r) { return r.id; })), true);
+      });
+      acts.appendChild(rb);
+    }
+    var again = el("button", "sec", "Neue Runde"); again.type = "button";
+    again.style.marginTop = "10px"; again.style.width = "100%";
+    again.addEventListener("click", function () { session = null; renderPractice(); });
+    acts.appendChild(again);
+    v.appendChild(acts);
+  }
+
+  /* ---------- Lernliste ---------- */
+  var listFilter = "";
+  function renderList() {
+    var v = $("viewList"); clear(v);
+    var p1 = el("div", "panel"); p1.appendChild(el("h2", null, "Lektionen"));
+    buildLessonChips(p1, renderList);
+    v.appendChild(p1);
+
+    var p2 = el("div", "panel");
+    var s = document.createElement("input"); s.type = "search"; s.placeholder = "Wort suchen …"; s.value = listFilter;
+    s.style.width = "100%"; s.setAttribute("aria-label", "Wort suchen");
+    s.addEventListener("input", function () { listFilter = s.value; fillCols(); });
+    p2.appendChild(s);
+    var cols = el("div", "cols"); cols.style.marginTop = "10px"; cols.id = "listCols";
+    p2.appendChild(cols);
+    v.appendChild(p2);
+
+    var rules = el("div", "panel");
+    var det = document.createElement("details");
+    det.appendChild(el("summary", null, "Faustregeln im Überblick"));
+    var ul = el("ul", "rules");
+    [
+      "Wochentage und Tageszeiten sind maskulin: der Montag, der Morgen, der Abend (Ausnahme: die Nacht).",
+      "M\u00e4nnliche Personen und Berufe sind meist maskulin: der Vater, der Lehrer, der Arzt.",
+      "Weibliche Personen sind meist feminin; die weibliche Form auf -in ist immer die: die Lehrerin, die \u00c4rztin. (Ausnahme: das Kind \u2013 s\u00e4chlich.)",
+      "Zusammengesetzte Nomen: Das letzte Wort entscheidet. die Maschine \u2192 die Waschmaschine; das Zimmer \u2192 das Wohnzimmer.",
+      "Immer oder fast immer die: -ung (die Wohnung), -ion (die Station), -schaft, -ik (die Musik), -ei (die B\u00e4ckerei), -thek (die Bibliothek).",
+      "Immer oder meist das: -chen (das Br\u00f6tchen), -ment (das Medikament), Ge- (das Gespr\u00e4ch, das Getr\u00e4nk), -o (das Auto, das Kino; Ausnahme: der Euro).",
+      "Nomen auf -e sind meist feminin: die Tasche, die Lampe (Ausnahmen: der Name, der K\u00e4se).",
+      "Viele Obst- und Gem\u00fcsesorten sind feminin: die Birne, die Tomate (Ausnahmen: der Apfel, der Salat). Viele Getr\u00e4nke sind maskulin: der Kaffee, der Saft (Ausnahmen: das Bier, das Wasser, die Milch).",
+      "F\u00fcr viele Nomen (z. B. Tisch, Haus, Stadt) gibt es keine verl\u00e4ssliche Regel \u2013 hier hilft nur: immer mit Artikel lernen."
+    ].forEach(function (t) { ul.appendChild(el("li", null, t)); });
+    det.appendChild(ul);
+    rules.appendChild(det);
+    v.appendChild(rules);
+    fillCols();
+  }
+  function fillCols() {
+    var cols = $("listCols"); if (!cols) { return; }
+    clear(cols);
+    var q = listFilter.toLowerCase();
+    ["der", "die", "das"].forEach(function (a) {
+      var col = el("div", "col " + a);
+      var items = NOUNS.filter(function (n) {
+        if (n.a !== a || !store.settings.lessons[n.l - 1]) { return false; }
+        if (q && n.w.toLowerCase().indexOf(q) < 0) { return false; }
+        return true;
+      });
+      items.sort(function (x, y) { return x.w.localeCompare(y.w, "de"); });
+      col.appendChild(el("h3", "g-" + a, a + " (" + items.length + ")"));
+      var ul = el("ul");
+      items.forEach(function (n) {
+        var li = el("li", null, n.w + " ");
+        li.appendChild(el("small", null, "L" + n.l));
+        ul.appendChild(li);
+      });
+      col.appendChild(ul);
+      cols.appendChild(col);
+    });
+  }
+
+  /* ---------- Fortschritt ---------- */
+  function renderProg() {
+    var v = $("viewProg"); clear(v);
+    var seen = 0, sure = 0, tot = NOUNS.length;
+    var byArt = { der: { n: 0, c: 0 }, die: { n: 0, c: 0 }, das: { n: 0, c: 0 } };
+    var perL = [];
+    for (i = 0; i < LESSONS; i++) { perL.push({ t: 0, s: 0, g: 0 }); }
+    var hard = [];
+    NOUNS.forEach(function (n) {
+      var r = rec(n.id);
+      perL[n.l - 1].t += 1;
+      if (r && r.n > 0) {
+        seen += 1; byArt[n.a].n += r.n; byArt[n.a].c += r.c;
+        if (isSure(n.id)) { sure += 1; perL[n.l - 1].s += 1; } else { perL[n.l - 1].g += 1; }
+        if (r.n - r.c > 0) { hard.push({ n: n, wrong: r.n - r.c, all: r.n }); }
+      }
+    });
+    var p = el("div", "panel");
+    p.appendChild(el("h2", null, "Gesamt"));
+    p.appendChild(el("div", null, sure + " von " + tot + " Nomen sicher · " + seen + " schon geübt"));
+    var rb = el("div", "rowbar"); rb.style.marginTop = "8px";
+    var s1 = el("i", "seg-s"); s1.style.width = (100 * sure / tot) + "%";
+    var s2 = el("i", "seg-g"); s2.style.width = (100 * (seen - sure) / tot) + "%";
+    rb.appendChild(s1); rb.appendChild(s2); p.appendChild(rb);
+    p.appendChild(el("div", "small", "„sicher“ = zuletzt mindestens zweimal hintereinander richtig. Grün: sicher · Gelb: geübt, aber noch nicht sicher."));
+    v.appendChild(p);
+
+    var p2 = el("div", "panel"); p2.appendChild(el("h2", null, "Nach Lektion"));
+    var tb = el("table", "prog");
+    for (i = 0; i < LESSONS; i++) {
+      var tr = el("tr");
+      tr.appendChild(el("td", "n", "L" + (i + 1)));
+      var tdb = el("td"); var bb = el("div", "rowbar");
+      var a1 = el("i", "seg-s"); a1.style.width = (100 * perL[i].s / perL[i].t) + "%";
+      var a2 = el("i", "seg-g"); a2.style.width = (100 * perL[i].g / perL[i].t) + "%";
+      bb.appendChild(a1); bb.appendChild(a2); tdb.appendChild(bb); tr.appendChild(tdb);
+      tr.appendChild(el("td", "c", perL[i].s + " / " + perL[i].t + " sicher"));
+      tb.appendChild(tr);
+    }
+    p2.appendChild(tb); v.appendChild(p2);
+
+    var p3 = el("div", "panel"); p3.appendChild(el("h2", null, "Trefferquote nach Artikel"));
+    var row = el("div", "row");
+    ["der", "die", "das"].forEach(function (a) {
+      var b = byArt[a];
+      var chip = el("span", "chip on");
+      chip.appendChild(artSpan(a));
+      chip.appendChild(document.createTextNode(" " + (b.n ? Math.round(100 * b.c / b.n) + " %" : "–") + " (" + b.n + " Antworten)"));
+      row.appendChild(chip);
+    });
+    p3.appendChild(row); v.appendChild(p3);
+
+    var p4 = el("div", "panel"); p4.appendChild(el("h2", null, "Schwierigste Wörter"));
+    hard.sort(function (a, b) { return b.wrong - a.wrong || b.all - a.all; });
+    if (!hard.length) { p4.appendChild(el("div", "small", "Noch keine Fehler – oder noch nichts geübt.")); }
+    else {
+      var ul = el("ul", "rev");
+      hard.slice(0, 10).forEach(function (h) {
+        var li = el("li");
+        li.appendChild(artSpan(h.n.a)); li.appendChild(document.createTextNode(" " + h.n.w));
+        li.appendChild(el("span", "pl", "  · " + h.wrong + " von " + h.all + " falsch"));
+        ul.appendChild(li);
+      });
+      p4.appendChild(ul);
+    }
+    v.appendChild(p4);
+
+    var p5 = el("div", "panel");
+    var rs = el("button", "sec", "Fortschritt zurücksetzen"); rs.type = "button";
+    rs.addEventListener("click", function () {
+      if (window.confirm("Gesamten Fortschritt löschen? Das kann nicht rückgängig gemacht werden.")) {
+        store.words = {}; save(); renderProg();
+      }
+    });
+    p5.appendChild(rs); v.appendChild(p5);
+  }
+
+  /* ---------- Tabs & Tastatur ---------- */
+  var tab = "practice";
+  function showTab(t) {
+    tab = t;
+    $("viewPractice").className = t === "practice" ? "" : "hidden";
+    $("viewList").className = t === "list" ? "" : "hidden";
+    $("viewProg").className = t === "prog" ? "" : "hidden";
+    $("tabPractice").className = "tab" + (t === "practice" ? " on" : "");
+    $("tabList").className = "tab" + (t === "list" ? " on" : "");
+    $("tabProg").className = "tab" + (t === "prog" ? " on" : "");
+    if (t === "practice") { renderPractice(); }
+    else if (t === "list") { renderList(); }
+    else { renderProg(); }
+  }
+
+  function init() {
+    load();
+    $("tabPractice").addEventListener("click", function () { showTab("practice"); });
+    $("tabList").addEventListener("click", function () { showTab("list"); });
+    $("tabProg").addEventListener("click", function () { showTab("prog"); });
+    document.addEventListener("keydown", function (ev) {
+      if (tab !== "practice" || !session || session.pos >= session.queue.length) { return; }
+      var tag = ev.target && ev.target.tagName;
+      if (tag === "INPUT" || tag === "SELECT") { return; }
+      if (!session.answered) {
+        if (ev.key === "1") { answer("der"); }
+        else if (ev.key === "2") { answer("die"); }
+        else if (ev.key === "3") { answer("das"); }
+      } else if ((ev.key === "Enter" || ev.key === " ") && tag !== "BUTTON") {
+        ev.preventDefault(); nextQuestion();
+      }
+    });
+    showTab("practice");
+  }
+  init();
+})();
+</script>
+</body>
+</html>
