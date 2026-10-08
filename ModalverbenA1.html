@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Modalverben-Trainer A1.1</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:#f3f6fb;color:#1c2833;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.4}
+#app{max-width:780px;margin:0 auto;padding:12px 12px 48px}
+button{font:inherit;touch-action:manipulation;cursor:pointer;-webkit-appearance:none;appearance:none}
+h1{font-size:1.5em;margin:6px 0 2px}
+h2{font-size:1.15em;margin:0 0 8px}
+.card{background:#fff;border-radius:14px;padding:14px;margin:12px 0;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.tr{display:block;font-size:.84em;color:#566573;font-weight:400;line-height:1.3}
+.tr[dir=rtl]{text-align:right}
+.sub{color:#566573}
+.btn{border:2px solid #1565c0;background:#fff;color:#1565c0;border-radius:10px;padding:9px 14px;min-height:46px;text-align:center;margin:4px 6px 4px 0}
+.btn .tr{color:inherit;opacity:.85;text-align:center}
+.btn.primary{background:#1565c0;color:#fff}
+.btn.small{min-height:38px;padding:5px 10px}
+.btn.ghost{border-color:#9aa5b1;color:#43515f}
+.btn:disabled{opacity:.45;cursor:default}
+.langs{display:flex;flex-wrap:wrap}
+.pill{border:2px solid #b0bec5;background:#fff;color:#33424f;border-radius:999px;padding:7px 14px;margin:4px 6px 4px 0;min-height:42px}
+.pill.on{border-color:#1565c0;background:#e3f0ff;color:#0d47a1;font-weight:600}
+.vchip{display:inline-block;text-align:left;border:2px solid #b0bec5;background:#fff;color:#33424f;border-radius:12px;padding:8px 14px;margin:4px 6px 4px 0;min-width:120px}
+.vchip.on{border-color:#1565c0;background:#e3f0ff;color:#0d47a1}
+.vchip b{font-size:1.1em}
+.vchip small{display:block;font-size:.8em;color:#566573}
+.grp{border-top:1px solid #e3e8ee;padding-top:10px;margin-top:10px}
+.grp:first-of-type{border-top:none;margin-top:0;padding-top:0}
+.grp h2 .tr{margin-top:0}
+.note{font-size:.82em;color:#8a5a00}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.bar{height:8px;background:#dfe6ee;border-radius:6px;overflow:hidden;margin:8px 0 2px}
+.bar i{display:block;height:100%;background:#1565c0;width:0}
+.prompt{font-weight:600;margin:6px 0 10px}
+.sent{position:relative;display:inline-block;padding-bottom:16px;font-size:1.3em;line-height:1.7}
+.sent .w{display:inline-block;padding:0 3px;border-radius:6px}
+.sent .pn{display:inline-block}
+.sent .m{background:#e3f0ff;color:#0d47a1;font-weight:700}
+.sent .i{background:#e4f5e6;color:#1b5e20;font-weight:700}
+.sent .gapw{min-width:3.6em;border-bottom:3px solid #1565c0;background:transparent;color:#0d47a1;text-align:center}
+.klammer{position:absolute;height:11px;border:3px solid #6a1b9a;border-top:none;border-radius:0 0 10px 10px;pointer-events:none}
+.tags{margin:6px 0 10px}
+.tag{display:inline-block;border-radius:999px;padding:3px 12px;margin:0 6px 4px 0;font-size:.9em;background:#eef2f7;color:#33424f}
+.tag.v{background:#e4f5e6;color:#1b5e20}
+.tag.p{background:#fff1d6;color:#7a4b00}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+@media (max-width:420px){.opts.one,.opts{grid-template-columns:1fr}}
+.opts.one{grid-template-columns:1fr}
+.opt{border:2px solid #90a4ae;background:#fff;color:#1c2833;border-radius:12px;padding:12px 10px;min-height:52px;font-size:1.05em}
+.opt .tr{color:inherit;opacity:.8;text-align:center}
+.opt.right{border-color:#2e7d32;background:#e4f5e6}
+.opt.wrongc{border-color:#c62828;background:#fdeaea}
+.opt:disabled{color:inherit;opacity:1}
+.typed{width:100%;font-size:20px;padding:10px 12px;border:2px solid #90a4ae;border-radius:10px;margin:6px 0}
+.keys{margin:2px 0 8px}
+.key{border:2px solid #90a4ae;background:#fff;border-radius:8px;min-width:46px;min-height:44px;font-size:1.1em;margin-right:6px}
+.fb{display:none;margin-top:14px;padding:12px;border-radius:12px}
+.fb.ok{display:block;background:#e4f5e6;border:2px solid #2e7d32}
+.fb.bad{display:block;background:#fdeaea;border:2px solid #c62828}
+.fbt{font-weight:700;margin-bottom:4px}
+.fb .sol{margin:6px 0}
+.hint{font-size:.92em;margin:6px 0 0;padding:6px 8px;background:rgba(255,255,255,.7);border-radius:8px}
+.line{min-height:56px;border:2px dashed #90a4ae;border-radius:12px;padding:6px;margin:6px 0;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{border:2px solid #1565c0;background:#fff;color:#0d47a1;border-radius:10px;padding:8px 12px;min-height:44px;font-size:1.1em}
+.chip.placed{background:#e3f0ff}
+.chip.letter{min-width:46px;padding:8px 6px;font-size:1.25em;font-weight:600}
+.chip.ghostc{visibility:hidden}
+.gaprow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0;font-size:1.2em}
+.gapb{border:2px dashed #1565c0;background:#f4f9ff;border-radius:8px;min-width:34px;min-height:44px;color:#1565c0}
+.gapb:hover{background:#dcecff}
+.gw{padding:4px 8px;border-radius:8px;background:#eef2f7}
+.gw.m{background:#e3f0ff;color:#0d47a1;font-weight:700}
+.gw.i{background:#e4f5e6;color:#1b5e20;font-weight:700}
+.pmsg{font-size:.92em;margin:4px 0;padding:6px 8px;border-radius:8px}
+.pmsg.ok{background:#e4f5e6}
+.pmsg.bad{background:#fdeaea}
+table.conj{border-collapse:collapse;width:100%;margin:6px 0}
+table.conj th,table.conj td{border:1px solid #d5dce4;padding:6px 8px;text-align:left}
+table.conj th{background:#eef2f7}
+.bigscore{font-size:2.2em;font-weight:700;color:#1565c0;margin:6px 0}
+ul.wl{padding-left:20px;margin:6px 0}
+.ex{margin:10px 0 2px}
+.small{font-size:.9em}
+.right-note{color:#2e7d32}
+.lnk{color:#566573;text-decoration:underline;background:none;border:none;padding:10px 4px;font-size:.9em}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<noscript>Bitte JavaScript aktivieren. / Please enable JavaScript.</noscript>
+<script>
+/* =====================================================================
+   MODALVERBEN-TRAINER · DaZ A1.1 · Präsens Indikativ
+   Eine einzelne Datei, offline, ES5 (ohne let/const/Pfeilfunktionen).
+
+   NEUES MODALVERB ERGÄNZEN (z. B. dürfen):
+   1. Eintrag in VERBS einfügen (Formen, Kategorie, gloss, wrong, contexts).
+   2. Falls neue Bedeutung: Kategorie-ID in CATEGORIES ergänzen
+      und Text T.c_<id> anlegen (z. B. T.c_permission).
+   3. Optional: in jeder ACTIVITIES.tr-Liste die Übersetzung an der Stelle
+      der neuen Kategorie ergänzen (Reihenfolge = CATEGORIES). Fehlt sie,
+      wird die Übersetzungsübung automatisch nicht angeboten.
+   4. Bei bestehenden contexts ggf. x:['dfen'] setzen, wenn das neue Verb
+      dort ebenfalls passen würde (dann wird es dort nicht als Option gezeigt).
+   Alles andere (Menü, Regeltabelle, alle Übungen) passt sich automatisch an.
+   ===================================================================== */
+(function(){
+'use strict';
+
+/* ---------------------------------------------------------------
+   1) DATEN
+   --------------------------------------------------------------- */
+
+var CATEGORIES = ['wish','ability','duty'];   /* Reihenfolge = Reihenfolge der Übersetzungen */
+
+var PERSONS = ['ich','du','er','sie_sg','wir','ihr','sie_pl','Sie'];
+var PERSON_FORMKEY = {ich:'ich',du:'du',er:'er',sie_sg:'er',wir:'wir',ihr:'ihr',sie_pl:'sie',Sie:'Sie'};
+var PERSON_LABEL = {ich:'ich',du:'du',er:'er',sie_sg:'sie (Sg.)',wir:'wir',ihr:'ihr',sie_pl:'sie (Pl.)',Sie:'Sie (formell)'};
+
+/* Subjekte (als Satzglieder; Schreibung wie mitten im Satz) */
+var SUBJECTS = {
+  ich:['ich'], du:['du'], er:['er','Tom','mein Bruder'],
+  sie_sg:['sie','Anna','meine Schwester'], wir:['wir'], ihr:['ihr'],
+  sie_pl:['sie','die Kinder','meine Eltern'], Sie:['Sie']
+};
+var ADV = ['Heute','Morgen','Jetzt'];
+
+var VERBS = [
+  {
+    id:'moechten', inf:'möchten', cat:'wish', sg13:'e', vowel:null,
+    forms:{ich:'möchte',du:'möchtest',er:'möchte',wir:'möchten',ihr:'möchtet',sie:'möchten',Sie:'möchten'},
+    gloss:{en:'would like to',ru:'хотел(а) бы',uk:'хотів(-ла) б',tr:'istemek (nazik)',ar:'أودّ / أريد'},
+    wrong:{'möchte':['mochte','möschte','möchde','möcte'],
+           'möchtest':['mochtest','möschtest','möchdest','möchstest'],
+           'möchten':['mochten','möschten','möchden','möchtn'],
+           'möchtet':['mochtet','möschtet','möchted','möchtat']},
+    contexts:[
+      {t:'Im Café fragt der Kellner: „Was ___ Sie trinken?“', p:'Sie'},
+      {t:'Am Telefon: „Guten Tag, ich ___ bitte mit Frau Weber sprechen.“', p:'ich'},
+      {t:'Im Restaurant: „Wir ___ bitte zwei Pizzen bestellen.“', p:'wir'},
+      {t:'Im Supermarkt: „Ich ___ bitte ein Kilo Äpfel kaufen.“', p:'ich'},
+      {t:'Im Hotel: „Guten Abend! Wir ___ ein Zimmer reservieren.“', p:'wir'}
+    ]
+  },
+  {
+    id:'koennen', inf:'können', cat:'ability', sg13:'none', vowel:['ö','a'],
+    forms:{ich:'kann',du:'kannst',er:'kann',wir:'können',ihr:'könnt',sie:'können',Sie:'können'},
+    gloss:{en:'can, to be able to',ru:'мочь, уметь',uk:'могти, вміти',tr:'-ebilmek',ar:'يستطيع'},
+    wrong:{'kann':['kan','cann','kannt'],
+           'kannst':['kanst','cannst','kanns','kannzt'],
+           'können':['konnen','koennen','könen','kännen'],
+           'könnt':['konnt','koennt','könt','kännt']},
+    contexts:[
+      {t:'Tom ist Schwimmlehrer. Er ___ sehr gut schwimmen.', p:'er'},
+      {t:'Ich habe einen Führerschein. Ich ___ Auto fahren.', p:'ich'},
+      {t:'Meine Schwester ist Pianistin. Sie ___ wunderbar Klavier spielen.', p:'sie_sg'},
+      {t:'Ihr seid Profis! Ihr ___ sehr schnell laufen.', p:'ihr'},
+      {t:'Du ___ sehr gut singen. Das klingt toll!', p:'du'}
+    ]
+  },
+  {
+    id:'muessen', inf:'müssen', cat:'duty', sg13:'none', vowel:['ü','u'],
+    forms:{ich:'muss',du:'musst',er:'muss',wir:'müssen',ihr:'müsst',sie:'müssen',Sie:'müssen'},
+    gloss:{en:'must, have to',ru:'должен, надо',uk:'мусити, повинен',tr:'zorunda olmak',ar:'يجب أن'},
+    wrong:{'muss':['mus','muß','müss'],
+           'musst':['must','mußt','müsst'],
+           'müssen':['mussen','muessen','müsen','müßen'],
+           'müsst':['müst','müßt','muesst','müsd']},
+    contexts:[
+      {t:'Die Schule beginnt um acht Uhr. Ihr ___ pünktlich sein.', p:'ihr'},
+      {t:'Das Kind hat hohes Fieber. Wir ___ sofort zum Arzt gehen.', p:'wir'},
+      {t:'Die Ampel ist rot. Du ___ warten.', p:'du'},
+      {t:'Morgen ist die Prüfung. Ich ___ heute lernen.', p:'ich'},
+      {t:'Herr Meier hat morgen um sieben Uhr einen Termin. Er ___ früh aufstehen.', p:'er'}
+    ]
+  }
+];
+
+/* Tätigkeiten für Sätze. tr[Sprache] = Übersetzungen in CATEGORIES-Reihenfolge (nur 1. Person). */
+var ACTIVITIES = [
+  {rest:['Deutsch'], inf:'lernen', tr:{
+    en:['I would like to learn German.','I can learn German.','I have to learn German.'],
+    ru:['Я хотел(а) бы учить немецкий.','Я могу учить немецкий.','Я должен(-на) учить немецкий.'],
+    uk:['Я хотів(-ла) б вчити німецьку мову.','Я можу вчити німецьку мову.','Я мушу вчити німецьку мову.'],
+    tr:['Almanca öğrenmek istiyorum.','Almanca öğrenebilirim.','Almanca öğrenmek zorundayım.'],
+    ar:['أريد أن أتعلّم الألمانية.','أستطيع أن أتعلّم الألمانية.','يجب أن أتعلّم الألمانية.']}},
+  {rest:[], inf:'arbeiten', tr:{
+    en:['I would like to work.','I can work.','I have to work.'],
+    ru:['Я хотел(а) бы работать.','Я могу работать.','Я должен(-на) работать.'],
+    uk:['Я хотів(-ла) б працювати.','Я можу працювати.','Я мушу працювати.'],
+    tr:['Çalışmak istiyorum.','Çalışabilirim.','Çalışmak zorundayım.'],
+    ar:['أريد أن أعمل.','أستطيع أن أعمل.','يجب أن أعمل.']}},
+  {rest:['Brot'], inf:'kaufen', tr:{
+    en:['I would like to buy bread.','I can buy bread.','I have to buy bread.'],
+    ru:['Я хотел(а) бы купить хлеб.','Я могу купить хлеб.','Я должен(-на) купить хлеб.'],
+    uk:['Я хотів(-ла) б купити хліб.','Я можу купити хліб.','Я мушу купити хліб.'],
+    tr:['Ekmek almak istiyorum.','Ekmek alabilirim.','Ekmek almak zorundayım.'],
+    ar:['أريد أن أشتري الخبز.','أستطيع أن أشتري الخبز.','يجب أن أشتري الخبز.']}},
+  {rest:['zum Arzt'], inf:'gehen', tr:{
+    en:['I would like to go to the doctor.','I can go to the doctor.','I have to go to the doctor.'],
+    ru:['Я хотел(а) бы пойти к врачу.','Я могу пойти к врачу.','Я должен(-на) пойти к врачу.'],
+    uk:['Я хотів(-ла) б піти до лікаря.','Я можу піти до лікаря.','Я мушу піти до лікаря.'],
+    tr:['Doktora gitmek istiyorum.','Doktora gidebilirim.','Doktora gitmek zorundayım.'],
+    ar:['أريد أن أذهب إلى الطبيب.','أستطيع أن أذهب إلى الطبيب.','يجب أن أذهب إلى الطبيب.']}},
+  {rest:['Fußball'], inf:'spielen', tr:{
+    en:['I would like to play football.','I can play football.','I have to play football.'],
+    ru:['Я хотел(а) бы играть в футбол.','Я могу играть в футбол.','Я должен(-на) играть в футбол.'],
+    uk:['Я хотів(-ла) б грати у футбол.','Я можу грати у футбол.','Я мушу грати у футбол.'],
+    tr:['Futbol oynamak istiyorum.','Futbol oynayabilirim.','Futbol oynamak zorundayım.'],
+    ar:['أريد أن ألعب كرة القدم.','أستطيع أن ألعب كرة القدم.','يجب أن ألعب كرة القدم.']}},
+  {rest:['Hausaufgaben'], inf:'machen', tr:{
+    en:['I would like to do homework.','I can do homework.','I have to do homework.'],
+    ru:['Я хотел(а) бы делать домашнее задание.','Я могу делать домашнее задание.','Я должен(-на) делать домашнее задание.'],
+    uk:['Я хотів(-ла) б робити домашнє завдання.','Я можу робити домашнє завдання.','Я мушу робити домашнє завдання.'],
+    tr:['Ödev yapmak istiyorum.','Ödev yapabilirim.','Ödev yapmak zorundayım.'],
+    ar:['أريد أن أقوم بالواجبات المنزلية.','أستطيع أن أقوم بالواجبات المنزلية.','يجب أن أقوم بالواجبات المنزلية.']}},
+  {rest:[], inf:'kochen', tr:{
+    en:['I would like to cook.','I can cook.','I have to cook.'],
+    ru:['Я хотел(а) бы готовить.','Я могу готовить.','Я должен(-на) готовить.'],
+    uk:['Я хотів(-ла) б готувати.','Я можу готувати.','Я мушу готувати.'],
+    tr:['Yemek yapmak istiyorum.','Yemek yapabilirim.','Yemek yapmak zorundayım.'],
+    ar:['أريد أن أطبخ.','أستطيع أن أطبخ.','يجب أن أطبخ.']}},
+  {rest:['Deutsch'], inf:'sprechen', tr:{
+    en:['I would like to speak German.','I can speak German.','I have to speak German.'],
+    ru:['Я хотел(а) бы говорить по-немецки.','Я могу говорить по-немецки.','Я должен(-на) говорить по-немецки.'],
+    uk:['Я хотів(-ла) б говорити німецькою.','Я можу говорити німецькою.','Я мушу говорити німецькою.'],
+    tr:['Almanca konuşmak istiyorum.','Almanca konuşabilirim.','Almanca konuşmak zorundayım.'],
+    ar:['أريد أن أتحدث الألمانية.','أستطيع أن أتحدث الألمانية.','يجب أن أتحدث الألمانية.']}}
+];
+
+/* W-Fragen: w = Fragewort, rest = übrige Satzglieder, inf = Infinitiv */
+var WQ = [
+  {w:'Was', rest:[], inf:'trinken'},
+  {w:'Was', rest:[], inf:'kochen'},
+  {w:'Wann', rest:[], inf:'arbeiten'},
+  {w:'Wann', rest:['Hausaufgaben'], inf:'machen'},
+  {w:'Wann', rest:['zum Arzt'], inf:'gehen'},
+  {w:'Wann', rest:['Fußball'], inf:'spielen'},
+  {w:'Wo', rest:['Deutsch'], inf:'lernen'},
+  {w:'Wo', rest:['Brot'], inf:'kaufen'},
+  {w:'Wie', rest:['Deutsch'], inf:'lernen'}
+];
+
+/* ---------------------------------------------------------------
+   2) TEXTE (Deutsch + Hilfssprachen)
+   --------------------------------------------------------------- */
+function L(de,en,ru,uk,tr,ar){ return {de:de,en:en,ru:ru,uk:uk,tr:tr,ar:ar}; }
+
+var LANGS = [
+  {id:'de', label:'Nur Deutsch'},
+  {id:'en', label:'English'},
+  {id:'ru', label:'Русский'},
+  {id:'uk', label:'Українська'},
+  {id:'tr', label:'Türkçe'},
+  {id:'ar', label:'العربية'}
+];
+
+var T = {
+  title: L('Modalverben-Trainer','Modal verbs trainer','Тренажёр: модальные глаголы','Тренажер: модальні дієслова','Modal fiiller alıştırması','تدريب على الأفعال المساعدة (Modalverben)'),
+  subtitle: L('Niveau A1.1 · Präsens','Level A1.1 · present tense','Уровень A1.1 · настоящее время','Рівень A1.1 · теперішній час','A1.1 seviyesi · şimdiki zaman','المستوى A1.1 · المضارع'),
+  h_lang: L('Hilfssprache','Help language','Язык подсказок','Мова підказок','Yardım dili','لغة المساعدة'),
+  h_verbs: L('Verben','Verbs','Глаголы','Дієслова','Fiiller','الأفعال'),
+  hint_verbs: L('Wähle ein oder mehrere Verben.','Choose one or more verbs.','Выберите один или несколько глаголов.','Оберіть одне або кілька дієслів.','Bir veya birkaç fiil seçin.','اختر فعلًا أو أكثر.'),
+  h_ex: L('Übungen','Exercises','Упражнения','Вправи','Alıştırmalar','التمارين'),
+  mixed: L('Alles gemischt','Everything mixed','Всё вперемешку','Усе разом','Hepsi karışık','كل شيء مختلط'),
+  rules_btn: L('Regeln ansehen','View rules','Посмотреть правила','Переглянути правила','Kurallara bak','عرض القواعد'),
+  ex_conj: L('Konjugation','Conjugation','Спряжение','Дієвідмінювання','Fiil çekimi','تصريف الأفعال'),
+  ex_spell: L('Rechtschreibung','Spelling','Правописание','Правопис','Yazım','الإملاء'),
+  ex_mean: L('Bedeutung','Meaning','Значение','Значення','Anlam','المعنى'),
+  ex_order: L('Satzbau','Sentence structure','Построение предложения','Побудова речення','Cümle yapısı','بناء الجملة'),
+  m_conj_choice: L('Form auswählen','Choose the form','Выбрать форму','Обрати форму','Biçimi seç','اختيار الصيغة'),
+  m_conj_type: L('Form schreiben','Write the form','Написать форму','Написати форму','Biçimi yaz','كتابة الصيغة'),
+  m_spell_choice: L('Richtig schreiben','Correct spelling','Правильное написание','Правильне написання','Doğru yazım','الكتابة الصحيحة'),
+  m_spell_letters: L('Buchstaben ordnen','Order the letters','Расставить буквы','Розставити літери','Harfleri sırala','ترتيب الحروف'),
+  m_mean_cat: L('Bedeutung erkennen','Recognise the meaning','Определить значение','Визначити значення','Anlamı bul','تحديد المعنى'),
+  m_mean_ctx: L('Passendes Modalverb','Matching modal verb','Подходящий глагол','Відповідне дієслово','Uygun fiil','الفعل المناسب'),
+  m_mean_tr: L('Übersetzung','Translation','Перевод','Переклад','Çeviri','الترجمة'),
+  m_order_build: L('Satz bauen','Build the sentence','Составить предложение','Скласти речення','Cümle kur','تكوين الجملة'),
+  m_order_klammer: L('Verbklammer','Verb bracket','Глагольная рамка','Дієслівна рамка','Fiil çerçevesi','قوس الفعل'),
+  need_lang: L('Nur mit Hilfssprache','Needs a help language','Нужен язык подсказок','Потрібна мова підказок','Yardım dili gerekir','تحتاج إلى لغة مساعدة'),
+  menu: L('Menü','Menu','Меню','Меню','Menü','القائمة'),
+  next: L('Weiter','Next','Далее','Далі','İleri','التالي'),
+  check: L('Prüfen','Check','Проверить','Перевірити','Kontrol et','تحقق'),
+  del: L('Löschen','Delete','Удалить','Видалити','Sil','حذف'),
+  clear: L('Alles löschen','Clear all','Очистить всё','Очистити все','Hepsini sil','مسح الكل'),
+  ok: L('Richtig!','Correct!','Правильно!','Правильно!','Doğru!','صحيح!'),
+  bad: L('Leider falsch.','Not correct.','Неправильно.','Неправильно.','Yanlış.','غير صحيح.'),
+  solution: L('Richtig ist:','Correct:','Правильно:','Правильно:','Doğrusu:','الصحيح:'),
+  also_ok: L('Auch richtig! Üblich ist:','Also correct! Usual order:','Тоже верно! Обычный порядок:','Теж правильно! Звичайний порядок:','Bu da doğru! Genelde şöyle denir:','صحيح أيضًا! الترتيب المعتاد:'),
+  done: L('Geschafft!','Done!','Готово!','Готово!','Tamam!','تم!'),
+  retry: L('Fehler üben','Practise mistakes','Повторить ошибки','Повторити помилки','Hataları çalış','تدرّب على الأخطاء'),
+  again: L('Noch einmal','Again','Ещё раз','Ще раз','Tekrar','مرة أخرى'),
+  reset: L('Lernstand zurücksetzen','Reset progress','Сбросить прогресс','Скинути прогрес','İlerlemeyi sıfırla','إعادة ضبط التقدم'),
+  back: L('Zurück','Back','Назад','Назад','Geri','رجوع'),
+  q_conj_choice: L('Welche Form passt in die Lücke?','Which form fits the gap?','Какая форма подходит?','Яка форма підходить?','Boşluğa hangi biçim uyar?','أي صيغة تناسب الفراغ؟'),
+  q_conj_type: L('Schreibe die richtige Form.','Write the correct form.','Напишите правильную форму.','Напишіть правильну форму.','Doğru biçimi yazın.','اكتب الصيغة الصحيحة.'),
+  q_spell_choice: L('Welche Schreibweise ist richtig?','Which spelling is correct?','Какое написание правильное?','Яке написання правильне?','Hangi yazım doğru?','أي كتابة صحيحة؟'),
+  q_spell_letters: L('Tippe die Buchstaben in der richtigen Reihenfolge.','Tap the letters in the right order.','Нажимайте буквы в правильном порядке.','Натискайте літери в правильному порядку.','Harflere doğru sırayla dokunun.','اضغط على الحروف بالترتيب الصحيح.'),
+  q_mean_cat: L('Was drückt das Modalverb aus?','What does the modal verb express?','Что выражает модальный глагол?','Що виражає модальне дієслово?','Modal fiil neyi ifade ediyor?','ماذا يعبّر الفعل المساعد؟'),
+  q_mean_ctx: L('Welches Modalverb passt am besten?','Which modal verb fits best?','Какой модальный глагол подходит лучше всего?','Яке модальне дієслово підходить найкраще?','Hangi modal fiil en iyi uyar?','أي فعل مساعد يناسب أكثر؟'),
+  q_mean_tr: L('Welche Übersetzung passt?','Which translation fits?','Какой перевод подходит?','Який переклад підходить?','Hangi çeviri uyar?','أي ترجمة تناسب؟'),
+  q_build: L('Bilde den Satz. Tippe die Wörter in der richtigen Reihenfolge.','Build the sentence. Tap the words in the right order.','Составьте предложение. Нажимайте слова по порядку.','Складіть речення. Натискайте слова по порядку.','Cümleyi kurun. Kelimelere doğru sırayla dokunun.','كوّن الجملة. اضغط على الكلمات بالترتيب الصحيح.'),
+  q_klammer_modal: L('Wo steht das Modalverb? Tippe auf die richtige Lücke.','Where does the modal verb go? Tap the right gap.','Где стоит модальный глагол? Нажмите на нужный промежуток.','Де стоїть модальне дієслово? Натисніть на потрібний проміжок.','Modal fiil nereye gelir? Doğru boşluğa dokunun.','أين يقع الفعل المساعد؟ اضغط على المكان الصحيح.'),
+  q_klammer_inf: L('Wo steht der Infinitiv? Tippe auf die richtige Lücke.','Where does the infinitive go? Tap the right gap.','Где стоит инфинитив? Нажмите на нужный промежуток.','Де стоїть інфінітив? Натисніть на потрібний проміжок.','Mastar (Infinitiv) nereye gelir? Doğru boşluğa dokunun.','أين يقع المصدر (Infinitiv)؟ اضغط على المكان الصحيح.'),
+  r_none: L('ich / er / sie (Singular): keine Endung → {f}.','ich / er / sie (singular): no ending → {f}.','ich / er / sie (ед. число): без окончания → {f}.','ich / er / sie (однина): без закінчення → {f}.','ich / er / sie (tekil): ek yok → {f}.','ich / er / sie (مفرد): بدون نهاية → {f}.'),
+  r_e: L('ich / er / sie (Singular): Endung -e → {f}.','ich / er / sie (singular): ending -e → {f}.','ich / er / sie (ед. число): окончание -e → {f}.','ich / er / sie (однина): закінчення -e → {f}.','ich / er / sie (tekil): ek -e → {f}.','ich / er / sie (مفرد): النهاية -e → {f}.'),
+  r_du: L('du: Endung -st → {f}.','du: ending -st → {f}.','du: окончание -st → {f}.','du: закінчення -st → {f}.','du: ek -st → {f}.','du: النهاية -st → {f}.'),
+  r_ihr: L('ihr: Endung -t → {f}.','ihr: ending -t → {f}.','ihr: окончание -t → {f}.','ihr: закінчення -t → {f}.','ihr: ek -t → {f}.','ihr: النهاية -t → {f}.'),
+  r_inf: L('wir / sie (Plural) / Sie: wie der Infinitiv → {f}.','wir / sie (plural) / Sie: same as the infinitive → {f}.','wir / sie (мн. число) / Sie: как инфинитив → {f}.','wir / sie (множина) / Sie: як інфінітив → {f}.','wir / sie (çoğul) / Sie: mastarla aynı → {f}.','wir / sie (جمع) / Sie: مثل المصدر (Infinitiv) → {f}.'),
+  r_vowel: L('Im Singular ändert sich der Vokal: {a} → {b}.','In the singular the vowel changes: {a} → {b}.','В единственном числе меняется гласная: {a} → {b}.','В однині змінюється голосна: {a} → {b}.','Tekilde ünlü değişir: {a} → {b}.','في المفرد يتغيّر حرف العلة: {a} → {b}.'),
+  r_umlaut: L('Achte auf den Umlaut ({u}).','Watch the umlaut ({u}).','Обратите внимание на умлаут ({u}).','Зверніть увагу на умлаут ({u}).','Ünlü noktasına (Umlaut) dikkat edin ({u}).','انتبه إلى علامة الأومْلاوت ({u}).'),
+  r_ss: L('Nach kurzem Vokal schreibt man „ss“ (nicht „ß“): {f}.','After a short vowel we write “ss” (not “ß”): {f}.','После краткой гласной пишется «ss» (не «ß»): {f}.','Після короткої голосної пишеться «ss» (не «ß»): {f}.','Kısa ünlüden sonra “ss” yazılır (“ß” değil): {f}.','بعد حرف علة قصير تُكتب «ss» (وليس «ß»): {f}.'),
+  r_nn: L('Nach kurzem Vokal steht „nn“: {f}.','After a short vowel there is “nn”: {f}.','После краткой гласной пишется «nn»: {f}.','Після короткої голосної пишеться «nn»: {f}.','Kısa ünlüden sonra “nn” yazılır: {f}.','بعد حرف علة قصير تُكتب «nn»: {f}.'),
+  r_ch: L('Wichtig: „ch“ (nicht „sch“): {f}.','Note: “ch” (not “sch”): {f}.','Важно: «ch» (не «sch»): {f}.','Важливо: «ch» (не «sch»): {f}.','Dikkat: “ch” (“sch” değil): {f}.','مهم: «ch» (وليس «sch»): {f}.'),
+  r_other: L('Deine Antwort „{x}“ passt zu: {p}.','Your answer “{x}” fits: {p}.','Ваш ответ «{x}» подходит к: {p}.','Ваша відповідь «{x}» підходить до: {p}.','Cevabınız “{x}” şuna uyar: {p}.','إجابتك «{x}» تناسب: {p}.'),
+  r_stmt: L('Aussagesatz: Das Modalverb steht auf Position 2. Der Infinitiv steht am Satzende (Verbklammer).','Statement: the modal verb is in position 2. The infinitive is at the end (verb bracket).','Повествовательное предложение: модальный глагол на 2-м месте. Инфинитив — в конце (глагольная рамка).','Розповідне речення: модальне дієслово на 2-му місці. Інфінітив — в кінці (дієслівна рамка).','Bildirme cümlesi: Modal fiil 2. sıradadır. Mastar (Infinitiv) sondadır (fiil çerçevesi).','الجملة الخبرية: الفعل المساعد في الموضع الثاني، والمصدر (Infinitiv) في آخر الجملة (قوس الفعل).'),
+  r_yn: L('Ja/Nein-Frage: Das Modalverb steht auf Position 1. Der Infinitiv steht am Ende.','Yes/no question: the modal verb is in position 1. The infinitive is at the end.','Вопрос без вопросительного слова (да/нет): модальный глагол на 1-м месте, инфинитив в конце.','Загальне питання (так/ні): модальне дієслово на 1-му місці, інфінітив у кінці.','Evet/hayır sorusu: Modal fiil 1. sıradadır. Mastar sondadır.','سؤال نعم/لا: الفعل المساعد في الموضع الأول والمصدر في النهاية.'),
+  r_wq: L('W-Frage: Das W-Wort steht auf Position 1, das Modalverb auf Position 2. Der Infinitiv steht am Ende.','W-question: the question word is in position 1, the modal verb in position 2. The infinitive is at the end.','Вопрос с вопросительным словом: слово на 1-м месте, модальный глагол на 2-м, инфинитив в конце.','Питання з питальним словом: слово на 1-му місці, модальне дієслово на 2-му, інфінітив у кінці.','Soru sözcüklü soru: Soru sözcüğü 1., modal fiil 2. sıradadır. Mastar sondadır.','سؤال بأداة استفهام: أداة الاستفهام في الموضع الأول، والفعل المساعد في الثاني، والمصدر في النهاية.'),
+  r_stmt_adv: L('Auch wenn „{x}“ am Anfang steht: Das Modalverb bleibt auf Position 2, das Subjekt steht danach.','Even if “{x}” comes first: the modal verb stays in position 2, the subject follows.','Даже если на первом месте «{x}»: модальный глагол остаётся на 2-м месте, подлежащее — после него.','Навіть якщо на першому місці «{x}»: модальне дієслово залишається на 2-му місці, підмет — після нього.','Başta “{x}” olsa bile: Modal fiil 2. sırada kalır, özne ondan sonra gelir.','حتى لو جاءت «{x}» في البداية: يبقى الفعل المساعد في الموضع الثاني ثم يأتي الفاعل.'),
+  r_inf_end: L('Der Infinitiv steht am Satzende.','The infinitive is at the end of the sentence.','Инфинитив стоит в конце предложения.','Інфінітив стоїть в кінці речення.','Mastar (Infinitiv) cümlenin sonundadır.','يقع المصدر (Infinitiv) في نهاية الجملة.'),
+  c_wish: L('Wunsch (höflich)','wish (polite)','желание (вежливо)','бажання (ввічливо)','dilek / istek (nazik)','رغبة (بأدب)'),
+  c_ability: L('Fähigkeit / Möglichkeit','ability / possibility','умение / возможность','уміння / можливість','yetenek / olasılık','قدرة / إمكانية'),
+  c_duty: L('Pflicht / Notwendigkeit','obligation / necessity','обязанность / необходимость','обов’язок / необхідність','zorunluluk / gereklilik','واجب / ضرورة'),
+  g_head_conj: L('Konjugation (Präsens)','Conjugation (present tense)','Спряжение (Präsens)','Дієвідмінювання (Präsens)','Fiil çekimi (Präsens)','التصريف (Präsens)'),
+  g_head_pos: L('Satzbau: Verbklammer','Sentence structure: verb bracket','Порядок слов: глагольная рамка','Порядок слів: дієслівна рамка','Cümle yapısı: fiil çerçevesi','بناء الجملة: قوس الفعل'),
+  g_sg: L('ich / er / sie: Modalverben haben meist keine Endung (ich kann, er muss). Ausnahme: möchten hat -e (ich möchte).','ich / er / sie: modal verbs usually have no ending (ich kann, er muss). Exception: möchten has -e (ich möchte).','ich / er / sie: у модальных глаголов обычно нет окончания (ich kann, er muss). Исключение: möchten — окончание -e (ich möchte).','ich / er / sie: модальні дієслова зазвичай не мають закінчення (ich kann, er muss). Виняток: möchten — закінчення -e (ich möchte).','ich / er / sie: Modal fiillerde genellikle ek yoktur (ich kann, er muss). İstisna: möchten -e alır (ich möchte).','ich / er / sie: الأفعال المساعدة غالبًا بلا نهاية (ich kann, er muss). الاستثناء: möchten له النهاية -e (ich möchte).'),
+  g_du: L('du: Endung -st (du kannst, du musst, du möchtest).','du: ending -st (du kannst, du musst, du möchtest).','du: окончание -st (du kannst, du musst, du möchtest).','du: закінчення -st (du kannst, du musst, du möchtest).','du: ek -st (du kannst, du musst, du möchtest).','du: النهاية -st (du kannst, du musst, du möchtest).'),
+  g_ihr: L('ihr: Endung -t (ihr könnt, ihr müsst, ihr möchtet).','ihr: ending -t (ihr könnt, ihr müsst, ihr möchtet).','ihr: окончание -t (ihr könnt, ihr müsst, ihr möchtet).','ihr: закінчення -t (ihr könnt, ihr müsst, ihr möchtet).','ihr: ek -t (ihr könnt, ihr müsst, ihr möchtet).','ihr: النهاية -t (ihr könnt, ihr müsst, ihr möchtet).'),
+  g_pl: L('wir / sie (Plural) / Sie: wie der Infinitiv (wir können, sie müssen, Sie möchten).','wir / sie (plural) / Sie: same as the infinitive (wir können, sie müssen, Sie möchten).','wir / sie (мн. число) / Sie: как инфинитив (wir können, sie müssen, Sie möchten).','wir / sie (множина) / Sie: як інфінітив (wir können, sie müssen, Sie möchten).','wir / sie (çoğul) / Sie: mastarla aynı (wir können, sie müssen, Sie möchten).','wir / sie (جمع) / Sie: مثل المصدر (wir können, sie müssen, Sie möchten).'),
+  g_vowel: L('Bei können und müssen ändert sich im Singular der Vokal (ö → a, ü → u).','With können and müssen the vowel changes in the singular (ö → a, ü → u).','У können и müssen в единственном числе меняется гласная (ö → a, ü → u).','У können і müssen в однині змінюється голосна (ö → a, ü → u).','können ve müssen fiillerinde tekilde ünlü değişir (ö → a, ü → u).','في können و müssen يتغيّر حرف العلة في المفرد (ö → a, ü → u).')
+};
+
+/* ---------------------------------------------------------------
+   3) HILFSFUNKTIONEN
+   --------------------------------------------------------------- */
+function $(id){ return document.getElementById(id); }
+function el(tag, cls, html){ var e=document.createElement(tag); if(cls){ e.className=cls; } if(html!==undefined){ e.innerHTML=html; } return e; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function shuffle(a){ var b=a.slice(), i, j, t; for(i=b.length-1;i>0;i--){ j=Math.floor(Math.random()*(i+1)); t=b[i]; b[i]=b[j]; b[j]=t; } return b; }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function capFirst(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+function lcAll(a){ var r=[], i; for(i=0;i<a.length;i++){ r.push(a[i].toLowerCase()); } return r; }
+function trim(s){ return String(s).replace(/^\s+|\s+$/g,''); }
+function stripUm(s){ return s.toLowerCase().replace(/ä/g,'a').replace(/ö/g,'o').replace(/ü/g,'u').replace(/ß/g,'ss').replace(/ae/g,'a').replace(/oe/g,'o').replace(/ue/g,'u'); }
+function indexOf(a, x){ var i; for(i=0;i<a.length;i++){ if(a[i]===x){ return i; } } return -1; }
+function uniq(a){ var r=[], i; for(i=0;i<a.length;i++){ if(indexOf(r,a[i])<0){ r.push(a[i]); } } return r; }
+
+var STORE_KEY='modalverbenTrainerA1v1';
+var store={lang:'de', verbs:null, stats:{}};
+function loadStore(){
+  try{
+    var raw=window.localStorage.getItem(STORE_KEY), o;
+    if(raw){ o=JSON.parse(raw); if(o){ if(o.lang){ store.lang=o.lang; } if(o.verbs){ store.verbs=o.verbs; } if(o.stats){ store.stats=o.stats; } } }
+  }catch(e){}
+}
+function saveStore(){ try{ window.localStorage.setItem(STORE_KEY, JSON.stringify(store)); }catch(e){} }
+
+function fill(s, v){
+  if(!v){ return s; }
+  return s.replace(/\{(\w+)\}/g, function(m,k){ return v[k]!==undefined ? v[k] : m; });
+}
+/* tt: Deutsch + (optional) Hilfssprache darunter */
+function tt(key, vars){
+  var o=T[key], h;
+  if(!o){ return esc(key); }
+  h='<span class="de">'+fill(o.de,vars)+'</span>';
+  if(store.lang!=='de' && o[store.lang]){
+    h+='<span class="tr" lang="'+store.lang+'"'+(store.lang==='ar'?' dir="rtl"':'')+'>'+fill(o[store.lang],vars)+'</span>';
+  }
+  return h;
+}
+function b(s){ return '<b>'+esc(s)+'</b>'; }
+
+function verbById(id){ var i; for(i=0;i<VERBS.length;i++){ if(VERBS[i].id===id){ return VERBS[i]; } } return null; }
+function selectedVerbs(){
+  var r=[], i;
+  if(store.verbs){ for(i=0;i<VERBS.length;i++){ if(indexOf(store.verbs,VERBS[i].id)>=0){ r.push(VERBS[i]); } } }
+  return r.length ? r : VERBS.slice();
+}
+function weightedPick(list, keyFn){
+  var w=[], tot=0, i, x, r;
+  for(i=0;i<list.length;i++){ x=1+(store.stats[keyFn(list[i])]||0); w.push(x); tot+=x; }
+  r=Math.random()*tot;
+  for(i=0;i<list.length;i++){ r-=w[i]; if(r<=0){ return list[i]; } }
+  return list[list.length-1];
+}
+function recordStat(it, ok){
+  if(!it.skey){ return; }
+  var v=store.stats[it.skey]||0;
+  store.stats[it.skey]= ok ? Math.max(0,v-1) : Math.min(8,v+2);
+  saveStore();
+}
+
+/* ---------------------------------------------------------------
+   4) SATZGENERATOR
+   --------------------------------------------------------------- */
+function genSentence(verb, person, o){
+  o=o||{};
+  var types=o.types||['stmt','yn','wq'], wgt={stmt:3,yn:2,wq:2}, pool=[], i, k, type;
+  for(i=0;i<types.length;i++){ for(k=0;k<wgt[types[i]];k++){ pool.push(types[i]); } }
+  type=pick(pool);
+  var form=verb.forms[PERSON_FORMKEY[person]], subj=pick(SUBJECTS[person]);
+  var tokens, mi, act=null, adv=null, q, rest, inf;
+  if(type==='wq'){
+    q=pick(WQ); rest=q.rest; inf=q.inf;
+    tokens=[q.w, form, subj].concat(rest,[inf]); mi=1;
+  } else {
+    act=o.act||pick(ACTIVITIES); rest=act.rest; inf=act.inf;
+    if(type==='yn'){ tokens=[form,subj].concat(rest,[inf]); mi=0; }
+    else if(o.adv!==false && Math.random()<0.3){ adv=pick(ADV); tokens=[adv,form,subj].concat(rest,[inf]); mi=1; }
+    else { tokens=[subj,form].concat(rest,[inf]); mi=1; }
+  }
+  tokens[0]=capFirst(tokens[0]);
+  return {type:type, verb:verb.id, person:person, tokens:tokens, mi:mi, ii:tokens.length-1,
+          form:form, inf:verb.inf, punct:(type==='stmt'?'.':'?'), adv:adv, act:act};
+}
+function sentText(s){ return s.tokens.join(' ')+s.punct; }
+function sentHtml(s, o){
+  o=o||{};
+  var parts=[], i, cls, txt;
+  for(i=0;i<s.tokens.length;i++){
+    txt=esc(s.tokens[i]); cls='w';
+    if(i===s.mi){
+      if(o.gap){ parts.push('<span class="w gapw">'+(o.fill?txt:'&nbsp;')+'</span>'); continue; }
+      if(o.col){ cls+=' m'; }
+    } else if(i===s.ii && o.col){ cls+=' i'; }
+    parts.push('<span class="'+cls+'">'+txt+'</span>');
+  }
+  return '<span class="sent"'+(o.col?' data-kl="1"':'')+'>'+parts.join(' ')+'<span class="pn">'+s.punct+'</span></span>';
+}
+function drawKlammers(root){
+  var list=(root||document).querySelectorAll('.sent[data-kl]'), i, s, m, n, d, l, r, old, j;
+  for(i=0;i<list.length;i++){
+    s=list[i];
+    old=s.querySelectorAll('.klammer');
+    for(j=0;j<old.length;j++){ s.removeChild(old[j]); }
+    m=s.querySelector('.m'); n=s.querySelector('.i');
+    if(!m||!n){ continue; }
+    if(m.offsetTop!==n.offsetTop){ continue; }
+    l=m.offsetLeft+m.offsetWidth/2; r=n.offsetLeft+n.offsetWidth/2;
+    d=el('div','klammer');
+    d.style.left=l+'px'; d.style.width=Math.max(4,(r-l))+'px'; d.style.top=(m.offsetTop+m.offsetHeight-1)+'px';
+    s.appendChild(d);
+  }
+}
+
+/* Rechtschreib-Distraktoren */
+function genMisspellings(w){
+  var out=[];
+  function add(x){ if(x && x!==w && indexOf(out,x)<0 && x.length>1){ out.push(x); } }
+  add(w.replace(/ö/g,'o')); add(w.replace(/ü/g,'u')); add(w.replace(/ä/g,'a'));
+  add(w.replace(/ö/g,'oe')); add(w.replace(/ü/g,'ue'));
+  add(w.replace(/ss/g,'ß')); add(w.replace(/ss/g,'s')); add(w.replace(/nn/g,'n'));
+  add(w.replace(/ch/g,'sch')); add(w.replace(/t$/,'d')); add(w.replace(/st$/,'s'));
+  add(w.replace(/([aeiouäöü])/,'$1$1'));
+  return out;
+}
+function spellOptions(verb, form){
+  var list=(verb.wrong&&verb.wrong[form])?verb.wrong[form].slice():[], valid=[], k, res, extra, i;
+  for(k in verb.forms){ if(verb.forms.hasOwnProperty(k)){ valid.push(verb.forms[k]); } }
+  extra=genMisspellings(form);
+  for(i=0;i<extra.length;i++){ if(indexOf(list,extra[i])<0){ list.push(extra[i]); } }
+  res=[];
+  list=shuffle(list);
+  for(i=0;i<list.length && res.length<3;i++){ if(indexOf(valid,list[i])<0 && list[i]!==form){ res.push(list[i]); } }
+  return res;
+}
+
+/* ---------------------------------------------------------------
+   5) HINWEISE
+   --------------------------------------------------------------- */
+function hintBox(key, vars){ return '<div class="hint">'+tt(key,vars)+'</div>'; }
+function conjHint(verb, person){
+  var fk=PERSON_FORMKEY[person], f=verb.forms[fk], h, key;
+  if(fk==='ich'||fk==='er'){ key = verb.sg13==='e' ? 'r_e' : 'r_none'; }
+  else if(fk==='du'){ key='r_du'; }
+  else if(fk==='ihr'){ key='r_ihr'; }
+  else { key='r_inf'; }
+  h=hintBox(key,{f:b(f)});
+  if(verb.vowel && (fk==='ich'||fk==='du'||fk==='er')){ h+=hintBox('r_vowel',{a:esc(verb.vowel[0]),b:esc(verb.vowel[1])}); }
+  return h;
+}
+function spellHint(form){
+  var list=[], m=form.match(/[äöü]/g);
+  if(m){ list.push(hintBox('r_umlaut',{u:esc(uniq(m).join(' / '))})); }
+  if(/ss/.test(form)){ list.push(hintBox('r_ss',{f:b(form)})); }
+  if(/nn/.test(form)){ list.push(hintBox('r_nn',{f:b(form)})); }
+  if(/ch/.test(form)){ list.push(hintBox('r_ch',{f:b(form)})); }
+  return list.slice(0,2).join('');
+}
+function posHint(s){
+  var key = s.type==='stmt' ? 'r_stmt' : (s.type==='yn' ? 'r_yn' : 'r_wq');
+  var h=hintBox(key);
+  if(s.type==='stmt' && s.adv){ h+=hintBox('r_stmt_adv',{x:esc(s.adv)}); }
+  return h;
+}
+function otherPersons(verb, typed){
+  var map={ich:'ich',du:'du',er:'er / sie (Sg.)',wir:'wir',ihr:'ihr',sie:'sie (Pl.) / Sie'}, k, r=[];
+  for(k in map){ if(map.hasOwnProperty(k) && verb.forms[k]===typed){ r.push(map[k]); } }
+  return r.join(', ');
+}
+
+/* ---------------------------------------------------------------
+   6) ÜBUNGSGENERATOREN
+   --------------------------------------------------------------- */
+var MODES = {
+  conj_choice:{grp:'conj', title:'m_conj_choice', q:'q_conj_choice'},
+  conj_type:{grp:'conj', title:'m_conj_type', q:'q_conj_type'},
+  spell_choice:{grp:'spell', title:'m_spell_choice', q:'q_spell_choice'},
+  spell_letters:{grp:'spell', title:'m_spell_letters', q:'q_spell_letters'},
+  mean_cat:{grp:'mean', title:'m_mean_cat', q:'q_mean_cat'},
+  mean_ctx:{grp:'mean', title:'m_mean_ctx', q:'q_mean_ctx'},
+  mean_tr:{grp:'mean', title:'m_mean_tr', q:'q_mean_tr', needLang:true},
+  order_build:{grp:'order', title:'m_order_build', q:'q_build'},
+  order_klammer:{grp:'order', title:'m_order_klammer', q:'q_klammer_modal'}
+};
+var GROUPS = ['conj','spell','mean','order'];
+var MODE_ORDER = ['conj_choice','conj_type','spell_choice','spell_letters','mean_cat','mean_ctx','mean_tr','order_build','order_klammer'];
+
+function modeAvailable(m){
+  if(MODES[m].needLang && store.lang==='de'){ return false; }
+  return true;
+}
+function availableModes(){
+  var r=[], i;
+  for(i=0;i<MODE_ORDER.length;i++){ if(modeAvailable(MODE_ORDER[i])){ r.push(MODE_ORDER[i]); } }
+  return r;
+}
+
+function pickVP(){
+  var v=pick(selectedVerbs());
+  var p=weightedPick(PERSONS,function(x){ return 'p:'+v.id+'|'+x; });
+  return {v:v, p:p, skey:'p:'+v.id+'|'+p};
+}
+
+function makeItem(mode){
+  var vp, s, it, i, opts, forms, k, list, ctx, v, act, cands, tr, ans, o;
+  if(mode==='conj_choice' || mode==='conj_type'){
+    vp=pickVP(); s=genSentence(vp.v, vp.p, {});
+    it={mode:mode, verb:vp.v.id, person:vp.p, s:s, skey:vp.skey, answer:s.form, sig:mode+'|'+sentText(s), sum:sentText(s)};
+    if(mode==='conj_choice'){
+      forms=[]; for(k in vp.v.forms){ if(vp.v.forms.hasOwnProperty(k)){ forms.push(vp.v.forms[k]); } }
+      it.options=shuffle(uniq(forms));
+    }
+    return it;
+  }
+  if(mode==='spell_choice'){
+    vp=pickVP(); s=genSentence(vp.v, vp.p, {});
+    list=spellOptions(vp.v, s.form);
+    if(list.length<2){ return null; }
+    opts=shuffle(list.concat([s.form]));
+    return {mode:mode, verb:vp.v.id, person:vp.p, s:s, skey:'s:'+vp.v.id+'|'+vp.p, answer:s.form, options:opts, sig:mode+'|'+sentText(s), sum:sentText(s)};
+  }
+  if(mode==='spell_letters'){
+    vp=pickVP(); s=genSentence(vp.v, vp.p, {types:['stmt'], adv:false});
+    list=s.form.split('');
+    opts=shuffle(list);
+    for(i=0;i<10 && opts.join('')===s.form;i++){ opts=shuffle(list); }
+    return {mode:mode, verb:vp.v.id, person:vp.p, s:s, skey:'s:'+vp.v.id+'|'+vp.p, answer:s.form, letters:opts, sig:mode+'|'+sentText(s), sum:sentText(s)};
+  }
+  if(mode==='mean_cat'){
+    vp=pickVP(); s=genSentence(vp.v, vp.p, {});
+    return {mode:mode, verb:vp.v.id, person:vp.p, s:s, skey:'m:'+vp.v.id, answer:vp.v.cat, sig:mode+'|'+sentText(s), sum:sentText(s)+' → '+vp.v.inf};
+  }
+  if(mode==='mean_ctx'){
+    v=pick(selectedVerbs());
+    if(!v.contexts || !v.contexts.length){ return null; }
+    ctx=pick(v.contexts);
+    list=[];
+    for(i=0;i<VERBS.length;i++){
+      if(VERBS[i].id===v.id || !(ctx.x && indexOf(ctx.x,VERBS[i].id)>=0)){ list.push({id:VERBS[i].id, form:VERBS[i].forms[PERSON_FORMKEY[ctx.p]]}); }
+    }
+    if(list.length<2){ return null; }
+    ans=v.forms[PERSON_FORMKEY[ctx.p]];
+    return {mode:mode, verb:v.id, person:ctx.p, ctx:ctx.t, options:shuffle(list), answer:ans, skey:'m:'+v.id, sig:mode+'|'+ctx.t, sum:ctx.t.replace('___',ans)};
+  }
+  if(mode==='mean_tr'){
+    if(store.lang==='de'){ return null; }
+    v=pick(selectedVerbs());
+    cands=[];
+    for(i=0;i<ACTIVITIES.length;i++){
+      tr=ACTIVITIES[i].tr && ACTIVITIES[i].tr[store.lang];
+      if(tr){
+        o=true;
+        for(k=0;k<CATEGORIES.length;k++){ if(!tr[k]){ o=false; } }
+        if(o){ cands.push(ACTIVITIES[i]); }
+      }
+    }
+    if(!cands.length){ return null; }
+    act=pick(cands);
+    s=genSentence(v,'ich',{types:['stmt'],adv:false,act:act});
+    tr=act.tr[store.lang]; opts=[];
+    for(k=0;k<CATEGORIES.length;k++){ opts.push({cat:CATEGORIES[k], text:tr[k]}); }
+    return {mode:mode, verb:v.id, person:'ich', s:s, skey:'m:'+v.id, options:shuffle(opts), answer:v.cat, lang:store.lang, sig:mode+'|'+sentText(s), sum:sentText(s)+' = '+tr[indexOf(CATEGORIES,v.cat)]};
+  }
+  if(mode==='order_build' || mode==='order_klammer'){
+    v=pick(selectedVerbs());
+    o=pick(['stmt','yn','wq']);
+    ans=weightedPick(PERSONS,function(x){ return 'o:'+v.id+'|'+o+'|'+x; });
+    s=genSentence(v, ans, {types:[o], adv:(mode==='order_klammer')});
+    it={mode:mode, verb:v.id, person:ans, s:s, skey:'o:'+v.id+'|'+o+'|'+ans, sig:mode+'|'+sentText(s), sum:sentText(s)};
+    if(mode==='order_build'){
+      list=[]; for(i=0;i<s.tokens.length;i++){ list.push(i); }
+      opts=shuffle(list);
+      for(i=0;i<10 && opts.join(',')===list.join(',');i++){ opts=shuffle(list); }
+      it.order=opts;
+    }
+    return it;
+  }
+  return null;
+}
+
+/* ---------------------------------------------------------------
+   7) ZUSTAND UND OBERFLÄCHE
+   --------------------------------------------------------------- */
+var S={screen:'menu', round:null};
+
+function render(){
+  var app=$('app');
+  app.innerHTML='';
+  if(S.screen==='menu'){ renderMenu(app); }
+  else if(S.screen==='rules'){ renderRules(app); }
+  else if(S.screen==='quiz'){ renderQuiz(app); }
+  else if(S.screen==='result'){ renderResult(app); }
+  drawKlammers(document);
+  try{ window.scrollTo(0,0); }catch(e){}
+}
+
+function renderMenu(app){
+  var head=el('div','card'), h, i, g, card, m, btn, row, vbox, langBox, note;
+  head.innerHTML='<h1>'+tt('title')+'</h1><div class="sub">'+tt('subtitle')+'</div>';
+  app.appendChild(head);
+
+  /* Hilfssprache */
+  card=el('div','card'); card.innerHTML='<h2>'+tt('h_lang')+'</h2>';
+  langBox=el('div','langs');
+  for(i=0;i<LANGS.length;i++){
+    (function(l){
+      var p=el('button','pill'+(store.lang===l.id?' on':''), esc(l.label));
+      p.setAttribute('type','button');
+      if(l.id==='ar'){ p.setAttribute('dir','rtl'); }
+      p.onclick=function(){ store.lang=l.id; saveStore(); render(); };
+      langBox.appendChild(p);
+    })(LANGS[i]);
+  }
+  card.appendChild(langBox); app.appendChild(card);
+
+  /* Verben */
+  card=el('div','card'); card.innerHTML='<h2>'+tt('h_verbs')+'</h2><div class="sub small">'+tt('hint_verbs')+'</div>';
+  vbox=el('div','');
+  var sel=selectedVerbs(), selIds=[];
+  for(i=0;i<sel.length;i++){ selIds.push(sel[i].id); }
+  for(i=0;i<VERBS.length;i++){
+    (function(v){
+      var on=indexOf(selIds,v.id)>=0;
+      var gl=(store.lang!=='de' && v.gloss && v.gloss[store.lang]) ? '<small'+(store.lang==='ar'?' dir="rtl"':'')+'>'+esc(v.gloss[store.lang])+'</small>' : '';
+      var c=el('button','vchip'+(on?' on':''), '<b>'+esc(v.inf)+'</b>'+gl);
+      c.setAttribute('type','button'); c.setAttribute('aria-pressed', on?'true':'false');
+      c.onclick=function(){
+        var cur=selIds.slice(), pos=indexOf(cur,v.id);
+        if(pos>=0){ if(cur.length>1){ cur.splice(pos,1); } } else { cur.push(v.id); }
+        store.verbs=cur; saveStore(); render();
+      };
+      vbox.appendChild(c);
+    })(VERBS[i]);
+  }
+  card.appendChild(vbox); app.appendChild(card);
+
+  /* Übungen */
+  card=el('div','card'); card.innerHTML='<h2>'+tt('h_ex')+'</h2>';
+  for(g=0;g<GROUPS.length;g++){
+    var gb=el('div','grp'); gb.innerHTML='<h2>'+tt('ex_'+GROUPS[g])+'</h2>';
+    row=el('div','');
+    for(i=0;i<MODE_ORDER.length;i++){
+      m=MODE_ORDER[i];
+      if(MODES[m].grp!==GROUPS[g]){ continue; }
+      (function(mode){
+        var bt=el('button','btn', tt(MODES[mode].title));
+        bt.setAttribute('type','button');
+        if(!modeAvailable(mode)){ bt.disabled=true; bt.innerHTML=tt(MODES[mode].title)+'<span class="tr" style="font-size:.75em">'+esc(T.need_lang.de)+'</span>'; }
+        bt.onclick=function(){ startRound(mode); };
+        row.appendChild(bt);
+      })(m);
+    }
+    gb.appendChild(row); card.appendChild(gb);
+  }
+  var mix=el('button','btn primary', tt('mixed')); mix.setAttribute('type','button');
+  mix.onclick=function(){ startRound('mixed'); };
+  var ru=el('button','btn ghost', tt('rules_btn')); ru.setAttribute('type','button');
+  ru.onclick=function(){ S.screen='rules'; render(); };
+  var rw=el('div','grp'); rw.appendChild(mix); rw.appendChild(ru);
+  card.appendChild(rw); app.appendChild(card);
+
+  var rs=el('button','lnk', esc(T.reset.de)); rs.setAttribute('type','button');
+  rs.onclick=function(){ if(window.confirm('Lernstand wirklich zurücksetzen?')){ store.stats={}; saveStore(); } };
+  app.appendChild(rs);
+}
+
+/* ---------- Regeln ---------- */
+function renderRules(app){
+  var card=el('div','card'), i, k, rows, t, v, s, ex, h;
+  var top=el('div','top'); var bk=el('button','btn small', tt('back')); bk.setAttribute('type','button');
+  bk.onclick=function(){ S.screen='menu'; render(); };
+  top.appendChild(bk); app.appendChild(top);
+
+  card.innerHTML='<h2>'+tt('g_head_conj')+'</h2>';
+  rows=[['ich','ich'],['du','du'],['er','er / sie'],['wir','wir'],['ihr','ihr'],['sie','sie / Sie']];
+  t='<table class="conj"><tr><th></th>';
+  for(i=0;i<VERBS.length;i++){ t+='<th>'+esc(VERBS[i].inf)+'</th>'; }
+  t+='</tr>';
+  for(k=0;k<rows.length;k++){
+    t+='<tr><th>'+esc(rows[k][1])+'</th>';
+    for(i=0;i<VERBS.length;i++){ t+='<td>'+esc(VERBS[i].forms[rows[k][0]])+'</td>'; }
+    t+='</tr>';
+  }
+  t+='</table>';
+  card.innerHTML+=t;
+  card.innerHTML+='<div class="hint">'+tt('g_sg')+'</div><div class="hint">'+tt('g_du')+'</div><div class="hint">'+tt('g_ihr')+'</div><div class="hint">'+tt('g_pl')+'</div><div class="hint">'+tt('g_vowel')+'</div>';
+  app.appendChild(card);
+
+  card=el('div','card'); card.innerHTML='<h2>'+tt('ex_mean')+'</h2>';
+  for(i=0;i<VERBS.length;i++){
+    v=VERBS[i];
+    s=genSentence(v,'ich',{types:['stmt'],adv:false,act:ACTIVITIES[0]});
+    h='<div class="ex"><b>'+esc(v.inf)+'</b> = '+tt('c_'+v.cat);
+    if(store.lang!=='de' && v.gloss && v.gloss[store.lang]){ h+='<span class="tr" lang="'+store.lang+'"'+(store.lang==='ar'?' dir="rtl"':'')+'>'+esc(v.gloss[store.lang])+'</span>'; }
+    h+='<div>'+sentHtml(s,{col:true})+'</div></div>';
+    card.innerHTML+=h;
+  }
+  app.appendChild(card);
+
+  card=el('div','card'); card.innerHTML='<h2>'+tt('g_head_pos')+'</h2>';
+  var v0=VERBS[0], f1=VERBS[1]||VERBS[0];
+  var ss=genSentence(f1,'ich',{types:['stmt'],adv:false,act:ACTIVITIES[0]});
+  var sy=genSentence(f1,'du',{types:['yn'],act:ACTIVITIES[0]});
+  var sw={type:'wq',verb:f1.id,person:'du',tokens:['Wo',f1.forms.du,'du','Deutsch','lernen'],mi:1,ii:4,punct:'?',adv:null};
+  var sa={type:'stmt',verb:VERBS[VERBS.length-1].id,person:'ich',tokens:['Heute',VERBS[VERBS.length-1].forms.ich,'ich','arbeiten'],mi:1,ii:3,punct:'.',adv:'Heute'};
+  /* feste Beispielsätze, damit die Regelseite stabil bleibt */
+  ss.tokens=['Ich',f1.forms.ich,'Deutsch','lernen']; ss.mi=1; ss.ii=3; ss.punct='.';
+  sy.tokens=[capFirst(f1.forms.du),'du','Deutsch','lernen']; sy.mi=0; sy.ii=3; sy.punct='?'; sy.type='yn';
+  var ex1=[ss,sy,sw,sa], k2;
+  for(k2=0;k2<ex1.length;k2++){
+    card.innerHTML+='<div class="ex">'+sentHtml(ex1[k2],{col:true})+posHint(ex1[k2])+'</div>';
+  }
+  app.appendChild(card);
+}
+
+/* ---------- Runde ---------- */
+function startRound(modeId, items){
+  var n=10, list=[], used={}, tries=0, m, it, av;
+  if(items){ list=items; }
+  else {
+    av=availableModes();
+    while(list.length<n && tries<300){
+      tries++;
+      m=(modeId==='mixed') ? pick(av) : modeId;
+      it=makeItem(m);
+      if(!it || used[it.sig]){ continue; }
+      used[it.sig]=1; list.push(it);
+    }
+  }
+  S.round={mode:modeId, items:list, idx:0, score:0, wrong:[], locked:false};
+  S.screen='quiz';
+  render();
+}
+
+function renderQuiz(app){
+  var R=S.round, it=R.items[R.idx], card, top, bk, bar, pct, body, nb, fb;
+  R.locked=false;
+  top=el('div','top');
+  bk=el('button','btn small ghost', tt('menu')); bk.setAttribute('type','button');
+  bk.onclick=function(){ S.screen='menu'; render(); };
+  top.appendChild(bk);
+  top.appendChild(el('div','sub','<span id="cnt">'+(R.idx+1)+' / '+R.items.length+'</span> · ✔ <span id="sc">'+R.score+'</span>'));
+  app.appendChild(top);
+  bar=el('div','bar','<i style="width:'+Math.round(R.idx/R.items.length*100)+'%"></i>');
+  app.appendChild(bar);
+
+  card=el('div','card');
+  card.appendChild(el('div','prompt','<span id="promptTxt">'+tt(MODES[it.mode].q)+'</span>'));
+  body=el('div',''); body.id='qbody';
+  card.appendChild(body);
+  fb=el('div','fb'); fb.id='fb';
+  card.appendChild(fb);
+  nb=el('button','btn primary', tt('next')); nb.id='nextbtn'; nb.setAttribute('type','button');
+  nb.style.display='none'; nb.style.marginTop='12px';
+  nb.onclick=function(){
+    R.idx++;
+    if(R.idx>=R.items.length){ S.screen='result'; }
+    render();
+  };
+  card.appendChild(nb);
+  app.appendChild(card);
+
+  var v=verbById(it.verb);
+  RENDERERS[it.mode](it, body, v);
+}
+
+function answered(it, ok, fbHtml){
+  var R=S.round, fb=$('fb'), nb=$('nextbtn'), sc=$('sc');
+  if(R.locked){ return; }
+  R.locked=true;
+  if(ok){ R.score++; } else { R.wrong.push(it); }
+  recordStat(it, ok);
+  fb.className='fb '+(ok?'ok':'bad');
+  fb.innerHTML='<div class="fbt">'+(ok?tt('ok'):tt('bad'))+'</div>'+fbHtml;
+  nb.style.display='';
+  if(sc){ sc.innerHTML=String(R.score); }
+  drawKlammers($('app'));
+  try{ nb.focus(); }catch(e){}
+}
+
+function tags(it, v, withVerb){
+  var h='<div class="tags"><span class="tag p">'+esc(PERSON_LABEL[it.person])+'</span>';
+  if(withVerb){ h+='<span class="tag v">'+esc(v.inf)+'</span>'; }
+  return h+'</div>';
+}
+function renderOptions(host, options, isAnswer, labelFn, cb, one){
+  var box=el('div','opts'+(one?' one':'')), btns=[], i;
+  for(i=0;i<options.length;i++){
+    (function(idx){
+      var o=options[idx], bt=el('button','opt', labelFn(o));
+      bt.setAttribute('type','button');
+      bt.onclick=function(){
+        if(S.round.locked){ return; }
+        var j, good=isAnswer(o);
+        for(j=0;j<options.length;j++){ if(isAnswer(options[j])){ btns[j].className+=' right'; } }
+        if(!good){ bt.className+=' wrongc'; }
+        for(j=0;j<btns.length;j++){ btns[j].disabled=true; }
+        cb(good, o);
+      };
+      btns.push(bt); box.appendChild(bt);
+    })(i);
+  }
+  host.appendChild(box);
+}
+
+/* ---------- Renderer je Modus ---------- */
+var RENDERERS={};
+
+RENDERERS.conj_choice=function(it, host, v){
+  host.innerHTML=tags(it,v,true)+'<div id="sbox">'+sentHtml(it.s,{gap:true})+'</div>';
+  renderOptions(host, it.options, function(o){ return o===it.answer; }, function(o){ return esc(o); }, function(ok, o){
+    $('sbox').innerHTML=sentHtml(it.s,{col:true});
+    answered(it, ok, ok ? conjHint(v,it.person) : '<div class="sol">'+tt('solution')+' '+b(it.answer)+'</div>'+conjHint(v,it.person));
+  });
+};
+
+RENDERERS.conj_type=function(it, host, v){
+  host.innerHTML=tags(it,v,true)+'<div id="sbox">'+sentHtml(it.s,{gap:true})+'</div>';
+  var inp=el('input','typed'); inp.type='text'; inp.id='typed';
+  inp.setAttribute('autocomplete','off'); inp.setAttribute('autocapitalize','off'); inp.setAttribute('autocorrect','off'); inp.setAttribute('spellcheck','false');
+  host.appendChild(inp);
+  var keys=el('div','keys'), ks=['ä','ö','ü','ß'], i;
+  for(i=0;i<ks.length;i++){
+    (function(ch){
+      var kb=el('button','key',ch); kb.setAttribute('type','button');
+      kb.onclick=function(){
+        if(S.round.locked){ return; }
+        var val=inp.value, st=inp.selectionStart, en=inp.selectionEnd, pos;
+        if(typeof st!=='number'){ st=val.length; en=val.length; }
+        inp.value=val.slice(0,st)+ch+val.slice(en); pos=st+ch.length;
+        try{ inp.focus(); inp.setSelectionRange(pos,pos); }catch(e){}
+      };
+      keys.appendChild(kb);
+    })(ks[i]);
+  }
+  host.appendChild(keys);
+  var cb=el('button','btn primary', tt('check')); cb.setAttribute('type','button');
+  function doCheck(){
+    if(S.round.locked){ return; }
+    var val=trim(inp.value);
+    if(val===''){ return; }
+    var ok=(val.toLowerCase()===it.answer.toLowerCase()), h='', oth;
+    inp.disabled=true; cb.disabled=true;
+    $('sbox').innerHTML=sentHtml(it.s,{col:true});
+    if(!ok){
+      h='<div class="sol">'+tt('solution')+' '+b(it.answer)+'</div>';
+      oth=otherPersons(v,val.toLowerCase());
+      if(oth && val.toLowerCase()!==it.answer.toLowerCase()){ h+=hintBox('r_other',{x:esc(val),p:esc(oth)}); }
+      else if(stripUm(val)===stripUm(it.answer)){ h+=spellHint(it.answer); }
+      h+=conjHint(v,it.person);
+    } else { h=conjHint(v,it.person); }
+    answered(it, ok, h);
+  }
+  cb.onclick=doCheck;
+  inp.onkeydown=function(e){ e=e||window.event; if(e.keyCode===13){ doCheck(); } };
+  host.appendChild(cb);
+  try{ inp.focus(); }catch(e){}
+};
+
+RENDERERS.spell_choice=function(it, host, v){
+  host.innerHTML=tags(it,v,true)+'<div id="sbox">'+sentHtml(it.s,{gap:true})+'</div>';
+  renderOptions(host, it.options, function(o){ return o===it.answer; }, function(o){ return esc(o); }, function(ok, o){
+    $('sbox').innerHTML=sentHtml(it.s,{col:true});
+    answered(it, ok, (ok?'':'<div class="sol">'+tt('solution')+' '+b(it.answer)+'</div>')+spellHint(it.answer));
+  });
+};
+
+RENDERERS.spell_letters=function(it, host, v){
+  host.innerHTML=tags(it,v,true)+'<div id="sbox">'+sentHtml(it.s,{gap:true})+'</div>';
+  var placed=[], used=[], i, line=el('div','line'), bank=el('div','bank'), ctrl=el('div','');
+  for(i=0;i<it.letters.length;i++){ used.push(false); }
+  var bDel=el('button','btn small ghost', tt('del')), bClr=el('button','btn small ghost', tt('clear')), bChk=el('button','btn primary', tt('check'));
+  bDel.setAttribute('type','button'); bClr.setAttribute('type','button'); bChk.setAttribute('type','button');
+  function redraw(){
+    var j;
+    line.innerHTML='';
+    for(j=0;j<placed.length;j++){
+      (function(pos){
+        var c=el('button','chip letter placed', esc(it.letters[placed[pos]]));
+        c.setAttribute('type','button');
+        c.onclick=function(){ if(S.round.locked){ return; } used[placed[pos]]=false; placed.splice(pos,1); redraw(); };
+        line.appendChild(c);
+      })(j);
+    }
+    bank.innerHTML='';
+    for(j=0;j<it.letters.length;j++){
+      (function(idx){
+        var c=el('button','chip letter'+(used[idx]?' ghostc':''), esc(it.letters[idx]));
+        c.setAttribute('type','button');
+        if(!used[idx]){ c.onclick=function(){ if(S.round.locked){ return; } used[idx]=true; placed.push(idx); redraw(); }; }
+        bank.appendChild(c);
+      })(j);
+    }
+    bChk.disabled=(placed.length!==it.letters.length);
+  }
+  bDel.onclick=function(){ if(S.round.locked||!placed.length){ return; } used[placed.pop()]=false; redraw(); };
+  bClr.onclick=function(){ if(S.round.locked){ return; } var j; placed=[]; for(j=0;j<used.length;j++){ used[j]=false; } redraw(); };
+  bChk.onclick=function(){
+    if(S.round.locked){ return; }
+    var word='', j;
+    for(j=0;j<placed.length;j++){ word+=it.letters[placed[j]]; }
+    var ok=(word===it.answer);
+    bDel.disabled=true; bClr.disabled=true; bChk.disabled=true;
+    var chips=bank.querySelectorAll('button'), q;
+    for(q=0;q<chips.length;q++){ chips[q].disabled=true; }
+    chips=line.querySelectorAll('button');
+    for(q=0;q<chips.length;q++){ chips[q].disabled=true; }
+    $('sbox').innerHTML=sentHtml(it.s,{col:true});
+    answered(it, ok, (ok?'':'<div class="sol">'+tt('solution')+' '+b(it.answer)+'</div>')+spellHint(it.answer));
+  };
+  host.appendChild(line); host.appendChild(bank);
+  ctrl.appendChild(bDel); ctrl.appendChild(bClr); ctrl.appendChild(bChk);
+  host.appendChild(ctrl);
+  redraw();
+};
+
+RENDERERS.mean_cat=function(it, host, v){
+  host.innerHTML='<div>'+sentHtml(it.s,{col:false})+'</div>';
+  renderOptions(host, CATEGORIES, function(o){ return o===it.answer; }, function(o){ return tt('c_'+o); }, function(ok, o){
+    answered(it, ok, '<div class="sol">'+b(v.inf)+' = '+tt('c_'+it.answer)+'</div>');
+  }, true);
+};
+
+RENDERERS.mean_ctx=function(it, host, v){
+  host.innerHTML='<div class="sent" style="font-size:1.15em;display:block">'+esc(it.ctx).replace('___','<span class="w gapw" style="display:inline-block;min-width:3.6em;border-bottom:3px solid #1565c0">&nbsp;</span>')+'</div>';
+  renderOptions(host, it.options, function(o){ return o.form===it.answer && o.id===it.verb; }, function(o){ return esc(o.form); }, function(ok, o){
+    var filled=esc(it.ctx).replace('___','<span class="w m">'+esc(it.answer)+'</span>');
+    answered(it, ok, '<div class="sol">'+filled+'</div><div class="hint">'+b(v.inf)+' = '+tt('c_'+v.cat)+'</div>');
+  });
+};
+
+RENDERERS.mean_tr=function(it, host, v){
+  host.innerHTML='<div>'+sentHtml(it.s,{col:false})+'</div>';
+  var rtl=(it.lang==='ar');
+  renderOptions(host, it.options, function(o){ return o.cat===it.answer; }, function(o){
+    return '<span lang="'+it.lang+'"'+(rtl?' dir="rtl" style="display:block"':'')+'>'+esc(o.text)+'</span>';
+  }, function(ok, o){
+    answered(it, ok, '<div class="hint">'+b(v.inf)+' = '+tt('c_'+v.cat)+'</div>');
+  }, true);
+};
+
+function posIndexOf(seq, tok){ var i; for(i=0;i<seq.length;i++){ if(seq[i]===tok){ return i; } } return -1; }
+
+RENDERERS.order_build=function(it, host, v){
+  var s=it.s, order=it.order, placed=[], used=[], i, line=el('div','line'), bank=el('div','bank'), ctrl=el('div','');
+  for(i=0;i<order.length;i++){ used.push(false); }
+  host.appendChild(el('div','tags','<span class="tag p">'+esc(v.inf)+'</span>'));
+  var bDel=el('button','btn small ghost', tt('del')), bClr=el('button','btn small ghost', tt('clear')), bChk=el('button','btn primary', tt('check'));
+  bDel.setAttribute('type','button'); bClr.setAttribute('type','button'); bChk.setAttribute('type','button');
+  function redraw(){
+    var j;
+    line.innerHTML='';
+    for(j=0;j<placed.length;j++){
+      (function(pos){
+        var c=el('button','chip placed', esc(s.tokens[order[placed[pos]]]));
+        c.setAttribute('type','button');
+        c.onclick=function(){ if(S.round.locked){ return; } used[placed[pos]]=false; placed.splice(pos,1); redraw(); };
+        line.appendChild(c);
+      })(j);
+    }
+    line.appendChild(el('span','pn', esc(s.punct)));
+    bank.innerHTML='';
+    for(j=0;j<order.length;j++){
+      (function(idx){
+        var c=el('button','chip'+(used[idx]?' ghostc':''), esc(s.tokens[order[idx]]));
+        c.setAttribute('type','button');
+        if(!used[idx]){ c.onclick=function(){ if(S.round.locked){ return; } used[idx]=true; placed.push(idx); redraw(); }; }
+        bank.appendChild(c);
+      })(j);
+    }
+    bChk.disabled=(placed.length!==order.length);
+  }
+  bDel.onclick=function(){ if(S.round.locked||!placed.length){ return; } used[placed.pop()]=false; redraw(); };
+  bClr.onclick=function(){ if(S.round.locked){ return; } var j; placed=[]; for(j=0;j<used.length;j++){ used[j]=false; } redraw(); };
+  bChk.onclick=function(){
+    if(S.round.locked){ return; }
+    var seq=[], j, canon=lcAll(s.tokens), a, same, alt=false, expMi=s.mi, h='', modalTok=canon[s.mi];
+    for(j=0;j<placed.length;j++){ seq.push(s.tokens[order[placed[j]]]); }
+    a=lcAll(seq);
+    same=(a.join('|')===canon.join('|'));
+    if(!same && s.type==='stmt' && !s.adv && a[1]===modalTok && a[a.length-1]===canon[canon.length-1]){ alt=true; }
+    var ok=same||alt;
+    bDel.disabled=true; bClr.disabled=true; bChk.disabled=true;
+    var chips=line.querySelectorAll('button'), q;
+    for(q=0;q<chips.length;q++){ chips[q].disabled=true; }
+    h='<div class="sol">'+sentHtml(s,{col:true})+'</div>';
+    if(alt){ h='<div class="hint">'+tt('also_ok')+'</div>'+h; }
+    if(!ok){
+      h='<div class="sol">'+tt('solution')+'</div>'+h;
+      if(posIndexOf(a,modalTok)!==expMi){ h+=posHint(s); }
+      if(a[a.length-1]!==canon[canon.length-1]){ h+=hintBox('r_inf_end'); }
+      if(posIndexOf(a,modalTok)===expMi && a[a.length-1]===canon[canon.length-1]){ h+=posHint(s); }
+    } else if(alt){ h+=posHint(s); }
+    answered(it, ok, h);
+  };
+  host.appendChild(line); host.appendChild(bank);
+  ctrl.appendChild(bDel); ctrl.appendChild(bClr); ctrl.appendChild(bChk);
+  host.appendChild(ctrl);
+  redraw();
+};
+
+RENDERERS.order_klammer=function(it, host, v){
+  var s=it.s, cur=[], i, phase=1, okM=false, okI=false, msg='', area=el('div',''), modalTok=s.tokens[s.mi], infTok=s.tokens[s.ii];
+  for(i=0;i<s.tokens.length;i++){ if(i!==s.mi && i!==s.ii){ cur.push({t:s.tokens[i], k:''}); } }
+  host.appendChild(el('div','tags','<span class="tag v">'+esc(modalTok)+'</span><span class="tag">'+esc(infTok)+'</span>'));
+  host.appendChild(area);
+  function setPrompt(key){ var p=$('promptTxt'); if(p){ p.innerHTML=tt(key); } }
+  function draw(){
+    var h, row, j;
+    area.innerHTML='';
+    if(msg){ area.appendChild(el('div','pmsg '+(okM?'ok':'bad'), msg)); }
+    var info=el('div','sub small', phase===1 ? '<span class="tag v">'+esc(modalTok)+'</span>' : '<span class="tag" style="background:#e4f5e6;color:#1b5e20">'+esc(infTok)+'</span>');
+    area.appendChild(info);
+    row=el('div','gaprow');
+    for(j=0;j<=cur.length;j++){
+      (function(g){
+        var gb=el('button','gapb','&nbsp;'); gb.setAttribute('type','button'); gb.setAttribute('aria-label','gap '+g);
+        gb.onclick=function(){ tap(g); };
+        row.appendChild(gb);
+      })(j);
+      if(j<cur.length){ row.appendChild(el('span','gw'+(cur[j].k?' '+cur[j].k:''), esc(cur[j].t))); }
+    }
+    row.appendChild(el('span','pn', esc(s.punct)));
+    area.appendChild(row);
+  }
+  function tap(g){
+    if(S.round.locked){ return; }
+    if(phase===1){
+      okM=(g===s.mi);
+      cur.splice(s.mi,0,{t:modalTok,k:'m'});
+      msg = okM ? tt('ok') : (tt('bad')+posHint(s));
+      phase=2; setPrompt('q_klammer_inf'); draw();
+    } else {
+      okI=(g===cur.length);
+      var ok=(okM&&okI), h='';
+      area.innerHTML='<div class="sol">'+sentHtml(s,{col:true})+'</div>';
+      if(!ok){
+        if(!okM){ h+=posHint(s); }
+        if(!okI){ h+=hintBox('r_inf_end'); }
+      }
+      answered(it, ok, h);
+    }
+  }
+  draw();
+};
+
+/* ---------- Ergebnis ---------- */
+function renderResult(app){
+  var R=S.round, card=el('div','card'), i, h, bt, row;
+  h='<h2>'+tt('done')+'</h2><div class="bigscore">'+R.score+' / '+R.items.length+'</div>';
+  if(R.wrong.length){
+    h+='<ul class="wl">';
+    for(i=0;i<R.wrong.length;i++){ h+='<li>'+esc(R.wrong[i].sum)+'</li>'; }
+    h+='</ul>';
+  }
+  card.innerHTML=h;
+  row=el('div','');
+  if(R.wrong.length){
+    bt=el('button','btn primary', tt('retry')); bt.setAttribute('type','button');
+    bt.onclick=function(){ startRound(R.mode, R.wrong.slice()); };
+    row.appendChild(bt);
+  }
+  bt=el('button','btn', tt('again')); bt.setAttribute('type','button');
+  bt.onclick=function(){ startRound(R.mode); };
+  row.appendChild(bt);
+  bt=el('button','btn ghost', tt('menu')); bt.setAttribute('type','button');
+  bt.onclick=function(){ S.screen='menu'; render(); };
+  row.appendChild(bt);
+  card.appendChild(row);
+  app.appendChild(card);
+}
+
+/* ---------------------------------------------------------------
+   8) START
+   --------------------------------------------------------------- */
+loadStore();
+var resizeT=null;
+window.onresize=function(){ if(resizeT){ clearTimeout(resizeT); } resizeT=setTimeout(function(){ drawKlammers(document); },150); };
+/* kleine Test-Schnittstelle (für automatische Tests, harmlos im Alltag) */
+window.__trainer={S:S, makeItem:makeItem, genSentence:genSentence, VERBS:VERBS, startRound:startRound, store:store, render:render, spellOptions:spellOptions, sentText:sentText};
+render();
+})();
+</script>
+</body>
+</html>
