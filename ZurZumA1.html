@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>zum oder zur? – A1</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 16px;
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f4f6fa; color: #1d2433; line-height: 1.4;
+  }
+  #app { max-width: 560px; margin: 0 auto; }
+  h1 { font-size: 26px; margin: 8px 0 14px; text-align: center; }
+  .card {
+    background: #fff; border-radius: 14px; padding: 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.12); margin-bottom: 14px;
+  }
+  .rule { font-size: 17px; }
+  .rule .row { padding: 6px 0; }
+  .rule .row + .row { border-top: 1px solid #e6e9f0; }
+  .der { color: #1565c0; font-weight: 700; }
+  .das { color: #2e7d32; font-weight: 700; }
+  .die { color: #c62828; font-weight: 700; }
+  .ex { color: #5a6275; font-size: 15px; display: block; margin-top: 2px; }
+  #progress { font-size: 14px; color: #5a6275; margin-bottom: 8px; display: flex; justify-content: space-between; }
+  #bar { height: 8px; background: #e3e7ef; border-radius: 4px; overflow: hidden; margin-bottom: 14px; }
+  #bar div { height: 100%; width: 0; background: #1565c0; transition: width .25s; }
+  #sentence { font-size: 24px; text-align: center; padding: 18px 4px; min-height: 90px; }
+  .gap {
+    display: inline-block; min-width: 76px; padding: 0 8px;
+    border-bottom: 3px solid #9aa3b5; text-align: center; font-weight: 700;
+  }
+  .gap.ok { border-color: #2e7d32; color: #2e7d32; }
+  .gap.bad { border-color: #c62828; color: #c62828; }
+  .choices { display: flex; gap: 12px; }
+  .choices button {
+    flex: 1; font-size: 26px; font-weight: 700; padding: 16px 8px;
+    border: 2px solid #1565c0; background: #fff; color: #1565c0;
+    border-radius: 12px; cursor: pointer;
+  }
+  .choices button:active { background: #e3eefc; }
+  .choices button[disabled] { opacity: .55; cursor: default; }
+  .choices button.right { background: #2e7d32; border-color: #2e7d32; color: #fff; opacity: 1; }
+  .choices button.wrong { background: #c62828; border-color: #c62828; color: #fff; opacity: 1; }
+  #feedback { min-height: 58px; text-align: center; font-size: 19px; margin: 14px 0 6px; }
+  #feedback .again { display: block; font-size: 14px; color: #5a6275; }
+  .primary {
+    display: block; width: 100%; font-size: 20px; font-weight: 700; padding: 14px;
+    border: 0; border-radius: 12px; background: #1565c0; color: #fff; cursor: pointer;
+  }
+  .primary[disabled] { visibility: hidden; }
+  .tag { display: inline-block; font-size: 12px; background: #fff3cd; color: #7a5b00; border-radius: 6px; padding: 1px 7px; margin-left: 6px; }
+  #result { text-align: center; }
+  #result .big { font-size: 40px; font-weight: 800; margin: 6px 0; }
+  #result ul { text-align: left; padding-left: 20px; font-size: 18px; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div id="app">
+  <h1>zum oder zur?</h1>
+
+  <div class="card rule">
+    <div class="row">
+      <b>zum</b> = zu + dem &rarr; <span class="der">der</span> / <span class="das">das</span>
+      <span class="ex">zum Arzt &nbsp;·&nbsp; zum Kino</span>
+    </div>
+    <div class="row">
+      <b>zur</b> = zu + der &rarr; <span class="die">die</span>
+      <span class="ex">zur Schule &nbsp;·&nbsp; zur Apotheke</span>
+    </div>
+  </div>
+
+  <div id="game" class="card">
+    <div id="progress"><span id="pcount"></span><span id="pscore"></span></div>
+    <div id="bar"><div id="barfill"></div></div>
+    <div id="sentence"></div>
+    <div class="choices">
+      <button type="button" id="bzum">zum</button>
+      <button type="button" id="bzur">zur</button>
+    </div>
+    <div id="feedback"></div>
+    <button type="button" class="primary" id="next" disabled>Weiter</button>
+  </div>
+
+  <div id="result" class="card hidden">
+    <div>Geschafft!</div>
+    <div class="big" id="rscore"></div>
+    <div id="rtext"></div>
+    <ul id="rlist"></ul>
+    <button type="button" class="primary" id="again">Neue Runde</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var ITEMS = [
+    { pre: "Ich gehe",          art: "der", noun: "Arzt",         post: "." },
+    { pre: "Wir gehen",         art: "die", noun: "Schule",       post: "." },
+    { pre: "Sie fährt",         art: "der", noun: "Bahnhof",      post: "." },
+    { pre: "Ich gehe",          art: "die", noun: "Apotheke",     post: "." },
+    { pre: "Er geht",           art: "der", noun: "Supermarkt",   post: "." },
+    { pre: "Ich gehe",          art: "die", noun: "Bank",         post: "." },
+    { pre: "Gehst du",          art: "das", noun: "Kino",         post: "?" },
+    { pre: "Sie geht",          art: "die", noun: "Post",         post: "." },
+    { pre: "Ich fahre",         art: "die", noun: "Arbeit",       post: "." },
+    { pre: "Die Kinder gehen",  art: "der", noun: "Park",         post: "." },
+    { pre: "Wir gehen",         art: "der", noun: "Deutschkurs",  post: "." },
+    { pre: "Er geht",           art: "die", noun: "Bäckerei",     post: "." },
+    { pre: "Ich fahre",         art: "der", noun: "Flughafen",    post: "." },
+    { pre: "Sie gehen",         art: "die", noun: "Bushaltestelle", post: "." },
+    { pre: "Ich gehe",          art: "das", noun: "Café",         post: "." },
+    { pre: "Wir gehen",         art: "das", noun: "Restaurant",   post: "." },
+    { pre: "Sie geht",          art: "die", noun: "Zahnärztin",   post: "." },
+    { pre: "Ich gehe",          art: "die", noun: "Toilette",     post: "." },
+    { pre: "Er geht",           art: "der", noun: "Markt",        post: "." },
+    { pre: "Sie fährt",         art: "das", noun: "Krankenhaus",  post: "." },
+    { pre: "Ich gehe",          art: "die", noun: "Party",        post: "." },
+    { pre: "Wir gehen",         art: "die", noun: "Polizei",      post: "." },
+    { pre: "Sie geht",          art: "die", noun: "Lehrerin",     post: "." },
+    { pre: "Er geht",           art: "der", noun: "Chef",         post: "." }
+  ];
+  var TOTAL = 12;
+
+  var queue = [], pos = 0, correct = 0, answered = false, misses = [];
+
+  function $(id) { return document.getElementById(id); }
+  function answerOf(it) { return it.art === "die" ? "zur" : "zum"; }
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function pick() {
+    var zum = [], zur = [], i;
+    for (i = 0; i < ITEMS.length; i++) {
+      (answerOf(ITEMS[i]) === "zum" ? zum : zur).push(ITEMS[i]);
+    }
+    shuffle(zum); shuffle(zur);
+    var chosen = zum.slice(0, TOTAL / 2).concat(zur.slice(0, TOTAL / 2));
+    shuffle(chosen);
+    var q = [];
+    for (i = 0; i < chosen.length; i++) q.push({ it: chosen[i], again: false });
+    return q;
+  }
+  function artHtml(it) {
+    return '<span class="' + it.art + '">' + it.art + ' ' + it.noun + '</span>';
+  }
+
+  function start() {
+    queue = pick(); pos = 0; correct = 0; misses = [];
+    $("game").className = "card";
+    $("result").className = "card hidden";
+    render();
+  }
+
+  function render() {
+    if (pos >= queue.length) { finish(); return; }
+    var q = queue[pos], it = q.it;
+    answered = false;
+    var firstRound = pos < TOTAL;
+    $("pcount").innerHTML = firstRound
+      ? ("Aufgabe " + (pos + 1) + " von " + TOTAL)
+      : ('Noch einmal<span class="tag">Wiederholung</span>');
+    $("pscore").innerHTML = "✔ " + correct;
+    $("barfill").style.width = Math.round((Math.min(pos, TOTAL) / TOTAL) * 100) + "%";
+    $("sentence").innerHTML = it.pre + ' <span class="gap" id="gap">&nbsp;</span> ' + it.noun + it.post;
+    $("feedback").innerHTML = "";
+    $("bzum").className = ""; $("bzur").className = "";
+    $("bzum").disabled = false; $("bzur").disabled = false;
+    $("next").disabled = true;
+  }
+
+  function choose(word) {
+    if (answered) return;
+    answered = true;
+    var q = queue[pos], it = q.it, right = answerOf(it), ok = (word === right);
+    var gap = $("gap");
+    gap.innerHTML = right;
+    gap.className = "gap " + (ok ? "ok" : "bad");
+    $("bzum").disabled = true; $("bzur").disabled = true;
+    $(word === "zum" ? "bzum" : "bzur").className = ok ? "right" : "wrong";
+    if (!ok) $(right === "zum" ? "bzum" : "bzur").className = "right";
+
+    var msg;
+    if (ok) {
+      msg = "Richtig! " + artHtml(it) + " &rarr; <b>" + right + "</b>";
+      if (!q.again) correct++;
+    } else {
+      msg = "Nicht ganz: " + artHtml(it) + " &rarr; <b>" + right + "</b>";
+      if (!q.again) {
+        queue.push({ it: it, again: true });
+        misses.push(it);
+        msg += '<span class="again">Die Aufgabe kommt am Ende noch einmal.</span>';
+      }
+    }
+    $("feedback").innerHTML = msg;
+    $("pscore").innerHTML = "✔ " + correct;
+    $("next").disabled = false;
+  }
+
+  function finish() {
+    $("game").className = "card hidden";
+    $("result").className = "card";
+    $("rscore").innerHTML = correct + " / " + TOTAL;
+    $("rtext").innerHTML = correct === TOTAL
+      ? "Alles richtig im ersten Versuch!"
+      : "richtig im ersten Versuch";
+    var html = "", i;
+    if (misses.length) {
+      html = "<li style=\"list-style:none;margin-left:-20px;color:#5a6275;font-size:15px\">Das noch einmal üben:</li>";
+      for (i = 0; i < misses.length; i++) {
+        var it = misses[i];
+        html += "<li>" + artHtml(it) + " &rarr; <b>" + answerOf(it) + " " + it.noun + "</b></li>";
+      }
+    }
+    $("rlist").innerHTML = html;
+  }
+
+  $("bzum").onclick = function () { choose("zum"); };
+  $("bzur").onclick = function () { choose("zur"); };
+  $("next").onclick = function () { if (answered) { pos++; render(); } };
+  $("again").onclick = start;
+
+  start();
+})();
+</script>
+</body>
+</html>
