@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verbposition sicher schreiben</title>
+<style>
+:root{--bg:#f4f6f9;--card:#ffffff;--tx:#1b2230;--mut:#5b6577;--ac:#2354c4;--acbg:#e8eefb;--ok:#17754a;--okbg:#e3f5ec;--no:#b3261e;--nobg:#fdebe9;--bd:#d5dbe6;--vb:#fff0bd;--vbd:#e2b92e}
+@media (prefers-color-scheme:dark){:root{--bg:#12161d;--card:#1b212c;--tx:#e8ecf3;--mut:#a3adbf;--ac:#7fa6ff;--acbg:#243250;--ok:#6fd3a0;--okbg:#17352a;--no:#ff9a92;--nobg:#3a1f1d;--bd:#323b4d;--vb:#4a3f12;--vbd:#b99a2a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:17px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:780px;margin:0 auto;padding:16px}
+h1{font-size:1.45rem;margin:4px 0 2px}
+.sub{color:var(--mut);margin:0 0 12px;font-size:.95rem}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px}
+.tab{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:9px 12px;border-radius:10px;font-size:.92rem;cursor:pointer;min-height:44px;text-align:left}
+.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.badge{display:inline-block;margin-left:6px;padding:0 7px;border-radius:9px;background:var(--okbg);color:var(--ok);font-size:.8rem}
+.tab.on .badge{background:#fff;color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;margin:10px 0}
+.intro{color:var(--mut);font-size:.95rem;margin:0 0 10px}
+.bar{height:8px;background:var(--bd);border-radius:6px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;background:var(--ac);width:0}
+.cnt{font-size:.85rem;color:var(--mut);margin-bottom:10px}
+.q{font-size:.9rem;color:var(--mut);margin-bottom:6px}
+.sent{font-size:1.2rem;margin:4px 0 14px}
+.gap{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--ac);text-align:center;font-weight:700}
+.gap.ok{color:var(--ok);border-color:var(--ok)}.gap.no{color:var(--no);border-color:var(--no)}
+.opts{display:grid;gap:10px}
+.opt{border:2px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:12px 14px;font-size:1.02rem;text-align:left;cursor:pointer;min-height:48px}
+.opt:hover{border-color:var(--ac)}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.no{border-color:var(--no);background:var(--nobg)}
+.opt[disabled]{cursor:default}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px}
+.fb.ok{background:var(--okbg);border:1px solid var(--ok)}
+.fb.no{background:var(--nobg);border:1px solid var(--no)}
+.sol{font-weight:700}
+.rule{margin-top:6px;font-size:.95rem}
+.btn{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:11px 16px;border-radius:10px;font-size:1rem;cursor:pointer;min-height:46px;margin:12px 8px 0 0}
+.btn.primary{background:var(--ac);border-color:var(--ac);color:#fff}
+.build{border:2px dashed var(--bd);border-radius:12px;padding:10px;min-height:62px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:50px}
+.chip{border:2px solid var(--ac);background:var(--acbg);color:var(--tx);border-radius:10px;padding:8px 12px;font-size:1.02rem;cursor:pointer;min-height:44px}
+.chip.placed{background:var(--card)}
+.fixed{font-weight:700;padding:8px 4px}
+.v{background:var(--vb);border-bottom:2px solid var(--vbd);padding:0 3px;border-radius:3px}
+.msg{color:var(--no);min-height:1.4em;font-size:.95rem;margin:4px 0}
+details.merk{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;margin:8px 0}
+details.merk summary{cursor:pointer;font-weight:600;min-height:32px}
+.tbl{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;font-size:.92rem;min-width:420px}
+th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left}
+th{background:var(--acbg)}
+.sum h2{margin:0 0 6px}
+.sum ul{padding-left:20px}
+.sum li{margin:8px 0}
+.ttl{font-weight:700;margin-bottom:6px}
+.cloze p{line-height:2.4;margin:0 0 10px}
+.sel{font:inherit;font-size:1rem;padding:4px 6px;border:2px solid var(--ac);border-radius:8px;background:var(--card);color:var(--tx);max-width:100%;min-height:40px}
+.sel.ok{border-color:var(--ok);background:var(--okbg)}
+.sel.no{border-color:var(--no);background:var(--nobg)}
+.fb ol{margin:8px 0 0;padding-left:22px}
+.inp{font:inherit;font-size:1.05rem;padding:4px 8px;border:2px solid var(--ac);border-radius:8px;background:var(--card);color:var(--tx);min-height:40px;max-width:100%;text-align:center}
+.inp.ok{border-color:var(--ok);background:var(--okbg)}
+.inp.no{border-color:var(--no);background:var(--nobg)}
+.inp:disabled{opacity:1;color:var(--tx)}
+.gh{color:var(--mut);font-size:.82rem;margin:0 4px 0 3px;white-space:nowrap}
+.hint{display:inline-block;margin:0 0 10px;padding:3px 10px;border-radius:9px;background:var(--acbg);color:var(--tx);font-size:.92rem}
+.wrongpart{background:var(--nobg);border-bottom:2px solid var(--no);padding:0 3px;border-radius:3px}
+.fixrow{margin:6px 0 10px}
+.fixrow label{font-size:.92rem;color:var(--mut);margin-right:6px}
+.slotsent{font-size:1.15rem;line-height:2.7;margin:6px 0 12px}
+.slotsent .w{display:inline-block;padding:0 2px}
+.slotsent .w.v{background:var(--vb);border-bottom:2px solid var(--vbd);border-radius:3px}
+.slotsent .pc{display:inline-block}
+.slot{display:inline-block;vertical-align:middle;min-width:28px;height:38px;margin:0 1px;padding:0 2px;border:0;border-left:2px dotted var(--bd);border-right:2px dotted var(--bd);background:transparent;color:var(--tx);font:inherit;font-weight:700;cursor:pointer;border-radius:6px}
+.slot:hover{background:var(--acbg)}
+.slot.on{background:var(--acbg);border:2px solid var(--ac);padding:0 8px}
+.slot.ok{background:var(--okbg);border:2px solid var(--ok);padding:0 8px}
+.slot.no{background:var(--nobg);border:2px solid var(--no);padding:0 8px}
+.slot[disabled]{cursor:default}
+.tray{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px;min-height:46px;align-items:center}
+.pchip{border:2px solid var(--ac);background:var(--acbg);color:var(--tx);border-radius:10px;padding:8px 14px;font-size:1.05rem;font-weight:700;cursor:pointer;min-height:44px}
+.pchip.p{border-color:var(--vbd);background:var(--vb)}
+.pchip.sel{box-shadow:0 0 0 3px var(--tx)}
+.pp{display:inline-block;vertical-align:middle;margin:0 2px;padding:4px 10px;border:2px solid var(--ac);background:var(--acbg);color:var(--tx);border-radius:8px;font:inherit;font-weight:700;cursor:pointer;min-height:38px}
+.pp.p{border-color:var(--vbd);background:var(--vb)}
+.pp.ok{border-color:var(--ok);background:var(--okbg)}
+.pp.no{border-color:var(--no);background:var(--nobg)}
+.pp[disabled]{cursor:default;opacity:1;color:var(--tx)}
+.vchip{display:inline-block;margin:0 8px 10px 0;padding:5px 12px;border-radius:10px;border:2px solid var(--ac);background:var(--acbg);font-size:1.05rem}
+.chars{margin:4px 0 0}
+.chars button{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;min-width:42px;min-height:40px;font-size:1.05rem;margin:0 6px 4px 0;cursor:pointer}
+footer{color:var(--mut);font-size:.8rem;margin:18px 0 6px}
+@media (max-width:520px){.sent{font-size:1.1rem}.tab{font-size:.88rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1 id="title"></h1>
+<p class="sub" id="sub"></p>
+<div class="tabs" id="tabs"></div>
+<p class="intro" id="intro"></p>
+<div id="merk"></div>
+<div class="card" id="stage"></div>
+<footer>Deutsch-Test für den Beruf B2 · Schreiben · Übungsmaterial · läuft offline im Browser</footer>
+</div>
+<script>
+(function(){
+var D = {"title": "Verbposition sicher schreiben", "sub": "DTB B2 · Schreiben · Setze alle Verbteile an die richtige Stelle: Hauptsatz, Nebensatz und Verbklammer in Beschwerdeantwort und Forumsbeitrag", "sections": [{"title": "Verbposition: Haupt- und Nebensatz", "type": "slot", "intro": "Im Satz fehlen die Verbteile (konjugiertes Verb und, falls vorhanden, Partizip II, Infinitiv oder Präfix). Tippe ein Verbteil an und dann die Lücke zwischen zwei Wörtern, in die es gehört. Entscheide selbst, ob der Satz ein Hauptsatz oder ein Nebensatz ist.", "merk": "<div class=\"tbl\"><table><tr><th>Satz</th><th>Position 1</th><th>Position 2</th><th>Satzende</th></tr>\n<tr><td>Aussagesatz</td><td>Gestern</td><td><strong>habe</strong></td><td>ich … <em>gewartet</em></td></tr>\n<tr><td>mit Modalverb</td><td>Außerdem</td><td><strong>muss</strong></td><td>man … <em>suchen</em></td></tr>\n<tr><td>trennbares Verb</td><td>Trotzdem</td><td><strong>bieten</strong></td><td>wir … <em>an</em></td></tr></table></div>\n<p>Auf <strong>Position 2</strong> steht immer das konjugierte Verb. Der zweite Verbteil (Partizip II, Infinitiv, Präfix) steht am <strong>Ende</strong>. Auf Position 1 steht genau <strong>ein</strong> Satzglied, auch wenn es aus mehreren Wörtern besteht (<em>Wegen des Personalmangels</em>).</p><p>Nach <strong>dass, weil, wenn, obwohl, damit, ob, nachdem, warum, was …</strong> und nach Relativpronomen (<em>der, die, das</em>) steht das konjugierte Verb <strong>am Ende</strong> des Nebensatzes.</p>\n<div class=\"tbl\"><table><tr><th>Nebensatz</th><th>Verbende</th></tr>\n<tr><td>… weil das Buffet nicht rechtzeitig</td><td><em>eröffnet</em> <strong>wurde</strong></td></tr>\n<tr><td>… dass sich die Situation nicht</td><td><em>wiederholen</em> <strong>wird</strong></td></tr>\n<tr><td>… wenn man jeden Tag ein neues Büro</td><td><em>suchen</em> <strong>muss</strong></td></tr></table></div>\n<p>Das <strong>Subjekt</strong> darf im Nebensatz nicht fehlen. Nach dem Nebensatz steht ein <strong>Komma</strong>.</p><div class=\"tbl\"><table><tr><th>Position 0 (zählt nicht)</th><th>Position 1</th><th>Position 2</th></tr>\n<tr><td>aber, denn, und, oder, sondern</td><td>wir</td><td><strong>hatten</strong> nur 42 Plätze.</td></tr>\n<tr><td>—</td><td>Deshalb / Trotzdem / Außerdem</td><td><strong>bin</strong> ich dagegen.</td></tr>\n<tr><td>—</td><td>Weil viele krank waren,</td><td><strong>hatten</strong> wir zu wenig Personal.</td></tr></table></div>\n<p><strong>Merke:</strong> <em>weil</em> macht einen Nebensatz (Verb am Ende), <em>deshalb</em> und <em>trotzdem</em> nicht (Verb direkt danach). Ein Nebensatz am Satzanfang ist Position 1, deshalb folgt direkt das Verb des Hauptsatzes.</p>", "items": [{"w": ["Letzte", "Woche", "viele", "Mitarbeiter", "krank"], "pc": [{"t": "waren", "g": 2, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (waren) steht auf Position 2. Position 1 ist «Letzte Woche» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Deshalb", "ich", "dagegen"], "pc": [{"t": "bin", "g": 1, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (bin) steht auf Position 2. Position 1 ist «Deshalb» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Leider", "der", "Lieferant", "keine", "Tische"], "pc": [{"t": "hat", "g": 1, "k": "f"}, {"t": "geliefert", "g": 5, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (hat) steht auf Position 2. Position 1 ist «Leider» (zählt als ein Satzglied). Der zweite Verbteil (geliefert) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Zudem", "der", "neue", "Mitarbeiter", "die", "Bestellung", "falsch"], "pc": [{"t": "hat", "g": 1, "k": "f"}, {"t": "notiert", "g": 7, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (hat) steht auf Position 2. Position 1 ist «Zudem» (zählt als ein Satzglied). Der zweite Verbteil (notiert) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Aus", "diesem", "Grund", "wir", "zusätzliche", "Mitarbeiter"], "pc": [{"t": "mussten", "g": 3, "k": "f"}, {"t": "einstellen", "g": 6, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (mussten) steht auf Position 2. Position 1 ist «Aus diesem Grund» (zählt als ein Satzglied). Der zweite Verbteil (einstellen) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Wegen", "des", "Personalmangels", "wir", "den", "Sekt", "nicht", "rechtzeitig"], "pc": [{"t": "konnten", "g": 3, "k": "f"}, {"t": "servieren", "g": 8, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (konnten) steht auf Position 2. Position 1 ist «Wegen des Personalmangels» (zählt als ein Satzglied). Der zweite Verbteil (servieren) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["In", "unserer", "Firma", "die", "festen", "Büros"], "pc": [{"t": "sollen", "g": 3, "k": "f"}, {"t": "abgeschafft", "g": 6, "k": "p"}, {"t": "werden", "g": 6, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (sollen) steht auf Position 2. Position 1 ist «In unserer Firma» (zählt als ein Satzglied). Der zweite Verbteil (abgeschafft werden) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Außerdem", "man", "jeden", "Tag", "ein", "neues", "Büro"], "pc": [{"t": "muss", "g": 1, "k": "f"}, {"t": "suchen", "g": 7, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (muss) steht auf Position 2. Position 1 ist «Außerdem» (zählt als ein Satzglied). Der zweite Verbteil (suchen) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Trotzdem", "wir", "Ihnen", "einen", "Rabatt"], "pc": [{"t": "bieten", "g": 1, "k": "f"}, {"t": "an", "g": 5, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (bieten) steht auf Position 2. Position 1 ist «Trotzdem» (zählt als ein Satzglied). Der zweite Verbteil (an) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Gestern", "ich", "zehn", "Minuten", "auf", "den", "Drucker"], "pc": [{"t": "habe", "g": 1, "k": "f"}, {"t": "gewartet", "g": 7, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (habe) steht auf Position 2. Position 1 ist «Gestern» (zählt als ein Satzglied). Der zweite Verbteil (gewartet) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Dadurch", "für", "die", "Firma", "zusätzliche", "Kosten"], "pc": [{"t": "entstehen", "g": 1, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (entstehen) steht auf Position 2. Position 1 ist «Dadurch» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Heute", "ich", "Ihre", "E-Mail"], "pc": [{"t": "habe", "g": 1, "k": "f"}, {"t": "erhalten", "g": 4, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (habe) steht auf Position 2. Position 1 ist «Heute» (zählt als ein Satzglied). Der zweite Verbteil (erhalten) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Zum", "Schluss", "ich", "mich", "bei", "Ihnen"], "pc": [{"t": "möchte", "g": 2, "k": "f"}, {"t": "entschuldigen", "g": 6, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (möchte) steht auf Position 2. Position 1 ist «Zum Schluss» (zählt als ein Satzglied). Der zweite Verbteil (entschuldigen) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Bei", "Ihrer", "Veranstaltung", "mehrere", "Fehler"], "pc": [{"t": "sind", "g": 3, "k": "f"}, {"t": "passiert", "g": 5, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (sind) steht auf Position 2. Position 1 ist «Bei Ihrer Veranstaltung» (zählt als ein Satzglied). Der zweite Verbteil (passiert) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Am", "Montag", "ich", "15", "Minuten"], "pc": [{"t": "habe", "g": 2, "k": "f"}, {"t": "gebraucht", "g": 5, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (habe) steht auf Position 2. Position 1 ist «Am Montag» (zählt als ein Satzglied). Der zweite Verbteil (gebraucht) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Ab", "sofort", "wir", "jede", "Reservierung", "zweimal"], "pc": [{"t": "werden", "g": 2, "k": "f"}, {"t": "kontrollieren", "g": 6, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (werden) steht auf Position 2. Position 1 ist «Ab sofort» (zählt als ein Satzglied). Der zweite Verbteil (kontrollieren) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Als", "Entschädigung", "wir", "Ihnen", "15", "%", "Rabatt"], "pc": [{"t": "bieten", "g": 2, "k": "f"}, {"t": "an", "g": 7, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (bieten) steht auf Position 2. Position 1 ist «Als Entschädigung» (zählt als ein Satzglied). Der zweite Verbteil (an) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Zum", "Beispiel", "ich", "drei", "Tage", "pro", "Woche", "beim", "Kunden"], "pc": [{"t": "arbeite", "g": 2, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (arbeite) steht auf Position 2. Position 1 ist «Zum Beispiel» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Wegen", "der", "Krankheit", "vieler", "Kollegen", "das", "Buffet", "zu", "spät"], "pc": [{"t": "wurde", "g": 5, "k": "f"}, {"t": "eröffnet", "g": 9, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (wurde) steht auf Position 2. Position 1 ist «Wegen der Krankheit vieler Kollegen» (zählt als ein Satzglied). Der zweite Verbteil (eröffnet) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Leider", "uns", "bei", "der", "Reservierung", "ein", "Fehler"], "pc": [{"t": "ist", "g": 1, "k": "f"}, {"t": "unterlaufen", "g": 7, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (ist) steht auf Position 2. Position 1 ist «Leider» (zählt als ein Satzglied). Der zweite Verbteil (unterlaufen) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Vor", "einer", "Woche", "die", "Geschäftsleitung", "die", "neue", "Regel"], "pc": [{"t": "hat", "g": 3, "k": "f"}, {"t": "angekündigt", "g": 8, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (hat) steht auf Position 2. Position 1 ist «Vor einer Woche» (zählt als ein Satzglied). Der zweite Verbteil (angekündigt) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Seit", "drei", "Monaten", "wir", "Personalausfälle"], "pc": [{"t": "haben", "g": 3, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (haben) steht auf Position 2. Position 1 ist «Seit drei Monaten» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Bitte", "Sie", "uns", "ob", "Sie", "das", "Angebot", "annehmen"], "pc": [{"t": "teilen", "g": 1, "k": "f"}, {"t": "mit", "g": 3, "k": "p"}], "cm": [3], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (teilen) steht auf Position 2. Position 1 ist «Bitte» (zählt als ein Satzglied). Der zweite Verbteil (mit) steht am Ende des Hauptsatzes.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Für", "mich", "ein", "fester", "Arbeitsplatz", "sehr", "wichtig"], "pc": [{"t": "ist", "g": 2, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (ist) steht auf Position 2. Position 1 ist «Für mich» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Wir", "bedauern,", "dass", "Sie", "mit", "unserem", "Service", "nicht", "zufrieden"], "pc": [{"t": "waren", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Das konjugierte Verb (waren) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Wir", "versichern", "Ihnen,", "dass", "sich", "diese", "Situation", "nicht"], "pc": [{"t": "wiederholen", "g": 8, "k": "p"}, {"t": "wird", "g": 8, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «wiederholen wird».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Ich", "bin", "dagegen,", "weil", "viele", "Mitarbeiter", "sich", "nicht"], "pc": [{"t": "konzentrieren", "g": 8, "k": "p"}, {"t": "können", "g": 8, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (weil): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «konzentrieren können».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Der", "Kunde", "war", "verärgert,", "weil", "das", "Buffet", "nicht", "rechtzeitig"], "pc": [{"t": "eröffnet", "g": 9, "k": "p"}, {"t": "wurde", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (weil): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «eröffnet wurde».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Wir", "haben", "neue", "Mitarbeiter", "eingestellt,", "damit", "das", "Buffet", "pünktlich"], "pc": [{"t": "eröffnet", "g": 9, "k": "p"}, {"t": "werden", "g": 9, "k": "p"}, {"t": "kann", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (damit): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «eröffnet werden kann».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Ich", "arbeite", "gern", "im", "Büro,", "wenn", "es", "ruhig"], "pc": [{"t": "ist", "g": 8, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (wenn): Das konjugierte Verb (ist) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Wir", "haben", "nur", "Tische", "für", "42", "Personen", "gedeckt,", "obwohl", "52", "Personen"], "pc": [{"t": "angemeldet", "g": 11, "k": "p"}, {"t": "waren", "g": 11, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (obwohl): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «angemeldet waren».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Ich", "habe", "gehört,", "dass", "unsere", "Firma", "die", "festen", "Büros"], "pc": [{"t": "abschaffen", "g": 9, "k": "p"}, {"t": "will", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «abschaffen will».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Es", "ist", "anstrengend,", "wenn", "man", "jeden", "Tag", "ein", "neues", "Büro"], "pc": [{"t": "suchen", "g": 10, "k": "p"}, {"t": "muss", "g": 10, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (wenn): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «suchen muss».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Wir", "hoffen,", "dass", "Sie", "uns", "weiterhin", "Ihr", "Vertrauen"], "pc": [{"t": "schenken", "g": 8, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Das konjugierte Verb (schenken) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Leider", "wissen", "wir", "noch", "nicht,", "warum", "die", "Tische", "nicht"], "pc": [{"t": "geliefert", "g": 9, "k": "p"}, {"t": "wurden", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (warum): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «geliefert wurden».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Bitte", "teilen", "Sie", "uns", "mit,", "ob", "Sie", "unser", "Angebot"], "pc": [{"t": "annehmen", "g": 9, "k": "p"}, {"t": "möchten", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (ob): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «annehmen möchten».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Ich", "schlage", "vor,", "dass", "wir", "eine", "Umfrage"], "pc": [{"t": "machen", "g": 7, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Das konjugierte Verb (machen) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Ich", "finde", "es", "schlecht,", "dass", "die", "Drucker"], "pc": [{"t": "abgeschafft", "g": 7, "k": "p"}, {"t": "werden", "g": 7, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «abgeschafft werden».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Gestern", "habe", "ich", "zehn", "Minuten", "gewartet,", "weil", "zwei", "Kollegen", "lange", "Berichte"], "pc": [{"t": "druckten", "g": 11, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (weil): Das konjugierte Verb (druckten) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Der", "Service", "war", "schlecht,", "weil", "das", "Personal", "nicht", "ausreichend"], "pc": [{"t": "geschult", "g": 9, "k": "p"}, {"t": "war", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (weil): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «geschult war».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Der", "Kunde", "droht,", "dass", "er", "das", "Restaurant"], "pc": [{"t": "wechseln", "g": 7, "k": "p"}, {"t": "wird", "g": 7, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «wechseln wird».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Wir", "wissen,", "dass", "Sie", "52", "Personen"], "pc": [{"t": "angemeldet", "g": 6, "k": "p"}, {"t": "haben", "g": 6, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «angemeldet haben».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Ich", "bin", "gespannt,", "was", "ihr", "darüber"], "pc": [{"t": "denkt", "g": 6, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (was): Das konjugierte Verb (denkt) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Wir", "arbeiten", "daran,", "dass", "solche", "Fehler", "nicht", "wieder"], "pc": [{"t": "vorkommen", "g": 8, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Das konjugierte Verb (vorkommen) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Obwohl", "ich", "früh", "gab", "es", "keinen", "Platz", "mehr"], "pc": [{"t": "angekommen", "g": 3, "k": "p"}, {"t": "war", "g": 3, "k": "f"}], "cm": [3], "p": ".", "r": "Nebensatz (obwohl): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «angekommen war». Nach dem Nebensatz steht ein Komma.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Weil", "das", "Buffet", "zu", "spät", "waren", "die", "Gäste", "unzufrieden"], "pc": [{"t": "kam", "g": 5, "k": "f"}], "cm": [5], "p": ".", "r": "Nebensatz (weil): Das konjugierte Verb (kam) steht am Ende des Nebensatzes. Nach dem Nebensatz steht ein Komma.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Wenn", "alle", "Drucker", "müssen", "wir", "auf", "den", "Flur", "gehen"], "pc": [{"t": "abgeschafft", "g": 3, "k": "p"}, {"t": "werden", "g": 3, "k": "f"}], "cm": [3], "p": ".", "r": "Nebensatz (wenn): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «abgeschafft werden». Nach dem Nebensatz steht ein Komma.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Nachdem", "wir", "den", "Fehler", "haben", "wir", "sofort", "reagiert"], "pc": [{"t": "bemerkt", "g": 4, "k": "p"}, {"t": "hatten", "g": 4, "k": "f"}], "cm": [4], "p": ".", "r": "Nebensatz (nachdem): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «bemerkt hatten». Nach dem Nebensatz steht ein Komma.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Das", "Personal,", "das", "wir", "ist", "noch", "nicht", "ausreichend", "geschult"], "pc": [{"t": "eingestellt", "g": 4, "k": "p"}, {"t": "haben", "g": 4, "k": "f"}], "cm": [4], "p": ".", "r": "Nebensatz (Relativsatz): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «eingestellt haben». Nach dem Nebensatz steht ein Komma.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Deshalb", "ich", "meine", "Meinung"], "pc": [{"t": "möchte", "g": 1, "k": "f"}, {"t": "äußern", "g": 4, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (möchte) steht auf Position 2. Position 1 ist «Deshalb» (zählt als ein Satzglied). Der zweite Verbteil (äußern) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Trotzdem", "ich", "die", "Idee", "für", "falsch"], "pc": [{"t": "halte", "g": 1, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (halte) steht auf Position 2. Position 1 ist «Trotzdem» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Darum", "ich", "eine", "Umfrage"], "pc": [{"t": "schlage", "g": 1, "k": "f"}, {"t": "vor", "g": 4, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (schlage) steht auf Position 2. Position 1 ist «Darum» (zählt als ein Satzglied). Der zweite Verbteil (vor) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Deswegen", "viele", "Kollegen", "unzufrieden"], "pc": [{"t": "sind", "g": 1, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (sind) steht auf Position 2. Position 1 ist «Deswegen» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Allerdings", "es", "auch", "Nachteile"], "pc": [{"t": "gibt", "g": 1, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (gibt) steht auf Position 2. Position 1 ist «Allerdings» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Außerdem", "die", "Getränke", "zu", "spät"], "pc": [{"t": "wurden", "g": 1, "k": "f"}, {"t": "serviert", "g": 5, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (wurden) steht auf Position 2. Position 1 ist «Außerdem» (zählt als ein Satzglied). Der zweite Verbteil (serviert) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Der", "Drucker", "ist", "oft", "besetzt,", "deshalb", "ich", "lange"], "pc": [{"t": "muss", "g": 6, "k": "f"}, {"t": "warten", "g": 8, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (muss) steht auf Position 2. Position 1 ist «deshalb» (zählt als ein Satzglied). Der zweite Verbteil (warten) steht am Satzende. deshalb ist ein Adverb und steht auf Position 1, nicht auf Position 0 wie denn.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Ich", "war", "krank,", "trotzdem", "ich", "zur", "Arbeit"], "pc": [{"t": "bin", "g": 4, "k": "f"}, {"t": "gekommen", "g": 7, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (bin) steht auf Position 2. Position 1 ist «trotzdem» (zählt als ein Satzglied). Der zweite Verbteil (gekommen) steht am Satzende. trotzdem ist ein Adverb und steht auf Position 1.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Ich", "bin", "dagegen,", "denn", "ich", "schlechte", "Erfahrungen"], "pc": [{"t": "habe", "g": 5, "k": "f"}, {"t": "gemacht", "g": 7, "k": "p"}], "cm": [], "p": ".", "r": "«denn» steht auf Position 0 und zählt nicht mit. Position 1 ist «ich», danach folgt sofort das Verb (habe). Der zweite Verbteil (gemacht) steht am Satzende.", "tip": "aber, denn, und, oder stehen auf Position 0 und zählen nicht als Satzglied.", "cat": "hs0"}, {"w": ["Sie", "haben", "52", "Personen", "angemeldet,", "aber", "wir", "nur", "42", "Plätze"], "pc": [{"t": "hatten", "g": 7, "k": "f"}], "cm": [], "p": ".", "r": "«aber» steht auf Position 0 und zählt nicht mit. Position 1 ist «wir», danach folgt sofort das Verb (hatten).", "tip": "aber, denn, und, oder stehen auf Position 0 und zählen nicht als Satzglied.", "cat": "hs0"}, {"w": ["Die", "Idee", "ist", "nicht", "schlecht,", "aber", "sie", "auch", "Nachteile"], "pc": [{"t": "hat", "g": 7, "k": "f"}], "cm": [], "p": ".", "r": "«aber» steht auf Position 0 und zählt nicht mit. Position 1 ist «sie», danach folgt sofort das Verb (hat).", "tip": "aber, denn, und, oder stehen auf Position 0 und zählen nicht als Satzglied.", "cat": "hs0"}, {"w": ["Viele", "Kollegen", "arbeiten", "oft", "im", "Außendienst,", "und", "ihr", "Schreibtisch", "dann", "leer"], "pc": [{"t": "bleibt", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "«und» steht auf Position 0 und zählt nicht mit. Position 1 ist «ihr Schreibtisch», danach folgt sofort das Verb (bleibt).", "tip": "aber, denn, und, oder stehen auf Position 0 und zählen nicht als Satzglied.", "cat": "hs0"}, {"w": ["Weil", "viele", "Mitarbeiter", "krank", "waren,", "wir", "zu", "wenig", "Personal"], "pc": [{"t": "hatten", "g": 5, "k": "f"}], "cm": [], "p": ".", "r": "Der Nebensatz «Weil viele Mitarbeiter krank waren» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (hatten), dann das Subjekt.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Wenn", "alle", "Drucker", "abgeschafft", "werden,", "wir", "auf", "den", "Flur"], "pc": [{"t": "müssen", "g": 5, "k": "f"}, {"t": "gehen", "g": 9, "k": "p"}], "cm": [], "p": ".", "r": "Der Nebensatz «Wenn alle Drucker abgeschafft werden» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (müssen), dann das Subjekt. Der zweite Verbteil (gehen) steht am Satzende.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Obwohl", "Sie", "52", "Personen", "angemeldet", "hatten,", "es", "nur", "42", "Plätze"], "pc": [{"t": "gab", "g": 6, "k": "f"}], "cm": [], "p": ".", "r": "Der Nebensatz «Obwohl Sie 52 Personen angemeldet hatten» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (gab), dann das Subjekt.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Weil", "das", "Buffet", "zu", "spät", "eröffnet", "wurde,", "sich", "viele", "Gäste"], "pc": [{"t": "haben", "g": 7, "k": "f"}, {"t": "beschwert", "g": 10, "k": "p"}], "cm": [], "p": ".", "r": "Der Nebensatz «Weil das Buffet zu spät eröffnet wurde» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (haben), dann das Subjekt. Der zweite Verbteil (beschwert) steht am Satzende.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Nachdem", "wir", "den", "Fehler", "bemerkt", "hatten,", "wir", "sofort"], "pc": [{"t": "haben", "g": 6, "k": "f"}, {"t": "reagiert", "g": 8, "k": "p"}], "cm": [], "p": ".", "r": "Der Nebensatz «Nachdem wir den Fehler bemerkt hatten» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (haben), dann das Subjekt. Der zweite Verbteil (reagiert) steht am Satzende.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Da", "der", "Sekt", "fehlte,", "wir", "nicht"], "pc": [{"t": "konnten", "g": 4, "k": "f"}, {"t": "anstoßen", "g": 6, "k": "p"}], "cm": [], "p": ".", "r": "Der Nebensatz «Da der Sekt fehlte» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (konnten), dann das Subjekt. Der zweite Verbteil (anstoßen) steht am Satzende.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Wenn", "Sie", "damit", "einverstanden", "sind,", "wir", "Ihnen", "den", "Gutschein"], "pc": [{"t": "schicken", "g": 5, "k": "f"}, {"t": "zu", "g": 9, "k": "p"}], "cm": [], "p": ".", "r": "Der Nebensatz «Wenn Sie damit einverstanden sind» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (schicken), dann das Subjekt. Der zweite Verbteil (zu) steht am Satzende.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Damit", "so", "etwas", "nicht", "wieder", "passiert,", "wir", "das", "Personal"], "pc": [{"t": "werden", "g": 6, "k": "f"}, {"t": "schulen", "g": 9, "k": "p"}], "cm": [], "p": ".", "r": "Der Nebensatz «Damit so etwas nicht wieder passiert» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (werden), dann das Subjekt. Der zweite Verbteil (schulen) steht am Satzende.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Falls", "Sie", "Fragen", "haben,", "Sie", "mich", "jederzeit"], "pc": [{"t": "können", "g": 4, "k": "f"}, {"t": "anrufen", "g": 7, "k": "p"}], "cm": [], "p": ".", "r": "Der Nebensatz «Falls Sie Fragen haben» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (können), dann das Subjekt. Der zweite Verbteil (anrufen) steht am Satzende.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Weil", "ich", "mich", "nicht", "konzentrieren", "kann,", "ich", "dagegen"], "pc": [{"t": "bin", "g": 6, "k": "f"}], "cm": [], "p": ".", "r": "Der Nebensatz «Weil ich mich nicht konzentrieren kann» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (bin), dann das Subjekt.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Wenn", "jeder", "Mitarbeiter", "jeden", "Tag", "einen", "neuen", "Platz", "sucht,", "viel", "Zeit"], "pc": [{"t": "geht", "g": 9, "k": "f"}, {"t": "verloren", "g": 11, "k": "p"}], "cm": [], "p": ".", "r": "Der Nebensatz «Wenn jeder Mitarbeiter jeden Tag einen neuen Platz sucht» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (geht), dann das Subjekt. Der zweite Verbteil (verloren) steht am Satzende.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Obwohl", "die", "Idee", "Vorteile", "hat,", "ich", "dagegen"], "pc": [{"t": "bin", "g": 5, "k": "f"}], "cm": [], "p": ".", "r": "Der Nebensatz «Obwohl die Idee Vorteile hat» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (bin), dann das Subjekt.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}]}, {"title": "Item 21: Beschwerdeantwort", "type": "slot", "intro": "Sätze, wie sie in der E-Mail an Herrn Boldt vorkommen. Setze alle Verbteile an die richtige Stelle.", "merk": "<p><strong>So gehst du vor:</strong></p>\n<ol><li>Ist der Satzteil ein <strong>Hauptsatz</strong> oder ein <strong>Nebensatz</strong>? (Achte auf dass, weil, wenn, obwohl …)</li><li>Hauptsatz: Zähle <strong>ein</strong> Satzglied auf Position 1, dann kommt das Verb.</li><li>Nebensatz: Das Verb steht ganz <strong>am Ende</strong>, hinter Partizip II oder Infinitiv.</li><li>Steht ein Nebensatz am Anfang, folgt direkt das Verb des Hauptsatzes.</li></ol>", "items": [{"w": ["Vielen", "Dank", "für", "Ihre", "Nachricht,", "die", "wir", "mit", "Interesse"], "pc": [{"t": "gelesen", "g": 9, "k": "p"}, {"t": "haben", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (Relativsatz): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «gelesen haben».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Wir", "sehr,", "dass", "Ihre", "Feier", "nicht", "wie", "geplant", "verlaufen", "ist"], "pc": [{"t": "bedauern", "g": 1, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (bedauern) steht auf Position 2. Position 1 ist «Wir» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Wir", "bedauern", "sehr,", "dass", "Ihre", "Feier", "nicht", "wie", "geplant"], "pc": [{"t": "verlaufen", "g": 9, "k": "p"}, {"t": "ist", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «verlaufen ist».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Die", "Ursache", "ein", "Fehler", "bei", "der", "Reservierung"], "pc": [{"t": "war", "g": 2, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (war) steht auf Position 2. Position 1 ist «Die Ursache» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Sie", "haben", "52", "Personen", "angemeldet,", "aber", "wir", "haben", "nur", "Tische", "für", "42", "Gäste", "vorbereitet,", "denn", "die", "Anmeldung", "falsch"], "pc": [{"t": "wurde", "g": 17, "k": "f"}, {"t": "notiert", "g": 18, "k": "p"}], "cm": [], "p": ".", "r": "«denn» steht auf Position 0 und zählt nicht mit. Position 1 ist «die Anmeldung», danach folgt sofort das Verb (wurde). Der zweite Verbteil (notiert) steht am Satzende.", "tip": "aber, denn, und, oder stehen auf Position 0 und zählen nicht als Satzglied.", "cat": "hs0"}, {"w": ["Der", "Sekt", "leider", "zu", "spät"], "pc": [{"t": "wurde", "g": 2, "k": "f"}, {"t": "geliefert", "g": 5, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (wurde) steht auf Position 2. Position 1 ist «Der Sekt» (zählt als ein Satzglied). Der zweite Verbteil (geliefert) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Das", "Buffet", "wurde", "zu", "spät", "eröffnet,", "weil", "viele", "Servicekräfte", "krank"], "pc": [{"t": "waren", "g": 10, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (weil): Das konjugierte Verb (waren) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Wir", "haben", "die", "Aushilfen", "nicht", "geschult,", "weil", "dafür", "keine", "Zeit"], "pc": [{"t": "war", "g": 10, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (weil): Das konjugierte Verb (war) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Ab", "sofort", "zwei", "Mitarbeiter", "jede", "Reservierung"], "pc": [{"t": "kontrollieren", "g": 2, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (kontrollieren) steht auf Position 2. Position 1 ist «Ab sofort» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Wir", "hoffen,", "dass", "Sie", "unsere", "Entschuldigung"], "pc": [{"t": "annehmen", "g": 6, "k": "p"}, {"t": "können", "g": 6, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «annehmen können».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Als", "Entschädigung", "wir", "Ihnen", "15", "%", "Rabatt"], "pc": [{"t": "möchten", "g": 2, "k": "f"}, {"t": "anbieten", "g": 7, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (möchten) steht auf Position 2. Position 1 ist «Als Entschädigung» (zählt als ein Satzglied). Der zweite Verbteil (anbieten) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Wenn", "Sie", "möchten,", "ich", "Sie", "gern"], "pc": [{"t": "rufe", "g": 3, "k": "f"}, {"t": "an", "g": 6, "k": "p"}], "cm": [], "p": ".", "r": "Der Nebensatz «Wenn Sie möchten» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (rufe), dann das Subjekt. Der zweite Verbteil (an) steht am Satzende.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Wir", "würden", "uns", "freuen,", "wenn", "Sie", "uns", "weiterhin", "Ihr", "Vertrauen"], "pc": [{"t": "schenken", "g": 10, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (wenn): Das konjugierte Verb (schenken) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Weil", "wir", "Ihre", "Kritik", "ernst", "nehmen,", "wir", "Ihnen", "einen", "Gutschein"], "pc": [{"t": "bieten", "g": 6, "k": "f"}, {"t": "an", "g": 10, "k": "p"}], "cm": [], "p": ".", "r": "Der Nebensatz «Weil wir Ihre Kritik ernst nehmen» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (bieten), dann das Subjekt. Der zweite Verbteil (an) steht am Satzende.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Wir", "versprechen", "Ihnen,", "dass", "wir", "künftig", "mehr", "Personal"], "pc": [{"t": "einsetzen", "g": 8, "k": "p"}, {"t": "werden", "g": 8, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «einsetzen werden».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}]}, {"title": "Item 58: Forumsbeitrag", "type": "slot", "intro": "Sätze, wie sie in den Forumsbeiträgen zu den Themen A und B vorkommen. Setze alle Verbteile an die richtige Stelle.", "merk": "<p><strong>So gehst du vor:</strong></p>\n<ol><li>Ist der Satzteil ein <strong>Hauptsatz</strong> oder ein <strong>Nebensatz</strong>? (Achte auf dass, weil, wenn, obwohl …)</li><li>Hauptsatz: Zähle <strong>ein</strong> Satzglied auf Position 1, dann kommt das Verb.</li><li>Nebensatz: Das Verb steht ganz <strong>am Ende</strong>, hinter Partizip II oder Infinitiv.</li><li>Steht ein Nebensatz am Anfang, folgt direkt das Verb des Hauptsatzes.</li></ol>", "items": [{"w": ["Ich", "dagegen,", "weil", "dann", "jeder", "auf", "den", "Flur", "gehen", "muss"], "pc": [{"t": "bin", "g": 1, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (bin) steht auf Position 2. Position 1 ist «Ich» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Ich", "bin", "dagegen,", "weil", "dann", "jeder", "auf", "den", "Flur"], "pc": [{"t": "gehen", "g": 9, "k": "p"}, {"t": "muss", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (weil): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «gehen muss».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Vor", "einer", "Woche", "die", "Geschäftsleitung", "dass", "es", "nur", "noch", "einen", "großen", "Drucker", "pro", "Etage", "geben", "soll"], "pc": [{"t": "hat", "g": 3, "k": "f"}, {"t": "angekündigt", "g": 5, "k": "p"}], "cm": [5], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (hat) steht auf Position 2. Position 1 ist «Vor einer Woche» (zählt als ein Satzglied). Der zweite Verbteil (angekündigt) steht am Ende des Hauptsatzes.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Die", "Geschäftsleitung", "hat", "angekündigt,", "dass", "es", "nur", "noch", "einen", "großen", "Drucker", "pro", "Etage"], "pc": [{"t": "geben", "g": 13, "k": "p"}, {"t": "soll", "g": 13, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Alle Verbteile stehen am Ende des Nebensatzes, das konjugierte Verb zuletzt: «geben soll».", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Das", "mich", "sehr"], "pc": [{"t": "ärgert", "g": 1, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (ärgert) steht auf Position 2. Position 1 ist «Das» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Außerdem", "vertrauliche", "Dokumente", "leicht"], "pc": [{"t": "gehen", "g": 1, "k": "f"}, {"t": "verloren", "g": 4, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (gehen) steht auf Position 2. Position 1 ist «Außerdem» (zählt als ein Satzglied). Der zweite Verbteil (verloren) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Ich", "schlage", "vor,", "dass", "jede", "Abteilung", "einen", "kleinen", "Drucker"], "pc": [{"t": "behält", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Das konjugierte Verb (behält) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Viele", "Kollegen", "können", "sich", "nicht", "konzentrieren,", "wenn", "sie", "ständig", "das", "Büro"], "pc": [{"t": "wechseln", "g": 11, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (wenn): Das konjugierte Verb (wechseln) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Ich", "finde,", "dass", "flexible", "Arbeitsplätze", "viele", "Nachteile"], "pc": [{"t": "haben", "g": 7, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Das konjugierte Verb (haben) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Wenn", "man", "jeden", "Tag", "einen", "neuen", "Platz", "suchen", "muss,", "man", "viel", "Zeit"], "pc": [{"t": "verliert", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Der Nebensatz «Wenn man jeden Tag einen neuen Platz suchen muss» steht am Anfang und ist Position 1. Darum folgt direkt nach dem Komma das konjugierte Verb (verliert), dann das Subjekt.", "tip": "Der Nebensatz am Anfang zählt als Position 1. Was folgt dann?", "cat": "hs1"}, {"w": ["Natürlich", "die", "Firma", "dadurch", "Geld"], "pc": [{"t": "spart", "g": 1, "k": "f"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (spart) steht auf Position 2. Position 1 ist «Natürlich» (zählt als ein Satzglied).", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Die", "Firma", "spart", "Platz,", "aber", "für", "uns", "Mitarbeiter", "das", "viele", "Probleme"], "pc": [{"t": "bringt", "g": 8, "k": "f"}], "cm": [], "p": ".", "r": "«aber» steht auf Position 0 und zählt nicht mit. Position 1 ist «für uns Mitarbeiter», danach folgt sofort das Verb (bringt).", "tip": "aber, denn, und, oder stehen auf Position 0 und zählen nicht als Satzglied.", "cat": "hs0"}, {"w": ["Zum", "Beispiel", "ich", "gestern", "15", "Minuten", "einen", "freien", "Platz"], "pc": [{"t": "habe", "g": 2, "k": "f"}, {"t": "gesucht", "g": 9, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (habe) steht auf Position 2. Position 1 ist «Zum Beispiel» (zählt als ein Satzglied). Der zweite Verbteil (gesucht) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Ich", "hoffe,", "dass", "die", "Firma", "den", "Plan", "noch", "einmal"], "pc": [{"t": "überdenkt", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (dass): Das konjugierte Verb (überdenkt) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}, {"w": ["Wegen", "der", "Wartezeit", "ich", "einen", "Termin"], "pc": [{"t": "musste", "g": 3, "k": "f"}, {"t": "verschieben", "g": 6, "k": "p"}], "cm": [], "p": ".", "r": "Hauptsatz: Das konjugierte Verb (musste) steht auf Position 2. Position 1 ist «Wegen der Wartezeit» (zählt als ein Satzglied). Der zweite Verbteil (verschieben) steht am Satzende.", "tip": "Im Aussagesatz steht das konjugierte Verb auf Position 2. Wie viele Satzglieder stehen vor ihm?", "cat": "hs"}, {"w": ["Ich", "würde", "mich", "freuen,", "wenn", "ihr", "mir", "eure", "Meinung"], "pc": [{"t": "schreibt", "g": 9, "k": "f"}], "cm": [], "p": ".", "r": "Nebensatz (wenn): Das konjugierte Verb (schreibt) steht am Ende des Nebensatzes.", "tip": "Im Nebensatz steht das konjugierte Verb ganz am Ende des Nebensatzes.", "cat": "ns"}]}]};
+var st = {sec:-1, queue:[], pos:0, score:0, total:0, wrong:[], wrongGaps:[], nItems:0, locked:false, results:{}, subset:false, last:null};
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function shuffle(a){var b=a.slice(),i,j,t;for(i=b.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function range(n){var r=[],i;for(i=0;i<n;i++){r.push(i);}return r;}
+function strip(s){return s.replace(/[{}]/g,'');}
+function norm(s){return strip(s).replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');}
+function hl(s){return esc(s).replace(/\{([^}]*)\}/g,'<span class="v">$1</span>');}
+function sameOrder(a,b){var i;if(a.length!==b.length){return false;}for(i=0;i<a.length;i++){if(a[i]!==b[i]){return false;}}return true;}
+
+function key(x){
+  var t=String(x).toLowerCase().replace(/[\u00e4]/g,'ae').replace(/[\u00f6]/g,'oe').replace(/[\u00fc]/g,'ue').replace(/[\u00df]/g,'ss');
+  t=t.replace(/[.,!?;:"\u201e\u201c\u201d\u00bb\u00ab]/g,' ').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');
+  return t;
+}
+function okAns(val,list){var k=key(val),i;if(k===''){return false;}for(i=0;i<list.length;i++){if(key(list[i])===k){return true;}}return false;}
+function inpHtml(id,list,cls){
+  var i,m=4;
+  for(i=0;i<list.length;i++){if(list[i].length>m){m=list[i].length;}}
+  return '<input class="inp'+(cls?' '+cls:'')+'" id="'+id+'" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" style="width:'+(m+3)+'ch;min-width:5.5em">';
+}
+function charBar(){return '<div class="chars" id="chars"><button type="button" data-c="\u00e4">\u00e4</button><button type="button" data-c="\u00f6">\u00f6</button><button type="button" data-c="\u00fc">\u00fc</button><button type="button" data-c="\u00df">\u00df</button></div>';}
+function bindInputs(onEnter){
+  var ins=$('stage').getElementsByTagName('input'),k,cb,bs;
+  for(k=0;k<ins.length;k++){
+    ins[k].onfocus=(function(e){return function(){st.last=e;};})(ins[k]);
+    ins[k].onkeydown=function(ev){ev=ev||window.event;if((ev.keyCode||ev.which)===13){if(ev.preventDefault){ev.preventDefault();}onEnter();return false;}};
+  }
+  cb=$('chars');
+  if(cb){
+    bs=cb.getElementsByTagName('button');
+    for(k=0;k<bs.length;k++){
+      bs[k].onmousedown=function(ev){ev=ev||window.event;if(ev.preventDefault){ev.preventDefault();}};
+      bs[k].onclick=(function(b){return function(){
+        var t=st.last||ins[0],c=b.getAttribute('data-c'),a,e,v;
+        if(!t||t.disabled){return;}
+        v=t.value;
+        try{a=t.selectionStart;e=t.selectionEnd;if(typeof a==='number'){t.value=v.slice(0,a)+c+v.slice(e);t.focus();t.setSelectionRange(a+1,a+1);return;}}catch(x){}
+        t.value=v+c;t.focus();
+      };})(bs[k]);
+    }
+  }
+}
+function renderTabs(){
+  var h='',i,r,b;
+  for(i=0;i<D.sections.length;i++){
+    r=st.results[i];
+    h+='<button class="tab'+(i===st.sec?' on':'')+'" type="button">'+(i+1)+'. '+esc(D.sections[i].title)+(r?'<span class="badge">'+esc(r)+'</span>':'')+'</button>';
+  }
+  $('tabs').innerHTML=h;
+  b=$('tabs').getElementsByTagName('button');
+  for(i=0;i<b.length;i++){b[i].onclick=(function(k){return function(){startSection(k,null);};})(i);}
+}
+function startSection(i,subset){
+  var n=D.sections[i].items.length;
+  st.sec=i;
+  st.subset=!!subset;
+  st.queue=shuffle(subset?subset:range(n));
+  st.pos=0;st.score=0;st.wrong=[];st.wrongGaps=[];st.locked=false;st.nItems=st.queue.length;st.total=st.queue.length;
+  if(D.sections[i].type==='cloze'){st.total=0;var q0;for(q0=0;q0<st.queue.length;q0++){st.total+=D.sections[i].items[st.queue[q0]].g.length;}}
+  renderTabs();
+  var s=D.sections[i];
+  $('intro').innerHTML=esc(s.intro);
+  $('merk').innerHTML=s.merk?'<details class="merk"><summary>Merkhilfe anzeigen</summary>'+s.merk+'</details>':'';
+  renderItem();
+}
+function progress(){
+  var p=Math.round(st.pos/st.nItems*100);
+  return '<div class="bar"><i style="width:'+p+'%"></i></div><div class="cnt">Aufgabe '+(st.pos+1)+' von '+st.nItems+'</div>';
+}
+function curItem(){return D.sections[st.sec].items[st.queue[st.pos]];}
+function renderItem(){
+  st.locked=false;
+  if(st.pos>=st.queue.length){renderSummary();return;}
+  var it=curItem();
+  var ty=D.sections[st.sec].type;if(ty==='build'){renderBuild(it);}else if(ty==='cloze'){renderCloze(it);}else if(ty==='type'){renderType(it);}else if(ty==='slot'){renderSlot(it);}else{renderMC(it);}
+}
+function nextBtn(){
+  var b=$('next');
+  if(b){b.onclick=function(){st.pos++;renderItem();};b.focus();}
+}
+/* ---------- Multiple Choice ---------- */
+function renderMC(it){
+  var hasGap=it.s&&it.s.indexOf('___')>=0;
+  var q=it.q||(hasGap?'Welche Form passt in die Lücke?':'Welcher Satz ist richtig?');
+  var opts=shuffle(it.o),h='',i;
+  h+=progress()+'<div class="q">'+esc(q)+'</div>';
+  if(it.s){h+='<div class="sent">'+esc(it.s).replace('___','<span class="gap" id="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>')+'</div>';}
+  h+='<div class="opts" id="opts">';
+  for(i=0;i<opts.length;i++){h+='<button class="opt" type="button">'+esc(opts[i])+'</button>';}
+  h+='</div><div id="fb"></div>';
+  $('stage').innerHTML=h;
+  var bs=$('opts').getElementsByTagName('button');
+  for(i=0;i<bs.length;i++){bs[i].onclick=(function(b,txt){return function(){answerMC(it,txt,b);};})(bs[i],opts[i]);}
+}
+function answerMC(it,choice,btn){
+  if(st.locked){return;}
+  st.locked=true;
+  var ok=(choice===it.o[0]),bs=$('opts').getElementsByTagName('button'),i,full;
+  for(i=0;i<bs.length;i++){
+    bs[i].disabled=true;
+    if(bs[i].textContent===it.o[0]){bs[i].className='opt ok';}
+  }
+  if(!ok){btn.className='opt no';st.wrong.push(st.queue[st.pos]);}else{st.score++;}
+  full=it.s?it.s.replace('___',it.o[0]):it.o[0];
+  var g=$('gap');
+  if(g){g.textContent=choice;g.className='gap '+(ok?'ok':'no');}
+  $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Nicht ganz.')+'</strong> '+(ok?'':'Richtig ist: ')+'<span class="sol">'+esc(full)+'</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+  nextBtn();
+}
+/* ---------- Eintippen ---------- */
+function renderType(it){
+  var sec=D.sections[st.sec],tries=0,done=false,gapMode=it.s.indexOf('___')>=0,h,sent;
+  h=progress()+'<div class="q">'+esc(it.q||sec.q||(gapMode?'Schreibe die passende Form in die L\u00fccke.':'Der markierte Teil ist falsch. Schreibe ihn richtig.'))+'</div>';
+  if(gapMode){sent=esc(it.s).replace('___',inpHtml('inp',it.a));}
+  else{sent=esc(it.s).replace(/\{([^}]*)\}/,'<span class="wrongpart">$1</span>');}
+  h+='<div class="sent">'+sent+'</div>';
+  if(!gapMode){h+='<div class="fixrow"><label for="inp">Richtig:</label>'+inpHtml('inp',it.a)+'</div>';}
+  if(it.h){h+='<div class="hint">'+esc(it.h)+'</div>';}
+  h+=charBar()+'<div class="msg" id="msg"></div><div id="ctl"><button class="btn primary" id="chk" type="button">Pr\u00fcfen</button></div><div id="fb"></div>';
+  $('stage').innerHTML=h;
+  bindInputs(function(){if(!done){check();}});
+  st.last=$('inp');
+  try{$('inp').focus();}catch(e0){}
+  function finish(ok){
+    var full=gapMode?it.s.replace('___',it.a[0]):it.s.replace(/\{[^}]*\}/,it.a[0]);
+    done=true;st.locked=true;
+    $('inp').disabled=true;
+    if(!ok){$('inp').value=it.a[0];}
+    $('inp').className='inp '+(ok?'ok':'no');
+    $('ctl').innerHTML='';$('msg').textContent='';
+    $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Hier ist die L\u00f6sung:')+'</strong> <span class="sol">'+esc(full)+'</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+    nextBtn();
+  }
+  function check(){
+    var v=$('inp').value;
+    if(key(v)===''){$('msg').textContent='Schreibe zuerst eine Antwort.';return;}
+    tries++;
+    if(okAns(v,it.a)){if(tries===1){st.score++;}finish(true);return;}
+    if(tries===1){st.wrong.push(st.queue[st.pos]);}
+    if(tries>=2){finish(false);return;}
+    $('inp').className='inp no';
+    $('msg').textContent='Noch nicht richtig. Tipp: '+(it.tip||sec.tip||'Pr\u00fcfe Subjekt, Zeit und Endung.')+' Du hast einen zweiten Versuch.';
+    try{$('inp').focus();$('inp').select();}catch(e1){}
+  }
+  $('chk').onclick=function(){if(!done){check();}};
+}
+/* ---------- Verbteile einsetzen (Lücken zwischen Wörtern) ---------- */
+function inList(l,x){var i;for(i=0;i<l.length;i++){if(l[i]===x){return true;}}return false;}
+function slotText(it){
+  var a=[],k,j,m,t,n=it.w.length,pcs=it.pc;
+  for(k=0;k<=n;k++){
+    m=[];
+    for(j=0;j<pcs.length;j++){if(pcs[j].g===k){m.push(j);}}
+    for(j=0;j<m.length;j++){
+      t='{'+pcs[m[j]].t+'}';
+      if(j===m.length-1&&inList(it.cm,k)){t+=',';}
+      a.push(t);
+    }
+    if(k<n){a.push(it.w[k]);}
+  }
+  return a.join(' ')+(it.p||'');
+}
+function renderSlot(it){
+  var n=it.w.length,np=it.pc.length,placed=[],sel,tries=0,done=false,marks={},order,k,g0=0,sec=D.sections[st.sec];
+  order=shuffle(range(np));
+  while(np>1&&sameOrder(order,range(np))&&g0<20){order=shuffle(range(np));g0++;}
+  function isPlaced(id){var q;for(q=0;q<placed.length;q++){if(placed[q].id===id){return true;}}return false;}
+  function firstFree(){var q;for(q=0;q<order.length;q++){if(!isPlaced(order[q])){return order[q];}}return -1;}
+  sel=firstFree();
+  var intro=np>1?'Setze alle Verbteile ein: Tippe zuerst ein Verbteil an, dann die Lücke zwischen zwei Wörtern. Ein eingesetztes Verbteil legst du durch Antippen zurück.':'Setze das Verb ein: Tippe zuerst das Verb an, dann die Lücke zwischen zwei Wörtern.';
+  $('stage').innerHTML=progress()+'<div class="q">'+esc(it.q||sec.q||intro)+'</div><div class="tray" id="tray"></div><div class="slotsent" id="ss"></div><div class="msg" id="msg"></div><div id="ctl"><button class="btn primary" id="chk" type="button">Prüfen</button></div><div id="fb"></div>';
+  function draw(){
+    var h='',q,j,t='',kind,cls;
+    for(q=0;q<order.length;q++){
+      if(!isPlaced(order[q])){
+        kind=it.pc[order[q]].k;
+        t+='<button class="pchip '+kind+(order[q]===sel?' sel':'')+'" type="button" data-id="'+order[q]+'"'+(done?' disabled':'')+'>'+esc(it.pc[order[q]].t)+'</button>';
+      }
+    }
+    if(t===''){t='<span class="hint">Alle Verbteile sind eingesetzt.</span>';}
+    $('tray').innerHTML=t;
+    for(q=0;q<=n;q++){
+      if(q>=1){
+        for(j=0;j<placed.length;j++){
+          if(placed[j].g===q){
+            kind=it.pc[placed[j].id].k;cls=marks[placed[j].id]||'';
+            h+='<button class="pp '+kind+' '+cls+'" type="button" data-id="'+placed[j].id+'"'+(done?' disabled':'')+'>'+esc(it.pc[placed[j].id].t)+'</button>';
+          }
+        }
+        h+='<button class="slot" type="button" data-i="'+q+'" aria-label="Lücke vor Wort '+(q+1)+'"'+(done?' disabled':'')+'></button>';
+        if(inList(it.cm,q)){h+='<span class="pc">,</span>';}
+      }
+      if(q<n){h+='<span class="w">'+esc(it.w[q])+'</span> ';}
+    }
+    h+=esc(it.p||'');
+    $('ss').innerHTML=h;
+    var tb=$('tray').getElementsByTagName('button'),sb=$('ss').getElementsByTagName('button');
+    for(q=0;q<tb.length;q++){tb[q].onclick=(function(b){return function(){if(done){return;}sel=parseInt(b.getAttribute('data-id'),10);$('msg').textContent='';draw();};})(tb[q]);}
+    for(q=0;q<sb.length;q++){
+      if(sb[q].className.indexOf('slot')===0){
+        sb[q].onclick=(function(b){return function(){
+          if(done){return;}
+          if(sel<0){$('msg').textContent='Alle Verbteile sind eingesetzt. Tippe ein Verbteil im Satz an, um es zu verschieben.';return;}
+          placed.push({id:sel,g:parseInt(b.getAttribute('data-i'),10)});
+          marks={};sel=firstFree();$('msg').textContent='';draw();
+        };})(sb[q]);
+      }else{
+        sb[q].onclick=(function(b){return function(){
+          if(done){return;}
+          var id=parseInt(b.getAttribute('data-id'),10),nw=[],z;
+          for(z=0;z<placed.length;z++){if(placed[z].id!==id){nw.push(placed[z]);}}
+          placed=nw;marks={};sel=id;$('msg').textContent='';draw();
+        };})(sb[q]);
+      }
+    }
+  }
+  function correctSeq(g){var r=[],j;for(j=0;j<np;j++){if(it.pc[j].g===g){r.push(j);}}return r;}
+  function evaluate(){
+    var allOk=true,q,j,idx,cs;
+    marks={};
+    for(q=0;q<placed.length;q++){
+      idx=0;
+      for(j=0;j<q;j++){if(placed[j].g===placed[q].g){idx++;}}
+      cs=correctSeq(placed[q].g);
+      if(cs[idx]===placed[q].id){marks[placed[q].id]='ok';}else{marks[placed[q].id]='no';allOk=false;}
+    }
+    return allOk&&placed.length===np;
+  }
+  function finish(ok){
+    var j;
+    done=true;st.locked=true;
+    placed=[];marks={};
+    for(j=0;j<np;j++){placed.push({id:j,g:it.pc[j].g});marks[j]='ok';}
+    sel=-1;draw();
+    $('ctl').innerHTML='';$('msg').textContent='';
+    $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Hier ist die Lösung:')+'</strong> <span class="sol">'+hl(slotText(it))+'</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+    nextBtn();
+  }
+  $('chk').onclick=function(){
+    if(done){return;}
+    if(placed.length<np){$('msg').textContent=np>1?'Setze zuerst alle Verbteile ein.':'Tippe zuerst auf eine Lücke zwischen zwei Wörtern.';return;}
+    tries++;
+    if(evaluate()){if(tries===1){st.score++;}finish(true);return;}
+    if(tries===1){st.wrong.push(st.queue[st.pos]);}
+    if(tries>=2){finish(false);return;}
+    draw();
+    $('msg').textContent='Noch nicht ganz richtig (rot markiert). Tipp: '+(it.tip||'Zähle die Satzglieder und achte auf die Satzart.')+' Tippe ein rotes Verbteil an, um es zu verschieben. Du hast einen zweiten Versuch.';
+  };
+  draw();
+}
+/* ---------- Satzbausteine ---------- */
+function renderBuild(it){
+  var chips=[],i,order,tries=0,placed=[],done=false;
+  for(i=0;i<it.ch.length;i++){chips.push({id:i,t:it.ch[i]});}
+  order=shuffle(range(chips.length));
+  var guard=0;
+  while(chips.length>1&&sameOrder(order,range(chips.length))&&guard<20){order=shuffle(range(chips.length));guard++;}
+  $('stage').innerHTML=progress()+'<div class="q">'+esc(it.q||'Bilde den Satz. Tippe die Bausteine in der richtigen Reihenfolge an. Tippe einen gesetzten Baustein an, um ihn zurückzulegen.')+'</div><div class="build" id="build"></div><div class="pool" id="pool"></div><div class="msg" id="msg"></div><div id="ctl"></div><div id="fb"></div>';
+  function inPlaced(id){var k;for(k=0;k<placed.length;k++){if(placed[k]===id){return true;}}return false;}
+  function draw(){
+    var h='<span class="fixed">'+esc(it.st)+'</span>',k,p='';
+    for(k=0;k<placed.length;k++){h+='<button class="chip placed" type="button" data-id="'+placed[k]+'">'+esc(chips[placed[k]].t)+'</button>';}
+    h+='<span class="fixed">.</span>';
+    $('build').innerHTML=h;
+    for(k=0;k<order.length;k++){if(!inPlaced(order[k])){p+='<button class="chip" type="button" data-id="'+order[k]+'">'+esc(chips[order[k]].t)+'</button>';}}
+    $('pool').innerHTML=p;
+    var bb=$('build').getElementsByTagName('button'),pb=$('pool').getElementsByTagName('button');
+    for(k=0;k<bb.length;k++){bb[k].onclick=(function(b){return function(){if(done){return;}var id=parseInt(b.getAttribute('data-id'),10),n=[],j;for(j=0;j<placed.length;j++){if(placed[j]!==id){n.push(placed[j]);}}placed=n;$('msg').textContent='';draw();};})(bb[k]);}
+    for(k=0;k<pb.length;k++){pb[k].onclick=(function(b){return function(){if(done){return;}placed.push(parseInt(b.getAttribute('data-id'),10));$('msg').textContent='';draw();};})(pb[k]);}
+    if(!done){
+      $('ctl').innerHTML='<button class="btn primary" id="chk" type="button">Prüfen</button><button class="btn" id="rst" type="button">Zurücksetzen</button>';
+      $('chk').onclick=check;
+      $('rst').onclick=function(){placed=[];$('msg').textContent='';draw();};
+    }
+  }
+  function finish(ok){
+    done=true;st.locked=true;
+    $('ctl').innerHTML='';
+    $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Hier ist die Lösung:')+'</strong> <span class="sol">'+hl(it.a[0])+'.</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+    draw();
+    nextBtn();
+  }
+  function check(){
+    var k,s,ok=false,parts=[];
+    if(placed.length<chips.length){$('msg').textContent='Setze zuerst alle Bausteine ein.';return;}
+    for(k=0;k<placed.length;k++){parts.push(chips[placed[k]].t);}
+    s=norm(it.st+' '+parts.join(' '));
+    for(k=0;k<it.a.length;k++){if(norm(it.a[k])===s){ok=true;}}
+    tries++;
+    if(ok){if(tries===1){st.score++;}finish(true);return;}
+    if(tries===1){st.wrong.push(st.queue[st.pos]);}
+    if(tries>=2){finish(false);return;}
+    $('msg').innerHTML='Noch nicht richtig. Tipp: '+esc(it.r)+' Du hast einen zweiten Versuch.';
+  }
+  draw();
+}
+/* ---------- Lückentext ---------- */
+function gAns(g){return g.a?g.a[0]:g.o[0];}
+function renderCloze(it){
+  var paras=it.t.split('\n\n'),i,tries=0,done=false,html,typed=false;
+  for(i=0;i<it.g.length;i++){if(it.g[i].a){typed=true;}}
+  html=progress()+'<div class="q">'+esc(it.q||(typed?'Schreibe in jede Lücke die passende Form. Der Hinweis steht in Klammern.':'Wähle in jeder Lücke die passende Form.'))+'</div>';
+  if(it.title){html+='<div class="ttl">'+esc(it.title)+'</div>';}
+  html+='<div class="cloze">';
+  for(i=0;i<paras.length;i++){
+    html+='<p>'+esc(paras[i]).replace(/\[\[(\d+)\]\]/g,function(m,n){
+      var g=it.g[parseInt(n,10)-1],opts,o,k;
+      if(g.a){return '<input class="inp" type="text" data-g="'+n+'" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" style="width:'+(Math.max(4,g.a[0].length)+3)+'ch;min-width:5em">'+(g.h?'<span class="gh">('+esc(g.h)+')</span>':'');}
+      opts=shuffle(g.o);o='<select class="sel" data-g="'+n+'"><option value="">…</option>';
+      for(k=0;k<opts.length;k++){o+='<option value="'+esc(opts[k])+'">'+esc(opts[k])+'</option>';}
+      return o+'</select>';
+    })+'</p>';
+  }
+  html+='</div>'+(typed?charBar():'')+'<div class="msg" id="msg"></div><div id="ctl"><button class="btn primary" id="chk" type="button">Prüfen</button></div><div id="fb"></div>';
+  $('stage').innerHTML=html;
+  function ctrls(){return $('stage').querySelectorAll('select.sel, input.inp');}
+  if(typed){bindInputs(function(){if(!done){check();}});var f0=$('stage').querySelector('input.inp');if(f0){st.last=f0;try{f0.focus();}catch(e0){}}}
+  function finish(allOk){
+    var cs=ctrls(),k,l='<ol>';
+    done=true;st.locked=true;
+    for(k=0;k<cs.length;k++){cs[k].disabled=true;}
+    for(k=0;k<it.g.length;k++){l+='<li><span class="sol">'+esc(gAns(it.g[k]))+'</span>: '+esc(it.g[k].r)+'</li>';}
+    l+='</ol>';
+    $('ctl').innerHTML='';
+    $('msg').textContent='';
+    $('fb').innerHTML='<div class="fb '+(allOk?'ok':'no')+'"><strong>'+(allOk?'Alles richtig!':'Hier sind die Lösungen:')+'</strong>'+l+'</div><button class="btn primary" id="next" type="button">Weiter</button>';
+    nextBtn();
+  }
+  function check(){
+    var cs=ctrls(),k,n,g,ok,nOk=0,bad=0,isIn,val;
+    for(k=0;k<cs.length;k++){if(key(cs[k].value)===''){$('msg').textContent='Fülle zuerst alle Lücken aus.';return;}}
+    tries++;
+    for(k=0;k<cs.length;k++){
+      n=parseInt(cs[k].getAttribute('data-g'),10);g=it.g[n-1];
+      isIn=(cs[k].tagName.toLowerCase()==='input');
+      val=cs[k].value;
+      ok=g.a?okAns(val,g.a):(val===g.o[0]);
+      if(!ok&&tries>=2){cs[k].value=gAns(g);}
+      cs[k].className=(isIn?'inp ':'sel ')+(ok?'ok':'no');
+      if(ok){nOk++;}else{bad++;if(tries===1){st.wrongGaps.push({a:gAns(g),r:g.r});}}
+    }
+    if(tries===1){st.score+=nOk;}
+    if(bad===0){finish(true);return;}
+    if(tries>=2){finish(false);return;}
+    $('msg').textContent=bad+(bad===1?' Lücke ist':' Lücken sind')+' noch falsch (rot). Versuche es noch einmal.'+(it.tip?' Tipp: '+it.tip:'');
+  }
+  $('chk').onclick=function(){if(!done){check();}};
+}
+/* ---------- Auswertung ---------- */
+function solText(it){
+  if(it.w){return hl(slotText(it));}
+  if(it.st){return hl(it.a[0])+'.';}
+  if(it.o){return esc(it.s?it.s.replace('___',it.o[0]):it.o[0]);}
+  return esc(it.s.indexOf('___')>=0?it.s.replace('___',it.a[0]):it.s.replace(/\{[^}]*\}/,it.a[0]));
+}
+function renderSummary(){
+  var s=D.sections[st.sec],pct=Math.round(st.score/st.total*100),h,i,msg;
+  if(!st.subset){st.results[st.sec]=st.score+'/'+st.total;}
+  renderTabs();
+  msg=pct>=90?'Sehr sicher!':(pct>=70?'Gut. Die Wiederholung der Fehler lohnt sich.':'Weiter üben: Wiederhole zuerst die Merkhilfe und dann die Fehler.');
+  h='<div class="sum"><h2>'+st.score+' von '+st.total+' '+(s.type==='cloze'?'Lücken':'Aufgaben')+' beim ersten Versuch richtig ('+pct+' %)</h2><p>'+msg+'</p>';
+  if(s.type==='cloze'&&st.wrongGaps.length){
+    h+='<p><strong>Das solltest du noch einmal ansehen:</strong></p><ul>';
+    for(i=0;i<st.wrongGaps.length;i++){h+='<li><span class="sol">'+esc(st.wrongGaps[i].a)+'</span><br><small>'+esc(st.wrongGaps[i].r)+'</small></li>';}
+    h+='</ul>';
+  }
+  if(st.wrong.length){
+    h+='<p><strong>Das solltest du noch einmal ansehen:</strong></p><ul>';
+    for(i=0;i<st.wrong.length;i++){var it=s.items[st.wrong[i]];h+='<li>'+solText(it)+'<br><small>'+esc(it.r)+'</small></li>';}
+    h+='</ul><button class="btn primary" id="again" type="button">Fehler wiederholen</button>';
+  }
+  h+='<button class="btn" id="restart" type="button">Abschnitt neu mischen</button>';
+  if(st.sec<D.sections.length-1){h+='<button class="btn" id="nextsec" type="button">Nächster Abschnitt</button>';}
+  h+='</div>';
+  $('stage').innerHTML=h;
+  if($('again')){var w=st.wrong.slice();$('again').onclick=function(){startSection(st.sec,w);};}
+  $('restart').onclick=function(){startSection(st.sec,null);};
+  if($('nextsec')){$('nextsec').onclick=function(){startSection(st.sec+1,null);};}
+}
+document.getElementById('title').textContent=D.title;
+document.getElementById('sub').textContent=D.sub;
+window.__DTB={D:D,st:st,start:startSection};
+startSection(0,null);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Umlaute im Forumsbeitrag</title>
+<style>
+:root{--bg:#f4f6f9;--card:#ffffff;--tx:#1b2230;--mut:#5b6577;--ac:#2354c4;--acbg:#e8eefb;--ok:#17754a;--okbg:#e3f5ec;--no:#b3261e;--nobg:#fdebe9;--bd:#d5dbe6;--vb:#fff0bd;--vbd:#e2b92e}
+@media (prefers-color-scheme:dark){:root{--bg:#12161d;--card:#1b212c;--tx:#e8ecf3;--mut:#a3adbf;--ac:#7fa6ff;--acbg:#243250;--ok:#6fd3a0;--okbg:#17352a;--no:#ff9a92;--nobg:#3a1f1d;--bd:#323b4d;--vb:#4a3f12;--vbd:#b99a2a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:17px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:780px;margin:0 auto;padding:16px}
+h1{font-size:1.45rem;margin:4px 0 2px}
+.sub{color:var(--mut);margin:0 0 12px;font-size:.95rem}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px}
+.tab{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:9px 12px;border-radius:10px;font-size:.92rem;cursor:pointer;min-height:44px;text-align:left}
+.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.badge{display:inline-block;margin-left:6px;padding:0 7px;border-radius:9px;background:var(--okbg);color:var(--ok);font-size:.8rem}
+.tab.on .badge{background:#fff;color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;margin:10px 0}
+.intro{color:var(--mut);font-size:.95rem;margin:0 0 10px}
+.bar{height:8px;background:var(--bd);border-radius:6px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;background:var(--ac);width:0}
+.cnt{font-size:.85rem;color:var(--mut);margin-bottom:10px}
+.q{font-size:.9rem;color:var(--mut);margin-bottom:6px}
+.sent{font-size:1.2rem;margin:4px 0 14px}
+.gap{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--ac);text-align:center;font-weight:700}
+.gap.ok{color:var(--ok);border-color:var(--ok)}.gap.no{color:var(--no);border-color:var(--no)}
+.opts{display:grid;gap:10px}
+.opt{border:2px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:12px 14px;font-size:1.02rem;text-align:left;cursor:pointer;min-height:48px}
+.opt:hover{border-color:var(--ac)}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.no{border-color:var(--no);background:var(--nobg)}
+.opt[disabled]{cursor:default}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px}
+.fb.ok{background:var(--okbg);border:1px solid var(--ok)}
+.fb.no{background:var(--nobg);border:1px solid var(--no)}
+.sol{font-weight:700}
+.rule{margin-top:6px;font-size:.95rem}
+.btn{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:11px 16px;border-radius:10px;font-size:1rem;cursor:pointer;min-height:46px;margin:12px 8px 0 0}
+.btn.primary{background:var(--ac);border-color:var(--ac);color:#fff}
+.build{border:2px dashed var(--bd);border-radius:12px;padding:10px;min-height:62px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:50px}
+.chip{border:2px solid var(--ac);background:var(--acbg);color:var(--tx);border-radius:10px;padding:8px 12px;font-size:1.02rem;cursor:pointer;min-height:44px}
+.chip.placed{background:var(--card)}
+.fixed{font-weight:700;padding:8px 4px}
+.v{background:var(--vb);border-bottom:2px solid var(--vbd);padding:0 3px;border-radius:3px}
+.msg{color:var(--no);min-height:1.4em;font-size:.95rem;margin:4px 0}
+details.merk{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;margin:8px 0}
+details.merk summary{cursor:pointer;font-weight:600;min-height:32px}
+.tbl{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;font-size:.92rem;min-width:420px}
+th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left}
+th{background:var(--acbg)}
+.sum h2{margin:0 0 6px}
+.sum ul{padding-left:20px}
+.sum li{margin:8px 0}
+.ttl{font-weight:700;margin-bottom:6px}
+.cloze p{line-height:2.4;margin:0 0 10px}
+.sel{font:inherit;font-size:1rem;padding:4px 6px;border:2px solid var(--ac);border-radius:8px;background:var(--card);color:var(--tx);max-width:100%;min-height:40px}
+.sel.ok{border-color:var(--ok);background:var(--okbg)}
+.sel.no{border-color:var(--no);background:var(--nobg)}
+.fb ol{margin:8px 0 0;padding-left:22px}
+.inp{font:inherit;font-size:1.05rem;padding:4px 8px;border:2px solid var(--ac);border-radius:8px;background:var(--card);color:var(--tx);min-height:40px;max-width:100%;text-align:center}
+.inp.ok{border-color:var(--ok);background:var(--okbg)}
+.inp.no{border-color:var(--no);background:var(--nobg)}
+.inp:disabled{opacity:1;color:var(--tx)}
+.gh{color:var(--mut);font-size:.82rem;margin:0 4px 0 3px;white-space:nowrap}
+.hint{display:inline-block;margin:0 0 10px;padding:3px 10px;border-radius:9px;background:var(--acbg);color:var(--tx);font-size:.92rem}
+.wrongpart{background:var(--nobg);border-bottom:2px solid var(--no);padding:0 3px;border-radius:3px}
+.fixrow{margin:6px 0 10px}
+.fixrow label{font-size:.92rem;color:var(--mut);margin-right:6px}
+.slotsent{font-size:1.15rem;line-height:2.7;margin:6px 0 12px}
+.slotsent .w{display:inline-block;padding:0 2px}
+.slotsent .w.v{background:var(--vb);border-bottom:2px solid var(--vbd);border-radius:3px}
+.slotsent .pc{display:inline-block}
+.slot{display:inline-block;vertical-align:middle;min-width:28px;height:38px;margin:0 1px;padding:0 2px;border:0;border-left:2px dotted var(--bd);border-right:2px dotted var(--bd);background:transparent;color:var(--tx);font:inherit;font-weight:700;cursor:pointer;border-radius:6px}
+.slot:hover{background:var(--acbg)}
+.slot.on{background:var(--acbg);border:2px solid var(--ac);padding:0 8px}
+.slot.ok{background:var(--okbg);border:2px solid var(--ok);padding:0 8px}
+.slot.no{background:var(--nobg);border:2px solid var(--no);padding:0 8px}
+.slot[disabled]{cursor:default}
+.gtxt p{line-height:2.8;margin:0 0 12px}
+.gtxt .w{display:inline-block;padding:0 1px}
+.gslot{display:inline-block;vertical-align:middle;min-width:18px;height:34px;margin:0 1px;padding:0;border:0;border-left:2px dotted var(--bd);border-right:2px dotted var(--bd);background:transparent;cursor:pointer;border-radius:6px}
+.gslot:hover{background:var(--acbg)}
+.gent{display:inline-block;white-space:nowrap;margin:0 3px}
+.gin{font:inherit;font-size:1rem;font-weight:700;padding:3px 6px;border:2px solid var(--ac);border-radius:8px;background:var(--card);color:var(--tx);min-height:38px;text-align:center}
+.gin.ok{border-color:var(--ok);background:var(--okbg)}
+.gin.no{border-color:var(--no);background:var(--nobg)}
+.gin:disabled{opacity:1;color:var(--tx)}
+.gx{border:0;background:transparent;color:var(--mut);font-size:1.2rem;min-width:30px;min-height:38px;cursor:pointer}
+.gans{display:inline-block;margin:0 3px;padding:2px 8px;border-radius:8px;font-weight:700;border:2px solid var(--ok);background:var(--okbg)}
+.gans.no{border-color:var(--no);background:var(--nobg)}
+.adjgap{display:inline-block;border-bottom:3px solid var(--ac);font-weight:700;padding:0 2px;min-width:2.4em;text-align:left}
+.adjgap .ge{display:inline-block;min-width:1.4em}
+.adjgap.ok{border-color:var(--ok)}.adjgap.no{border-color:var(--no)}
+.adjgap .en{color:var(--ok)}
+.adjgap.no .en{color:var(--no)}
+.wrongtn{text-decoration:line-through;color:var(--no)}
+.mtxt p{margin:0 0 10px;line-height:2.15}
+.wd{font:inherit;font-size:1.05rem;display:inline-block;margin:0;padding:3px 4px;border:2px solid transparent;border-radius:8px;background:transparent;color:var(--tx);cursor:pointer;position:relative;text-align:left}
+.wd:hover{background:var(--acbg)}
+.wd.sel{border-color:var(--ac);background:var(--acbg);font-weight:700}
+.wd.ok{border-color:var(--ok);background:var(--okbg);opacity:1}
+.wd.no{border-color:var(--no);background:var(--nobg)}
+.wd.miss{border-color:var(--warn,#c77d00);background:var(--nobg);opacity:1}
+.wd:disabled{color:var(--tx);opacity:1}
+.wd .fx{display:block;font-size:.8rem;font-weight:700;color:var(--ok);line-height:1.2}
+.wd.miss .fx{color:var(--no)}
+.aud{display:flex;flex-wrap:wrap;gap:10px;margin:2px 0 14px}
+.aud button{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:10px 16px;border-radius:999px;font-size:1rem;cursor:pointer;min-height:46px}
+.aud button.main{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700}
+.aud button.on{outline:3px solid var(--ac);outline-offset:2px}
+.sent .inp{display:inline-block}
+.opts.row{display:flex;flex-wrap:wrap;gap:10px}
+.opts.row .opt{flex:1 1 110px;text-align:center}
+.tray{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px;min-height:46px;align-items:center}
+.pchip{border:2px solid var(--ac);background:var(--acbg);color:var(--tx);border-radius:10px;padding:8px 14px;font-size:1.05rem;font-weight:700;cursor:pointer;min-height:44px}
+.pchip.p{border-color:var(--vbd);background:var(--vb)}
+.pchip.sel{box-shadow:0 0 0 3px var(--tx)}
+.pp{display:inline-block;vertical-align:middle;margin:0 2px;padding:4px 10px;border:2px solid var(--ac);background:var(--acbg);color:var(--tx);border-radius:8px;font:inherit;font-weight:700;cursor:pointer;min-height:38px}
+.pp.p{border-color:var(--vbd);background:var(--vb)}
+.pp.ok{border-color:var(--ok);background:var(--okbg)}
+.pp.no{border-color:var(--no);background:var(--nobg)}
+.pp[disabled]{cursor:default;opacity:1;color:var(--tx)}
+.vchip{display:inline-block;margin:0 8px 10px 0;padding:5px 12px;border-radius:10px;border:2px solid var(--ac);background:var(--acbg);font-size:1.05rem}
+.chars{margin:4px 0 0}
+.chars button{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;min-width:42px;min-height:40px;font-size:1.05rem;margin:0 6px 4px 0;cursor:pointer}
+footer{color:var(--mut);font-size:.8rem;margin:18px 0 6px}
+@media (max-width:520px){.sent{font-size:1.1rem}.tab{font-size:.88rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1 id="title"></h1>
+<p class="sub" id="sub"></p>
+<div class="tabs" id="tabs"></div>
+<p class="intro" id="intro"></p>
+<div id="merk"></div>
+<div class="card" id="stage"></div>
+<footer>Deutsch-Test für den Beruf B2 · Schreiben · Übungsmaterial · läuft offline im Browser</footer>
+</div>
+<script>
+(function(){
+var D = {"title": "Umlaute im Forumsbeitrag", "sub": "DTB B2 · Schreiben · Item 58 · Tippe die Wörter an, in denen ein Umlaut fehlt oder zu viel ist", "sections": [{"title": "Thema A: Flexible Arbeitsplätze", "type": "marks", "intro": "Lies den Forumsbeitrag. Tippe jedes Wort an, in dem ein Umlaut (ä, ö, ü) fehlt oder zu viel geschrieben wurde. Tippe ein markiertes Wort noch einmal an, um die Markierung zu entfernen. Wörter mit richtigem Umlaut darfst du nicht markieren.", "merk": "<div class=\"tbl\"><table><tr><th>Fehlerart</th><th>Beispiele</th></tr>\n<tr><td><strong>Umlaut fehlt</strong> (a/o/u statt ä/ö/ü)</td><td>Buro → Büro · fur → für · uber → über · naturlich → natürlich · Moglichkeit → Möglichkeit</td></tr>\n<tr><td>Plural mit Umlaut</td><td>Arbeitsplatz → Arbeitsplätze · Gerät → Geräte · Vorschlag → Vorschläge · Gespräch → Gespräche</td></tr>\n<tr><td>Komparativ mit Umlaut</td><td>lang → länger · spät → später</td></tr>\n<tr><td><strong>Umlaut zu viel</strong> (ä/ö/ü statt a/o/u)</td><td>dürch → durch · häben → haben · kömmt → kommt · Dokümente → Dokumente</td></tr></table></div>\n<div class=\"tbl\"><table><tr><th>Ohne Umlaut (Indikativ, Vergangenheit)</th><th>Mit Umlaut (Konjunktiv II)</th></tr>\n<tr><td>Gestern <strong>wurde</strong> ich angesprochen.</td><td>Das <strong>würde</strong> mir gefallen.</td></tr>\n<tr><td>Früher <strong>hatte</strong> jedes Büro einen Drucker.</td><td>Ich <strong>hätte</strong> gern einen eigenen Platz.</td></tr>\n<tr><td>Er <strong>konnte</strong> keinen Platz finden.</td><td>Wir <strong>könnten</strong> uns häufiger treffen.</td></tr>\n<tr><td>Ich habe das <strong>schon</strong> oft gesehen.</td><td>Das sieht nicht <strong>schön</strong> aus.</td></tr></table></div>\n<p><strong>Tipp:</strong> Bei <em>wurde/würde, hatte/hätte, konnte/könnte, schon/schön</em> entscheidet die Bedeutung: Geht es um etwas, das <strong>passiert ist</strong> (ohne Umlaut), oder um eine <strong>Möglichkeit oder einen Wunsch</strong> (mit Umlaut)? Wörter wie <em>dann, haben, manchmal, durch, kommen, Dokumente</em> haben nie einen Umlaut.</p>", "items": [{"title": "Forumsbeitrag zu Thema A: Flexible Arbeitsplätze (1)", "paras": [[{"t": "Hallo", "e": null}, {"t": "zusammen,", "e": null}], [{"t": "ich", "e": null}, {"t": "möchte", "e": null}, {"t": "meine", "e": null}, {"t": "Meinung", "e": null}, {"t": "zum", "e": null}, {"t": "Thema", "e": null}, {"t": "flexible", "e": null}, {"t": "Arbeitsplatze", "e": {"w": "Arbeitsplatze", "c": "Arbeitsplätze", "k": "M", "r": "Plural von «der Arbeitsplatz»: Arbeitsplätze (a wird zu ä)."}}, {"t": "außern.", "e": {"w": "außern", "c": "äußern", "k": "M", "r": "äußern: Verb mit ä."}}, {"t": "Meiner", "e": null}, {"t": "Meinung", "e": null}, {"t": "nach", "e": null}, {"t": "hat", "e": null}, {"t": "das", "e": null}, {"t": "System", "e": null}, {"t": "viele", "e": null}, {"t": "Vorteile,", "e": null}, {"t": "aber", "e": null}, {"t": "auch", "e": null}, {"t": "einige", "e": null}, {"t": "Nachteile.", "e": null}], [{"t": "Einerseits", "e": null}, {"t": "können", "e": null}, {"t": "wir", "e": null}, {"t": "die", "e": null}, {"t": "Arbeit", "e": null}, {"t": "besser", "e": null}, {"t": "planen", "e": null}, {"t": "und", "e": null}, {"t": "mussen", "e": {"w": "mussen", "c": "müssen", "k": "M", "r": "müssen: Infinitiv mit ü (ich muss, wir müssen)."}}, {"t": "nicht", "e": null}, {"t": "jeden", "e": null}, {"t": "Tag", "e": null}, {"t": "ins", "e": null}, {"t": "Büro", "e": null}, {"t": "fahren.", "e": null}, {"t": "Das", "e": null}, {"t": "spart", "e": null}, {"t": "Zeit", "e": null}, {"t": "und", "e": null}, {"t": "Geld.", "e": null}, {"t": "Andererseits", "e": null}, {"t": "fehlt", "e": null}, {"t": "der", "e": null}, {"t": "Kontakt", "e": null}, {"t": "zu", "e": null}, {"t": "den", "e": null}, {"t": "Kollegen,", "e": null}, {"t": "und", "e": null}, {"t": "Gesprache", "e": {"w": "Gesprache", "c": "Gespräche", "k": "M", "r": "Gespräche: Plural von «das Gespräch» mit ä."}}, {"t": "über", "e": null}, {"t": "Probleme", "e": null}, {"t": "sind", "e": null}, {"t": "schwieriger.", "e": null}, {"t": "Außerdem", "e": null}, {"t": "gibt", "e": null}, {"t": "es", "e": null}, {"t": "manchmal", "e": null}, {"t": "zu", "e": null}, {"t": "wenige", "e": null}, {"t": "freie", "e": null}, {"t": "Schreibtische,", "e": null}, {"t": "wenn", "e": null}, {"t": "alle", "e": null}, {"t": "gleichzeitig", "e": null}, {"t": "im", "e": null}, {"t": "Buro", "e": {"w": "Buro", "c": "Büro", "k": "M", "r": "Büro: mit ü."}}, {"t": "sind.", "e": null}], [{"t": "Gestern", "e": null}, {"t": "würde", "e": {"w": "würde", "c": "wurde", "k": "Z", "r": "wurde: Präteritum von «werden» (Passiv): Gestern wurde ich angesprochen. «würde» ist Konjunktiv II (Ich würde gern …)."}}, {"t": "ich", "e": null}, {"t": "von", "e": null}, {"t": "einem", "e": null}, {"t": "Kollegen", "e": null}, {"t": "angesprochen,", "e": null}, {"t": "der", "e": null}, {"t": "keinen", "e": null}, {"t": "freien", "e": null}, {"t": "Schreibtisch", "e": null}, {"t": "finden", "e": null}, {"t": "könnte.", "e": {"w": "könnte", "c": "konnte", "k": "Z", "r": "konnte: Präteritum von «können»: Er konnte keinen Platz finden. «könnte» ist Konjunktiv II."}}], [{"t": "Ich", "e": null}, {"t": "schlage", "e": null}, {"t": "vor,", "e": null}, {"t": "dass", "e": null}, {"t": "jede", "e": null}, {"t": "Abteilung", "e": null}, {"t": "zwei", "e": null}, {"t": "feste", "e": null}, {"t": "Tage", "e": null}, {"t": "im", "e": null}, {"t": "Büro", "e": null}, {"t": "hat.", "e": null}, {"t": "Das", "e": null}, {"t": "wurde", "e": {"w": "wurde", "c": "würde", "k": "M", "r": "würde: Konjunktiv II von «werden» (Möglichkeit, Wunsch): Das würde mir gefallen. «wurde» steht in der Vergangenheit."}}, {"t": "mir", "e": null}, {"t": "gut", "e": null}, {"t": "gefallen.", "e": null}, {"t": "Dänn", "e": {"w": "Dänn", "c": "Dann", "k": "Z", "r": "dann: mit a, kein Umlaut."}}, {"t": "könnten", "e": null}, {"t": "wir", "e": null}, {"t": "uns", "e": null}, {"t": "regelmaßig", "e": {"w": "regelmaßig", "c": "regelmäßig", "k": "M", "r": "regelmäßig: mit ä (Regel, mäßig)."}}, {"t": "treffen", "e": null}, {"t": "und", "e": null}, {"t": "trotzdem", "e": null}, {"t": "flexibel", "e": null}, {"t": "arbeiten.", "e": null}, {"t": "Was", "e": null}, {"t": "denkt", "e": null}, {"t": "ihr", "e": null}, {"t": "darüber?", "e": null}, {"t": "Ich", "e": null}, {"t": "freue", "e": null}, {"t": "mich", "e": null}, {"t": "auf", "e": null}, {"t": "eure", "e": null}, {"t": "Beiträge.", "e": null}], [{"t": "Viele", "e": null}, {"t": "Grüße", "e": null}], [{"t": "Hanna", "e": null}]]}, {"title": "Forumsbeitrag zu Thema A: Flexible Arbeitsplätze (2)", "paras": [[{"t": "Liebe", "e": null}, {"t": "Kolleginnen", "e": null}, {"t": "und", "e": null}, {"t": "Kollegen,", "e": null}], [{"t": "ich", "e": null}, {"t": "bin", "e": null}, {"t": "der", "e": null}, {"t": "Meinung,", "e": null}, {"t": "dass", "e": null}, {"t": "feste", "e": null}, {"t": "Arbeitsplätze", "e": null}, {"t": "fur", "e": {"w": "fur", "c": "für", "k": "M", "r": "für: mit ü."}}, {"t": "viele", "e": null}, {"t": "Menschen", "e": null}, {"t": "besser", "e": null}, {"t": "sind.", "e": null}, {"t": "Wer", "e": null}, {"t": "zu", "e": null}, {"t": "spät", "e": null}, {"t": "kömmt,", "e": {"w": "kömmt", "c": "kommt", "k": "Z", "r": "kommt: mit o, kein Umlaut (ich komme, er kommt)."}}, {"t": "findet", "e": null}, {"t": "keinen", "e": null}, {"t": "Platz", "e": null}, {"t": "mehr.", "e": null}, {"t": "Gestern", "e": null}, {"t": "hätte", "e": {"w": "hätte", "c": "hatte", "k": "Z", "r": "hatte: Präteritum von «haben»: Früher hatte ich … «hätte» ist Konjunktiv II (Ich hätte gern …)."}}, {"t": "ich", "e": null}, {"t": "keinen", "e": null}, {"t": "Platz", "e": null}, {"t": "für", "e": null}, {"t": "meinen", "e": null}, {"t": "Laptop.", "e": null}, {"t": "Die", "e": null}, {"t": "Computer", "e": null}, {"t": "und", "e": null}, {"t": "andere", "e": null}, {"t": "Gerate", "e": {"w": "Gerate", "c": "Geräte", "k": "M", "r": "Geräte: Plural von «das Gerät» mit ä."}}, {"t": "müssen", "e": null}, {"t": "jedes", "e": null}, {"t": "Mal", "e": null}, {"t": "angeschlossen", "e": null}, {"t": "werden,", "e": null}, {"t": "und", "e": null}, {"t": "das", "e": null}, {"t": "kostet", "e": null}, {"t": "Zeit.", "e": null}], [{"t": "Naturlich", "e": {"w": "Naturlich", "c": "Natürlich", "k": "M", "r": "natürlich: mit ü (die Natur, natürlich)."}}, {"t": "gibt", "e": null}, {"t": "es", "e": null}, {"t": "auch", "e": null}, {"t": "Vorteile,", "e": null}, {"t": "zum", "e": null}, {"t": "Beispiel", "e": null}, {"t": "die", "e": null}, {"t": "Moglichkeit,", "e": {"w": "Moglichkeit", "c": "Möglichkeit", "k": "M", "r": "Möglichkeit: mit ö (möglich)."}}, {"t": "neue", "e": null}, {"t": "Kollegen", "e": null}, {"t": "kennenzulernen.", "e": null}, {"t": "Trotzdem", "e": null}, {"t": "arbeite", "e": null}, {"t": "ich", "e": null}, {"t": "besser,", "e": null}, {"t": "wenn", "e": null}, {"t": "ich", "e": null}, {"t": "meinen", "e": null}, {"t": "eigenen", "e": null}, {"t": "Platz", "e": null}, {"t": "habe.", "e": null}, {"t": "Dürch", "e": {"w": "Dürch", "c": "Durch", "k": "Z", "r": "durch: mit u, kein Umlaut."}}, {"t": "feste", "e": null}, {"t": "Plätze", "e": null}, {"t": "sparen", "e": null}, {"t": "wir", "e": null}, {"t": "Zeit,", "e": null}, {"t": "denn", "e": null}, {"t": "man", "e": null}, {"t": "muss", "e": null}, {"t": "nicht", "e": null}, {"t": "spater", "e": {"w": "spater", "c": "später", "k": "M", "r": "später: mit ä (spät, später)."}}, {"t": "nach", "e": null}, {"t": "seinen", "e": null}, {"t": "Sachen", "e": null}, {"t": "suchen.", "e": null}, {"t": "Ohne", "e": null}, {"t": "feste", "e": null}, {"t": "Ordnung", "e": null}, {"t": "gehen", "e": null}, {"t": "wichtige", "e": null}, {"t": "Unterlagen", "e": null}, {"t": "verloren,", "e": null}, {"t": "und", "e": null}, {"t": "die", "e": null}, {"t": "Unterstutzung", "e": {"w": "Unterstutzung", "c": "Unterstützung", "k": "M", "r": "Unterstützung: mit ü (unterstützen)."}}, {"t": "durch", "e": null}, {"t": "die", "e": null}, {"t": "IT", "e": null}, {"t": "dauert", "e": null}, {"t": "länger.", "e": null}, {"t": "Ich", "e": null}, {"t": "wurde", "e": {"w": "wurde", "c": "würde", "k": "M", "r": "würde: Konjunktiv II von «werden» (Möglichkeit, Wunsch): Das würde mir gefallen. «wurde» steht in der Vergangenheit."}}, {"t": "deshalb", "e": null}, {"t": "gern", "e": null}, {"t": "einen", "e": null}, {"t": "festen", "e": null}, {"t": "Platz", "e": null}, {"t": "behalten.", "e": null}], [{"t": "Was", "e": null}, {"t": "meint", "e": null}, {"t": "ihr", "e": null}, {"t": "dazu?", "e": null}, {"t": "Ich", "e": null}, {"t": "freue", "e": null}, {"t": "mich", "e": null}, {"t": "über", "e": null}, {"t": "eure", "e": null}, {"t": "Antworten.", "e": null}], [{"t": "Viele", "e": null}, {"t": "Grüße", "e": null}], [{"t": "Nikita", "e": null}]]}]}, {"title": "Thema B: Ein großer Drucker pro Etage", "type": "marks", "intro": "Lies den Forumsbeitrag. Tippe jedes Wort an, in dem ein Umlaut (ä, ö, ü) fehlt oder zu viel geschrieben wurde. Tippe ein markiertes Wort noch einmal an, um die Markierung zu entfernen. Wörter mit richtigem Umlaut darfst du nicht markieren.", "merk": "<div class=\"tbl\"><table><tr><th>Fehlerart</th><th>Beispiele</th></tr>\n<tr><td><strong>Umlaut fehlt</strong> (a/o/u statt ä/ö/ü)</td><td>Buro → Büro · fur → für · uber → über · naturlich → natürlich · Moglichkeit → Möglichkeit</td></tr>\n<tr><td>Plural mit Umlaut</td><td>Arbeitsplatz → Arbeitsplätze · Gerät → Geräte · Vorschlag → Vorschläge · Gespräch → Gespräche</td></tr>\n<tr><td>Komparativ mit Umlaut</td><td>lang → länger · spät → später</td></tr>\n<tr><td><strong>Umlaut zu viel</strong> (ä/ö/ü statt a/o/u)</td><td>dürch → durch · häben → haben · kömmt → kommt · Dokümente → Dokumente</td></tr></table></div>\n<div class=\"tbl\"><table><tr><th>Ohne Umlaut (Indikativ, Vergangenheit)</th><th>Mit Umlaut (Konjunktiv II)</th></tr>\n<tr><td>Gestern <strong>wurde</strong> ich angesprochen.</td><td>Das <strong>würde</strong> mir gefallen.</td></tr>\n<tr><td>Früher <strong>hatte</strong> jedes Büro einen Drucker.</td><td>Ich <strong>hätte</strong> gern einen eigenen Platz.</td></tr>\n<tr><td>Er <strong>konnte</strong> keinen Platz finden.</td><td>Wir <strong>könnten</strong> uns häufiger treffen.</td></tr>\n<tr><td>Ich habe das <strong>schon</strong> oft gesehen.</td><td>Das sieht nicht <strong>schön</strong> aus.</td></tr></table></div>\n<p><strong>Tipp:</strong> Bei <em>wurde/würde, hatte/hätte, konnte/könnte, schon/schön</em> entscheidet die Bedeutung: Geht es um etwas, das <strong>passiert ist</strong> (ohne Umlaut), oder um eine <strong>Möglichkeit oder einen Wunsch</strong> (mit Umlaut)? Wörter wie <em>dann, haben, manchmal, durch, kommen, Dokumente</em> haben nie einen Umlaut.</p>", "items": [{"title": "Forumsbeitrag zu Thema B: Ein großer Drucker pro Etage (1)", "paras": [[{"t": "Hallo", "e": null}, {"t": "zusammen,", "e": null}], [{"t": "ich", "e": null}, {"t": "finde", "e": null}, {"t": "es", "e": null}, {"t": "gut,", "e": null}, {"t": "dass", "e": null}, {"t": "es", "e": null}, {"t": "kunftig", "e": {"w": "kunftig", "c": "künftig", "k": "M", "r": "künftig: mit ü (die Zukunft, künftig)."}}, {"t": "pro", "e": null}, {"t": "Etage", "e": null}, {"t": "nur", "e": null}, {"t": "noch", "e": null}, {"t": "einen", "e": null}, {"t": "großen", "e": null}, {"t": "Drucker", "e": null}, {"t": "geben", "e": null}, {"t": "soll.", "e": null}, {"t": "Fruher", "e": {"w": "Fruher", "c": "Früher", "k": "M", "r": "früher: mit ü."}}, {"t": "hätte", "e": {"w": "hätte", "c": "hatte", "k": "Z", "r": "hatte: Präteritum von «haben»: Früher hatte ich … «hätte» ist Konjunktiv II (Ich hätte gern …)."}}, {"t": "fast", "e": null}, {"t": "jedes", "e": null}, {"t": "Buro", "e": {"w": "Buro", "c": "Büro", "k": "M", "r": "Büro: mit ü."}}, {"t": "ein", "e": null}, {"t": "eigenes", "e": null}, {"t": "Gerät,", "e": null}, {"t": "und", "e": null}, {"t": "die", "e": null}, {"t": "Wartung", "e": null}, {"t": "war", "e": null}, {"t": "teuer.", "e": null}, {"t": "Mit", "e": null}, {"t": "einem", "e": null}, {"t": "großen", "e": null}, {"t": "Drucker", "e": null}, {"t": "sparen", "e": null}, {"t": "wir", "e": null}, {"t": "Geld", "e": null}, {"t": "und", "e": null}, {"t": "Platz.", "e": null}, {"t": "Außerdem", "e": null}, {"t": "sind", "e": null}, {"t": "die", "e": null}, {"t": "Geräte", "e": null}, {"t": "schneller", "e": null}, {"t": "und", "e": null}, {"t": "drucken", "e": null}, {"t": "auch", "e": null}, {"t": "große", "e": null}, {"t": "Dokümente.", "e": {"w": "Dokümente", "c": "Dokumente", "k": "Z", "r": "Dokumente: mit u, kein Umlaut (das Dokument)."}}, {"t": "In", "e": null}, {"t": "den", "e": null}, {"t": "Büros", "e": null}, {"t": "gibt", "e": null}, {"t": "es", "e": null}, {"t": "dann", "e": null}, {"t": "weniger", "e": null}, {"t": "Larm,", "e": {"w": "Larm", "c": "Lärm", "k": "M", "r": "Lärm: mit ä."}}, {"t": "und", "e": null}, {"t": "wir", "e": null}, {"t": "häben", "e": {"w": "häben", "c": "haben", "k": "Z", "r": "haben: mit a, kein Umlaut."}}, {"t": "mehr", "e": null}, {"t": "Ruhe", "e": null}, {"t": "zum", "e": null}, {"t": "Arbeiten.", "e": null}, {"t": "Wenn", "e": null}, {"t": "nur", "e": null}, {"t": "ein", "e": null}, {"t": "Gerät", "e": null}, {"t": "pro", "e": null}, {"t": "Etage", "e": null}, {"t": "steht,", "e": null}, {"t": "konnten", "e": {"w": "konnten", "c": "könnten", "k": "M", "r": "könnten: Konjunktiv II von «können» (Möglichkeit): Wir könnten …, wenn … «konnten» ist Vergangenheit."}}, {"t": "wir", "e": null}, {"t": "die", "e": null}, {"t": "Wartung", "e": null}, {"t": "zentral", "e": null}, {"t": "organisieren.", "e": null}], [{"t": "Natürlich", "e": null}, {"t": "ist", "e": null}, {"t": "diese", "e": null}, {"t": "Anderung", "e": {"w": "Anderung", "c": "Änderung", "k": "M", "r": "Änderung: mit Ä (ändern, die Änderung)."}}, {"t": "am", "e": null}, {"t": "Anfang", "e": null}, {"t": "ungewohnt,", "e": null}, {"t": "aber", "e": null}, {"t": "ich", "e": null}, {"t": "denke,", "e": null}, {"t": "dass", "e": null}, {"t": "wir", "e": null}, {"t": "uns", "e": null}, {"t": "schnell", "e": null}, {"t": "daran", "e": null}, {"t": "gewöhnen.", "e": null}, {"t": "Gestern", "e": null}, {"t": "würde", "e": {"w": "würde", "c": "wurde", "k": "Z", "r": "wurde: Präteritum von «werden» (Passiv): Gestern wurde ich angesprochen. «würde» ist Konjunktiv II (Ich würde gern …)."}}, {"t": "ich", "e": null}, {"t": "gefragt,", "e": null}, {"t": "ob", "e": null}, {"t": "ich", "e": null}, {"t": "dagegen", "e": null}, {"t": "bin.", "e": null}, {"t": "Ich", "e": null}, {"t": "gehe", "e": null}, {"t": "gern", "e": null}, {"t": "ein", "e": null}, {"t": "paar", "e": null}, {"t": "Schritte,", "e": null}, {"t": "wenn", "e": null}, {"t": "ich", "e": null}, {"t": "dafür", "e": null}, {"t": "ein", "e": null}, {"t": "gutes", "e": null}, {"t": "Gerät", "e": null}, {"t": "bekomme.", "e": null}], [{"t": "Was", "e": null}, {"t": "denkt", "e": null}, {"t": "ihr", "e": null}, {"t": "darüber?", "e": null}], [{"t": "Liebe", "e": null}, {"t": "Grüße", "e": null}], [{"t": "Aref", "e": null}]]}, {"title": "Forumsbeitrag zu Thema B: Ein großer Drucker pro Etage (2)", "paras": [[{"t": "Liebe", "e": null}, {"t": "Kollegen,", "e": null}], [{"t": "ich", "e": null}, {"t": "bin", "e": null}, {"t": "dagegen,", "e": null}, {"t": "dass", "e": null}, {"t": "jede", "e": null}, {"t": "Etage", "e": null}, {"t": "nur", "e": null}, {"t": "noch", "e": null}, {"t": "einen", "e": null}, {"t": "großen", "e": null}, {"t": "Drucker", "e": null}, {"t": "bekommt,", "e": null}, {"t": "denn", "e": null}, {"t": "der", "e": null}, {"t": "Weg", "e": null}, {"t": "dorthin", "e": null}, {"t": "ist", "e": null}, {"t": "oft", "e": null}, {"t": "langer.", "e": {"w": "langer", "c": "länger", "k": "M", "r": "länger: Komparativ mit Umlaut (lang, länger)."}}, {"t": "Wer", "e": null}, {"t": "mänchmal", "e": {"w": "mänchmal", "c": "manchmal", "k": "Z", "r": "manchmal: mit a, kein Umlaut."}}, {"t": "schnell", "e": null}, {"t": "eine", "e": null}, {"t": "Kopie", "e": null}, {"t": "braucht,", "e": null}, {"t": "verliert", "e": null}, {"t": "viel", "e": null}, {"t": "Zeit.", "e": null}, {"t": "Außerdem", "e": null}, {"t": "muss", "e": null}, {"t": "man", "e": null}, {"t": "dafür", "e": null}, {"t": "die", "e": null}, {"t": "Tur", "e": {"w": "Tur", "c": "Tür", "k": "M", "r": "Tür: mit ü."}}, {"t": "zum", "e": null}, {"t": "Flur", "e": null}, {"t": "offnen,", "e": {"w": "offnen", "c": "öffnen", "k": "M", "r": "öffnen: mit ö."}}, {"t": "und", "e": null}, {"t": "es", "e": null}, {"t": "ist", "e": null}, {"t": "unpraktisch,", "e": null}, {"t": "wenn", "e": null}, {"t": "man", "e": null}, {"t": "dabei", "e": null}, {"t": "Unterlagen", "e": null}, {"t": "trägt.", "e": null}], [{"t": "Ein", "e": null}, {"t": "weiteres", "e": null}, {"t": "Problem", "e": null}, {"t": "ist", "e": null}, {"t": "der", "e": null}, {"t": "Datenschutz.", "e": null}, {"t": "Vertrauliche", "e": null}, {"t": "Dokumente", "e": null}, {"t": "liegen", "e": null}, {"t": "im", "e": null}, {"t": "Flur,", "e": null}, {"t": "und", "e": null}, {"t": "jedes", "e": null}, {"t": "Mal", "e": null}, {"t": "kann", "e": null}, {"t": "sie", "e": null}, {"t": "jemand", "e": null}, {"t": "lesen.", "e": null}, {"t": "Gestern", "e": null}, {"t": "würden", "e": {"w": "würden", "c": "wurden", "k": "Z", "r": "wurden: Präteritum von «werden» (Passiv): Drei Seiten wurden vergessen. «würden» ist Konjunktiv II."}}, {"t": "drei", "e": null}, {"t": "Seiten", "e": null}, {"t": "im", "e": null}, {"t": "Flur", "e": null}, {"t": "vergessen.", "e": null}, {"t": "Ich", "e": null}, {"t": "habe", "e": null}, {"t": "uber", "e": {"w": "uber", "c": "über", "k": "M", "r": "über: mit ü."}}, {"t": "dieses", "e": null}, {"t": "Thema", "e": null}, {"t": "mit", "e": null}, {"t": "meinem", "e": null}, {"t": "Team", "e": null}, {"t": "gesprochen,", "e": null}, {"t": "und", "e": null}, {"t": "wir", "e": null}, {"t": "haben", "e": null}, {"t": "zwei", "e": null}, {"t": "Vorschlage:", "e": {"w": "Vorschlage", "c": "Vorschläge", "k": "M", "r": "Vorschläge: Plural von «der Vorschlag» mit ä."}}, {"t": "Wir", "e": null}, {"t": "behalten", "e": null}, {"t": "kleine", "e": null}, {"t": "Drucker", "e": null}, {"t": "für", "e": null}, {"t": "vertrauliche", "e": null}, {"t": "Aufträge.", "e": null}, {"t": "Das", "e": null}, {"t": "sieht", "e": null}, {"t": "nicht", "e": null}, {"t": "schon", "e": {"w": "schon", "c": "schön", "k": "M", "r": "schön: mit ö (schön aussehen). «schon» bedeutet «bereits»."}}, {"t": "aus,", "e": null}, {"t": "aber", "e": null}, {"t": "es", "e": null}, {"t": "ist", "e": null}, {"t": "sicher.", "e": null}, {"t": "Ich", "e": null}, {"t": "habe", "e": null}, {"t": "schön", "e": {"w": "schön", "c": "schon", "k": "Z", "r": "schon: Adverb (= bereits), ohne Umlaut. «schön» bedeutet «nicht hässlich»."}}, {"t": "oft", "e": null}, {"t": "gesehen,", "e": null}, {"t": "dass", "e": null}, {"t": "Papiere", "e": null}, {"t": "liegen", "e": null}, {"t": "bleiben.", "e": null}], [{"t": "Was", "e": null}, {"t": "denkt", "e": null}, {"t": "ihr?", "e": null}, {"t": "Ich", "e": null}, {"t": "freue", "e": null}, {"t": "mich", "e": null}, {"t": "auf", "e": null}, {"t": "eure", "e": null}, {"t": "Meinungen.", "e": null}], [{"t": "Viele", "e": null}, {"t": "Grüße", "e": null}], [{"t": "Inga", "e": null}]]}]}]};
+var st = {sec:-1, queue:[], pos:0, score:0, total:0, wrong:[], wrongGaps:[], nItems:0, locked:false, results:{}, subset:false, last:null, fa:0};
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function shuffle(a){var b=a.slice(),i,j,t;for(i=b.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function range(n){var r=[],i;for(i=0;i<n;i++){r.push(i);}return r;}
+function strip(s){return s.replace(/[{}]/g,'');}
+function norm(s){return strip(s).replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');}
+function hl(s){return esc(s).replace(/\{([^}]*)\}/g,'<span class="v">$1</span>');}
+function sameOrder(a,b){var i;if(a.length!==b.length){return false;}for(i=0;i<a.length;i++){if(a[i]!==b[i]){return false;}}return true;}
+
+function key(x){
+  var t=String(x).toLowerCase().replace(/[\u00e4]/g,'ae').replace(/[\u00f6]/g,'oe').replace(/[\u00fc]/g,'ue').replace(/[\u00df]/g,'ss');
+  t=t.replace(/[.,!?;:"\u201e\u201c\u201d\u00bb\u00ab]/g,' ').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');
+  return t;
+}
+function okAns(val,list){var k=key(val),i;if(k===''){return false;}for(i=0;i<list.length;i++){if(key(list[i])===k){return true;}}return false;}
+function exactAns(val,list){
+  var t=String(val).replace(/[.,!?;:"]/g,' ').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,''),i;
+  for(i=0;i<list.length;i++){if(list[i]===t){return true;}}
+  return false;
+}
+function inpHtml(id,list,cls){
+  var i,m=4;
+  for(i=0;i<list.length;i++){if(list[i].length>m){m=list[i].length;}}
+  return '<input class="inp'+(cls?' '+cls:'')+'" id="'+id+'" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" style="width:'+(m+3)+'ch;min-width:5.5em">';
+}
+function charBar(){return '<div class="chars" id="chars"><button type="button" data-c="\u00e4">\u00e4</button><button type="button" data-c="\u00f6">\u00f6</button><button type="button" data-c="\u00fc">\u00fc</button><button type="button" data-c="\u00df">\u00df</button></div>';}
+function bindInputs(onEnter){
+  var ins=$('stage').getElementsByTagName('input'),k,cb,bs;
+  for(k=0;k<ins.length;k++){
+    ins[k].onfocus=(function(e){return function(){st.last=e;};})(ins[k]);
+    ins[k].onkeydown=function(ev){ev=ev||window.event;if((ev.keyCode||ev.which)===13){if(ev.preventDefault){ev.preventDefault();}onEnter();return false;}};
+  }
+  cb=$('chars');
+  if(cb){
+    bs=cb.getElementsByTagName('button');
+    for(k=0;k<bs.length;k++){
+      bs[k].onmousedown=function(ev){ev=ev||window.event;if(ev.preventDefault){ev.preventDefault();}};
+      bs[k].onclick=(function(b){return function(){
+        var t=st.last||ins[0],c=b.getAttribute('data-c'),a,e,v;
+        if(!t||t.disabled){return;}
+        v=t.value;
+        try{a=t.selectionStart;e=t.selectionEnd;if(typeof a==='number'){t.value=v.slice(0,a)+c+v.slice(e);t.focus();t.setSelectionRange(a+1,a+1);return;}}catch(x){}
+        t.value=v+c;t.focus();
+      };})(bs[k]);
+    }
+  }
+}
+function renderTabs(){
+  var h='',i,r,b;
+  for(i=0;i<D.sections.length;i++){
+    r=st.results[i];
+    h+='<button class="tab'+(i===st.sec?' on':'')+'" type="button">'+(i+1)+'. '+esc(D.sections[i].title)+(r?'<span class="badge">'+esc(r)+'</span>':'')+'</button>';
+  }
+  $('tabs').innerHTML=h;
+  b=$('tabs').getElementsByTagName('button');
+  for(i=0;i<b.length;i++){b[i].onclick=(function(k){return function(){startSection(k,null);};})(i);}
+}
+function startSection(i,subset){
+  stopAudio();
+  var n=D.sections[i].items.length;
+  st.sec=i;
+  st.subset=!!subset;
+  st.queue=shuffle(subset?subset:range(n));
+  st.pos=0;st.score=0;st.wrong=[];st.wrongGaps=[];st.fa=0;st.locked=false;st.nItems=st.queue.length;st.total=st.queue.length;
+  if(D.sections[i].type==='gaps'){st.total=0;var q1;for(q1=0;q1<st.queue.length;q1++){st.total+=D.sections[i].items[st.queue[q1]].m.length;}}
+  if(D.sections[i].type==='marks'){st.total=0;var q2,p2,j2;for(q2=0;q2<st.queue.length;q2++){var it2=D.sections[i].items[st.queue[q2]];for(p2=0;p2<it2.paras.length;p2++){for(j2=0;j2<it2.paras[p2].length;j2++){if(it2.paras[p2][j2].e){st.total++;}}}}}
+  if(D.sections[i].type==='cloze'){st.total=0;var q0;for(q0=0;q0<st.queue.length;q0++){st.total+=D.sections[i].items[st.queue[q0]].g.length;}}
+  renderTabs();
+  var s=D.sections[i];
+  $('intro').innerHTML=esc(s.intro);
+  $('merk').innerHTML=s.merk?'<details class="merk"><summary>Merkhilfe anzeigen</summary>'+s.merk+'</details>':'';
+  renderItem();
+}
+function progress(){
+  var p=Math.round(st.pos/st.nItems*100);
+  return '<div class="bar"><i style="width:'+p+'%"></i></div><div class="cnt">Aufgabe '+(st.pos+1)+' von '+st.nItems+'</div>';
+}
+function curItem(){return D.sections[st.sec].items[st.queue[st.pos]];}
+function renderItem(){
+  st.locked=false;
+  if(st.pos>=st.queue.length){renderSummary();return;}
+  var it=curItem();
+  var ty=D.sections[st.sec].type;if(ty==='build'){renderBuild(it);}else if(ty==='cloze'){renderCloze(it);}else if(ty==='type'){renderType(it);}else if(ty==='slot'){renderSlot(it);}else if(ty==='gaps'){renderGaps(it);}else if(ty==='end'){renderEnd(it);}else if(ty==='hear'){renderHear(it);}else if(ty==='marks'){renderMarks(it);}else{renderMC(it);}
+}
+function nextBtn(){
+  var b=$('next');
+  if(b){b.onclick=function(){st.pos++;renderItem();};b.focus();}
+}
+/* ---------- Multiple Choice ---------- */
+function renderMC(it){
+  var hasGap=it.s&&it.s.indexOf('___')>=0;
+  var q=it.q||(hasGap?'Welche Form passt in die Lücke?':'Welcher Satz ist richtig?');
+  var opts=shuffle(it.o),h='',i;
+  h+=progress()+'<div class="q">'+esc(q)+'</div>';
+  if(it.s){h+='<div class="sent">'+esc(it.s).replace('___','<span class="gap" id="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>')+'</div>';}
+  h+='<div class="opts" id="opts">';
+  for(i=0;i<opts.length;i++){h+='<button class="opt" type="button">'+esc(opts[i])+'</button>';}
+  h+='</div><div id="fb"></div>';
+  $('stage').innerHTML=h;
+  var bs=$('opts').getElementsByTagName('button');
+  for(i=0;i<bs.length;i++){bs[i].onclick=(function(b,txt){return function(){answerMC(it,txt,b);};})(bs[i],opts[i]);}
+}
+function answerMC(it,choice,btn){
+  if(st.locked){return;}
+  st.locked=true;
+  var ok=(choice===it.o[0]),bs=$('opts').getElementsByTagName('button'),i,full;
+  for(i=0;i<bs.length;i++){
+    bs[i].disabled=true;
+    if(bs[i].textContent===it.o[0]){bs[i].className='opt ok';}
+  }
+  if(!ok){btn.className='opt no';st.wrong.push(st.queue[st.pos]);}else{st.score++;}
+  full=it.s?it.s.replace('___',it.o[0]):it.o[0];
+  var g=$('gap');
+  if(g){g.textContent=choice;g.className='gap '+(ok?'ok':'no');}
+  $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Nicht ganz.')+'</strong> '+(ok?'':'Richtig ist: ')+'<span class="sol">'+esc(full)+'</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+  nextBtn();
+}
+/* ---------- Eintippen ---------- */
+function renderType(it){
+  var sec=D.sections[st.sec],tries=0,done=false,gapMode=it.s.indexOf('___')>=0,h,sent;
+  h=progress()+'<div class="q">'+esc(it.q||sec.q||(gapMode?'Schreibe die passende Form in die L\u00fccke.':'Der markierte Teil ist falsch. Schreibe ihn richtig.'))+'</div>';
+  if(gapMode){sent=esc(it.s).replace('___',inpHtml('inp',it.a));}
+  else{sent=esc(it.s).replace(/\{([^}]*)\}/,'<span class="wrongpart">$1</span>');}
+  h+='<div class="sent">'+sent+'</div>';
+  if(!gapMode){h+='<div class="fixrow"><label for="inp">Richtig:</label>'+inpHtml('inp',it.a)+'</div>';}
+  if(it.h){h+='<div class="hint">'+esc(it.h)+'</div>';}
+  h+=charBar()+'<div class="msg" id="msg"></div><div id="ctl"><button class="btn primary" id="chk" type="button">Pr\u00fcfen</button></div><div id="fb"></div>';
+  $('stage').innerHTML=h;
+  bindInputs(function(){if(!done){check();}});
+  st.last=$('inp');
+  try{$('inp').focus();}catch(e0){}
+  function finish(ok){
+    var full=gapMode?it.s.replace('___',it.a[0]):it.s.replace(/\{[^}]*\}/,it.a[0]);
+    done=true;st.locked=true;
+    $('inp').disabled=true;
+    if(!ok){$('inp').value=it.a[0];}
+    $('inp').className='inp '+(ok?'ok':'no');
+    $('ctl').innerHTML='';$('msg').textContent='';
+    $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Hier ist die L\u00f6sung:')+'</strong> <span class="sol">'+esc(full)+'</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+    nextBtn();
+  }
+  function check(){
+    var v=$('inp').value;
+    if(key(v)===''){$('msg').textContent='Schreibe zuerst eine Antwort.';return;}
+    tries++;
+    var good=sec.strict?exactAns(v,it.a):okAns(v,it.a),close=sec.strict&&!good&&okAns(v,it.a);
+    if(good){if(tries===1){st.score++;}finish(true);return;}
+    if(tries===1){st.wrong.push(st.queue[st.pos]);}
+    if(tries>=2){finish(false);return;}
+    $('inp').className='inp no';
+    $('msg').textContent=(close?'Fast: Achte auf Gro\u00df- und Kleinschreibung und auf Umlaute (\u00e4, \u00f6, \u00fc, \u00df). Du hast einen zweiten Versuch.':null)||'Noch nicht richtig. Tipp: '+(it.tip||sec.tip||'Pr\u00fcfe Subjekt, Zeit und Endung.')+' Du hast einen zweiten Versuch.';
+    try{$('inp').focus();$('inp').select();}catch(e1){}
+  }
+  $('chk').onclick=function(){if(!done){check();}};
+}
+/* ---------- Hören und schreiben ---------- */
+var curAudio=null;
+function stopAudio(){if(curAudio){try{curAudio.pause();}catch(e){}curAudio=null;}}
+function playAudio(src,rate,btn){
+  stopAudio();
+  var a;
+  try{a=new Audio(src);}catch(e){return;}
+  try{a.playbackRate=rate;if('preservesPitch' in a){a.preservesPitch=true;}else if('mozPreservesPitch' in a){a.mozPreservesPitch=true;}else if('webkitPreservesPitch' in a){a.webkitPreservesPitch=true;}}catch(e2){}
+  curAudio=a;
+  if(btn){btn.className=btn.className.replace(' on','')+' on';a.onended=function(){btn.className=btn.className.replace(' on','');};}
+  try{var p=a.play();if(p&&p.catch){p.catch(function(){if(btn){btn.className=btn.className.replace(' on','');}});}}catch(e3){}
+}
+function renderHear(it){
+  var sec=D.sections[st.sec],tries=0,done=false,strict=!!sec.strict,h,sent;
+  h=progress()+'<div class="q">'+esc(it.q||sec.q||'Höre den Satz und schreibe das fehlende Wort.')+'</div>';
+  h+='<div class="aud"><button type="button" class="main" id="pl">▶ Anhören</button><button type="button" id="pls">Langsam</button></div>';
+  sent=esc(it.s).replace('___',inpHtml('inp',it.a));
+  h+='<div class="sent">'+sent+'</div>';
+  if(it.h){h+='<div class="hint">'+esc(it.h)+'</div>';}
+  h+=charBar()+'<div class="msg" id="msg"></div><div id="ctl"><button class="btn primary" id="chk" type="button">Prüfen</button></div><div id="fb"></div>';
+  $('stage').innerHTML=h;
+  $('pl').onclick=function(){playAudio(it.au,1,$('pl'));};
+  $('pls').onclick=function(){playAudio(it.au,0.7,$('pls'));};
+  bindInputs(function(){if(!done){check();}});
+  st.last=$('inp');
+  try{$('inp').focus();}catch(e0){}
+  playAudio(it.au,1,$('pl'));
+  function exact(v){
+    var t=String(v).replace(/[.,!?;:"]/g,' ').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,''),i;
+    for(i=0;i<it.a.length;i++){if(it.a[i]===t){return true;}}
+    return false;
+  }
+  function finish(ok){
+    var full=it.s.replace('___',it.a[0]);
+    done=true;st.locked=true;stopAudio();
+    $('inp').disabled=true;
+    if(!ok){$('inp').value=it.a[0];}
+    $('inp').className='inp '+(ok?'ok':'no');
+    $('ctl').innerHTML='';$('msg').textContent='';
+    $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Hier ist die Lösung:')+'</strong> <span class="sol">'+esc(full)+'</span><div class="rule">'+esc(it.r)+'</div>'+(it.f?'<div class="rule">So haben TN es geschrieben: <span class="wrongtn">'+esc(it.f)+'</span></div>':'')+(it.a.length>1?'<div class="rule">Auch möglich: '+esc(it.a.slice(1).join(' · '))+'</div>':'')+'</div><button class="btn primary" id="next" type="button">Weiter</button>';
+    nextBtn();
+  }
+  function check(){
+    var v=$('inp').value,good,close;
+    if(key(v)===''){$('msg').textContent='Schreibe zuerst eine Antwort.';return;}
+    tries++;
+    good=strict?exactAns(v,it.a):okAns(v,it.a);
+    close=strict&&!good&&okAns(v,it.a);
+    if(good){if(tries===1){st.score++;}finish(true);return;}
+    if(tries===1){st.wrong.push(st.queue[st.pos]);}
+    if(tries>=2){finish(false);return;}
+    $('inp').className='inp no';
+    $('msg').textContent=(close?'Fast: Achte auf Groß- und Kleinschreibung und auf Umlaute (ä, ö, ü, ß). ':'Noch nicht richtig. Tipp: '+(it.tip||sec.tip||'Höre noch einmal.')+' Es beginnt mit «'+(strict?it.a[0].charAt(0).toLowerCase():it.a[0].charAt(0))+'». ')+'Du hast einen zweiten Versuch.';
+    try{$('inp').focus();$('inp').select();}catch(e1){}
+  }
+  $('chk').onclick=function(){if(!done){check();}};
+}
+/* ---------- Verbteile einsetzen (Lücken zwischen Wörtern) ---------- */
+function inList(l,x){var i;for(i=0;i<l.length;i++){if(l[i]===x){return true;}}return false;}
+function slotText(it){
+  var a=[],k,j,m,t,n=it.w.length,pcs=it.pc;
+  for(k=0;k<=n;k++){
+    m=[];
+    for(j=0;j<pcs.length;j++){if(pcs[j].g===k){m.push(j);}}
+    for(j=0;j<m.length;j++){
+      t='{'+pcs[m[j]].t+'}';
+      if(j===m.length-1&&inList(it.cm,k)){t+=',';}
+      a.push(t);
+    }
+    if(k<n){a.push(it.w[k]);}
+  }
+  return a.join(' ')+(it.p||'');
+}
+function renderSlot(it){
+  var n=it.w.length,np=it.pc.length,placed=[],sel,tries=0,done=false,marks={},order,k,g0=0,sec=D.sections[st.sec];
+  order=shuffle(range(np));
+  while(np>1&&sameOrder(order,range(np))&&g0<20){order=shuffle(range(np));g0++;}
+  function isPlaced(id){var q;for(q=0;q<placed.length;q++){if(placed[q].id===id){return true;}}return false;}
+  function firstFree(){var q;for(q=0;q<order.length;q++){if(!isPlaced(order[q])){return order[q];}}return -1;}
+  sel=firstFree();
+  var intro=np>1?'Setze alle Verbteile ein: Tippe zuerst ein Verbteil an, dann die Lücke zwischen zwei Wörtern. Ein eingesetztes Verbteil legst du durch Antippen zurück.':'Setze das Verb ein: Tippe zuerst das Verb an, dann die Lücke zwischen zwei Wörtern.';
+  $('stage').innerHTML=progress()+'<div class="q">'+esc(it.q||sec.q||intro)+'</div><div class="tray" id="tray"></div><div class="slotsent" id="ss"></div><div class="msg" id="msg"></div><div id="ctl"><button class="btn primary" id="chk" type="button">Prüfen</button></div><div id="fb"></div>';
+  function draw(){
+    var h='',q,j,t='',kind,cls;
+    for(q=0;q<order.length;q++){
+      if(!isPlaced(order[q])){
+        kind=it.pc[order[q]].k;
+        t+='<button class="pchip '+kind+(order[q]===sel?' sel':'')+'" type="button" data-id="'+order[q]+'"'+(done?' disabled':'')+'>'+esc(it.pc[order[q]].t)+'</button>';
+      }
+    }
+    if(t===''){t='<span class="hint">Alle Verbteile sind eingesetzt.</span>';}
+    $('tray').innerHTML=t;
+    for(q=0;q<=n;q++){
+      if(q>=1){
+        for(j=0;j<placed.length;j++){
+          if(placed[j].g===q){
+            kind=it.pc[placed[j].id].k;cls=marks[placed[j].id]||'';
+            h+='<button class="pp '+kind+' '+cls+'" type="button" data-id="'+placed[j].id+'"'+(done?' disabled':'')+'>'+esc(it.pc[placed[j].id].t)+'</button>';
+          }
+        }
+        h+='<button class="slot" type="button" data-i="'+q+'" aria-label="Lücke vor Wort '+(q+1)+'"'+(done?' disabled':'')+'></button>';
+        if(inList(it.cm,q)){h+='<span class="pc">,</span>';}
+      }
+      if(q<n){h+='<span class="w">'+esc(it.w[q])+'</span> ';}
+    }
+    h+=esc(it.p||'');
+    $('ss').innerHTML=h;
+    var tb=$('tray').getElementsByTagName('button'),sb=$('ss').getElementsByTagName('button');
+    for(q=0;q<tb.length;q++){tb[q].onclick=(function(b){return function(){if(done){return;}sel=parseInt(b.getAttribute('data-id'),10);$('msg').textContent='';draw();};})(tb[q]);}
+    for(q=0;q<sb.length;q++){
+      if(sb[q].className.indexOf('slot')===0){
+        sb[q].onclick=(function(b){return function(){
+          if(done){return;}
+          if(sel<0){$('msg').textContent='Alle Verbteile sind eingesetzt. Tippe ein Verbteil im Satz an, um es zu verschieben.';return;}
+          placed.push({id:sel,g:parseInt(b.getAttribute('data-i'),10)});
+          marks={};sel=firstFree();$('msg').textContent='';draw();
+        };})(sb[q]);
+      }else{
+        sb[q].onclick=(function(b){return function(){
+          if(done){return;}
+          var id=parseInt(b.getAttribute('data-id'),10),nw=[],z;
+          for(z=0;z<placed.length;z++){if(placed[z].id!==id){nw.push(placed[z]);}}
+          placed=nw;marks={};sel=id;$('msg').textContent='';draw();
+        };})(sb[q]);
+      }
+    }
+  }
+  function correctSeq(g){var r=[],j;for(j=0;j<np;j++){if(it.pc[j].g===g){r.push(j);}}return r;}
+  function evaluate(){
+    var allOk=true,q,j,idx,cs;
+    marks={};
+    for(q=0;q<placed.length;q++){
+      idx=0;
+      for(j=0;j<q;j++){if(placed[j].g===placed[q].g){idx++;}}
+      cs=correctSeq(placed[q].g);
+      if(cs[idx]===placed[q].id){marks[placed[q].id]='ok';}else{marks[placed[q].id]='no';allOk=false;}
+    }
+    return allOk&&placed.length===np;
+  }
+  function finish(ok){
+    var j;
+    done=true;st.locked=true;
+    placed=[];marks={};
+    for(j=0;j<np;j++){placed.push({id:j,g:it.pc[j].g});marks[j]='ok';}
+    sel=-1;draw();
+    $('ctl').innerHTML='';$('msg').textContent='';
+    $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Hier ist die Lösung:')+'</strong> <span class="sol">'+hl(slotText(it))+'</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+    nextBtn();
+  }
+  $('chk').onclick=function(){
+    if(done){return;}
+    if(placed.length<np){$('msg').textContent=np>1?'Setze zuerst alle Verbteile ein.':'Tippe zuerst auf eine Lücke zwischen zwei Wörtern.';return;}
+    tries++;
+    if(evaluate()){if(tries===1){st.score++;}finish(true);return;}
+    if(tries===1){st.wrong.push(st.queue[st.pos]);}
+    if(tries>=2){finish(false);return;}
+    draw();
+    $('msg').textContent='Noch nicht ganz richtig (rot markiert). Tipp: '+(it.tip||'Zähle die Satzglieder und achte auf die Satzart.')+' Tippe ein rotes Verbteil an, um es zu verschieben. Du hast einen zweiten Versuch.';
+  };
+  draw();
+}
+/* ---------- Fehlende Wörter finden und eintippen ---------- */
+var CATLAB={AR:['Artikel','Artikel'],SP:['Subjektpronomen','Subjektpronomen'],PP:['Pronomen','Pronomen'],HV:['Hilfsverb','Hilfsverben'],MV:['Modalverb','Modalverben'],PR:['Präposition','Präpositionen'],RP:['Reflexivpronomen','Reflexivpronomen'],KJ:['Einleitewort','Einleitewörter']};
+var CATORD=['AR','SP','PP','RP','HV','MV','PR','KJ'];
+function catCount(list){
+  var cnt={},k,c,parts=[],i;
+  for(k=0;k<list.length;k++){cnt[list[k].c]=(cnt[list[k].c]||0)+1;}
+  for(i=0;i<CATORD.length;i++){c=CATORD[i];if(cnt[c]){parts.push(cnt[c]+' '+CATLAB[c][cnt[c]===1?0:1]);}}
+  if(parts.length>1){return parts.slice(0,-1).join(', ')+' und '+parts[parts.length-1];}
+  return parts.join('');
+}
+function renderGaps(it){
+  var tries=0,done=false,entries={},fin={},N=it.m.length,miss={},q,sec=D.sections[st.sec],lastFalse=0;
+  function mk(p,i){return p+'_'+i;}
+  for(q=0;q<N;q++){miss[mk(it.m[q].p,it.m[q].i)]=it.m[q];}
+  var h=progress()+'<div class="q">'+esc(it.q||sec.q||'In diesem Text fehlen Wörter. Tippe auf die Lücke zwischen zwei Wörtern, wo ein Wort fehlt, und schreibe das Wort. Mit × nimmst du eine Eingabe zurück.')+'</div>';
+  h+='<div class="ttl">'+esc(it.title)+'</div><div class="hint">Im Text fehlen <strong>'+N+' Wörter</strong>: '+esc(catCount(it.m))+'.</div>';
+  h+='<div class="gtxt" id="gt"></div>'+charBar()+'<div class="msg" id="msg"></div><div id="ctl"><button class="btn primary" id="chk" type="button">Prüfen</button></div><div id="fb"></div>';
+  $('stage').innerHTML=h;
+  function draw(focusKey){
+    var out='',p,j,key,e,cls,len,dis,m;
+    for(p=0;p<it.paras.length;p++){
+      out+='<p>';
+      for(j=0;j<it.paras[p].length;j++){
+        key=mk(p,j);
+        if(j>=1){
+          if(done){
+            m=miss[key];
+            if(m){out+='<span class="gans'+(fin[key]==='ok'?'':' no')+'">'+esc(m.a[0])+'</span> ';}
+          }else if(entries[key]){
+            e=entries[key];cls=e.s||'';dis=(e.s==='ok');len=Math.max(4,e.v.length+2);
+            out+='<span class="gent"><input class="gin '+cls+'" type="text" data-k="'+key+'" value="'+esc(e.v)+'" style="width:'+len+'ch;min-width:5em" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"'+(dis?' disabled':'')+'>'+(dis?'':'<button class="gx" type="button" data-k="'+key+'" aria-label="Eingabe entfernen">×</button>')+'</span> ';
+          }else{
+            out+='<button class="gslot" type="button" data-k="'+key+'" aria-label="Lücke vor Wort '+(j+1)+'"></button>';
+          }
+        }
+        out+='<span class="w">'+esc(it.paras[p][j])+'</span> ';
+      }
+      out+='</p>';
+    }
+    $('gt').innerHTML=out;
+    var ss=$('gt').getElementsByTagName('button'),ii=$('gt').getElementsByTagName('input'),z;
+    for(z=0;z<ss.length;z++){
+      if(ss[z].className==='gslot'){
+        ss[z].onclick=(function(b){return function(){if(done){return;}entries[b.getAttribute('data-k')]={v:'',s:''};$('msg').textContent='';draw(b.getAttribute('data-k'));};})(ss[z]);
+      }else{
+        ss[z].onclick=(function(b){return function(){if(done){return;}delete entries[b.getAttribute('data-k')];$('msg').textContent='';draw();};})(ss[z]);
+      }
+    }
+    for(z=0;z<ii.length;z++){
+      ii[z].onfocus=(function(x){return function(){st.last=x;};})(ii[z]);
+      ii[z].oninput=(function(x){return function(){var k=x.getAttribute('data-k');entries[k].v=x.value;entries[k].s='';x.className='gin';x.style.width=Math.max(4,x.value.length+2)+'ch';};})(ii[z]);
+      ii[z].onkeydown=function(ev){ev=ev||window.event;if((ev.keyCode||ev.which)===13){if(ev.preventDefault){ev.preventDefault();}this.blur();return false;}};
+    }
+    if(focusKey){
+      for(z=0;z<ii.length;z++){if(ii[z].getAttribute('data-k')===focusKey){try{ii[z].focus();}catch(e2){}st.last=ii[z];}}
+    }
+  }
+  var cb=$('chars').getElementsByTagName('button'),cz;
+  for(cz=0;cz<cb.length;cz++){
+    cb[cz].onmousedown=function(ev){ev=ev||window.event;if(ev.preventDefault){ev.preventDefault();}};
+    cb[cz].onclick=(function(b){return function(){
+      var t=st.last,c=b.getAttribute('data-c'),a,e,v,k;
+      if(!t||t.disabled||!t.parentNode){return;}
+      v=t.value;k=t.getAttribute('data-k');
+      try{a=t.selectionStart;e=t.selectionEnd;if(typeof a==='number'){t.value=v.slice(0,a)+c+v.slice(e);entries[k].v=t.value;t.focus();t.setSelectionRange(a+1,a+1);return;}}catch(x){}
+      t.value=v+c;entries[k].v=t.value;t.focus();
+    };})(cb[cz]);
+  }
+  function context(m){
+    var w=it.paras[m.p],a=w.slice(Math.max(0,m.i-3),m.i).join(' '),b=w.slice(m.i,m.i+3).join(' ');
+    return '… '+a+' <strong>['+esc(m.a[0])+']</strong> '+b+' …';
+  }
+  function finish(allOk){
+    var l='<ol>',k,m,key;
+    done=true;st.locked=true;
+    for(k=0;k<N;k++){
+      m=it.m[k];key=mk(m.p,m.i);
+      l+='<li>'+(fin[key]==='ok'?'✓ ':'✗ ')+'<span class="sol">'+esc(m.a[0])+'</span> ('+esc(CATLAB[m.c][0])+')<br><small>'+context(m)+'<br>'+esc(m.r)+'</small></li>';
+    }
+    l+='</ol>';
+    if(lastFalse>0){l+='<p><small>'+lastFalse+(lastFalse===1?' Eingabe stand':' Eingaben standen')+' an einer Stelle, an der kein Wort fehlt.</small></p>';}
+    $('ctl').innerHTML='';$('msg').textContent='';
+    draw();
+    $('fb').innerHTML='<div class="fb '+(allOk?'ok':'no')+'"><strong>'+(allOk?'Alles gefunden und richtig!':'Das sind die fehlenden Wörter:')+'</strong>'+l+'</div><button class="btn primary" id="next" type="button">Weiter</button>';
+    nextBtn();
+  }
+  function check(){
+    var keys=[],k,key,e,m,nOk=0,wrong=[],falseK=[],missed=[],any=false,parts=[];
+    for(key in entries){if(entries.hasOwnProperty(key)&&norm(entries[key].v)!==''){any=true;}}
+    if(!any){$('msg').textContent='Tippe zuerst auf eine Lücke und schreibe das fehlende Wort.';return;}
+    tries++;
+    fin={};
+    for(k=0;k<N;k++){
+      m=it.m[k];key=mk(m.p,m.i);e=entries[key];
+      if(e&&norm(e.v)!==''){
+        if(okAns(e.v,m.a)){nOk++;e.s='ok';fin[key]='ok';}else{wrong.push(m);e.s='no';fin[key]='no';}
+      }else{missed.push(m);fin[key]='no';}
+    }
+    for(key in entries){
+      if(entries.hasOwnProperty(key)&&norm(entries[key].v)!==''&&!miss[key]){falseK.push(key);entries[key].s='no';}
+    }
+    lastFalse=falseK.length;
+    if(tries===1){
+      st.score+=nOk;st.fa+=falseK.length;
+      for(k=0;k<wrong.length;k++){st.wrongGaps.push({a:wrong[k].a[0],r:wrong[k].r});}
+      for(k=0;k<missed.length;k++){st.wrongGaps.push({a:missed[k].a[0],r:missed[k].r});}
+      if(wrong.length+missed.length+falseK.length>0){st.wrong.push(st.queue[st.pos]);}
+    }
+    if(wrong.length===0&&missed.length===0&&falseK.length===0){finish(true);return;}
+    if(tries>=2){finish(false);return;}
+    if(wrong.length>0){parts.push(wrong.length+(wrong.length===1?' Wort steht in der richtigen Lücke, ist aber falsch':' Wörter stehen in der richtigen Lücke, sind aber falsch')+' (rot).');}
+    if(falseK.length>0){parts.push(falseK.length+(falseK.length===1?' Eingabe steht':' Eingaben stehen')+' an einer Stelle, an der kein Wort fehlt (rot). Nimm sie mit × zurück.');}
+    if(missed.length>0){parts.push('Es fehlen noch '+catCount(missed)+'.');}
+    $('msg').textContent=parts.join(' ')+' Du hast einen zweiten Versuch.';
+    draw();
+  }
+  $('chk').onclick=function(){if(!done){check();}};
+  draw();
+}
+/* ---------- Umlaute: Wörter antippen ---------- */
+function renderMarks(it){
+  var tries=0,done=false,sel={},fin={},N=0,sec=D.sections[st.sec],p,j,lastFalse=0;
+  function mk(p,j){return p+'_'+j;}
+  for(p=0;p<it.paras.length;p++){for(j=0;j<it.paras[p].length;j++){if(it.paras[p][j].e){N++;}}}
+  var h=progress()+'<div class="q">'+esc(it.q||sec.q||'Tippe jedes Wort an, in dem ein Umlaut fehlt oder zu viel geschrieben wurde. Tippe ein markiertes Wort noch einmal an, um die Markierung zu entfernen.')+'</div>';
+  h+='<div class="ttl">'+esc(it.title)+'</div><div class="hint">Im Text sind <strong>'+N+' Wörter</strong> falsch geschrieben.</div>';
+  h+='<div class="mtxt" id="mt"></div><div class="msg" id="msg"></div><div id="ctl"><button class="btn primary" id="chk" type="button">Prüfen</button></div><div id="fb"></div>';
+  $('stage').innerHTML=h;
+  function draw(){
+    var out='',p2,j2,k,tk,cls,lab;
+    for(p2=0;p2<it.paras.length;p2++){
+      out+='<p>';
+      for(j2=0;j2<it.paras[p2].length;j2++){
+        tk=it.paras[p2][j2];k=mk(p2,j2);
+        cls='wd';
+        if(done){
+          if(tk.e){cls+=(fin[k]==='ok'?' ok':' miss');}else if(sel[k]){cls+=' no';}
+        }else if(fin[k]==='ok'){cls+=' ok';}
+        else if(fin[k]==='no'&&sel[k]){cls+=' no sel';}
+        else if(sel[k]){cls+=' sel';}
+        lab='';
+        if(done&&tk.e){lab='<span class="fx">'+esc(tk.e.c)+'</span>';}
+        out+='<button type="button" class="'+cls+'" data-k="'+k+'"'+((done||fin[k]==='ok')?' disabled':'')+'>'+esc(tk.t)+lab+'</button> ';
+      }
+      out+='</p>';
+    }
+    $('mt').innerHTML=out;
+    var bs=$('mt').getElementsByTagName('button'),z;
+    for(z=0;z<bs.length;z++){
+      bs[z].onclick=(function(b){return function(){
+        var kk=b.getAttribute('data-k');
+        if(done||fin[kk]==='ok'){return;}
+        if(sel[kk]){delete sel[kk];if(fin[kk]==='no'){delete fin[kk];}}else{sel[kk]=1;}
+        $('msg').textContent='';
+        draw();
+      };})(bs[z]);
+    }
+  }
+  function finish(allOk){
+    var l='<ol>',p3,j3,tk,k;
+    done=true;st.locked=true;
+    for(p3=0;p3<it.paras.length;p3++){for(j3=0;j3<it.paras[p3].length;j3++){
+      tk=it.paras[p3][j3];k=mk(p3,j3);
+      if(tk.e){l+='<li>'+(fin[k]==='ok'?'✓ ':'✗ ')+'<span class="wrongtn">'+esc(tk.t.replace(/[.,!?;:]+$/,''))+'</span> → <span class="sol">'+esc(tk.e.c)+'</span> ('+(tk.e.k==='M'?'Umlaut fehlt':'Umlaut zu viel')+')<br><small>'+esc(tk.e.r)+'</small></li>';}
+    }}
+    l+='</ol>';
+    if(lastFalse>0){l+='<p><small>'+lastFalse+(lastFalse===1?' Wort war':' Wörter waren')+' markiert, aber richtig geschrieben (rot).</small></p>';}
+    $('ctl').innerHTML='';$('msg').textContent='';
+    draw();
+    $('fb').innerHTML='<div class="fb '+(allOk?'ok':'no')+'"><strong>'+(allOk?'Alle Fehler gefunden!':'So sehen die Fehler aus:')+'</strong>'+l+'</div><button class="btn primary" id="next" type="button">Weiter</button>';
+    nextBtn();
+  }
+  function check(){
+    var p3,j3,tk,k,any=false,nOk=0,falseN=0,missN=0,parts=[],key,newOk=0;
+    for(key in sel){if(sel.hasOwnProperty(key)){any=true;}}
+    if(!any){$('msg').textContent='Tippe zuerst die Wörter an, die du für falsch hältst.';return;}
+    tries++;
+    for(p3=0;p3<it.paras.length;p3++){for(j3=0;j3<it.paras[p3].length;j3++){
+      tk=it.paras[p3][j3];k=mk(p3,j3);
+      if(tk.e){
+        if(sel[k]){if(fin[k]!=='ok'){newOk++;}fin[k]='ok';nOk++;}else{missN++;}
+      }else if(sel[k]){falseN++;fin[k]='no';}
+    }}
+    lastFalse=falseN;
+    if(tries===1){
+      st.score+=newOk;st.fa+=falseN;
+      for(p3=0;p3<it.paras.length;p3++){for(j3=0;j3<it.paras[p3].length;j3++){
+        tk=it.paras[p3][j3];k=mk(p3,j3);
+        if(tk.e&&fin[k]!=='ok'){st.wrongGaps.push({a:tk.e.c,r:tk.e.r});}
+      }}
+      if(missN+falseN>0){st.wrong.push(st.queue[st.pos]);}
+    }
+    if(missN===0&&falseN===0){finish(true);return;}
+    if(tries>=2){finish(false);return;}
+    parts.push(nOk+(nOk===1?' Fehler richtig gefunden (grün).':' Fehler richtig gefunden (grün).'));
+    if(falseN>0){parts.push(falseN+(falseN===1?' Wort ist richtig geschrieben (rot). Tippe es an, um die Markierung zu entfernen.':' Wörter sind richtig geschrieben (rot). Tippe sie an, um die Markierungen zu entfernen.'));}
+    if(missN>0){parts.push('Noch '+missN+(missN===1?' Fehler fehlt.':' Fehler fehlen.'));}
+    $('msg').textContent=parts.join(' ')+' Du hast einen zweiten Versuch.';
+    draw();
+  }
+  $('chk').onclick=function(){if(!done){check();}};
+  draw();
+}
+/* ---------- Adjektivendung: ja/nein und welche? ---------- */
+function renderEnd(it){
+  var sec=D.sections[st.sec],mode=sec.mode,stage=(mode==='b')?2:1,okAll=true,done=false;
+  var needs=(it.e!=='');
+  function gapHtml(final,cls){
+    return '<span class="adjgap'+(cls?' '+cls:'')+'" id="gap">'+esc(it.adj)+(final===null?'<span class="ge">&nbsp;&nbsp;&nbsp;</span>':'<span class="en">'+esc(final)+'</span>')+'</span>';
+  }
+  function frame(q,opts,row){
+    var h=progress()+'<div class="q">'+esc(q)+'</div><div class="sent">'+esc(it.s).replace('___',gapHtml(null))+'</div><div class="opts'+(row?' row':'')+'" id="opts">',i;
+    for(i=0;i<opts.length;i++){h+='<button class="opt" type="button" data-v="'+esc(opts[i].v)+'">'+esc(opts[i].t)+'</button>';}
+    h+='</div><div id="fb"></div>';
+    $('stage').innerHTML=h;
+  }
+  function finish(ok){
+    var full=it.s.replace('___',it.adj+it.e),bs=$('opts').getElementsByTagName('button'),i;
+    done=true;st.locked=true;
+    for(i=0;i<bs.length;i++){bs[i].disabled=true;}
+    $('gap').outerHTML=gapHtml(it.e,ok?'ok':'no');
+    if(ok){st.score++;}else{st.wrong.push(st.queue[st.pos]);}
+    $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Nicht ganz.')+'</strong> '+(ok?'':'Richtig ist: ')+'<span class="sol">'+esc(full)+'</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+    nextBtn();
+  }
+  function stage1(){
+    frame('Braucht das Adjektiv ('+it.adj+') eine Endung?',[{v:'none',t:'Keine Endung'},{v:'end',t:'Endung nötig'}],true);
+    var bs=$('opts').getElementsByTagName('button'),i;
+    for(i=0;i<bs.length;i++){bs[i].onclick=(function(b){return function(){
+      if(done){return;}
+      var c=b.getAttribute('data-v'),ok=((c==='none')===(!needs)),k,all=$('opts').getElementsByTagName('button');
+      for(k=0;k<all.length;k++){
+        all[k].disabled=true;
+        if((all[k].getAttribute('data-v')==='none')===(!needs)){all[k].className='opt ok';}
+      }
+      if(!ok){b.className='opt no';finish(false);return;}
+      if(!needs||mode==='a'){finish(true);return;}
+      setTimeout(stage2,450);
+    };})(bs[i]);}
+  }
+  function stage2(){
+    var ens=['e','en','er','es','em'],opts=[],i;
+    for(i=0;i<ens.length;i++){opts.push({v:ens[i],t:'-'+ens[i]});}
+    frame('Welche Endung braucht das Adjektiv ('+it.adj+')?',opts,true);
+    var bs=$('opts').getElementsByTagName('button');
+    for(i=0;i<bs.length;i++){bs[i].onclick=(function(b){return function(){
+      if(done){return;}
+      var c=b.getAttribute('data-v'),ok=(c===it.e),k,all=$('opts').getElementsByTagName('button');
+      for(k=0;k<all.length;k++){
+        all[k].disabled=true;
+        if(all[k].getAttribute('data-v')===it.e){all[k].className='opt ok';}
+      }
+      if(!ok){b.className='opt no';}
+      finish(ok);
+    };})(bs[i]);}
+  }
+  if(stage===2){stage2();}else{stage1();}
+}
+/* ---------- Satzbausteine ---------- */
+function renderBuild(it){
+  var chips=[],i,order,tries=0,placed=[],done=false;
+  for(i=0;i<it.ch.length;i++){chips.push({id:i,t:it.ch[i]});}
+  order=shuffle(range(chips.length));
+  var guard=0;
+  while(chips.length>1&&sameOrder(order,range(chips.length))&&guard<20){order=shuffle(range(chips.length));guard++;}
+  $('stage').innerHTML=progress()+'<div class="q">'+esc(it.q||'Bilde den Satz. Tippe die Bausteine in der richtigen Reihenfolge an. Tippe einen gesetzten Baustein an, um ihn zurückzulegen.')+'</div><div class="build" id="build"></div><div class="pool" id="pool"></div><div class="msg" id="msg"></div><div id="ctl"></div><div id="fb"></div>';
+  function inPlaced(id){var k;for(k=0;k<placed.length;k++){if(placed[k]===id){return true;}}return false;}
+  function draw(){
+    var h='<span class="fixed">'+esc(it.st)+'</span>',k,p='';
+    for(k=0;k<placed.length;k++){h+='<button class="chip placed" type="button" data-id="'+placed[k]+'">'+esc(chips[placed[k]].t)+'</button>';}
+    h+='<span class="fixed">.</span>';
+    $('build').innerHTML=h;
+    for(k=0;k<order.length;k++){if(!inPlaced(order[k])){p+='<button class="chip" type="button" data-id="'+order[k]+'">'+esc(chips[order[k]].t)+'</button>';}}
+    $('pool').innerHTML=p;
+    var bb=$('build').getElementsByTagName('button'),pb=$('pool').getElementsByTagName('button');
+    for(k=0;k<bb.length;k++){bb[k].onclick=(function(b){return function(){if(done){return;}var id=parseInt(b.getAttribute('data-id'),10),n=[],j;for(j=0;j<placed.length;j++){if(placed[j]!==id){n.push(placed[j]);}}placed=n;$('msg').textContent='';draw();};})(bb[k]);}
+    for(k=0;k<pb.length;k++){pb[k].onclick=(function(b){return function(){if(done){return;}placed.push(parseInt(b.getAttribute('data-id'),10));$('msg').textContent='';draw();};})(pb[k]);}
+    if(!done){
+      $('ctl').innerHTML='<button class="btn primary" id="chk" type="button">Prüfen</button><button class="btn" id="rst" type="button">Zurücksetzen</button>';
+      $('chk').onclick=check;
+      $('rst').onclick=function(){placed=[];$('msg').textContent='';draw();};
+    }
+  }
+  function finish(ok){
+    done=true;st.locked=true;
+    $('ctl').innerHTML='';
+    $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Hier ist die Lösung:')+'</strong> <span class="sol">'+hl(it.a[0])+'.</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+    draw();
+    nextBtn();
+  }
+  function check(){
+    var k,s,ok=false,parts=[];
+    if(placed.length<chips.length){$('msg').textContent='Setze zuerst alle Bausteine ein.';return;}
+    for(k=0;k<placed.length;k++){parts.push(chips[placed[k]].t);}
+    s=norm(it.st+' '+parts.join(' '));
+    for(k=0;k<it.a.length;k++){if(norm(it.a[k])===s){ok=true;}}
+    tries++;
+    if(ok){if(tries===1){st.score++;}finish(true);return;}
+    if(tries===1){st.wrong.push(st.queue[st.pos]);}
+    if(tries>=2){finish(false);return;}
+    $('msg').innerHTML='Noch nicht richtig. Tipp: '+esc(it.r)+' Du hast einen zweiten Versuch.';
+  }
+  draw();
+}
+/* ---------- Lückentext ---------- */
+function gAns(g){return g.a?g.a[0]:g.o[0];}
+function renderCloze(it){
+  var paras=it.t.split('\n\n'),i,tries=0,done=false,html,typed=false;
+  for(i=0;i<it.g.length;i++){if(it.g[i].a){typed=true;}}
+  html=progress()+'<div class="q">'+esc(it.q||(typed?'Schreibe in jede Lücke die passende Form. Der Hinweis steht in Klammern.':'Wähle in jeder Lücke die passende Form.'))+'</div>';
+  if(it.title){html+='<div class="ttl">'+esc(it.title)+'</div>';}
+  html+='<div class="cloze">';
+  for(i=0;i<paras.length;i++){
+    html+='<p>'+esc(paras[i]).replace(/\[\[(\d+)\]\]/g,function(m,n){
+      var g=it.g[parseInt(n,10)-1],opts,o,k;
+      if(g.a){return '<input class="inp" type="text" data-g="'+n+'" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" style="width:'+(Math.max(4,g.a[0].length)+3)+'ch;min-width:5em">'+(g.h?'<span class="gh">('+esc(g.h)+')</span>':'');}
+      opts=shuffle(g.o);o='<select class="sel" data-g="'+n+'"><option value="">…</option>';
+      for(k=0;k<opts.length;k++){o+='<option value="'+esc(opts[k])+'">'+esc(opts[k])+'</option>';}
+      return o+'</select>';
+    })+'</p>';
+  }
+  html+='</div>'+(typed?charBar():'')+'<div class="msg" id="msg"></div><div id="ctl"><button class="btn primary" id="chk" type="button">Prüfen</button></div><div id="fb"></div>';
+  $('stage').innerHTML=html;
+  function ctrls(){return $('stage').querySelectorAll('select.sel, input.inp');}
+  if(typed){bindInputs(function(){if(!done){check();}});var f0=$('stage').querySelector('input.inp');if(f0){st.last=f0;try{f0.focus();}catch(e0){}}}
+  function finish(allOk){
+    var cs=ctrls(),k,l='<ol>';
+    done=true;st.locked=true;
+    for(k=0;k<cs.length;k++){cs[k].disabled=true;}
+    for(k=0;k<it.g.length;k++){l+='<li><span class="sol">'+esc(gAns(it.g[k]))+'</span>: '+esc(it.g[k].r)+'</li>';}
+    l+='</ol>';
+    $('ctl').innerHTML='';
+    $('msg').textContent='';
+    $('fb').innerHTML='<div class="fb '+(allOk?'ok':'no')+'"><strong>'+(allOk?'Alles richtig!':'Hier sind die Lösungen:')+'</strong>'+l+'</div><button class="btn primary" id="next" type="button">Weiter</button>';
+    nextBtn();
+  }
+  function check(){
+    var cs=ctrls(),k,n,g,ok,nOk=0,bad=0,isIn,val;
+    for(k=0;k<cs.length;k++){if(key(cs[k].value)===''){$('msg').textContent='Fülle zuerst alle Lücken aus.';return;}}
+    tries++;
+    for(k=0;k<cs.length;k++){
+      n=parseInt(cs[k].getAttribute('data-g'),10);g=it.g[n-1];
+      isIn=(cs[k].tagName.toLowerCase()==='input');
+      val=cs[k].value;
+      ok=g.a?okAns(val,g.a):(val===g.o[0]);
+      if(!ok&&tries>=2){cs[k].value=gAns(g);}
+      cs[k].className=(isIn?'inp ':'sel ')+(ok?'ok':'no');
+      if(ok){nOk++;}else{bad++;if(tries===1){st.wrongGaps.push({a:gAns(g),r:g.r});}}
+    }
+    if(tries===1){st.score+=nOk;}
+    if(bad===0){finish(true);return;}
+    if(tries>=2){finish(false);return;}
+    $('msg').textContent=bad+(bad===1?' Lücke ist':' Lücken sind')+' noch falsch (rot). Versuche es noch einmal.'+(it.tip?' Tipp: '+it.tip:'');
+  }
+  $('chk').onclick=function(){if(!done){check();}};
+}
+/* ---------- Auswertung ---------- */
+function solText(it){
+  if(it.m){return esc(it.title);}
+  if(it.adj!==undefined){return esc(it.s.replace('___',it.adj+it.e));}
+  if(it.w){return hl(slotText(it));}
+  if(it.st){return hl(it.a[0])+'.';}
+  if(it.o){return esc(it.s?it.s.replace('___',it.o[0]):it.o[0]);}
+  return esc(it.s.indexOf('___')>=0?it.s.replace('___',it.a[0]):it.s.replace(/\{[^}]*\}/,it.a[0]));
+}
+function renderSummary(){
+  var s=D.sections[st.sec],pct=Math.round(st.score/st.total*100),h,i,msg,isG=(s.type==='gaps'||s.type==='marks');
+  if(!st.subset){st.results[st.sec]=st.score+'/'+st.total;}
+  renderTabs();
+  msg=pct>=90?'Sehr sicher!':(pct>=70?'Gut. Die Wiederholung der Fehler lohnt sich.':'Weiter üben: Wiederhole zuerst die Merkhilfe und dann die Fehler.');
+  h='<div class="sum"><h2>'+st.score+' von '+st.total+' '+(s.type==='cloze'?'Lücken':(s.type==='gaps'?'fehlenden Wörtern':(s.type==='marks'?'Fehlern':'Aufgaben')))+' beim ersten Versuch richtig ('+pct+' %)</h2><p>'+msg+'</p>';
+  if(s.type==='gaps'&&st.fa>0){h+='<p>Stellen markiert, an denen kein Wort fehlte: '+st.fa+'</p>';}
+  if(s.type==='marks'&&st.fa>0){h+='<p>Wörter markiert, die richtig geschrieben waren: '+st.fa+'</p>';}
+  if((s.type==='cloze'||isG)&&st.wrongGaps.length){
+    h+='<p><strong>Das solltest du noch einmal ansehen:</strong></p><ul>';
+    for(i=0;i<st.wrongGaps.length;i++){h+='<li><span class="sol">'+esc(st.wrongGaps[i].a)+'</span><br><small>'+esc(st.wrongGaps[i].r)+'</small></li>';}
+    h+='</ul>';
+  }
+  if(st.wrong.length){
+    if(!isG){
+      h+='<p><strong>Das solltest du noch einmal ansehen:</strong></p><ul>';
+      for(i=0;i<st.wrong.length;i++){var it=s.items[st.wrong[i]];h+='<li>'+solText(it)+'<br><small>'+esc(it.r)+'</small></li>';}
+      h+='</ul>';
+    }
+    h+='<button class="btn primary" id="again" type="button">'+(isG?'Texte mit Fehlern wiederholen':'Fehler wiederholen')+'</button>';
+  }
+  h+='<button class="btn" id="restart" type="button">Abschnitt neu mischen</button>';
+  if(st.sec<D.sections.length-1){h+='<button class="btn" id="nextsec" type="button">Nächster Abschnitt</button>';}
+  h+='</div>';
+  $('stage').innerHTML=h;
+  if($('again')){var w=st.wrong.slice();$('again').onclick=function(){startSection(st.sec,w);};}
+  $('restart').onclick=function(){startSection(st.sec,null);};
+  if($('nextsec')){$('nextsec').onclick=function(){startSection(st.sec+1,null);};}
+}
+document.getElementById('title').textContent=D.title;
+document.getElementById('sub').textContent=D.sub;
+window.__DTB={D:D,st:st,start:startSection};
+startSection(0,null);
+})();
+</script>
+</body>
+</html>
