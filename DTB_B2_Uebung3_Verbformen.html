@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verbformen und feste Wendungen sicher schreiben</title>
+<style>
+:root{--bg:#f4f6f9;--card:#ffffff;--tx:#1b2230;--mut:#5b6577;--ac:#2354c4;--acbg:#e8eefb;--ok:#17754a;--okbg:#e3f5ec;--no:#b3261e;--nobg:#fdebe9;--bd:#d5dbe6;--vb:#fff0bd;--vbd:#e2b92e}
+@media (prefers-color-scheme:dark){:root{--bg:#12161d;--card:#1b212c;--tx:#e8ecf3;--mut:#a3adbf;--ac:#7fa6ff;--acbg:#243250;--ok:#6fd3a0;--okbg:#17352a;--no:#ff9a92;--nobg:#3a1f1d;--bd:#323b4d;--vb:#4a3f12;--vbd:#b99a2a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:17px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:780px;margin:0 auto;padding:16px}
+h1{font-size:1.45rem;margin:4px 0 2px}
+.sub{color:var(--mut);margin:0 0 12px;font-size:.95rem}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px}
+.tab{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:9px 12px;border-radius:10px;font-size:.92rem;cursor:pointer;min-height:44px;text-align:left}
+.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.badge{display:inline-block;margin-left:6px;padding:0 7px;border-radius:9px;background:var(--okbg);color:var(--ok);font-size:.8rem}
+.tab.on .badge{background:#fff;color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;margin:10px 0}
+.intro{color:var(--mut);font-size:.95rem;margin:0 0 10px}
+.bar{height:8px;background:var(--bd);border-radius:6px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;background:var(--ac);width:0}
+.cnt{font-size:.85rem;color:var(--mut);margin-bottom:10px}
+.q{font-size:.9rem;color:var(--mut);margin-bottom:6px}
+.sent{font-size:1.2rem;margin:4px 0 14px}
+.gap{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--ac);text-align:center;font-weight:700}
+.gap.ok{color:var(--ok);border-color:var(--ok)}.gap.no{color:var(--no);border-color:var(--no)}
+.opts{display:grid;gap:10px}
+.opt{border:2px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:12px 14px;font-size:1.02rem;text-align:left;cursor:pointer;min-height:48px}
+.opt:hover{border-color:var(--ac)}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.no{border-color:var(--no);background:var(--nobg)}
+.opt[disabled]{cursor:default}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px}
+.fb.ok{background:var(--okbg);border:1px solid var(--ok)}
+.fb.no{background:var(--nobg);border:1px solid var(--no)}
+.sol{font-weight:700}
+.rule{margin-top:6px;font-size:.95rem}
+.btn{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:11px 16px;border-radius:10px;font-size:1rem;cursor:pointer;min-height:46px;margin:12px 8px 0 0}
+.btn.primary{background:var(--ac);border-color:var(--ac);color:#fff}
+.build{border:2px dashed var(--bd);border-radius:12px;padding:10px;min-height:62px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:50px}
+.chip{border:2px solid var(--ac);background:var(--acbg);color:var(--tx);border-radius:10px;padding:8px 12px;font-size:1.02rem;cursor:pointer;min-height:44px}
+.chip.placed{background:var(--card)}
+.fixed{font-weight:700;padding:8px 4px}
+.v{background:var(--vb);border-bottom:2px solid var(--vbd);padding:0 3px;border-radius:3px}
+.msg{color:var(--no);min-height:1.4em;font-size:.95rem;margin:4px 0}
+details.merk{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;margin:8px 0}
+details.merk summary{cursor:pointer;font-weight:600;min-height:32px}
+.tbl{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;font-size:.92rem;min-width:420px}
+th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left}
+th{background:var(--acbg)}
+.sum h2{margin:0 0 6px}
+.sum ul{padding-left:20px}
+.sum li{margin:8px 0}
+.ttl{font-weight:700;margin-bottom:6px}
+.cloze p{line-height:2.4;margin:0 0 10px}
+.sel{font:inherit;font-size:1rem;padding:4px 6px;border:2px solid var(--ac);border-radius:8px;background:var(--card);color:var(--tx);max-width:100%;min-height:40px}
+.sel.ok{border-color:var(--ok);background:var(--okbg)}
+.sel.no{border-color:var(--no);background:var(--nobg)}
+.fb ol{margin:8px 0 0;padding-left:22px}
+.inp{font:inherit;font-size:1.05rem;padding:4px 8px;border:2px solid var(--ac);border-radius:8px;background:var(--card);color:var(--tx);min-height:40px;max-width:100%;text-align:center}
+.inp.ok{border-color:var(--ok);background:var(--okbg)}
+.inp.no{border-color:var(--no);background:var(--nobg)}
+.inp:disabled{opacity:1;color:var(--tx)}
+.gh{color:var(--mut);font-size:.82rem;margin:0 4px 0 3px;white-space:nowrap}
+.hint{display:inline-block;margin:0 0 10px;padding:3px 10px;border-radius:9px;background:var(--acbg);color:var(--tx);font-size:.92rem}
+.wrongpart{background:var(--nobg);border-bottom:2px solid var(--no);padding:0 3px;border-radius:3px}
+.fixrow{margin:6px 0 10px}
+.fixrow label{font-size:.92rem;color:var(--mut);margin-right:6px}
+.chars{margin:4px 0 0}
+.chars button{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;min-width:42px;min-height:40px;font-size:1.05rem;margin:0 6px 4px 0;cursor:pointer}
+footer{color:var(--mut);font-size:.8rem;margin:18px 0 6px}
+@media (max-width:520px){.sent{font-size:1.1rem}.tab{font-size:.88rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1 id="title"></h1>
+<p class="sub" id="sub"></p>
+<div class="tabs" id="tabs"></div>
+<p class="intro" id="intro"></p>
+<div id="merk"></div>
+<div class="card" id="stage"></div>
+<footer>Deutsch-Test für den Beruf B2 · Schreiben · Übungsmaterial · läuft offline im Browser</footer>
+</div>
+<script>
+(function(){
+var D = {"title": "Verbformen und feste Wendungen sicher schreiben", "sub": "DTB B2 · Schreiben · Eintippen: Perfekt, Kongruenz, Modalverben, Passiv, Verb + Präposition und Kollokationen (Beschwerdeantwort und Forumsbeitrag)", "sections": [{"title": "Perfekt und Partizip II", "type": "type", "intro": "Schreibe die richtige Form in die Lücke. Beachte Präfixe und trennbare Verben.", "tip": "Prüfe: ge- oder kein ge-? Trennbares Verb? Endung -t oder -en?", "merk": "<div class=\"tbl\"><table><tr><th>Typ</th><th>Partizip II</th><th>Beispiele</th></tr>\n<tr><td>regelmäßig</td><td>ge- … -t</td><td>gemacht, geliefert, geprüft; Stamm auf -t/-d: gewartet, angemeldet</td></tr>\n<tr><td>unregelmäßig</td><td>ge- … -en</td><td>gesprochen, gegangen, geworden</td></tr>\n<tr><td>ohne ge-</td><td>be-, ent-, er-, ver-, zer-, -ieren</td><td>bestellt, entstanden, ergriffen, behoben, erhalten, kontrolliert</td></tr>\n<tr><td>trennbar</td><td>Präfix + ge + Stamm</td><td>angemeldet, eingestellt, ausgedruckt, festgestellt</td></tr></table></div>\n<p><strong>Hilfsverb:</strong> Die meisten Verben bilden das Perfekt mit <strong>haben</strong> (auch alle reflexiven). Mit <strong>sein</strong> stehen: sein, werden, bleiben, Bewegung oder Zustandswechsel (ankommen, entstehen, passieren, unterlaufen).</p>", "items": [{"s": "Wir haben die Getränke rechtzeitig ___.", "h": "bestellen · Partizip II", "a": ["bestellt"], "r": "Verben mit be-, ent-, er-, ver-, zer- bilden das Partizip II ohne ge-: bestellt."}, {"s": "Das Problem ist bei der Reservierung ___.", "h": "entstehen · Partizip II", "a": ["entstanden"], "r": "entstehen → ist entstanden (sein, unregelmäßig, kein ge- wegen ent-)."}, {"s": "Wir haben bereits Maßnahmen ___.", "h": "ergreifen · Partizip II", "a": ["ergriffen", "getroffen"], "r": "Maßnahmen ergreifen (hat ergriffen; unregelmäßig, kein ge- wegen er-). Auch möglich: Maßnahmen treffen → getroffen."}, {"s": "Nach unserer Prüfung haben wir ___, dass der Fehler im System lag.", "h": "feststellen · Partizip II", "a": ["festgestellt"], "r": "trennbares Verb: fest|ge|stellt. Das ge- steht zwischen Präfix und Stamm."}, {"s": "Unsere neuen Mitarbeiter sind noch nicht ausreichend ___.", "h": "ausbilden · Partizip II", "a": ["ausgebildet"], "r": "Nach sein steht das Partizip II ohne Endung: noch nicht ausgebildet (nicht: ausgebildete)."}, {"s": "Der Lieferant hat die falschen Tische ___.", "h": "liefern · Partizip II", "a": ["geliefert"], "r": "regelmäßig: ge-…-t → geliefert."}, {"s": "Viele Mitarbeiter ___ letzte Woche krank geworden.", "h": "haben oder sein?", "a": ["sind"], "r": "werden bildet das Perfekt mit sein. Subjekt Plural → sind (nicht: hat)."}, {"s": "Die Tische sind leider noch nicht ___.", "h": "ankommen · Partizip II", "a": ["angekommen"], "r": "ankommen → ist angekommen (Bewegung → sein; an|ge|kommen)."}, {"s": "Ich habe gestern zehn Minuten auf den Drucker ___.", "h": "warten · Partizip II", "a": ["gewartet"], "r": "Stamm auf -t: ge-…-et → gewartet."}, {"s": "Sie haben 52 Personen ___.", "h": "anmelden · Partizip II", "a": ["angemeldet"], "r": "trennbares Verb: an|ge|meldet (Stamm auf -d: -et)."}, {"s": "Der Kunde hat sich über den Service ___.", "h": "sich beschweren · Partizip II", "a": ["beschwert"], "r": "sich beschweren → hat sich beschwert (kein ge- wegen be-)."}, {"s": "Wir haben neue Mitarbeiter ___.", "h": "einstellen · Partizip II", "a": ["eingestellt"], "r": "trennbares Verb: ein|ge|stellt."}, {"s": "Wir haben die Bestellung noch einmal ___.", "h": "prüfen · Partizip II", "a": ["geprüft"], "r": "regelmäßig: ge-…-t → geprüft."}, {"s": "Wir haben alle Reservierungen ___.", "h": "kontrollieren · Partizip II", "a": ["kontrolliert"], "r": "Verben auf -ieren bilden das Partizip II ohne ge-: kontrolliert."}, {"s": "Die IT-Abteilung hat das Problem ___.", "h": "beheben · Partizip II", "a": ["behoben"], "r": "beheben → hat behoben (unregelmäßig, kein ge- wegen be-)."}, {"s": "Ich habe mich für den Vorschlag ___.", "h": "sich entscheiden · Partizip II", "a": ["entschieden"], "r": "sich entscheiden → hat sich entschieden (kein ge- wegen ent-)."}, {"s": "Ich habe viele Dokumente ___.", "h": "ausdrucken · Partizip II", "a": ["ausgedruckt"], "r": "trennbares Verb: aus|ge|druckt."}, {"s": "Die Kollegen haben laut ___.", "h": "sprechen · Partizip II", "a": ["gesprochen"], "r": "sprechen → hat gesprochen (unregelmäßig: ge-…-en mit Vokalwechsel)."}, {"s": "Ich habe früher in einer anderen Firma ___.", "h": "arbeiten · Partizip II", "a": ["gearbeitet"], "r": "Stamm auf -t: ge-…-et → gearbeitet."}, {"s": "Wir haben Ihre Beschwerde ___.", "h": "erhalten · Partizip II", "a": ["erhalten"], "r": "erhalten → hat erhalten (Partizip II = Infinitiv, kein ge- wegen er-)."}, {"s": "Das Buffet ist nicht rechtzeitig eröffnet ___.", "h": "werden · Passiv im Perfekt", "a": ["worden"], "r": "Passiv im Perfekt: ist + Partizip II + worden (nicht: geworden)."}, {"s": "Wir haben das Personal nicht ausreichend ___.", "h": "schulen · Partizip II", "a": ["geschult"], "r": "regelmäßig: ge-…-t → geschult."}, {"s": "Der Fehler ist uns bei der Reservierung ___.", "h": "unterlaufen · Partizip II", "a": ["unterlaufen"], "r": "unterlaufen (untrennbar, kein ge-) → ist uns unterlaufen (sein)."}, {"s": "Wir haben uns schon bei Ihnen ___.", "h": "sich entschuldigen · Partizip II", "a": ["entschuldigt"], "r": "sich entschuldigen → hat sich entschuldigt (kein ge- wegen ent-)."}, {"s": "Wir haben Ihre Reservierung leider falsch ___.", "h": "notieren · Partizip II", "a": ["notiert"], "r": "Verben auf -ieren bilden das Partizip II ohne ge-: notiert."}]}, {"title": "Subjekt und Verb", "type": "type", "intro": "Finde das Subjekt und die Zeit. Dann schreibst du die passende Verbform.", "tip": "Finde das Subjekt (Singular oder Plural?) und beachte die Zeit.", "merk": "<div class=\"tbl\"><table><tr><th></th><th>ich</th><th>du</th><th>er/sie/es</th><th>wir</th><th>ihr</th><th>sie/Sie</th></tr>\n<tr><td>haben</td><td>habe</td><td>hast</td><td>hat</td><td>haben</td><td>habt</td><td>haben</td></tr>\n<tr><td>hatte</td><td>hatte</td><td>hattest</td><td>hatte</td><td>hatten</td><td>hattet</td><td>hatten</td></tr>\n<tr><td>sein</td><td>bin</td><td>bist</td><td>ist</td><td>sind</td><td>seid</td><td>sind</td></tr>\n<tr><td>war</td><td>war</td><td>warst</td><td>war</td><td>waren</td><td>wart</td><td>waren</td></tr>\n<tr><td>können</td><td>kann</td><td>kannst</td><td>kann</td><td>können</td><td>könnt</td><td>können</td></tr>\n<tr><td>konnte</td><td>konnte</td><td>konntest</td><td>konnte</td><td>konnten</td><td>konntet</td><td>konnten</td></tr></table></div>\n<p><strong>Subjekt finden:</strong> Wer oder was macht etwas? <em>viele / alle / die Kollegen</em> = Plural. <em>jeder / einer / man / die Firma</em> = Singular. <em>Kollegin und ich</em> = wir. <em>hätten / könnten</em> sind Konjunktiv II, nicht Präteritum.</p>", "items": [{"s": "Damals ___ wir leider keine Zeit, die neuen Mitarbeiter zu schulen.", "h": "haben · Präteritum", "a": ["hatten"], "r": "Präteritum von haben: wir hatten. (hätten = Konjunktiv II)."}, {"s": "Letzte Woche ___ viele unserer Mitarbeiter krank.", "h": "sein · Präteritum", "a": ["waren"], "r": "viele … = Plural → waren."}, {"s": "Der Service ___ diesmal nicht gut.", "h": "sein · Präteritum", "a": ["war"], "r": "der Service = Singular → war."}, {"s": "Alle Mitarbeiter ___ täglich frei wählen, wo sie sitzen.", "h": "können · Präsens", "a": ["können"], "r": "alle Mitarbeiter = Plural → können."}, {"s": "Damals ___ wir leider keine passenden Tische finden.", "h": "können · Präteritum", "a": ["konnten"], "r": "Präteritum von können: wir konnten (könnten = Konjunktiv II)."}, {"s": "In unserer Firma ___ viele Mitarbeiter Kinder.", "h": "haben · Präsens", "a": ["haben"], "r": "viele Mitarbeiter = Plural → haben."}, {"s": "Einer unserer Kollegen ___ krank.", "h": "sein · Präsens", "a": ["ist"], "r": "Das Subjekt ist einer (Singular), nicht Kollegen → ist."}, {"s": "Viele von uns ___ jeden Tag früh aufstehen.", "h": "müssen · Präsens", "a": ["müssen"], "r": "viele = Plural → müssen."}, {"s": "Jeder Mitarbeiter ___ einen eigenen Arbeitsplatz.", "h": "brauchen · Präsens", "a": ["braucht"], "r": "jeder = Singular → braucht."}, {"s": "Seit drei Monaten ___ wir Personalausfälle.", "h": "haben · Präsens", "a": ["haben"], "r": "wir → haben. Mit seit steht das Präsens."}, {"s": "Wegen der Probleme ___ wir Ihnen einen Rabatt an.", "h": "anbieten · Präsens · nur der Teil im Satz", "a": ["bieten"], "r": "wir → bieten; das Präfix an steht am Satzende (anbieten)."}, {"s": "Gestern ___ das Buffet nicht rechtzeitig eröffnet.", "h": "werden · Präteritum · Passiv", "a": ["wurde"], "r": "Passiv Präteritum, Singular (das Buffet) → wurde."}, {"s": "Gestern ___ die Getränke zu spät serviert.", "h": "werden · Präteritum · Passiv", "a": ["wurden"], "r": "Passiv Präteritum, Plural (die Getränke) → wurden."}, {"s": "Ich ___ nicht, warum es solche Änderungen gibt.", "h": "verstehen · Präsens", "a": ["verstehe"], "r": "ich → verstehe."}, {"s": "Meine Kollegin und ich ___ ein Büro neben dem Kindergarten.", "h": "brauchen · Präsens", "a": ["brauchen"], "r": "Kollegin und ich = wir → brauchen."}, {"s": "Die Mitarbeiter und die Geschäftsleitung ___ unterschiedlicher Meinung.", "h": "sein · Präsens", "a": ["sind"], "r": "zwei Subjekte = Plural → sind."}, {"s": "Gestern ___ der Service und das Buffet nicht gut.", "h": "sein · Präteritum", "a": ["waren"], "r": "zwei Subjekte = Plural; gestern → Präteritum: waren."}, {"s": "Herr Boldt, Sie ___ mit unserem Service diesmal nicht zufrieden.", "h": "sein · Präteritum", "a": ["waren"], "r": "Höflichkeitsform Sie = Plural-Form → Sie waren (nicht: Sie war)."}, {"s": "Sie ___ 52 Personen angemeldet.", "h": "haben · Präsens", "a": ["haben"], "r": "Höflichkeitsform Sie → Plural-Form: Sie haben (nicht: Sie hat)."}, {"s": "Unsere Mitarbeiter ___ noch nicht gut geschult.", "h": "sein · Präsens", "a": ["sind"], "r": "Subjekt Plural + Partizip II als Zustand → sind … geschult."}]}, {"title": "Modalverben, Futur, Passiv", "type": "type", "intro": "Schreibe die Form, die im Satz steht. Achte auf zu, werden und die Verbposition.", "tip": "Prüfe, was vor der Lücke steht: Modalverb, werden oder zu?", "merk": "<div class=\"tbl\"><table><tr><th>Form</th><th>Bau</th><th>Beispiel</th></tr>\n<tr><td>Futur</td><td>werden + Infinitiv (Ende)</td><td>Wir werden Mitarbeiter einstellen.</td></tr>\n<tr><td>Passiv</td><td>werden + Partizip II (Ende)</td><td>Die Büros werden abgeschafft.</td></tr>\n<tr><td>Modalverb + Infinitiv</td><td>ohne zu</td><td>Ich möchte meine Meinung äußern.</td></tr>\n<tr><td>Passiv mit Modalverb</td><td>Modalverb … Partizip II + werden</td><td>Die Büros sollen abgeschafft werden.</td></tr>\n<tr><td>Passiv Präteritum</td><td>wurde(n) + Partizip II</td><td>Das Buffet wurde zu spät eröffnet.</td></tr>\n<tr><td>Höflichkeitsform</td><td>Verb + Sie</td><td>Bitte entschuldigen Sie …</td></tr></table></div>", "items": [{"s": "Wir werden zusätzliche Mitarbeiter ___.", "h": "einstellen · Infinitiv", "a": ["einstellen"], "r": "Futur: werden + Infinitiv am Ende (einstellen)."}, {"s": "Ich versichere Ihnen, dass sich diese Situation nicht ___ wird.", "h": "wiederholen · Infinitiv", "a": ["wiederholen"], "r": "Futur im Nebensatz: Infinitiv + wird am Ende (wiederholen wird)."}, {"s": "In unserer Firma sollen die festen Büros ___ werden.", "h": "abschaffen · Partizip II", "a": ["abgeschafft"], "r": "Passiv mit Modalverb: Partizip II + werden (abgeschafft werden)."}, {"s": "Wir haben gehört, dass in der Firma ___ wurde, alle Drucker abzuschaffen.", "h": "entscheiden · Partizip II", "a": ["entschieden"], "r": "Passiv Präteritum im Nebensatz: Partizip II + wurde am Ende (entschieden wurde)."}, {"s": "Die Firma ___ nur noch einen großen Drucker pro Etage aufstellen.", "h": "wollen · Präsens", "a": ["will"], "r": "die Firma = Singular → will."}, {"s": "Um das Problem zu lösen, ___ wir das Personal schulen.", "h": "werden · Futur", "a": ["werden"], "r": "wir → werden (Futur)."}, {"s": "Mit zusätzlichen Mitarbeitern ___ das Buffet pünktlich eröffnet werden.", "h": "können · Präsens", "a": ["kann"], "r": "das Buffet = Singular → kann. Passiv mit Modalverb: kann … eröffnet werden."}, {"s": "Die Tische ___ gestern geliefert werden, aber sie sind nicht angekommen.", "h": "sollen · Präteritum", "a": ["sollten"], "r": "die Tische = Plural, Präteritum → sollten."}, {"s": "Wenn alle Drucker abgeschafft ___, müssen wir auf den Flur gehen.", "h": "werden · Präsens", "a": ["werden"], "r": "Passiv Präsens, Plural (alle Drucker) → werden."}, {"s": "Es ist anstrengend, wenn man jeden Tag ein neues Büro ___ muss.", "h": "suchen · Infinitiv", "a": ["suchen"], "r": "Modalverb + Infinitiv ohne zu: suchen muss."}, {"s": "Ich möchte meine Meinung dazu ___.", "h": "äußern · Infinitiv", "a": ["äußern"], "r": "Modalverb + Infinitiv ohne zu: möchte … äußern."}, {"s": "Wir haben vor, die Abläufe zu ___.", "h": "verbessern · Infinitiv", "a": ["verbessern"], "r": "haben vor + zu + Infinitiv: die Abläufe zu verbessern."}, {"s": "Bitte ___ Sie die entstandenen Unannehmlichkeiten.", "h": "entschuldigen · Höflichkeitsform", "a": ["entschuldigen"], "r": "Höflichkeitsform: Verb + Sie (Bitte entschuldigen Sie …). Das Verb steht vor Sie."}, {"s": "___ Sie sich bitte keine Sorgen.", "h": "sich Sorgen machen · Höflichkeitsform", "a": ["Machen"], "r": "Imperativ Höflichkeitsform: Machen Sie sich bitte keine Sorgen."}, {"s": "Unsere Mitarbeiter ___ künftig regelmäßig geschult.", "h": "werden · Präsens · Passiv", "a": ["werden"], "r": "Passiv: werden + Partizip II. Subjekt Plural → werden … geschult."}, {"s": "Wir hoffen, dass Sie uns weiterhin Ihr Vertrauen ___.", "h": "schenken · Sie", "a": ["schenken"], "r": "dass-Satz: Verb am Ende, Subjekt Sie → schenken."}]}, {"title": "Verb und Präposition", "type": "type", "intro": "Schreibe das fehlende Pronomen oder die fehlende Präposition. Das Verb im Hinweis hilft dir.", "tip": "Denke an das ganze Verb mit seiner festen Präposition oder seinem Kasus.", "merk": "<div class=\"tbl\"><table><tr><th>Verb</th><th>Anschluss</th></tr>\n<tr><td>sich entschuldigen</td><td>bei jemandem für etwas</td></tr>\n<tr><td>sich bedanken / danken</td><td>sich bedanken für · jemandem danken</td></tr>\n<tr><td>bitten</td><td>jemanden um etwas bitten</td></tr>\n<tr><td>versprechen, versichern</td><td>jemandem (Dativ) etwas versprechen</td></tr>\n<tr><td>sich beschweren</td><td>über etwas (Akk.), bei jemandem</td></tr>\n<tr><td>Bezug nehmen</td><td>auf + Akk.</td></tr>\n<tr><td>arbeiten · liegen</td><td>an + Dativ</td></tr>\n<tr><td>sich konzentrieren · warten · gespannt sein</td><td>auf + Akk.</td></tr>\n<tr><td>empört sein</td><td>über + Akk.</td></tr>\n<tr><td>einladen · zufrieden sein · abhängen</td><td>zu / mit / von + Dativ</td></tr></table></div>", "items": [{"s": "Wir entschuldigen ___ für die entstandenen Unannehmlichkeiten.", "h": "wir → Reflexivpronomen", "a": ["uns"], "r": "sich entschuldigen (reflexiv): Wir entschuldigen uns bei Ihnen für …"}, {"s": "Wir entschuldigen uns ___ Ihnen für die Unannehmlichkeiten.", "h": "sich entschuldigen + ?", "a": ["bei"], "r": "sich bei jemandem für etwas entschuldigen."}, {"s": "Wir bitten Sie ___ Entschuldigung.", "h": "bitten + ?", "a": ["um"], "r": "jemanden um etwas bitten: um Entschuldigung bitten."}, {"s": "Wir bedanken ___ für Ihr Verständnis.", "h": "wir → Reflexivpronomen", "a": ["uns"], "r": "sich bedanken für (reflexiv): Wir bedanken uns für …"}, {"s": "Wir danken ___ für Ihr Verständnis.", "h": "Sie → Dativ", "a": ["Ihnen"], "r": "danken + Dativ: Wir danken Ihnen für …"}, {"s": "Wir versprechen ___, dass sich so etwas nicht wiederholt.", "h": "Sie → Dativ", "a": ["Ihnen"], "r": "versprechen + Dativ: Wir versprechen Ihnen, dass …"}, {"s": "Wir versichern ___, dass die Probleme behoben werden.", "h": "Sie → Dativ", "a": ["Ihnen"], "r": "Im Brief verwenden wir: Wir versichern Ihnen, dass … (Dativ)."}, {"s": "Wir nehmen Bezug ___ Ihre Beschwerde.", "h": "Bezug nehmen + ?", "a": ["auf"], "r": "Bezug nehmen auf + Akkusativ."}, {"s": "Wir arbeiten ___ der Behebung des Fehlers.", "h": "arbeiten + ?", "a": ["an"], "r": "arbeiten an + Dativ."}, {"s": "Viele Mitarbeiter können sich nicht ___ ihre Aufgaben konzentrieren.", "h": "sich konzentrieren + ?", "a": ["auf"], "r": "sich konzentrieren auf + Akkusativ."}, {"s": "Der Kunde hat sich ___ den Service beschwert.", "h": "sich beschweren + ?", "a": ["über"], "r": "sich beschweren über + Akkusativ (bei jemandem)."}, {"s": "Ich bin gespannt ___ eure Meinungen.", "h": "gespannt sein + ?", "a": ["auf"], "r": "gespannt sein auf + Akkusativ."}, {"s": "Ich bin ___ diese Bekanntmachung empört.", "h": "empört sein + ?", "a": ["über"], "r": "empört sein über + Akkusativ."}, {"s": "Wir warten ___ den Lieferanten.", "h": "warten + ?", "a": ["auf"], "r": "warten auf + Akkusativ."}, {"s": "Ich lade Sie herzlich ___ unserem nächsten Event ein.", "h": "einladen + ?", "a": ["zu"], "r": "einladen zu + Dativ."}, {"s": "Viele Kunden sind ___ unserem Service nicht zufrieden.", "h": "zufrieden sein + ?", "a": ["mit"], "r": "zufrieden sein mit + Dativ."}, {"s": "Die Entscheidung hängt ___ den Kosten ab.", "h": "abhängen + ?", "a": ["von"], "r": "abhängen von + Dativ."}, {"s": "Wir haben uns ___ eine Umfrage entschieden.", "h": "sich entscheiden + ?", "a": ["für"], "r": "sich entscheiden für + Akkusativ."}, {"s": "Wir freuen ___ auf Ihren nächsten Besuch.", "h": "wir → Reflexivpronomen", "a": ["uns"], "r": "sich freuen auf (reflexiv): Wir freuen uns auf …"}, {"s": "Ich ärgere ___ über die Entscheidung der Firma.", "h": "ich → Reflexivpronomen", "a": ["mich"], "r": "sich ärgern über (reflexiv): Ich ärgere mich über …"}]}, {"title": "Feste Wendungen", "type": "type", "intro": "Schreibe das Verb, das zur festen Verbindung gehört. Der Anfangsbuchstabe hilft dir. Diese Wendungen brauchst du in Beschwerdeantwort und Forumsbeitrag.", "tip": "Es ist eine feste Verbindung. Welches Verb gehört zu diesem Nomen?", "merk": "<div class=\"tbl\"><table><tr><th>Wendung</th><th>nicht</th></tr>\n<tr><td>Fehler machen</td><td>Fehler treffen</td></tr>\n<tr><td>Maßnahmen ergreifen</td><td>Maßnahmen nehmen</td></tr>\n<tr><td>einen Rabatt anbieten / einen Preisnachlass einräumen</td><td>Rabatt (an)bitten / einbitten</td></tr>\n<tr><td>Verantwortung übernehmen</td><td>die Schuld ertragen</td></tr>\n<tr><td>eine Meinung äußern · einen Vorschlag machen</td><td>eine Meinung sprechen</td></tr>\n<tr><td>eine Entscheidung treffen · eine Lösung finden</td><td>eine Entscheidung machen</td></tr>\n<tr><td>Wert legen auf · dafür sorgen, dass …</td><td></td></tr></table></div>", "items": [{"s": "Neue Mitarbeiter ___ am Anfang oft Fehler.", "h": "Verb · Präsens · m…", "a": ["machen", "begehen"], "r": "Fehler machen (nicht: Fehler treffen)."}, {"s": "Wir haben bereits Maßnahmen ___.", "h": "Verb · Partizip II · e…", "a": ["ergriffen", "eingeleitet", "getroffen"], "r": "Maßnahmen ergreifen (auch: einleiten, treffen). Nicht: Maßnahmen nehmen."}, {"s": "Wir ___ Ihnen einen Rabatt von 15 % an.", "h": "anbieten · Präsens · nur der Teil im Satz", "a": ["bieten"], "r": "einen Rabatt anbieten (nicht: bitten)."}, {"s": "Wir möchten Ihnen einen Preisnachlass ___.", "h": "Verb · Infinitiv · e…", "a": ["einräumen", "gewähren"], "r": "einen Preisnachlass einräumen (oder: gewähren)."}, {"s": "Wir ___ Ihnen unsere Entschuldigung aus.", "h": "aussprechen · Präsens · nur der Teil im Satz", "a": ["sprechen"], "r": "eine Entschuldigung aussprechen: Wir sprechen … aus."}, {"s": "Wir ___ die Verantwortung für den Fehler.", "h": "Verb · Präsens · ü…", "a": ["übernehmen"], "r": "Verantwortung übernehmen (nicht: die Schuld ertragen)."}, {"s": "Ich ___ vor, eine Umfrage zu machen.", "h": "vorschlagen · Präsens · nur der Teil im Satz", "a": ["schlage"], "r": "einen Vorschlag machen / vorschlagen: Ich schlage vor …"}, {"s": "Wir ___ großen Wert auf einen guten Service.", "h": "Verb · Präsens · l…", "a": ["legen"], "r": "Wert legen auf + Akkusativ."}, {"s": "Die Firma möchte Geld ___.", "h": "Verb · Infinitiv · s…", "a": ["sparen", "einsparen"], "r": "Geld sparen."}, {"s": "Die Firma muss eine gute Lösung ___.", "h": "Verb · Infinitiv · f…", "a": ["finden"], "r": "eine Lösung finden."}, {"s": "Wir müssen eine Entscheidung ___.", "h": "Verb · Infinitiv · t…", "a": ["treffen"], "r": "eine Entscheidung treffen (nicht: machen)."}, {"s": "Bitte ___ Sie uns mit, ob Sie unser Angebot annehmen.", "h": "mitteilen · Höflichkeitsform · nur der Teil im Satz", "a": ["teilen"], "r": "mitteilen: Bitte teilen Sie uns mit, ob …"}, {"s": "Wir ___ dafür, dass so etwas nicht wieder vorkommt.", "h": "Verb · Präsens · s…", "a": ["sorgen"], "r": "dafür sorgen, dass …"}, {"s": "Wir ___ Ihre Kritik sehr ernst.", "h": "Verb · Präsens · n…", "a": ["nehmen"], "r": "etwas ernst nehmen."}, {"s": "Wir stehen Ihnen gern jederzeit ___ Verfügung.", "h": "Präposition + Artikel (zusammengezogen: z…)", "a": ["zur"], "r": "zur Verfügung stehen (zu + der = zur)."}]}, {"title": "Fehler korrigieren", "type": "type", "intro": "In jedem Satz ist der markierte Teil falsch. Schreibe ihn richtig. Die Fehler sind typisch für Item 21 und Item 58.", "tip": "Prüfe Subjekt, Hilfsverb, Verbform und feste Verbindung.", "merk": "<p><strong>Fehler finden:</strong> Frage dich bei jedem markierten Teil:</p>\n<ol><li>Welches ist das <strong>Subjekt</strong> (Singular oder Plural)?</li><li>Welche <strong>Zeit</strong> verlangt der Satz (gestern, letzte Woche, künftig)?</li><li>Welches <strong>Hilfsverb</strong> passt (haben oder sein, werden)?</li><li>Gehört zum Verb eine feste <strong>Präposition</strong> oder ein <strong>Reflexivpronomen</strong>?</li><li>Ist die <strong>Wendung</strong> korrekt (Maßnahmen ergreifen, Rabatt anbieten)?</li></ol>", "items": [{"s": "Wir haben die Getränke leider zu spät {bestellen}.", "a": ["bestellt"], "r": "Perfekt: haben + Partizip II → bestellt (kein ge- wegen be-)."}, {"s": "Wir haben gestern ein Problem {gefeststellt}.", "a": ["festgestellt"], "r": "trennbares Verb: fest|ge|stellt."}, {"s": "Die Tische {haben} leider nicht pünktlich angekommen.", "a": ["sind"], "r": "ankommen bildet das Perfekt mit sein: Die Tische sind angekommen."}, {"s": "Letzte Woche {war} viele Mitarbeiter krank.", "a": ["waren"], "r": "viele Mitarbeiter = Plural → waren."}, {"s": "Einer unserer Kollegen {sind} krank geworden.", "a": ["ist"], "r": "Das Subjekt ist einer (Singular) → ist."}, {"s": "Damals {hätten} wir leider keine Zeit.", "a": ["hatten"], "r": "Präteritum von haben: hatten. hätten ist Konjunktiv II."}, {"s": "Wir {bedanken Ihnen} für Ihr Verständnis.", "a": ["bedanken uns", "danken Ihnen"], "r": "sich bedanken (reflexiv): Wir bedanken uns. Oder: Wir danken Ihnen."}, {"s": "Wir entschuldigen uns {an} Ihnen für die Unannehmlichkeiten.", "a": ["bei"], "r": "sich bei jemandem entschuldigen."}, {"s": "Ich bin gespannt {über} eure Meinungen.", "a": ["auf"], "r": "gespannt sein auf + Akkusativ."}, {"s": "Wir {machen} bereits Maßnahmen, damit das nicht wieder passiert.", "a": ["ergreifen", "treffen"], "r": "Maßnahmen ergreifen oder treffen (nicht: machen)."}, {"s": "Ich möchte meine Meinung {zu äußern}.", "a": ["äußern"], "r": "Modalverb + Infinitiv ohne zu."}, {"s": "Die festen Büros sollen {abgeschaffen} werden.", "a": ["abgeschafft"], "r": "Passiv: Partizip II + werden → abgeschafft werden."}, {"s": "Ich habe zehn Minuten auf den Drucker {gewarten}.", "a": ["gewartet"], "r": "warten ist regelmäßig: ge-…-et → gewartet."}, {"s": "Gestern {wurde} die Getränke zu spät serviert.", "a": ["wurden"], "r": "die Getränke = Plural → wurden."}, {"s": "Das {ärgern} mich sehr.", "a": ["ärgert"], "r": "das = Singular → ärgert."}, {"s": "Wir {versprechen Sie}, dass sich das nicht wiederholt.", "a": ["versprechen Ihnen"], "r": "versprechen + Dativ: Wir versprechen Ihnen …"}, {"s": "Wir haben vor, die Abläufe {verbessern}.", "a": ["zu verbessern"], "r": "haben vor + zu + Infinitiv: die Abläufe zu verbessern."}, {"s": "Bitte {entschuldigt} die entstandenen Unannehmlichkeiten.", "a": ["entschuldigen Sie"], "r": "Im Brief mit Sie: Bitte entschuldigen Sie …"}, {"s": "Der Fehler {hat} uns leider bei der Reservierung unterlaufen.", "a": ["ist"], "r": "unterlaufen bildet das Perfekt mit sein: ist … unterlaufen."}, {"s": "Wir {bitten} Ihnen einen Rabatt von 15 % an.", "a": ["bieten"], "r": "einen Rabatt anbieten: Wir bieten Ihnen … an (bitten = um etwas bitten)."}]}, {"title": "Im Text (Auswahl)", "type": "cloze", "intro": "Wähle in jeder Lücke die passende Form. Die Texte sind typische Antworten auf Item 21 und Item 58.", "merk": "<p><strong>So gehst du vor:</strong></p>\n<ol><li>Lies den ganzen Satz bis zum Ende.</li><li>Finde das <strong>Subjekt</strong> (Singular oder Plural?).</li><li>Bestimme die <strong>Zeit</strong> (Signalwörter: gestern, letzte Woche, künftig, bald).</li><li>Prüfe die <strong>Verbteile</strong>: Hilfsverb + Partizip II, Modalverb + Infinitiv, werden + Infinitiv / Partizip II.</li><li>Prüfe feste <strong>Verbindungen</strong> (sich bedanken für, Maßnahmen ergreifen).</li></ol>", "items": [{"title": "Item 21 · Beschwerdeantwort, Teil 1: Entschuldigung und Erklärung", "t": "Sehr geehrter Herr Boldt,\n\n[[1]] auf Ihre Beschwerde möchten wir uns [[2]] Ihnen für die entstandenen Unannehmlichkeiten entschuldigen. Wir [[3]] sehr, dass Sie mit unserem Service diesmal nicht zufrieden [[4]].\n\nLetzte Woche [[5]] viele unserer Mitarbeiter krank. Deshalb [[6]] wir kurzfristig Aushilfen einstellen, die noch nicht ausreichend [[7]] waren. Außerdem [[8]] uns bei der Reservierung ein Fehler unterlaufen.", "g": [{"o": ["Bezugnehmend", "Bezug nehmen", "Bezug genommen", "Bezugnehme"], "r": "Briefeinstieg: Bezugnehmend auf … (oder: Ich nehme Bezug auf …)."}, {"o": ["bei", "an", "von", "mit"], "r": "sich bei jemandem für etwas entschuldigen."}, {"o": ["bedauern", "bedauert", "bedauere", "bedauerst"], "r": "Subjekt wir → bedauern."}, {"o": ["waren", "war", "wart", "hatten"], "r": "Sie (Höflichkeitsform) steht im Plural: Sie waren."}, {"o": ["waren", "war", "wart", "hatten"], "r": "viele unserer Mitarbeiter = Plural → waren."}, {"o": ["mussten", "musste", "musstest", "müsstet"], "r": "Präteritum von müssen: wir mussten."}, {"o": ["eingearbeitet", "einarbeiten", "eingearbeitete", "geeinarbeitet"], "r": "trennbares Verb einarbeiten: Partizip II eingearbeitet (nach sein ohne Endung)."}, {"o": ["ist", "hat", "wird", "wurde"], "r": "unterlaufen bildet das Perfekt mit sein: ist uns ein Fehler unterlaufen."}]}, {"title": "Item 21 · Beschwerdeantwort, Teil 2: Maßnahmen und Schluss", "t": "Wir [[1]] Ihnen, dass sich so etwas nicht [[2]] wird. Wir [[3]] bereits Maßnahmen [[4]]: Unsere Mitarbeiter [[5]] künftig regelmäßig geschult, und wir [[6]] zusätzliche Servicekräfte einstellen.\n\nAls Entgegenkommen [[7]] wir Ihnen gern einen Rabatt von 15 % auf Ihre nächste Buchung [[8]]. Wir [[9]] uns für Ihr Verständnis und hoffen, dass Sie uns weiterhin Ihr Vertrauen [[10]].\n\nMit freundlichen Grüßen", "g": [{"o": ["versichern", "versichert", "versichere", "versicherst"], "r": "Subjekt wir → versichern (mit Dativ: Ihnen)."}, {"o": ["wiederholen", "wiederholt", "wiederholte", "gewiederholt"], "r": "Futur im Nebensatz: Infinitiv + wird (wiederholen wird)."}, {"o": ["haben", "sind", "hat", "habt"], "r": "Perfekt von ergreifen mit haben: Wir haben … ergriffen."}, {"o": ["ergriffen", "ergreifen", "geergriffen", "ergreift"], "r": "Partizip II von ergreifen: ergriffen (kein ge-)."}, {"o": ["werden", "wird", "wurden", "worden"], "r": "Passiv Futur-Bedeutung (künftig): werden + Partizip II → werden … geschult."}, {"o": ["werden", "wird", "wirst", "worden"], "r": "Futur: wir werden … einstellen."}, {"o": ["möchten", "möchte", "möchtet", "möchtest"], "r": "Subjekt wir → möchten."}, {"o": ["anbieten", "angeboten", "anbietet", "anzubieten"], "r": "Modalverb + Infinitiv (ohne zu); trennbares Verb bleibt am Satzende zusammen: anbieten."}, {"o": ["bedanken", "danken", "bedanke", "bedankt"], "r": "sich bedanken für: Wir bedanken uns für …"}, {"o": ["schenken", "schenkt", "geschenkt", "schenke"], "r": "dass-Satz, Subjekt Sie → schenken am Ende."}]}, {"title": "Item 58 · Forumsbeitrag zu Thema A: Flexible Arbeitsplätze", "t": "Hallo zusammen,\n\nhabt ihr schon [[1]], dass die festen Büros bald [[2]] werden? Ich möchte meine Meinung dazu [[3]]. Ich bin dagegen, weil man jeden Tag ein neues Büro [[4]] muss. Das [[5]] mich sehr, weil ich mich nicht auf meine Arbeit [[6]] kann.\n\nIch [[7]] vor, dass wir eine Umfrage [[8]]. Ich bin gespannt [[9]] eure Meinungen.\n\nViele Grüße", "g": [{"o": ["gehört", "gehören", "hören", "gehorcht"], "r": "Perfekt von hören: habt ihr … gehört."}, {"o": ["abgeschafft", "abschaffen", "abgeschaffen", "abschafft"], "r": "Passiv: Partizip II + werden → abgeschafft werden."}, {"o": ["äußern", "geäußert", "äußere", "zu äußern"], "r": "Modalverb + Infinitiv ohne zu: möchte … äußern."}, {"o": ["suchen", "sucht", "gesucht", "zu suchen"], "r": "Nebensatz: Infinitiv + Modalverb am Ende: suchen muss."}, {"o": ["ärgert", "ärgere", "ärgern", "geärgert"], "r": "Das (Singular) ärgert mich."}, {"o": ["konzentrieren", "konzentriert", "konzentrierte", "gekonzentriert"], "r": "Modalverb kann + Infinitiv: sich konzentrieren können."}, {"o": ["schlage", "schlägt", "schlägst", "schlagen"], "r": "ich → schlage … vor."}, {"o": ["machen", "macht", "gemacht", "zu machen"], "r": "dass-Satz, Subjekt wir → machen am Ende."}, {"o": ["auf", "über", "an", "für"], "r": "gespannt sein auf + Akkusativ."}]}, {"title": "Item 58 · Forumsbeitrag zu Thema B: Ein großer Drucker pro Etage", "t": "Hallo zusammen,\n\nin unserer Firma [[1]] alle Drucker in den Büros [[2]] werden, stattdessen soll es pro Etage nur noch einen großen Drucker geben. Ich bin dagegen, weil dann jeder auf den Flur [[3]] muss, um etwas auszudrucken. Gestern [[4]] ich zehn Minuten auf den Drucker [[5]].\n\nSo [[6]] man viel Zeit. Außerdem [[7]] viele Kollegen vertrauliche Dokumente aus. Ich [[8]] dafür, dass jede Abteilung einen eigenen Drucker behält. Was [[9]] ihr darüber?\n\nViele Grüße", "g": [{"o": ["sollen", "soll", "sollst", "solltet"], "r": "alle Drucker = Plural → sollen."}, {"o": ["abgeschafft", "abschaffen", "abgeschaffen", "abschafft"], "r": "Passiv mit Modalverb: abgeschafft werden."}, {"o": ["gehen", "geht", "gegangen", "zu gehen"], "r": "Nebensatz: Infinitiv + Modalverb am Ende: gehen muss."}, {"o": ["habe", "habt", "hat", "haben"], "r": "ich → habe (Perfekt: habe … gewartet)."}, {"o": ["gewartet", "warten", "gewarten", "gewartete"], "r": "Partizip II von warten: gewartet."}, {"o": ["verliert", "verlierst", "verlieren", "verloren"], "r": "man → verliert (3. Person Singular)."}, {"o": ["drucken", "druckt", "gedruckt", "drucke"], "r": "viele Kollegen = Plural → drucken … aus (trennbares Verb ausdrucken)."}, {"o": ["bin", "habe", "bist", "sind"], "r": "dafür sein: Ich bin dafür, dass …"}, {"o": ["denkt", "denken", "denke", "denkst"], "r": "ihr → denkt."}]}]}, {"title": "Im Text (selbst schreiben)", "type": "cloze", "intro": "Schreibe in jede Lücke die passende Form. Der Hinweis in Klammern nennt das Verb und die Form. Die Texte sind typische Antworten auf Item 21 und Item 58.", "merk": "<p><strong>So gehst du vor:</strong></p>\n<ol><li>Lies den ganzen Satz bis zum Ende.</li><li>Finde das <strong>Subjekt</strong> (Singular oder Plural?).</li><li>Bestimme die <strong>Zeit</strong> (Signalwörter: gestern, letzte Woche, künftig, bald).</li><li>Prüfe die <strong>Verbteile</strong>: Hilfsverb + Partizip II, Modalverb + Infinitiv, werden + Infinitiv / Partizip II.</li><li>Prüfe feste <strong>Verbindungen</strong> (sich bedanken für, Maßnahmen ergreifen).</li></ol>", "items": [{"title": "Item 21 · Beschwerdeantwort, Teil 1: Entschuldigung und Erklärung", "t": "Sehr geehrter Herr Boldt,\n\nvielen Dank für Ihre E-Mail. Es tut uns leid, dass Sie mit dem Catering nicht zufrieden [[1]]. Wir [[2]] Ihnen, dass wir Ihre Kritik sehr ernst [[3]].\n\nLeider [[4]] bei Ihrer Veranstaltung mehrere Fehler passiert. Sie [[5]] 52 Personen angemeldet, aber wir [[6]] nur Tische für 42 Gäste vorbereitet. Außerdem [[7]] der Sekt nicht rechtzeitig [[8]], und das Buffet [[9]] zu spät eröffnet. Unsere neuen Servicekräfte [[10]] noch nicht ausreichend [[11]].", "g": [{"a": ["waren", "sind"], "h": "sein", "r": "dass-Satz mit Sie: Sie waren (Veranstaltung ist vorbei) oder Sie sind. Nie: Sie war."}, {"a": ["versichern"], "h": "versichern · wir", "r": "Subjekt wir → versichern (mit Dativ: Ihnen)."}, {"a": ["nehmen"], "h": "nehmen · wir", "r": "etwas ernst nehmen; dass-Satz: Verb am Ende, wir → nehmen."}, {"a": ["sind"], "h": "haben oder sein? · Perfekt", "r": "passieren bildet das Perfekt mit sein: Fehler sind passiert."}, {"a": ["haben"], "h": "haben oder sein?", "r": "Höflichkeitsform Sie → Plural-Form: Sie haben angemeldet."}, {"a": ["haben", "hatten"], "h": "haben", "r": "wir haben … vorbereitet (Perfekt). Auch möglich: wir hatten … vorbereitet."}, {"a": ["wurde"], "h": "werden · Präteritum · Passiv", "r": "der Sekt = Singular → wurde … serviert."}, {"a": ["serviert", "geliefert", "angeboten"], "h": "servieren · Partizip II", "r": "Passiv: wurde + Partizip II → serviert."}, {"a": ["wurde"], "h": "werden · Präteritum · Passiv", "r": "das Buffet = Singular → wurde … eröffnet."}, {"a": ["waren", "sind"], "h": "sein", "r": "Servicekräfte = Plural → waren / sind."}, {"a": ["geschult", "ausgebildet", "eingearbeitet"], "h": "schulen · Partizip II", "r": "nach sein: Partizip II ohne Endung → geschult."}], "tip": "Prüfe Subjekt (Singular/Plural) und Zeit."}, {"title": "Item 21 · Beschwerdeantwort, Teil 2: Maßnahmen und Schluss", "t": "Wir [[1]] uns bei Ihnen für die Unannehmlichkeiten und [[2]] Sie um Verständnis. Um solche Fehler künftig zu [[3]], [[4]] wir das Personal besser schulen und zusätzliche Mitarbeiter [[5]].\n\nAls Entschädigung [[6]] wir Ihnen einen Preisnachlass von 15 % [[7]]. Bitte [[8]] Sie uns mit, ob Sie damit einverstanden sind. Wir [[9]] uns, wenn Sie uns weiterhin Ihr Vertrauen [[10]].\n\nMit freundlichen Grüßen", "g": [{"a": ["entschuldigen"], "h": "sich entschuldigen · wir", "r": "Subjekt wir → entschuldigen (sich bei jemandem entschuldigen)."}, {"a": ["bitten"], "h": "bitten · wir", "r": "jemanden um etwas bitten: Wir bitten Sie um Verständnis."}, {"a": ["vermeiden"], "h": "vermeiden · Infinitiv", "r": "um … zu + Infinitiv: um Fehler zu vermeiden."}, {"a": ["werden"], "h": "werden · Futur · wir", "r": "Futur: wir werden … schulen / einstellen."}, {"a": ["einstellen"], "h": "einstellen · Infinitiv", "r": "Futur: werden + Infinitiv am Ende (einstellen)."}, {"a": ["bieten"], "h": "anbieten · wir", "r": "einen Preisnachlass anbieten: Wir bieten … an."}, {"a": ["an"], "h": "Präfix von anbieten", "r": "trennbares Verb: bieten … an."}, {"a": ["teilen"], "h": "mitteilen · Höflichkeitsform", "r": "Bitte teilen Sie uns mit, ob …"}, {"a": ["freuen"], "h": "sich freuen · wir", "r": "Subjekt wir → freuen (sich freuen)."}, {"a": ["schenken"], "h": "schenken · Sie", "r": "Nebensatz: Verb am Ende, Subjekt Sie → schenken."}], "tip": "Prüfe Subjekt und Verbposition."}, {"title": "Item 58 · Forumsbeitrag zu Thema A: Flexible Arbeitsplätze", "t": "Hallo zusammen,\n\nich [[1]] gelesen, dass unsere Firma flexible Arbeitsplätze einführen [[2]]. Das heißt, dass jeder Mitarbeiter jeden Tag selbst [[3]] kann, wo er sitzt.\n\nAuf den ersten Blick [[4]] das nach einer guten Idee. Ich [[5]] aber, dass es auch Nachteile gibt. Viele Kollegen [[6]] ihre persönlichen Sachen jeden Tag neu aufbauen, und das [[7]] viel Zeit. Außerdem [[8]] man nicht mehr neben seinem Team. Ich [[9]] deshalb [[10]], dass jedes Team feste Plätze behält.", "g": [{"a": ["habe"], "h": "haben · ich", "r": "Perfekt: ich habe … gelesen."}, {"a": ["wird"], "h": "werden · Futur", "r": "Futur im Nebensatz: Infinitiv + wird am Ende (einführen wird)."}, {"a": ["entscheiden"], "h": "entscheiden · Infinitiv", "r": "Nebensatz: Infinitiv + Modalverb am Ende: entscheiden kann."}, {"a": ["klingt"], "h": "klingen · Präsens", "r": "das (Singular) → klingt."}, {"a": ["befürchte"], "h": "befürchten · ich", "r": "ich → befürchte."}, {"a": ["müssen"], "h": "müssen · Präsens", "r": "viele Kollegen = Plural → müssen."}, {"a": ["kostet"], "h": "kosten · Präsens", "r": "das (Singular) → kostet (Zeit kosten)."}, {"a": ["sitzt"], "h": "sitzen · man", "r": "man → 3. Person Singular: sitzt."}, {"a": ["schlage"], "h": "vorschlagen · ich", "r": "ich → schlage … vor."}, {"a": ["vor"], "h": "Präfix von vorschlagen", "r": "trennbares Verb: schlage … vor."}], "tip": "Prüfe Subjekt, Zeit und Verbposition."}, {"title": "Item 58 · Forumsbeitrag zu Thema B: Ein großer Drucker pro Etage", "t": "Hallo zusammen,\n\ndie Geschäftsleitung [[1]] entschieden, dass es pro Etage nur noch einen großen Drucker geben [[2]]. Dadurch [[3]] die Firma viel Geld sparen. Ich finde das nicht gut. Wenn ich etwas ausdrucke, [[4]] ich oft lange auf dem Flur warten. Gestern [[5]] ich sogar zu spät zu einem Termin [[6]], weil mein Dokument nicht rechtzeitig ausgedruckt [[7]].\n\nIch [[8]] dafür, dass jede Abteilung ihren eigenen Drucker behält. Ich bin gespannt, [[9]] ihr darüber [[10]].\n\nViele Grüße", "g": [{"a": ["hat"], "h": "haben · Perfekt", "r": "die Geschäftsleitung = Singular → hat … entschieden."}, {"a": ["soll"], "h": "sollen · Präsens", "r": "Nebensatz: Infinitiv + Modalverb am Ende; es → soll."}, {"a": ["kann"], "h": "können · Präsens", "r": "die Firma = Singular → kann."}, {"a": ["muss"], "h": "müssen · ich", "r": "Nach dem Wenn-Satz steht im Hauptsatz das Verb direkt an Position 1: muss ich."}, {"a": ["bin"], "h": "sein · ich", "r": "kommen bildet das Perfekt mit sein: ich bin … gekommen."}, {"a": ["gekommen"], "h": "kommen · Partizip II", "r": "kommen → ist gekommen (unregelmäßig)."}, {"a": ["wurde"], "h": "werden · Präteritum · Passiv", "r": "das Dokument = Singular → wurde … ausgedruckt."}, {"a": ["bin"], "h": "sein · ich", "r": "dafür sein: Ich bin dafür, dass …"}, {"a": ["was"], "h": "W-Wort", "r": "Was denkt ihr darüber? Indirekte Frage: gespannt, was ihr … denkt."}, {"a": ["denkt"], "h": "denken · ihr", "r": "ihr → denkt (Verb am Ende im Nebensatz)."}], "tip": "Prüfe Subjekt, Zeit und Verbposition."}]}]};
+var st = {sec:-1, queue:[], pos:0, score:0, total:0, wrong:[], wrongGaps:[], nItems:0, locked:false, results:{}, subset:false, last:null};
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function shuffle(a){var b=a.slice(),i,j,t;for(i=b.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function range(n){var r=[],i;for(i=0;i<n;i++){r.push(i);}return r;}
+function strip(s){return s.replace(/[{}]/g,'');}
+function norm(s){return strip(s).replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');}
+function hl(s){return esc(s).replace(/\{([^}]*)\}/g,'<span class="v">$1</span>');}
+function sameOrder(a,b){var i;if(a.length!==b.length){return false;}for(i=0;i<a.length;i++){if(a[i]!==b[i]){return false;}}return true;}
+
+function key(x){
+  var t=String(x).toLowerCase().replace(/[\u00e4]/g,'ae').replace(/[\u00f6]/g,'oe').replace(/[\u00fc]/g,'ue').replace(/[\u00df]/g,'ss');
+  t=t.replace(/[.,!?;:"\u201e\u201c\u201d\u00bb\u00ab]/g,' ').replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');
+  return t;
+}
+function okAns(val,list){var k=key(val),i;if(k===''){return false;}for(i=0;i<list.length;i++){if(key(list[i])===k){return true;}}return false;}
+function inpHtml(id,list,cls){
+  var i,m=4;
+  for(i=0;i<list.length;i++){if(list[i].length>m){m=list[i].length;}}
+  return '<input class="inp'+(cls?' '+cls:'')+'" id="'+id+'" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" style="width:'+(m+3)+'ch;min-width:5.5em">';
+}
+function charBar(){return '<div class="chars" id="chars"><button type="button" data-c="\u00e4">\u00e4</button><button type="button" data-c="\u00f6">\u00f6</button><button type="button" data-c="\u00fc">\u00fc</button><button type="button" data-c="\u00df">\u00df</button></div>';}
+function bindInputs(onEnter){
+  var ins=$('stage').getElementsByTagName('input'),k,cb,bs;
+  for(k=0;k<ins.length;k++){
+    ins[k].onfocus=(function(e){return function(){st.last=e;};})(ins[k]);
+    ins[k].onkeydown=function(ev){ev=ev||window.event;if((ev.keyCode||ev.which)===13){if(ev.preventDefault){ev.preventDefault();}onEnter();return false;}};
+  }
+  cb=$('chars');
+  if(cb){
+    bs=cb.getElementsByTagName('button');
+    for(k=0;k<bs.length;k++){
+      bs[k].onmousedown=function(ev){ev=ev||window.event;if(ev.preventDefault){ev.preventDefault();}};
+      bs[k].onclick=(function(b){return function(){
+        var t=st.last||ins[0],c=b.getAttribute('data-c'),a,e,v;
+        if(!t||t.disabled){return;}
+        v=t.value;
+        try{a=t.selectionStart;e=t.selectionEnd;if(typeof a==='number'){t.value=v.slice(0,a)+c+v.slice(e);t.focus();t.setSelectionRange(a+1,a+1);return;}}catch(x){}
+        t.value=v+c;t.focus();
+      };})(bs[k]);
+    }
+  }
+}
+function renderTabs(){
+  var h='',i,r,b;
+  for(i=0;i<D.sections.length;i++){
+    r=st.results[i];
+    h+='<button class="tab'+(i===st.sec?' on':'')+'" type="button">'+(i+1)+'. '+esc(D.sections[i].title)+(r?'<span class="badge">'+esc(r)+'</span>':'')+'</button>';
+  }
+  $('tabs').innerHTML=h;
+  b=$('tabs').getElementsByTagName('button');
+  for(i=0;i<b.length;i++){b[i].onclick=(function(k){return function(){startSection(k,null);};})(i);}
+}
+function startSection(i,subset){
+  var n=D.sections[i].items.length;
+  st.sec=i;
+  st.subset=!!subset;
+  st.queue=shuffle(subset?subset:range(n));
+  st.pos=0;st.score=0;st.wrong=[];st.wrongGaps=[];st.locked=false;st.nItems=st.queue.length;st.total=st.queue.length;
+  if(D.sections[i].type==='cloze'){st.total=0;var q0;for(q0=0;q0<st.queue.length;q0++){st.total+=D.sections[i].items[st.queue[q0]].g.length;}}
+  renderTabs();
+  var s=D.sections[i];
+  $('intro').innerHTML=esc(s.intro);
+  $('merk').innerHTML=s.merk?'<details class="merk"><summary>Merkhilfe anzeigen</summary>'+s.merk+'</details>':'';
+  renderItem();
+}
+function progress(){
+  var p=Math.round(st.pos/st.nItems*100);
+  return '<div class="bar"><i style="width:'+p+'%"></i></div><div class="cnt">Aufgabe '+(st.pos+1)+' von '+st.nItems+'</div>';
+}
+function curItem(){return D.sections[st.sec].items[st.queue[st.pos]];}
+function renderItem(){
+  st.locked=false;
+  if(st.pos>=st.queue.length){renderSummary();return;}
+  var it=curItem();
+  var ty=D.sections[st.sec].type;if(ty==='build'){renderBuild(it);}else if(ty==='cloze'){renderCloze(it);}else if(ty==='type'){renderType(it);}else{renderMC(it);}
+}
+function nextBtn(){
+  var b=$('next');
+  if(b){b.onclick=function(){st.pos++;renderItem();};b.focus();}
+}
+/* ---------- Multiple Choice ---------- */
+function renderMC(it){
+  var hasGap=it.s&&it.s.indexOf('___')>=0;
+  var q=it.q||(hasGap?'Welche Form passt in die Lücke?':'Welcher Satz ist richtig?');
+  var opts=shuffle(it.o),h='',i;
+  h+=progress()+'<div class="q">'+esc(q)+'</div>';
+  if(it.s){h+='<div class="sent">'+esc(it.s).replace('___','<span class="gap" id="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>')+'</div>';}
+  h+='<div class="opts" id="opts">';
+  for(i=0;i<opts.length;i++){h+='<button class="opt" type="button">'+esc(opts[i])+'</button>';}
+  h+='</div><div id="fb"></div>';
+  $('stage').innerHTML=h;
+  var bs=$('opts').getElementsByTagName('button');
+  for(i=0;i<bs.length;i++){bs[i].onclick=(function(b,txt){return function(){answerMC(it,txt,b);};})(bs[i],opts[i]);}
+}
+function answerMC(it,choice,btn){
+  if(st.locked){return;}
+  st.locked=true;
+  var ok=(choice===it.o[0]),bs=$('opts').getElementsByTagName('button'),i,full;
+  for(i=0;i<bs.length;i++){
+    bs[i].disabled=true;
+    if(bs[i].textContent===it.o[0]){bs[i].className='opt ok';}
+  }
+  if(!ok){btn.className='opt no';st.wrong.push(st.queue[st.pos]);}else{st.score++;}
+  full=it.s?it.s.replace('___',it.o[0]):it.o[0];
+  var g=$('gap');
+  if(g){g.textContent=choice;g.className='gap '+(ok?'ok':'no');}
+  $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Nicht ganz.')+'</strong> '+(ok?'':'Richtig ist: ')+'<span class="sol">'+esc(full)+'</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+  nextBtn();
+}
+/* ---------- Eintippen ---------- */
+function renderType(it){
+  var sec=D.sections[st.sec],tries=0,done=false,gapMode=it.s.indexOf('___')>=0,h,sent;
+  h=progress()+'<div class="q">'+esc(it.q||sec.q||(gapMode?'Schreibe die passende Form in die L\u00fccke.':'Der markierte Teil ist falsch. Schreibe ihn richtig.'))+'</div>';
+  if(gapMode){sent=esc(it.s).replace('___',inpHtml('inp',it.a));}
+  else{sent=esc(it.s).replace(/\{([^}]*)\}/,'<span class="wrongpart">$1</span>');}
+  h+='<div class="sent">'+sent+'</div>';
+  if(!gapMode){h+='<div class="fixrow"><label for="inp">Richtig:</label>'+inpHtml('inp',it.a)+'</div>';}
+  if(it.h){h+='<div class="hint">'+esc(it.h)+'</div>';}
+  h+=charBar()+'<div class="msg" id="msg"></div><div id="ctl"><button class="btn primary" id="chk" type="button">Pr\u00fcfen</button></div><div id="fb"></div>';
+  $('stage').innerHTML=h;
+  bindInputs(function(){if(!done){check();}});
+  st.last=$('inp');
+  try{$('inp').focus();}catch(e0){}
+  function finish(ok){
+    var full=gapMode?it.s.replace('___',it.a[0]):it.s.replace(/\{[^}]*\}/,it.a[0]);
+    done=true;st.locked=true;
+    $('inp').disabled=true;
+    if(!ok){$('inp').value=it.a[0];}
+    $('inp').className='inp '+(ok?'ok':'no');
+    $('ctl').innerHTML='';$('msg').textContent='';
+    $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Hier ist die L\u00f6sung:')+'</strong> <span class="sol">'+esc(full)+'</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+    nextBtn();
+  }
+  function check(){
+    var v=$('inp').value;
+    if(key(v)===''){$('msg').textContent='Schreibe zuerst eine Antwort.';return;}
+    tries++;
+    if(okAns(v,it.a)){if(tries===1){st.score++;}finish(true);return;}
+    if(tries===1){st.wrong.push(st.queue[st.pos]);}
+    if(tries>=2){finish(false);return;}
+    $('inp').className='inp no';
+    $('msg').textContent='Noch nicht richtig. Tipp: '+(it.tip||sec.tip||'Pr\u00fcfe Subjekt, Zeit und Endung.')+' Du hast einen zweiten Versuch.';
+    try{$('inp').focus();$('inp').select();}catch(e1){}
+  }
+  $('chk').onclick=function(){if(!done){check();}};
+}
+/* ---------- Satzbausteine ---------- */
+function renderBuild(it){
+  var chips=[],i,order,tries=0,placed=[],done=false;
+  for(i=0;i<it.ch.length;i++){chips.push({id:i,t:it.ch[i]});}
+  order=shuffle(range(chips.length));
+  var guard=0;
+  while(chips.length>1&&sameOrder(order,range(chips.length))&&guard<20){order=shuffle(range(chips.length));guard++;}
+  $('stage').innerHTML=progress()+'<div class="q">'+esc(it.q||'Bilde den Satz. Tippe die Bausteine in der richtigen Reihenfolge an. Tippe einen gesetzten Baustein an, um ihn zurückzulegen.')+'</div><div class="build" id="build"></div><div class="pool" id="pool"></div><div class="msg" id="msg"></div><div id="ctl"></div><div id="fb"></div>';
+  function inPlaced(id){var k;for(k=0;k<placed.length;k++){if(placed[k]===id){return true;}}return false;}
+  function draw(){
+    var h='<span class="fixed">'+esc(it.st)+'</span>',k,p='';
+    for(k=0;k<placed.length;k++){h+='<button class="chip placed" type="button" data-id="'+placed[k]+'">'+esc(chips[placed[k]].t)+'</button>';}
+    h+='<span class="fixed">.</span>';
+    $('build').innerHTML=h;
+    for(k=0;k<order.length;k++){if(!inPlaced(order[k])){p+='<button class="chip" type="button" data-id="'+order[k]+'">'+esc(chips[order[k]].t)+'</button>';}}
+    $('pool').innerHTML=p;
+    var bb=$('build').getElementsByTagName('button'),pb=$('pool').getElementsByTagName('button');
+    for(k=0;k<bb.length;k++){bb[k].onclick=(function(b){return function(){if(done){return;}var id=parseInt(b.getAttribute('data-id'),10),n=[],j;for(j=0;j<placed.length;j++){if(placed[j]!==id){n.push(placed[j]);}}placed=n;$('msg').textContent='';draw();};})(bb[k]);}
+    for(k=0;k<pb.length;k++){pb[k].onclick=(function(b){return function(){if(done){return;}placed.push(parseInt(b.getAttribute('data-id'),10));$('msg').textContent='';draw();};})(pb[k]);}
+    if(!done){
+      $('ctl').innerHTML='<button class="btn primary" id="chk" type="button">Prüfen</button><button class="btn" id="rst" type="button">Zurücksetzen</button>';
+      $('chk').onclick=check;
+      $('rst').onclick=function(){placed=[];$('msg').textContent='';draw();};
+    }
+  }
+  function finish(ok){
+    done=true;st.locked=true;
+    $('ctl').innerHTML='';
+    $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Hier ist die Lösung:')+'</strong> <span class="sol">'+hl(it.a[0])+'.</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+    draw();
+    nextBtn();
+  }
+  function check(){
+    var k,s,ok=false,parts=[];
+    if(placed.length<chips.length){$('msg').textContent='Setze zuerst alle Bausteine ein.';return;}
+    for(k=0;k<placed.length;k++){parts.push(chips[placed[k]].t);}
+    s=norm(it.st+' '+parts.join(' '));
+    for(k=0;k<it.a.length;k++){if(norm(it.a[k])===s){ok=true;}}
+    tries++;
+    if(ok){if(tries===1){st.score++;}finish(true);return;}
+    if(tries===1){st.wrong.push(st.queue[st.pos]);}
+    if(tries>=2){finish(false);return;}
+    $('msg').innerHTML='Noch nicht richtig. Tipp: '+esc(it.r)+' Du hast einen zweiten Versuch.';
+  }
+  draw();
+}
+/* ---------- Lückentext ---------- */
+function gAns(g){return g.a?g.a[0]:g.o[0];}
+function renderCloze(it){
+  var paras=it.t.split('\n\n'),i,tries=0,done=false,html,typed=false;
+  for(i=0;i<it.g.length;i++){if(it.g[i].a){typed=true;}}
+  html=progress()+'<div class="q">'+esc(it.q||(typed?'Schreibe in jede Lücke die passende Form. Der Hinweis steht in Klammern.':'Wähle in jeder Lücke die passende Form.'))+'</div>';
+  if(it.title){html+='<div class="ttl">'+esc(it.title)+'</div>';}
+  html+='<div class="cloze">';
+  for(i=0;i<paras.length;i++){
+    html+='<p>'+esc(paras[i]).replace(/\[\[(\d+)\]\]/g,function(m,n){
+      var g=it.g[parseInt(n,10)-1],opts,o,k;
+      if(g.a){return '<input class="inp" type="text" data-g="'+n+'" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" style="width:'+(Math.max(4,g.a[0].length)+3)+'ch;min-width:5em">'+(g.h?'<span class="gh">('+esc(g.h)+')</span>':'');}
+      opts=shuffle(g.o);o='<select class="sel" data-g="'+n+'"><option value="">…</option>';
+      for(k=0;k<opts.length;k++){o+='<option value="'+esc(opts[k])+'">'+esc(opts[k])+'</option>';}
+      return o+'</select>';
+    })+'</p>';
+  }
+  html+='</div>'+(typed?charBar():'')+'<div class="msg" id="msg"></div><div id="ctl"><button class="btn primary" id="chk" type="button">Prüfen</button></div><div id="fb"></div>';
+  $('stage').innerHTML=html;
+  function ctrls(){return $('stage').querySelectorAll('select.sel, input.inp');}
+  if(typed){bindInputs(function(){if(!done){check();}});var f0=$('stage').querySelector('input.inp');if(f0){st.last=f0;try{f0.focus();}catch(e0){}}}
+  function finish(allOk){
+    var cs=ctrls(),k,l='<ol>';
+    done=true;st.locked=true;
+    for(k=0;k<cs.length;k++){cs[k].disabled=true;}
+    for(k=0;k<it.g.length;k++){l+='<li><span class="sol">'+esc(gAns(it.g[k]))+'</span>: '+esc(it.g[k].r)+'</li>';}
+    l+='</ol>';
+    $('ctl').innerHTML='';
+    $('msg').textContent='';
+    $('fb').innerHTML='<div class="fb '+(allOk?'ok':'no')+'"><strong>'+(allOk?'Alles richtig!':'Hier sind die Lösungen:')+'</strong>'+l+'</div><button class="btn primary" id="next" type="button">Weiter</button>';
+    nextBtn();
+  }
+  function check(){
+    var cs=ctrls(),k,n,g,ok,nOk=0,bad=0,isIn,val;
+    for(k=0;k<cs.length;k++){if(key(cs[k].value)===''){$('msg').textContent='Fülle zuerst alle Lücken aus.';return;}}
+    tries++;
+    for(k=0;k<cs.length;k++){
+      n=parseInt(cs[k].getAttribute('data-g'),10);g=it.g[n-1];
+      isIn=(cs[k].tagName.toLowerCase()==='input');
+      val=cs[k].value;
+      ok=g.a?okAns(val,g.a):(val===g.o[0]);
+      if(!ok&&tries>=2){cs[k].value=gAns(g);}
+      cs[k].className=(isIn?'inp ':'sel ')+(ok?'ok':'no');
+      if(ok){nOk++;}else{bad++;if(tries===1){st.wrongGaps.push({a:gAns(g),r:g.r});}}
+    }
+    if(tries===1){st.score+=nOk;}
+    if(bad===0){finish(true);return;}
+    if(tries>=2){finish(false);return;}
+    $('msg').textContent=bad+(bad===1?' Lücke ist':' Lücken sind')+' noch falsch (rot). Versuche es noch einmal.'+(it.tip?' Tipp: '+it.tip:'');
+  }
+  $('chk').onclick=function(){if(!done){check();}};
+}
+/* ---------- Auswertung ---------- */
+function solText(it){
+  if(it.st){return hl(it.a[0])+'.';}
+  if(it.o){return esc(it.s?it.s.replace('___',it.o[0]):it.o[0]);}
+  return esc(it.s.indexOf('___')>=0?it.s.replace('___',it.a[0]):it.s.replace(/\{[^}]*\}/,it.a[0]));
+}
+function renderSummary(){
+  var s=D.sections[st.sec],pct=Math.round(st.score/st.total*100),h,i,msg;
+  if(!st.subset){st.results[st.sec]=st.score+'/'+st.total;}
+  renderTabs();
+  msg=pct>=90?'Sehr sicher!':(pct>=70?'Gut. Die Wiederholung der Fehler lohnt sich.':'Weiter üben: Wiederhole zuerst die Merkhilfe und dann die Fehler.');
+  h='<div class="sum"><h2>'+st.score+' von '+st.total+' '+(s.type==='cloze'?'Lücken':'Aufgaben')+' beim ersten Versuch richtig ('+pct+' %)</h2><p>'+msg+'</p>';
+  if(s.type==='cloze'&&st.wrongGaps.length){
+    h+='<p><strong>Das solltest du noch einmal ansehen:</strong></p><ul>';
+    for(i=0;i<st.wrongGaps.length;i++){h+='<li><span class="sol">'+esc(st.wrongGaps[i].a)+'</span><br><small>'+esc(st.wrongGaps[i].r)+'</small></li>';}
+    h+='</ul>';
+  }
+  if(st.wrong.length){
+    h+='<p><strong>Das solltest du noch einmal ansehen:</strong></p><ul>';
+    for(i=0;i<st.wrong.length;i++){var it=s.items[st.wrong[i]];h+='<li>'+solText(it)+'<br><small>'+esc(it.r)+'</small></li>';}
+    h+='</ul><button class="btn primary" id="again" type="button">Fehler wiederholen</button>';
+  }
+  h+='<button class="btn" id="restart" type="button">Abschnitt neu mischen</button>';
+  if(st.sec<D.sections.length-1){h+='<button class="btn" id="nextsec" type="button">Nächster Abschnitt</button>';}
+  h+='</div>';
+  $('stage').innerHTML=h;
+  if($('again')){var w=st.wrong.slice();$('again').onclick=function(){startSection(st.sec,w);};}
+  $('restart').onclick=function(){startSection(st.sec,null);};
+  if($('nextsec')){$('nextsec').onclick=function(){startSection(st.sec+1,null);};}
+}
+document.getElementById('title').textContent=D.title;
+document.getElementById('sub').textContent=D.sub;
+window.__DTB={D:D,st:st,start:startSection};
+startSection(0,null);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Satzbau sicher schreiben</title>
+<style>
+:root{--bg:#f4f6f9;--card:#ffffff;--tx:#1b2230;--mut:#5b6577;--ac:#2354c4;--acbg:#e8eefb;--ok:#17754a;--okbg:#e3f5ec;--no:#b3261e;--nobg:#fdebe9;--bd:#d5dbe6;--vb:#fff0bd;--vbd:#e2b92e}
+@media (prefers-color-scheme:dark){:root{--bg:#12161d;--card:#1b212c;--tx:#e8ecf3;--mut:#a3adbf;--ac:#7fa6ff;--acbg:#243250;--ok:#6fd3a0;--okbg:#17352a;--no:#ff9a92;--nobg:#3a1f1d;--bd:#323b4d;--vb:#4a3f12;--vbd:#b99a2a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:17px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:780px;margin:0 auto;padding:16px}
+h1{font-size:1.45rem;margin:4px 0 2px}
+.sub{color:var(--mut);margin:0 0 12px;font-size:.95rem}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px}
+.tab{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:9px 12px;border-radius:10px;font-size:.92rem;cursor:pointer;min-height:44px;text-align:left}
+.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.badge{display:inline-block;margin-left:6px;padding:0 7px;border-radius:9px;background:var(--okbg);color:var(--ok);font-size:.8rem}
+.tab.on .badge{background:#fff;color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;margin:10px 0}
+.intro{color:var(--mut);font-size:.95rem;margin:0 0 10px}
+.bar{height:8px;background:var(--bd);border-radius:6px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;background:var(--ac);width:0}
+.cnt{font-size:.85rem;color:var(--mut);margin-bottom:10px}
+.q{font-size:.9rem;color:var(--mut);margin-bottom:6px}
+.sent{font-size:1.2rem;margin:4px 0 14px}
+.gap{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--ac);text-align:center;font-weight:700}
+.gap.ok{color:var(--ok);border-color:var(--ok)}.gap.no{color:var(--no);border-color:var(--no)}
+.opts{display:grid;gap:10px}
+.opt{border:2px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:12px 14px;font-size:1.02rem;text-align:left;cursor:pointer;min-height:48px}
+.opt:hover{border-color:var(--ac)}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.no{border-color:var(--no);background:var(--nobg)}
+.opt[disabled]{cursor:default}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px}
+.fb.ok{background:var(--okbg);border:1px solid var(--ok)}
+.fb.no{background:var(--nobg);border:1px solid var(--no)}
+.sol{font-weight:700}
+.rule{margin-top:6px;font-size:.95rem}
+.btn{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:11px 16px;border-radius:10px;font-size:1rem;cursor:pointer;min-height:46px;margin:12px 8px 0 0}
+.btn.primary{background:var(--ac);border-color:var(--ac);color:#fff}
+.build{border:2px dashed var(--bd);border-radius:12px;padding:10px;min-height:62px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:50px}
+.chip{border:2px solid var(--ac);background:var(--acbg);color:var(--tx);border-radius:10px;padding:8px 12px;font-size:1.02rem;cursor:pointer;min-height:44px}
+.chip.placed{background:var(--card)}
+.fixed{font-weight:700;padding:8px 4px}
+.v{background:var(--vb);border-bottom:2px solid var(--vbd);padding:0 3px;border-radius:3px}
+.msg{color:var(--no);min-height:1.4em;font-size:.95rem;margin:4px 0}
+details.merk{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;margin:8px 0}
+details.merk summary{cursor:pointer;font-weight:600;min-height:32px}
+.tbl{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;font-size:.92rem;min-width:420px}
+th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left}
+th{background:var(--acbg)}
+.sum h2{margin:0 0 6px}
+.sum ul{padding-left:20px}
+.sum li{margin:8px 0}
+footer{color:var(--mut);font-size:.8rem;margin:18px 0 6px}
+@media (max-width:520px){.sent{font-size:1.1rem}.tab{font-size:.88rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1 id="title"></h1>
+<p class="sub" id="sub"></p>
+<div class="tabs" id="tabs"></div>
+<p class="intro" id="intro"></p>
+<div id="merk"></div>
+<div class="card" id="stage"></div>
+<footer>Deutsch-Test für den Beruf B2 · Schreiben · Übungsmaterial · läuft offline im Browser</footer>
+</div>
+<script>
+(function(){
+var D = {"title": "Satzbau sicher schreiben", "sub": "DTB B2 · Schreiben · Training zu Verbposition, vollständigen Sätzen und Infinitiv mit zu (Beschwerdeantwort und Forumsbeitrag)", "sections": [{"title": "Hauptsatz oder Nebensatz?", "type": "build", "intro": "Der Satzanfang ist vorgegeben. Entscheide selbst: Steht das Verb auf Position 2 oder am Ende? Setze die übrigen Bausteine in die richtige Reihenfolge. In der Lösung sind die Verben farbig markiert.", "merk": "<p><strong>Aussagesatz:</strong> Das konjugierte Verb steht immer auf <strong>Position 2</strong>.</p>\n<div class=\"tbl\"><table><tr><th>Position 1</th><th>Position 2</th><th>Mitte</th><th>Ende</th></tr>\n<tr><td>Wir</td><td>haben</td><td>neue Mitarbeiter</td><td>eingestellt.</td></tr>\n<tr><td>Deshalb</td><td>haben</td><td>wir neue Mitarbeiter</td><td>eingestellt.</td></tr>\n<tr><td>Wegen des Staus</td><td>kamen</td><td>die Getränke</td><td>zu spät.</td></tr></table></div>\n<p>Zweiteilige Verben bilden eine <strong>Verbklammer</strong>: haben … eingestellt, muss … suchen, bieten … an.</p>\n<div class=\"tbl\"><table><tr><th>Position 0 (zählt nicht)</th><th>Position 1 (Verb folgt sofort)</th></tr>\n<tr><td>aber, und, oder, denn, sondern<br>→ aber wir hatten …</td><td>deshalb, deswegen, daher, darum, trotzdem, außerdem, zudem, dadurch, leider, dann, danach, gestern …<br>→ deshalb hatten wir …</td></tr></table></div><p>Im <strong>Nebensatz</strong> steht das konjugierte Verb am <strong>Ende</strong>. Das Subjekt darf nicht fehlen.</p>\n<div class=\"tbl\"><table><tr><th>Einleitung</th><th>Beispiel</th></tr>\n<tr><td>dass, weil, damit, wenn, obwohl, ob, warum, wann, in welchem …</td><td>Wir bedauern, dass Sie nicht zufrieden <strong>waren</strong>.</td></tr>\n<tr><td>mehrere Verben</td><td>… weil das Buffet nicht rechtzeitig eröffnet <strong>wurde</strong>.<br>… dass unsere Firma Büros abschaffen <strong>will</strong>.<br>… dass sich das Problem nicht wiederholen <strong>wird</strong>.</td></tr></table></div>\n<p>Steht der Nebensatz am Anfang, ist er Position 1. Dann kommt <strong>sofort das Verb</strong> des Hauptsatzes: <em>Weil viele krank waren, hatten wir zu wenig Personal.</em></p>", "items": [{"st": "Derzeit", "ch": ["waren", "unsere Mitarbeiter", "krank"], "a": ["Derzeit {waren} unsere Mitarbeiter krank"], "r": "Position 1: Zeitangabe. Position 2: das konjugierte Verb. Danach folgt das Subjekt (Inversion)."}, {"st": "Deshalb", "ch": ["bin", "ich", "dagegen"], "a": ["Deshalb {bin} ich dagegen"], "r": "Deshalb steht auf Position 1, also folgt sofort das Verb: Deshalb bin ich …, nicht: Deshalb ich bin …"}, {"st": "Leider", "ch": ["hat", "der Lieferant", "keine Tische", "geliefert"], "a": ["Leider {hat} der Lieferant keine Tische {geliefert}"], "r": "Perfekt: Hilfsverb auf Position 2, Partizip II am Satzende (Verbklammer)."}, {"st": "Zudem", "ch": ["hat", "der neue Mitarbeiter", "die Bestellung", "falsch", "notiert"], "a": ["Zudem {hat} der neue Mitarbeiter die Bestellung falsch {notiert}"], "r": "Zudem steht auf Position 1. Das Verb (hat) folgt direkt, das Partizip steht am Ende."}, {"st": "Aus diesem Grund", "ch": ["mussten", "wir", "zusätzliche Mitarbeiter", "einstellen"], "a": ["Aus diesem Grund {mussten} wir zusätzliche Mitarbeiter {einstellen}"], "r": "Modalverb auf Position 2, Infinitiv am Ende."}, {"st": "Wegen des Personalmangels", "ch": ["konnten", "wir", "den Sekt", "nicht rechtzeitig", "servieren"], "a": ["Wegen des Personalmangels {konnten} wir den Sekt nicht rechtzeitig {servieren}", "Wegen des Personalmangels {konnten} wir nicht rechtzeitig den Sekt {servieren}"], "r": "Die Angabe am Anfang (Position 1) zählt als ein Satzglied. Danach sofort das Verb."}, {"st": "Letzte Woche", "ch": ["hatten", "viele Kollegen", "eine ansteckende Krankheit"], "a": ["Letzte Woche {hatten} viele Kollegen eine ansteckende Krankheit"], "r": "Zeitangabe auf Position 1 → Verb auf Position 2 → Subjekt."}, {"st": "In unserer Firma", "ch": ["sollen", "die festen Büros", "abgeschafft werden"], "a": ["In unserer Firma {sollen} die festen Büros {abgeschafft werden}"], "r": "Passiv mit Modalverb: Modalverb auf Position 2, Partizip II + werden am Ende."}, {"st": "Außerdem", "ch": ["muss", "man", "jeden Tag", "ein neues Büro", "suchen"], "a": ["Außerdem {muss} man jeden Tag ein neues Büro {suchen}", "Außerdem {muss} man ein neues Büro jeden Tag {suchen}"], "r": "Außerdem steht auf Position 1: Verb (muss) sofort danach, Infinitiv am Ende."}, {"st": "Trotzdem", "ch": ["bieten", "wir", "Ihnen", "einen Rabatt", "an"], "a": ["Trotzdem {bieten} wir Ihnen einen Rabatt {an}"], "r": "Trennbares Verb (anbieten): Verb auf Position 2, Präfix an am Ende."}, {"st": "Gestern", "ch": ["habe", "ich", "zehn Minuten", "auf den Drucker", "gewartet"], "a": ["Gestern {habe} ich zehn Minuten auf den Drucker {gewartet}"], "r": "Perfekt: habe auf Position 2, gewartet am Ende. Zeit vor Ort/Ziel."}, {"st": "Dadurch", "ch": ["entstehen", "für die Firma", "zusätzliche Kosten"], "a": ["Dadurch {entstehen} für die Firma zusätzliche Kosten", "Dadurch {entstehen} zusätzliche Kosten für die Firma"], "r": "Das Subjekt (zusätzliche Kosten) steht hier nach dem Verb: Dadurch entstehen …"}, {"st": "Heute", "ch": ["habe", "ich", "Ihre E-Mail", "erhalten"], "a": ["Heute {habe} ich Ihre E-Mail {erhalten}"], "r": "Perfekt: habe (Position 2) … erhalten (Ende)."}, {"st": "Zum Schluss", "ch": ["möchte", "ich", "mich", "bei Ihnen", "entschuldigen"], "a": ["Zum Schluss {möchte} ich mich bei Ihnen {entschuldigen}"], "r": "Modalverb auf Position 2. Das Reflexivpronomen (mich) steht nach dem Subjekt."}, {"st": "Wir bedauern, dass", "ch": ["Sie", "mit unserem Service", "nicht zufrieden", "waren"], "a": ["Wir bedauern, dass Sie mit unserem Service nicht zufrieden {waren}"], "r": "dass-Satz: Das konjugierte Verb steht am Ende des Nebensatzes."}, {"st": "Wir versichern Ihnen, dass", "ch": ["sich", "diese Situation", "nicht", "wiederholen wird"], "a": ["Wir versichern Ihnen, dass sich diese Situation nicht {wiederholen wird}", "Wir versichern Ihnen, dass diese Situation sich nicht {wiederholen wird}"], "r": "Futur im Nebensatz: Infinitiv + werden am Ende (wiederholen wird). Nicht: dass es wird nicht wiederholen."}, {"st": "Ich bin dagegen, weil", "ch": ["viele Mitarbeiter", "sich", "nicht", "konzentrieren können"], "a": ["Ich bin dagegen, weil viele Mitarbeiter sich nicht {konzentrieren können}", "Ich bin dagegen, weil sich viele Mitarbeiter nicht {konzentrieren können}"], "r": "weil-Satz: Subjekt nicht vergessen, beide Verben am Ende (Infinitiv + Modalverb)."}, {"st": "Der Kunde war verärgert, weil", "ch": ["das Buffet", "nicht rechtzeitig", "eröffnet wurde"], "a": ["Der Kunde war verärgert, weil das Buffet nicht rechtzeitig {eröffnet wurde}"], "r": "Passiv im Nebensatz: Partizip II + wurde am Ende."}, {"st": "Wir haben neue Mitarbeiter eingestellt, damit", "ch": ["das Buffet", "pünktlich", "eröffnet werden kann"], "a": ["Wir haben neue Mitarbeiter eingestellt, damit das Buffet pünktlich {eröffnet werden kann}"], "r": "damit-Satz (Ziel): Verben am Ende: eröffnet werden kann."}, {"st": "Ich arbeite gern im Büro, wenn", "ch": ["es", "ruhig", "ist"], "a": ["Ich arbeite gern im Büro, wenn es ruhig {ist}"], "r": "wenn-Satz: Verb am Ende."}, {"st": "Wir haben nur Tische für 42 Personen gedeckt, obwohl", "ch": ["52 Personen", "angemeldet", "waren"], "a": ["Wir haben nur Tische für 42 Personen gedeckt, obwohl 52 Personen {angemeldet waren}"], "r": "obwohl-Satz: Partizip II + konjugiertes Verb am Ende (angemeldet waren)."}, {"st": "Ich habe gehört, dass", "ch": ["unsere Firma", "die festen Büros", "abschaffen", "will"], "a": ["Ich habe gehört, dass unsere Firma die festen Büros {abschaffen will}"], "r": "Modalverb im Nebensatz: Infinitiv + Modalverb am Ende (abschaffen will). Nicht: unsere Firma will …"}, {"st": "Es ist anstrengend, wenn", "ch": ["man", "jeden Tag", "ein neues Büro", "suchen muss"], "a": ["Es ist anstrengend, wenn man jeden Tag ein neues Büro {suchen muss}"], "r": "wenn-Satz: Subjekt (man) + Verben am Ende."}, {"st": "Wir hoffen, dass", "ch": ["Sie", "uns", "weiterhin", "Ihr Vertrauen", "schenken"], "a": ["Wir hoffen, dass Sie uns weiterhin Ihr Vertrauen {schenken}", "Wir hoffen, dass Sie uns Ihr Vertrauen weiterhin {schenken}"], "r": "dass-Satz nach hoffen: Das Verb steht am Ende. Das Wort dass darf nicht fehlen."}, {"st": "Ich verstehe, dass", "ch": ["viele Kollegen", "einen festen Arbeitsplatz", "brauchen"], "a": ["Ich verstehe, dass viele Kollegen einen festen Arbeitsplatz {brauchen}"], "r": "dass-Satz: Subjekt + Objekt + Verb am Ende."}, {"st": "Leider wissen wir noch nicht, warum", "ch": ["die Tische", "nicht", "geliefert wurden"], "a": ["Leider wissen wir noch nicht, warum die Tische nicht {geliefert wurden}"], "r": "Indirekter Fragesatz (warum, ob, wann, in welchem …): Das Verb steht am Ende."}, {"st": "Bitte teilen Sie uns mit, ob", "ch": ["Sie", "unser Angebot", "annehmen", "möchten"], "a": ["Bitte teilen Sie uns mit, ob Sie unser Angebot {annehmen möchten}"], "r": "ob-Satz: Infinitiv + Modalverb am Ende."}, {"st": "Weil viele Mitarbeiter krank waren,", "ch": ["hatten", "wir", "zu wenig Personal"], "a": ["Weil viele Mitarbeiter krank waren, {hatten} wir zu wenig Personal"], "r": "Steht der Nebensatz am Anfang, ist er Position 1. Danach folgt sofort das Verb des Hauptsatzes: …, hatten wir …"}, {"st": "Wenn alle Drucker abgeschafft werden,", "ch": ["müssen", "wir", "auf den Flur", "gehen"], "a": ["Wenn alle Drucker abgeschafft werden, {müssen} wir auf den Flur {gehen}"], "r": "Nebensatz zuerst → danach Verb (müssen) + Subjekt (wir). Infinitiv am Ende."}, {"st": "Ich schlage vor, dass", "ch": ["wir", "eine Umfrage", "machen"], "a": ["Ich schlage vor, dass wir eine Umfrage {machen}"], "r": "Nach vorschlagen kann ein dass-Satz stehen. Das Verb steht am Ende."}]}, {"title": "Vollständige Sätze erkennen", "type": "mc", "intro": "Nur ein Satz ist richtig. Die Fehler stammen aus typischen Schreibleistungen. Prüfe Subjekt, Verb und Verbposition.", "merk": "<p><strong>Checkliste vor der Abgabe:</strong></p>\n<ol><li>Hat jeder Satz ein <strong>Subjekt</strong> und ein <strong>konjugiertes Verb</strong>?</li>\n<li>Steht das Verb im Hauptsatz auf <strong>Position 2</strong>?</li>\n<li>Steht das Verb im Nebensatz am <strong>Ende</strong>?</li>\n<li>Steht vor jedem Nebensatz ein <strong>Komma</strong>?</li>\n<li>Stimmen <strong>Hilfsverb und Partizip II</strong> (hat … geliefert, ist … entstanden)?</li></ol>", "items": [{"o": ["Wir hoffen, dass sich das Problem nicht wiederholt.", "Wir hoffen das Problem nicht wiederholen.", "Wir hoffen, dass das Problem nicht wiederholen.", "Wir hoffen, das Problem nicht wiederholt."], "r": "Nach hoffen: dass + Subjekt + konjugiertes Verb am Ende. Wiederholen ist reflexiv: sich wiederholen."}, {"o": ["Die Idee finde ich gut, weil man dann weniger Platz braucht.", "Die Idee finde ich gut, weil dann weniger Platz brauchen.", "Die Idee finde ich gut, weil braucht man dann weniger Platz.", "Die Idee finde ich gut, weil man braucht dann weniger Platz."], "r": "weil-Satz: Subjekt (man) nicht vergessen und das Verb ans Ende (braucht)."}, {"o": ["Mit neuen Mitarbeitern wird das Buffet pünktlich eröffnet.", "Mit neuen Mitarbeitern wird Buffet pünktlich arbeiten.", "Mit neuen Mitarbeitern wird das Buffet pünktlich eröffnen.", "Mit neuen Mitarbeitern das Buffet wird pünktlich eröffnet."], "r": "Das Buffet eröffnet sich nicht selbst: Passiv = wird + Partizip II. Das Verb steht auf Position 2."}, {"o": ["Sie haben 52 Personen angemeldet, aber wir hatten nur 42 Plätze.", "Sie haben 52 Personen angemeldet, aber hatten wir nur 42 Plätze.", "Sie haben 52 Personen angemeldet, aber nur 42 Plätze wir hatten.", "Sie haben 52 Personen angemeldet, aber wir nur 42 Plätze hatten."], "r": "aber, und, oder, denn, sondern stehen auf Position 0: Danach folgt zuerst das Subjekt, dann das Verb (wir hatten)."}, {"o": ["Deswegen bin ich dafür, dass wir mehr Drucker haben.", "Deswegen ich bin dafür, dass wir mehr Drucker haben.", "Deswegen bin ich dafür, dass wir haben mehr Drucker.", "Deswegen ich dafür bin, dass wir mehr Drucker haben."], "r": "deswegen steht auf Position 1 → Verb auf Position 2 (bin ich). Im dass-Satz steht das Verb am Ende (haben)."}, {"o": ["In unserer Firma sollen alle Drucker in den Büros abgeschafft werden.", "Unsere Firma sollen alle Drucker abgeschafft werden.", "In unserer Firma sollen alle Drucker abschaffen.", "In unserer Firma werden sollen alle Drucker abgeschafft."], "r": "Passiv mit Modalverb: sollen (Position 2) … abgeschafft werden (Ende). Ort mit Präposition: in unserer Firma."}, {"o": ["Ich muss jeden Tag Geld für Diesel bezahlen.", "Ich muss jeden Tag Geld für Diesel bezahlt.", "Ich muss bezahlen jeden Tag Geld für Diesel.", "Ich jeden Tag muss Geld für Diesel bezahlen."], "r": "Modalverb auf Position 2, Infinitiv am Satzende."}, {"o": ["Man kann jeden Tag frei wählen, in welchem Büro man arbeiten möchte.", "Man kann jeden Tag frei wählen, in welchem Büro arbeiten möchte.", "Man kann jeden Tag frei wählen, in welchem Büro man möchte arbeiten.", "Man kann jeden Tag frei wählen, in welchem Büro man arbeiten."], "r": "Auch im indirekten Fragesatz (in welchem Büro …) braucht der Nebensatz ein Subjekt und die Verben am Ende (arbeiten möchte)."}, {"o": ["Nach unserer Prüfung haben wir festgestellt, dass der Fehler bei der Reservierung entstanden ist.", "Nach unserer Prüfung haben wir festgestellt, dass der Fehler ist entstanden bei der Reservierung.", "Nach unserer Prüfung haben wir festgestellt, dass der Fehler bei der Reservierung entstehen ist.", "Nach unserer Prüfung haben wir festgestellt, dass entstanden ist der Fehler bei der Reservierung."], "r": "Perfekt im Nebensatz: Partizip II + Hilfsverb am Ende (entstanden ist). Entstehen bildet das Perfekt mit sein."}, {"o": ["Leider hat uns der Lieferant die Tische nicht rechtzeitig geliefert.", "Leider hat uns der Lieferant die Tische nicht rechtzeitig liefern.", "Leider uns hat der Lieferant die Tische nicht rechtzeitig geliefert.", "Leider hat der Lieferant geliefert uns die Tische nicht rechtzeitig."], "r": "Perfekt: hat (Position 2) … geliefert (Ende)."}]}, {"title": "Infinitiv mit zu", "type": "mc", "intro": "Wo steht zu? Achte auf trennbare Verben und Modalverben.", "merk": "<div class=\"tbl\"><table><tr><th>Regel</th><th>Beispiel</th></tr>\n<tr><td>zu + Infinitiv am Ende</td><td>Ich schlage vor, eine Umfrage <strong>zu machen</strong>.</td></tr>\n<tr><td>trennbares Verb: zu in der Mitte</td><td>Wir haben vor, Mitarbeiter <strong>einzustellen</strong>.</td></tr>\n<tr><td>mit Modalverb</td><td>… Sie wieder begrüßen <strong>zu dürfen</strong>.</td></tr>\n<tr><td>um … zu</td><td><strong>Um</strong> das Problem <strong>zu lösen</strong>, werden wir das Personal schulen.</td></tr></table></div>\n<p>Kein <em>zu</em> nach Modalverben: Ich <em>muss</em> bezahlen (nicht: zu bezahlen).</p>", "items": [{"o": ["Ich schlage vor, eine Umfrage zu machen.", "Ich schlage vor, eine Umfrage machen.", "Ich schlage vor, eine Umfrage machen zu.", "Ich schlage vor, zu eine Umfrage machen."], "r": "Infinitiv mit zu: zu steht direkt vor dem Infinitiv am Ende (eine Umfrage zu machen)."}, {"o": ["Es ist anstrengend, jedes Mal auf den Flur zu gehen.", "Es ist anstrengend, jedes Mal auf den Flur gehen.", "Es ist anstrengend, jedes Mal zu auf den Flur gehen.", "Es ist anstrengend, jedes Mal auf den Flur gehen zu."], "r": "Nach es ist anstrengend steht der Infinitiv mit zu: auf den Flur zu gehen."}, {"o": ["Wir haben vor, zusätzliche Mitarbeiter einzustellen.", "Wir haben vor, zusätzliche Mitarbeiter zu einstellen.", "Wir haben vor, zusätzliche Mitarbeiter einstellen zu.", "Wir haben vor, zusätzliche Mitarbeiter einstellen."], "r": "Trennbares Verb: zu steht zwischen Präfix und Verb (ein-zu-stellen)."}, {"o": ["Um das Problem zu lösen, werden wir das Personal schulen.", "Um das Problem zu lösen, wir werden das Personal schulen.", "Um das Problem lösen, werden wir das Personal schulen.", "Um zu das Problem lösen, werden wir das Personal schulen."], "r": "um … zu + Infinitiv: Der Nebensatz steht auf Position 1, danach folgt direkt das Verb (werden wir)."}, {"o": ["Wir freuen uns, Sie bald wieder als Kunden begrüßen zu dürfen.", "Wir freuen uns, Sie bald wieder als Kunden begrüßen dürfen zu.", "Wir freuen uns, Sie bald wieder als Kunden zu begrüßen dürfen.", "Wir freuen uns, Sie bald wieder als Kunden zu dürfen begrüßen."], "r": "Mit Modalverb: Infinitiv + zu + Modalverb (begrüßen zu dürfen)."}, {"o": ["Es ist wichtig, die Wünsche der Kunden ernst zu nehmen.", "Es ist wichtig, die Wünsche der Kunden ernst nehmen zu.", "Es ist wichtig, die Wünsche der Kunden zu ernst nehmen.", "Es ist wichtig, die Wünsche der Kunden ernst nehmen."], "r": "zu steht direkt vor dem Verb: ernst zu nehmen."}]}]};
+var st = {sec:-1, queue:[], pos:0, score:0, total:0, wrong:[], locked:false, results:{}, subset:false};
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function shuffle(a){var b=a.slice(),i,j,t;for(i=b.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function range(n){var r=[],i;for(i=0;i<n;i++){r.push(i);}return r;}
+function strip(s){return s.replace(/[{}]/g,'');}
+function norm(s){return strip(s).replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');}
+function hl(s){return esc(s).replace(/\{([^}]*)\}/g,'<span class="v">$1</span>');}
+function sameOrder(a,b){var i;if(a.length!==b.length){return false;}for(i=0;i<a.length;i++){if(a[i]!==b[i]){return false;}}return true;}
+
+function renderTabs(){
+  var h='',i,r,b;
+  for(i=0;i<D.sections.length;i++){
+    r=st.results[i];
+    h+='<button class="tab'+(i===st.sec?' on':'')+'" type="button">'+(i+1)+'. '+esc(D.sections[i].title)+(r?'<span class="badge">'+esc(r)+'</span>':'')+'</button>';
+  }
+  $('tabs').innerHTML=h;
+  b=$('tabs').getElementsByTagName('button');
+  for(i=0;i<b.length;i++){b[i].onclick=(function(k){return function(){startSection(k,null);};})(i);}
+}
+function startSection(i,subset){
+  var n=D.sections[i].items.length;
+  st.sec=i;
+  st.subset=!!subset;
+  st.queue=shuffle(subset?subset:range(n));
+  st.pos=0;st.score=0;st.wrong=[];st.locked=false;st.total=st.queue.length;
+  renderTabs();
+  var s=D.sections[i];
+  $('intro').innerHTML=esc(s.intro);
+  $('merk').innerHTML=s.merk?'<details class="merk"><summary>Merkhilfe anzeigen</summary>'+s.merk+'</details>':'';
+  renderItem();
+}
+function progress(){
+  var p=Math.round(st.pos/st.total*100);
+  return '<div class="bar"><i style="width:'+p+'%"></i></div><div class="cnt">Aufgabe '+(st.pos+1)+' von '+st.total+'</div>';
+}
+function curItem(){return D.sections[st.sec].items[st.queue[st.pos]];}
+function renderItem(){
+  st.locked=false;
+  if(st.pos>=st.queue.length){renderSummary();return;}
+  var it=curItem();
+  if(D.sections[st.sec].type==='build'){renderBuild(it);}else{renderMC(it);}
+}
+function nextBtn(){
+  var b=$('next');
+  if(b){b.onclick=function(){st.pos++;renderItem();};b.focus();}
+}
+/* ---------- Multiple Choice ---------- */
+function renderMC(it){
+  var hasGap=it.s&&it.s.indexOf('___')>=0;
+  var q=it.q||(hasGap?'Welche Form passt in die Lücke?':'Welcher Satz ist richtig?');
+  var opts=shuffle(it.o),h='',i;
+  h+=progress()+'<div class="q">'+esc(q)+'</div>';
+  if(it.s){h+='<div class="sent">'+esc(it.s).replace('___','<span class="gap" id="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>')+'</div>';}
+  h+='<div class="opts" id="opts">';
+  for(i=0;i<opts.length;i++){h+='<button class="opt" type="button">'+esc(opts[i])+'</button>';}
+  h+='</div><div id="fb"></div>';
+  $('stage').innerHTML=h;
+  var bs=$('opts').getElementsByTagName('button');
+  for(i=0;i<bs.length;i++){bs[i].onclick=(function(b,txt){return function(){answerMC(it,txt,b);};})(bs[i],opts[i]);}
+}
+function answerMC(it,choice,btn){
+  if(st.locked){return;}
+  st.locked=true;
+  var ok=(choice===it.o[0]),bs=$('opts').getElementsByTagName('button'),i,full;
+  for(i=0;i<bs.length;i++){
+    bs[i].disabled=true;
+    if(bs[i].textContent===it.o[0]){bs[i].className='opt ok';}
+  }
+  if(!ok){btn.className='opt no';st.wrong.push(st.queue[st.pos]);}else{st.score++;}
+  full=it.s?it.s.replace('___',it.o[0]):it.o[0];
+  var g=$('gap');
+  if(g){g.textContent=choice;g.className='gap '+(ok?'ok':'no');}
+  $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Nicht ganz.')+'</strong> '+(ok?'':'Richtig ist: ')+'<span class="sol">'+esc(full)+'</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+  nextBtn();
+}
+/* ---------- Satzbausteine ---------- */
+function renderBuild(it){
+  var chips=[],i,order,tries=0,placed=[],done=false;
+  for(i=0;i<it.ch.length;i++){chips.push({id:i,t:it.ch[i]});}
+  order=shuffle(range(chips.length));
+  var guard=0;
+  while(chips.length>1&&sameOrder(order,range(chips.length))&&guard<20){order=shuffle(range(chips.length));guard++;}
+  $('stage').innerHTML=progress()+'<div class="q">'+esc(it.q||'Bilde den Satz. Tippe die Bausteine in der richtigen Reihenfolge an. Tippe einen gesetzten Baustein an, um ihn zurückzulegen.')+'</div><div class="build" id="build"></div><div class="pool" id="pool"></div><div class="msg" id="msg"></div><div id="ctl"></div><div id="fb"></div>';
+  function inPlaced(id){var k;for(k=0;k<placed.length;k++){if(placed[k]===id){return true;}}return false;}
+  function draw(){
+    var h='<span class="fixed">'+esc(it.st)+'</span>',k,p='';
+    for(k=0;k<placed.length;k++){h+='<button class="chip placed" type="button" data-id="'+placed[k]+'">'+esc(chips[placed[k]].t)+'</button>';}
+    h+='<span class="fixed">.</span>';
+    $('build').innerHTML=h;
+    for(k=0;k<order.length;k++){if(!inPlaced(order[k])){p+='<button class="chip" type="button" data-id="'+order[k]+'">'+esc(chips[order[k]].t)+'</button>';}}
+    $('pool').innerHTML=p;
+    var bb=$('build').getElementsByTagName('button'),pb=$('pool').getElementsByTagName('button');
+    for(k=0;k<bb.length;k++){bb[k].onclick=(function(b){return function(){if(done){return;}var id=parseInt(b.getAttribute('data-id'),10),n=[],j;for(j=0;j<placed.length;j++){if(placed[j]!==id){n.push(placed[j]);}}placed=n;$('msg').textContent='';draw();};})(bb[k]);}
+    for(k=0;k<pb.length;k++){pb[k].onclick=(function(b){return function(){if(done){return;}placed.push(parseInt(b.getAttribute('data-id'),10));$('msg').textContent='';draw();};})(pb[k]);}
+    if(!done){
+      $('ctl').innerHTML='<button class="btn primary" id="chk" type="button">Prüfen</button><button class="btn" id="rst" type="button">Zurücksetzen</button>';
+      $('chk').onclick=check;
+      $('rst').onclick=function(){placed=[];$('msg').textContent='';draw();};
+    }
+  }
+  function finish(ok){
+    done=true;st.locked=true;
+    $('ctl').innerHTML='';
+    $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Hier ist die Lösung:')+'</strong> <span class="sol">'+hl(it.a[0])+'.</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+    draw();
+    nextBtn();
+  }
+  function check(){
+    var k,s,ok=false,parts=[];
+    if(placed.length<chips.length){$('msg').textContent='Setze zuerst alle Bausteine ein.';return;}
+    for(k=0;k<placed.length;k++){parts.push(chips[placed[k]].t);}
+    s=norm(it.st+' '+parts.join(' '));
+    for(k=0;k<it.a.length;k++){if(norm(it.a[k])===s){ok=true;}}
+    tries++;
+    if(ok){if(tries===1){st.score++;}finish(true);return;}
+    if(tries===1){st.wrong.push(st.queue[st.pos]);}
+    if(tries>=2){finish(false);return;}
+    $('msg').innerHTML='Noch nicht richtig. Tipp: '+esc(it.r)+' Du hast einen zweiten Versuch.';
+  }
+  draw();
+}
+/* ---------- Auswertung ---------- */
+function solText(it){
+  if(it.a){return hl(it.a[0])+'.';}
+  return esc(it.s?it.s.replace('___',it.o[0]):it.o[0]);
+}
+function renderSummary(){
+  var s=D.sections[st.sec],pct=Math.round(st.score/st.total*100),h,i,msg;
+  if(!st.subset){st.results[st.sec]=st.score+'/'+st.total;}
+  renderTabs();
+  msg=pct>=90?'Sehr sicher!':(pct>=70?'Gut. Die Wiederholung der Fehler lohnt sich.':'Weiter üben: Wiederhole zuerst die Merkhilfe und dann die Fehler.');
+  h='<div class="sum"><h2>'+st.score+' von '+st.total+' beim ersten Versuch richtig ('+pct+' %)</h2><p>'+msg+'</p>';
+  if(st.wrong.length){
+    h+='<p><strong>Das solltest du noch einmal ansehen:</strong></p><ul>';
+    for(i=0;i<st.wrong.length;i++){var it=s.items[st.wrong[i]];h+='<li>'+solText(it)+'<br><small>'+esc(it.r)+'</small></li>';}
+    h+='</ul><button class="btn primary" id="again" type="button">Fehler wiederholen</button>';
+  }
+  h+='<button class="btn" id="restart" type="button">Abschnitt neu mischen</button>';
+  if(st.sec<D.sections.length-1){h+='<button class="btn" id="nextsec" type="button">Nächster Abschnitt</button>';}
+  h+='</div>';
+  $('stage').innerHTML=h;
+  if($('again')){var w=st.wrong.slice();$('again').onclick=function(){startSection(st.sec,w);};}
+  $('restart').onclick=function(){startSection(st.sec,null);};
+  if($('nextsec')){$('nextsec').onclick=function(){startSection(st.sec+1,null);};}
+}
+document.getElementById('title').textContent=D.title;
+document.getElementById('sub').textContent=D.sub;
+window.__DTB={D:D,st:st,start:startSection};
+startSection(0,null);
+})();
+</script>
+</body>
+</html>

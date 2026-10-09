@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nominalgruppe sicher schreiben</title>
+<style>
+:root{--bg:#f4f6f9;--card:#ffffff;--tx:#1b2230;--mut:#5b6577;--ac:#2354c4;--acbg:#e8eefb;--ok:#17754a;--okbg:#e3f5ec;--no:#b3261e;--nobg:#fdebe9;--bd:#d5dbe6;--vb:#fff0bd;--vbd:#e2b92e}
+@media (prefers-color-scheme:dark){:root{--bg:#12161d;--card:#1b212c;--tx:#e8ecf3;--mut:#a3adbf;--ac:#7fa6ff;--acbg:#243250;--ok:#6fd3a0;--okbg:#17352a;--no:#ff9a92;--nobg:#3a1f1d;--bd:#323b4d;--vb:#4a3f12;--vbd:#b99a2a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:17px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:780px;margin:0 auto;padding:16px}
+h1{font-size:1.45rem;margin:4px 0 2px}
+.sub{color:var(--mut);margin:0 0 12px;font-size:.95rem}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px}
+.tab{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:9px 12px;border-radius:10px;font-size:.92rem;cursor:pointer;min-height:44px;text-align:left}
+.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.badge{display:inline-block;margin-left:6px;padding:0 7px;border-radius:9px;background:var(--okbg);color:var(--ok);font-size:.8rem}
+.tab.on .badge{background:#fff;color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;margin:10px 0}
+.intro{color:var(--mut);font-size:.95rem;margin:0 0 10px}
+.bar{height:8px;background:var(--bd);border-radius:6px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;background:var(--ac);width:0}
+.cnt{font-size:.85rem;color:var(--mut);margin-bottom:10px}
+.q{font-size:.9rem;color:var(--mut);margin-bottom:6px}
+.sent{font-size:1.2rem;margin:4px 0 14px}
+.gap{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--ac);text-align:center;font-weight:700}
+.gap.ok{color:var(--ok);border-color:var(--ok)}.gap.no{color:var(--no);border-color:var(--no)}
+.opts{display:grid;gap:10px}
+.opt{border:2px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:12px 14px;font-size:1.02rem;text-align:left;cursor:pointer;min-height:48px}
+.opt:hover{border-color:var(--ac)}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.no{border-color:var(--no);background:var(--nobg)}
+.opt[disabled]{cursor:default}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px}
+.fb.ok{background:var(--okbg);border:1px solid var(--ok)}
+.fb.no{background:var(--nobg);border:1px solid var(--no)}
+.sol{font-weight:700}
+.rule{margin-top:6px;font-size:.95rem}
+.btn{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:11px 16px;border-radius:10px;font-size:1rem;cursor:pointer;min-height:46px;margin:12px 8px 0 0}
+.btn.primary{background:var(--ac);border-color:var(--ac);color:#fff}
+.build{border:2px dashed var(--bd);border-radius:12px;padding:10px;min-height:62px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:50px}
+.chip{border:2px solid var(--ac);background:var(--acbg);color:var(--tx);border-radius:10px;padding:8px 12px;font-size:1.02rem;cursor:pointer;min-height:44px}
+.chip.placed{background:var(--card)}
+.fixed{font-weight:700;padding:8px 4px}
+.v{background:var(--vb);border-bottom:2px solid var(--vbd);padding:0 3px;border-radius:3px}
+.msg{color:var(--no);min-height:1.4em;font-size:.95rem;margin:4px 0}
+details.merk{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;margin:8px 0}
+details.merk summary{cursor:pointer;font-weight:600;min-height:32px}
+.tbl{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;font-size:.92rem;min-width:420px}
+th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left}
+th{background:var(--acbg)}
+.sum h2{margin:0 0 6px}
+.sum ul{padding-left:20px}
+.sum li{margin:8px 0}
+footer{color:var(--mut);font-size:.8rem;margin:18px 0 6px}
+@media (max-width:520px){.sent{font-size:1.1rem}.tab{font-size:.88rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1 id="title"></h1>
+<p class="sub" id="sub"></p>
+<div class="tabs" id="tabs"></div>
+<p class="intro" id="intro"></p>
+<div id="merk"></div>
+<div class="card" id="stage"></div>
+<footer>Deutsch-Test für den Beruf B2 · Schreiben · Übungsmaterial · läuft offline im Browser</footer>
+</div>
+<script>
+(function(){
+var D = {"title": "Nominalgruppe sicher schreiben", "sub": "DTB B2 · Schreiben · Training zu Artikel, Genus, Kasus und Adjektivendungen (Beschwerdeantwort und Forumsbeitrag)", "sections": [{"title": "Nomen und Artikel", "type": "mc", "intro": "Lerne Nomen immer mit Artikel. Wähle den passenden Artikel.", "merk": "<p><strong>Immer mit Artikel lernen.</strong> Diese Endungen helfen:</p>\n<div class=\"tbl\"><table><tr><th>der</th><th>die</th><th>das</th></tr>\n<tr><td>-er (Geräte, Berufe): der Drucker, der Mitarbeiter<br>-ant: der Lieferant<br>Wochentage, Monate, Jahreszeiten</td>\n<td>-ung: die Reservierung<br>-heit / -keit: die Unannehmlichkeit<br>-ion, -tät, -schaft: die Situation, die Qualität<br>meist -e: die Etage, die Beschwerde</td>\n<td>-ment: das Dokument<br>-um, -nis: das Verständnis<br>-chen, -lein<br>Ge-: das Getränk, das Gehalt<br>nominalisierte Verben: das Unternehmen</td></tr></table></div>\n<p>Bei zusammengesetzten Nomen bestimmt das <strong>letzte Wort</strong> den Artikel: die Zeit → <em>die</em> Wartezeit.</p>", "items": [{"s": "___ Service war diesmal nicht gut.", "o": ["der", "die", "das"], "r": "der Service. Fremdwörter wie Service, Computer, Drucker sind meist maskulin. Immer mit Artikel lernen.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Personal hatte kaum Erfahrung.", "o": ["das", "der", "die"], "r": "das Personal: Sammelbegriff ohne Plural. Nicht: die Personal.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Firma hat viele langjährige Kunden.", "o": ["die", "der", "das"], "r": "die Firma (Plural: die Firmen). Fremdwörter auf -a sind meist feminin.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Büro ist zu dunkel.", "o": ["das", "der", "die"], "r": "das Büro (Plural: die Büros). Nomen auf -o sind meist neutral: das Büro, das Auto.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Drucker steht auf dem Flur.", "o": ["der", "die", "das"], "r": "der Drucker. Nomen auf -er (Geräte, Berufe) sind meist maskulin: der Computer, der Mitarbeiter.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Etage ist sehr hell.", "o": ["die", "der", "das"], "r": "die Etage. Nomen auf -e sind meist feminin: die Etage, die Beschwerde, die Maßnahme.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Buffet wurde zu spät eröffnet.", "o": ["das", "der", "die"], "r": "das Buffet (Plural: die Buffets). Merkwort, mit Artikel lernen.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Reservierung war leider falsch.", "o": ["die", "der", "das"], "r": "die Reservierung. Nomen auf -ung sind immer feminin.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Schulung dauert zwei Tage.", "o": ["die", "der", "das"], "r": "die Schulung. -ung → feminin.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Unannehmlichkeit tut uns sehr leid.", "o": ["die", "der", "das"], "r": "die Unannehmlichkeit. Nomen auf -keit und -heit sind immer feminin.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Lieferant hat die falsche Ware geliefert.", "o": ["der", "die", "das"], "r": "der Lieferant. Personen auf -ant sind maskulin (n-Deklination: den/dem Lieferanten).", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Dokument muss ausgedruckt werden.", "o": ["das", "der", "die"], "r": "das Dokument. Nomen auf -ment sind neutral: das Dokument, das Instrument.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Event war ein großer Erfolg.", "o": ["das", "der", "die"], "r": "das Event (Plural: die Events). Englische Fremdwörter: das Event, das Team, das Internet.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Lager ist zu klein für so viele Tische.", "o": ["das", "der", "die"], "r": "das Lager (Plural: die Lager). Nicht: eine Lager.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Internet funktioniert heute nicht.", "o": ["das", "der", "die"], "r": "das Internet. Merkwort.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Getränk kam leider zu spät.", "o": ["das", "der", "die"], "r": "das Getränk. Nomen mit Ge- sind oft neutral: das Getränk, das Gebäude, das Gehalt.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Wartezeit war zu lang.", "o": ["die", "der", "das"], "r": "die Wartezeit. Bei zusammengesetzten Nomen bestimmt das letzte Wort den Artikel: die Zeit → die Wartezeit.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Abteilung ist in den zweiten Stock umgezogen.", "o": ["die", "der", "das"], "r": "die Abteilung. -ung → feminin.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Arbeitsplatz ist sehr gemütlich.", "o": ["der", "die", "das"], "r": "der Arbeitsplatz: der Platz → der Arbeitsplatz.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Kindergarten liegt direkt neben dem Büro.", "o": ["der", "die", "das"], "r": "der Kindergarten: der Garten → der Kindergarten.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Entschuldigung ist ernst gemeint.", "o": ["die", "der", "das"], "r": "die Entschuldigung. -ung → feminin.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Rabatt gilt für die nächste Buchung.", "o": ["der", "die", "das"], "r": "der Rabatt (Plural: die Rabatte). Merkwort.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Gehalt kommt am Monatsende.", "o": ["das", "der", "die"], "r": "das Gehalt. Nomen mit Ge- sind oft neutral.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Unternehmen wächst sehr schnell.", "o": ["das", "der", "die"], "r": "das Unternehmen (Plural: die Unternehmen).", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Maßnahme hilft sofort.", "o": ["die", "der", "das"], "r": "die Maßnahme (Plural: die Maßnahmen). -e → meist feminin.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Vorschlag ist gut.", "o": ["der", "die", "das"], "r": "der Vorschlag: der Schlag → der Vorschlag.", "q": "Welcher Artikel passt? (Nominativ)"}, {"s": "___ Verständnis ist uns wichtig.", "o": ["das", "der", "die"], "r": "das Verständnis. Nomen auf -nis sind meist neutral: das Ergebnis, das Verständnis.", "q": "Welcher Artikel passt? (Nominativ)"}]}, {"title": "Plural", "type": "mc", "intro": "Welche Pluralform passt? Achte auf die Endung und auf Umlaute.", "merk": "<div class=\"tbl\"><table><tr><th>Endung</th><th>Beispiele</th></tr>\n<tr><td>-e / ¨-e</td><td>der Tisch → die Tische, der Gast → die Gäste, der Vorschlag → die Vorschläge</td></tr>\n<tr><td>-n / -en</td><td>die Etage → die Etagen, die Beschwerde → die Beschwerden, der Kunde → die Kunden</td></tr>\n<tr><td>keine Endung</td><td>der Drucker → die Drucker, der Mitarbeiter → die Mitarbeiter, das Unternehmen → die Unternehmen</td></tr>\n<tr><td>-s (Fremdwörter)</td><td>das Büro → die Büros, das Event → die Events, das Buffet → die Buffets</td></tr></table></div>\n<p><strong>Dativ Plural:</strong> Das Nomen bekommt ein <strong>-n</strong> (mit den Mitarbeitern, bei unseren Gästen). Ausnahme: Plural auf -s (in den Büros).</p>", "items": [{"s": "Für 52 Personen brauchen wir mehr ___. (der Tisch)", "o": ["Tische", "Tischen", "Tisch", "Tischer"], "r": "der Tisch → die Tische. Viele maskuline Nomen bilden den Plural mit -e.", "q": "Welche Pluralform passt?"}, {"s": "Alle ___ stehen auf dem Flur. (der Drucker)", "o": ["Drucker", "Druckers", "Drucken", "Druckere"], "r": "der Drucker → die Drucker. Nomen auf -er bleiben im Plural gleich.", "q": "Welche Pluralform passt?"}, {"s": "Unser Gebäude hat vier ___. (die Etage)", "o": ["Etagen", "Etage", "Etagene", "Etages"], "r": "die Etage → die Etagen. Feminine Nomen auf -e bilden den Plural mit -n.", "q": "Welche Pluralform passt?"}, {"s": "Wir haben zwei neue ___ eingestellt. (der Mitarbeiter)", "o": ["Mitarbeiter", "Mitarbeitern", "Mitarbeiters", "Mitarbeitere"], "r": "der Mitarbeiter → die Mitarbeiter. Achtung Dativ Plural: mit den Mitarbeitern (+ n).", "q": "Welche Pluralform passt?"}, {"s": "Wir haben zwei ___ erhalten. (die Beschwerde)", "o": ["Beschwerden", "Beschwerde", "Beschwerdes", "Beschwerdene"], "r": "die Beschwerde → die Beschwerden.", "q": "Welche Pluralform passt?"}, {"s": "Es gab einige ___ mit dem Buffet. (das Problem)", "o": ["Probleme", "Problems", "Problemen", "Problem"], "r": "das Problem → die Probleme.", "q": "Welche Pluralform passt?"}, {"s": "Neue Mitarbeiter machen am Anfang oft ___. (der Fehler)", "o": ["Fehler", "Fehlers", "Fehlern", "Fehle"], "r": "der Fehler → die Fehler (Plural gleich).", "q": "Welche Pluralform passt?"}, {"s": "Zum Neujahrsempfang kamen 52 ___. (der Gast)", "o": ["Gäste", "Gast", "Gasten", "Gäster"], "r": "der Gast → die Gäste (Umlaut + -e).", "q": "Welche Pluralform passt?"}, {"s": "Die ___ kamen zu spät. (das Getränk)", "o": ["Getränke", "Getränks", "Getränken", "Getränk"], "r": "das Getränk → die Getränke.", "q": "Welche Pluralform passt?"}, {"s": "Ich habe heute drei ___. (der Termin)", "o": ["Termine", "Termins", "Terminen", "Termin"], "r": "der Termin → die Termine.", "q": "Welche Pluralform passt?"}, {"s": "Wir haben viele langjährige ___. (der Kunde)", "o": ["Kunden", "Kunde", "Kunds", "Kundes"], "r": "der Kunde → die Kunden (n-Deklination: Plural auf -n).", "q": "Welche Pluralform passt?"}, {"s": "Meine ___ sind sehr nett. (der Kollege)", "o": ["Kollegen", "Kollege", "Kolleges", "Kollegs"], "r": "der Kollege → die Kollegen.", "q": "Welche Pluralform passt?"}, {"s": "In der Firma gibt es fünf ___. (die Abteilung)", "o": ["Abteilungen", "Abteilung", "Abteilunge", "Abteilungs"], "r": "die Abteilung → die Abteilungen. Nomen auf -ung: Plural mit -en.", "q": "Welche Pluralform passt?"}, {"s": "Es gibt nicht genug ___. (der Arbeitsplatz)", "o": ["Arbeitsplätze", "Arbeitsplatzen", "Arbeitsplatze", "Arbeitsplatzes"], "r": "der Arbeitsplatz → die Arbeitsplätze (Umlaut + -e).", "q": "Welche Pluralform passt?"}, {"s": "Ich habe zwei ___. (der Vorschlag)", "o": ["Vorschläge", "Vorschlage", "Vorschlägen", "Vorschlags"], "r": "der Vorschlag → die Vorschläge.", "q": "Welche Pluralform passt?"}, {"s": "Viele ___ bieten flexible Arbeitszeiten an. (das Unternehmen)", "o": ["Unternehmen", "Unternehmens", "Unternehmene", "Unternehmer"], "r": "das Unternehmen → die Unternehmen (Plural gleich).", "q": "Welche Pluralform passt?"}, {"s": "Ich muss mehrere ___ ausdrucken. (das Dokument)", "o": ["Dokumente", "Dokumenten", "Dokuments", "Dokument"], "r": "das Dokument → die Dokumente.", "q": "Welche Pluralform passt?"}, {"s": "Wir wechseln die ___. (der Lieferant)", "o": ["Lieferanten", "Lieferante", "Lieferants", "Lieferanter"], "r": "der Lieferant → die Lieferanten.", "q": "Welche Pluralform passt?"}, {"s": "Wir haben alle ___ geprüft. (die Reservierung)", "o": ["Reservierungen", "Reservierung", "Reservierunge", "Reservierungs"], "r": "die Reservierung → die Reservierungen.", "q": "Welche Pluralform passt?"}, {"s": "Unsere Firma organisiert viele ___. (das Event)", "o": ["Events", "Event", "Evente", "Eventen"], "r": "das Event → die Events. Fremdwörter bilden oft den Plural mit -s: Events, Teams, Büros, Buffets.", "q": "Welche Pluralform passt?"}, {"s": "Auf der Feier gab es zwei ___. (das Buffet)", "o": ["Buffets", "Buffet", "Buffete", "Buffeten"], "r": "das Buffet → die Buffets (Plural mit -s).", "q": "Welche Pluralform passt?"}, {"s": "Wir haben drei ___ in der Stadt. (das Büro)", "o": ["Büros", "Büro", "Büroe", "Bürös"], "r": "das Büro → die Büros (Plural mit -s).", "q": "Welche Pluralform passt?"}]}, {"title": "Präposition + Kasus", "type": "mc", "intro": "Welche Form passt nach der Präposition? Frage: Wo? Wohin? Mit wem? Wofür?", "merk": "<div class=\"tbl\"><table><tr><th>Dativ</th><th>Akkusativ</th><th>Wechsel</th></tr>\n<tr><td>mit, von, aus, bei, nach, zu, seit</td><td>für, ohne, durch, gegen, um</td><td>in, an, auf, neben, über, unter, vor, hinter, zwischen<br><em>Wo? → Dativ · Wohin? → Akkusativ</em></td></tr></table></div>\n<div class=\"tbl\"><table><tr><th></th><th>maskulin</th><th>feminin</th><th>neutral</th><th>Plural</th></tr>\n<tr><td>Nominativ</td><td>der / ein</td><td>die / eine</td><td>das / ein</td><td>die / –</td></tr>\n<tr><td>Akkusativ</td><td>den / einen</td><td>die / eine</td><td>das / ein</td><td>die / –</td></tr>\n<tr><td>Dativ</td><td>dem / einem</td><td>der / einer</td><td>dem / einem</td><td>den / – (+ n)</td></tr>\n<tr><td>Genitiv</td><td>des / eines (+ s)</td><td>der / einer</td><td>des / eines (+ s)</td><td>der / –</td></tr></table></div>\n<p><strong>n-Deklination:</strong> der Kunde, der Kollege, der Lieferant, der Herr → im Akkusativ, Dativ und Genitiv mit -(e)n: den / dem Kunden.</p>", "items": [{"s": "Viele Kunden sind mit ___ nicht zufrieden.", "o": ["unserem Service", "unseren Service", "unser Service", "unsere Service"], "r": "mit + Dativ. der Service → dem / unserem Service.", "q": "Welche Form passt?"}, {"s": "Wir arbeiten seit zehn Jahren mit ___ zusammen.", "o": ["Ihrer Firma", "Ihre Firma", "Ihrem Firma", "Ihren Firma"], "r": "mit + Dativ. die Firma → der / Ihrer Firma (Femininum im Dativ: -er).", "q": "Welche Form passt?"}, {"s": "Das Problem lag an ___.", "o": ["der Bestellung", "die Bestellung", "dem Bestellung", "den Bestellung"], "r": "liegen an + Dativ. die Bestellung → an der Bestellung.", "q": "Welche Form passt?"}, {"s": "Ich arbeite ___ neben der Küche.", "o": ["in einem Büro", "in ein Büro", "in einen Büro", "in einer Büro"], "r": "Wo? → in + Dativ. das Büro → in einem Büro.", "q": "Welche Form passt?"}, {"s": "Jeden Morgen gehe ich ___.", "o": ["in das Büro", "in dem Büro", "im Büro", "in den Büro"], "r": "Wohin? → in + Akkusativ. das Büro → in das (ins) Büro.", "q": "Welche Form passt?"}, {"s": "Der Drucker steht ___.", "o": ["auf dem Flur", "auf den Flur", "auf der Flur", "auf das Flur"], "r": "Wo? → auf + Dativ. der Flur → auf dem Flur.", "q": "Welche Form passt?"}, {"s": "Ich muss jedes Mal ___ gehen, um etwas auszudrucken.", "o": ["auf den Flur", "auf dem Flur", "auf der Flur", "auf das Flur"], "r": "Wohin? → auf + Akkusativ. der Flur → auf den Flur.", "q": "Welche Form passt?"}, {"s": "Wir haben einen Tisch ___ reserviert.", "o": ["für Ihre Gruppe", "für Ihrer Gruppe", "für Ihrem Gruppe", "für Ihren Gruppe"], "r": "für + Akkusativ. die Gruppe → Ihre Gruppe.", "q": "Welche Form passt?"}, {"s": "Das Buffet wurde ___ eröffnet.", "o": ["von dem Team", "von das Team", "von den Team", "von der Team"], "r": "von + Dativ. das Team → dem Team (vom Team).", "q": "Welche Form passt?"}, {"s": "Wir danken Ihnen für ___.", "o": ["Ihr Verständnis", "Ihrem Verständnis", "Ihres Verständnis", "Ihren Verständnis"], "r": "danken für + Akkusativ. das Verständnis → Ihr Verständnis (Nominativ = Akkusativ bei Neutrum).", "q": "Welche Form passt?"}, {"s": "Der Kollege kommt ___.", "o": ["aus der Abteilung Einkauf", "aus die Abteilung Einkauf", "aus dem Abteilung Einkauf", "aus den Abteilung Einkauf"], "r": "aus + Dativ. die Abteilung → aus der Abteilung.", "q": "Welche Form passt?"}, {"s": "___ erhalten Sie 15 % Rabatt.", "o": ["Bei Ihrer nächsten Buchung", "Bei Ihre nächste Buchung", "Bei Ihrer nächste Buchung", "Bei Ihre nächsten Buchung"], "r": "bei + Dativ. die Buchung → bei Ihrer nächsten Buchung (nach Possessivartikel: -en).", "q": "Welche Form passt?"}, {"s": "Ich fahre jeden Tag ___ zur Arbeit.", "o": ["mit dem Auto", "mit das Auto", "mit den Auto", "mit der Auto"], "r": "mit + Dativ. das Auto → mit dem Auto.", "q": "Welche Form passt?"}, {"s": "Viele Eltern müssen ihre Kinder ___ abholen.", "o": ["aus dem Kindergarten", "aus den Kindergarten", "aus der Kindergarten", "aus das Kindergarten"], "r": "aus + Dativ. der Kindergarten → aus dem Kindergarten. Den Artikel nicht weglassen.", "q": "Welche Form passt?"}, {"s": "Die Drucker stehen nicht mehr ___.", "o": ["in den Büros", "in die Büros", "in dem Büros", "in der Büros"], "r": "Wo? → in + Dativ. Plural: den. Plural auf -s bekommt kein zusätzliches -n (Büros).", "q": "Welche Form passt?"}, {"s": "Wir sprechen mit unseren ___.", "o": ["Mitarbeitern", "Mitarbeiter", "Mitarbeitens", "Mitarbeiten"], "r": "Dativ Plural endet auf -n: mit unseren Mitarbeitern.", "q": "Welche Form passt?"}, {"s": "Das ist die Aufgabe ___.", "o": ["von unseren Kollegen", "von unsere Kollegen", "von unserer Kollegen", "von unseren Kollege"], "r": "von + Dativ Plural: unseren Kollegen.", "q": "Welche Form passt?"}, {"s": "Wir haben mit dem ___ gesprochen.", "o": ["Kunden", "Kunde", "Kundem", "Kundens"], "r": "n-Deklination: der Kunde → den / dem / des Kunden.", "q": "Welche Form passt?"}, {"s": "Wir informieren den ___ sofort.", "o": ["Kollegen", "Kollege", "Kollegem", "Kollegens"], "r": "n-Deklination: der Kollege → den Kollegen (Akkusativ).", "q": "Welche Form passt?"}, {"s": "Wir entschuldigen uns bei ___.", "o": ["unseren Gästen", "unsere Gäste", "unserer Gäste", "unseren Gäste"], "r": "bei + Dativ Plural: unseren Gästen (-n am Nomen).", "q": "Welche Form passt?"}]}, {"title": "Adjektivendungen", "type": "mc", "intro": "Welche Endung hat das Adjektiv? Prüfe Artikel, Genus und Kasus.", "merk": "<div class=\"tbl\"><table><tr><th>nach der / die / das</th><th>m</th><th>f</th><th>n</th><th>Pl</th></tr>\n<tr><td>Nominativ</td><td>-e</td><td>-e</td><td>-e</td><td>-en</td></tr>\n<tr><td>Akkusativ</td><td>-en</td><td>-e</td><td>-e</td><td>-en</td></tr>\n<tr><td>Dativ</td><td>-en</td><td>-en</td><td>-en</td><td>-en</td></tr>\n<tr><td>Genitiv</td><td>-en</td><td>-en</td><td>-en</td><td>-en</td></tr></table></div>\n<div class=\"tbl\"><table><tr><th>nach ein / mein / kein</th><th>m</th><th>f</th><th>n</th><th>Pl</th></tr>\n<tr><td>Nominativ</td><td>-er</td><td>-e</td><td>-es</td><td>-en</td></tr>\n<tr><td>Akkusativ</td><td>-en</td><td>-e</td><td>-es</td><td>-en</td></tr>\n<tr><td>Dativ</td><td>-en</td><td>-en</td><td>-en</td><td>-en</td></tr>\n<tr><td>Genitiv</td><td>-en</td><td>-en</td><td>-en</td><td>-en</td></tr></table></div>\n<div class=\"tbl\"><table><tr><th>ohne Artikel</th><th>m</th><th>f</th><th>n</th><th>Pl</th></tr>\n<tr><td>Nominativ</td><td>-er</td><td>-e</td><td>-es</td><td>-e</td></tr>\n<tr><td>Akkusativ</td><td>-en</td><td>-e</td><td>-es</td><td>-e</td></tr>\n<tr><td>Dativ</td><td>-em</td><td>-er</td><td>-em</td><td>-en</td></tr>\n<tr><td>Genitiv</td><td>-en</td><td>-er</td><td>-en</td><td>-er</td></tr></table></div>\n<p>Merke: <strong>-en</strong> ist die häufigste Endung. Nur im Nominativ und Akkusativ (und ohne Artikel) kommen -e, -er, -es vor.</p>", "items": [{"s": "Es tut uns leid, dass Sie einen ___ Service hatten.", "o": ["schlechten", "schlechter", "schlechte", "schlechtes"], "r": "Akkusativ maskulin nach ein-: -en (einen schlechten Service).", "q": "Welche Adjektivendung passt?"}, {"s": "Das war ein ___ Fehler.", "o": ["großer", "großen", "große", "großes"], "r": "Nominativ maskulin nach ein-: -er (ein großer Fehler).", "q": "Welche Adjektivendung passt?"}, {"s": "Wir bedauern Ihre ___ Erfahrung.", "o": ["schlechte", "schlechten", "schlechter", "schlechtes"], "r": "Akkusativ feminin nach Possessivartikel: -e (Ihre schlechte Erfahrung).", "q": "Welche Adjektivendung passt?"}, {"s": "Wir haben ein ___ Büro gefunden.", "o": ["helles", "heller", "hellen", "helle"], "r": "Akkusativ neutral nach ein-: -es (ein helles Büro).", "q": "Welche Adjektivendung passt?"}, {"s": "Wir bieten Ihnen einen ___ Rabatt an.", "o": ["großzügigen", "großzügiger", "großzügige", "großzügiges"], "r": "Akkusativ maskulin nach ein-: -en.", "q": "Welche Adjektivendung passt?"}, {"s": "Wir sind mit dem ___ Personal sehr zufrieden.", "o": ["neuen", "neue", "neuer", "neues"], "r": "Dativ: Adjektivendung fast immer -en (mit dem neuen Personal).", "q": "Welche Adjektivendung passt?"}, {"s": "Wir bedauern die ___ Unannehmlichkeiten.", "o": ["entstandenen", "entstandene", "entstandener", "entstandenes"], "r": "Akkusativ Plural nach die: -en.", "q": "Welche Adjektivendung passt?"}, {"s": "Ich möchte in einem ___ Büro arbeiten.", "o": ["hellen", "helles", "heller", "helle"], "r": "in + Dativ, neutral nach ein-: -en.", "q": "Welche Adjektivendung passt?"}, {"s": "Für unsere ___ Kunden ist das ein großes Problem.", "o": ["langjährigen", "langjährige", "langjähriger", "langjähriges"], "r": "Plural nach Possessivartikel (unsere): -en.", "q": "Welche Adjektivendung passt?"}, {"s": "Herr Boldt ist ein ___ Kunde von uns.", "o": ["langjähriger", "langjährigen", "langjährige", "langjähriges"], "r": "Nominativ maskulin nach ein-: -er.", "q": "Welche Adjektivendung passt?"}, {"s": "Ich wünsche mir eine ___ Lösung.", "o": ["faire", "fairen", "fairer", "faires"], "r": "Akkusativ feminin nach eine: -e.", "q": "Welche Adjektivendung passt?"}, {"s": "Wir haben ___ Mitarbeiter eingestellt.", "o": ["neue", "neuen", "neuer", "neues"], "r": "Plural ohne Artikel (Akkusativ): -e (neue Mitarbeiter).", "q": "Welche Adjektivendung passt?"}, {"s": "In unserer ___ Firma gibt es viele Büros.", "o": ["großen", "große", "großer", "großes"], "r": "in + Dativ feminin nach Possessivartikel: -en.", "q": "Welche Adjektivendung passt?"}, {"s": "Pro Etage gibt es nur noch einen ___ Drucker.", "o": ["großen", "großer", "große", "großes"], "r": "Akkusativ maskulin nach ein-: -en (einen großen Drucker).", "q": "Welche Adjektivendung passt?"}, {"s": "Der ___ Drucker steht auf dem Flur.", "o": ["große", "großer", "großen", "großes"], "r": "Nominativ maskulin nach bestimmtem Artikel: -e.", "q": "Welche Adjektivendung passt?"}, {"s": "Wir danken Ihnen für Ihr ___ Verständnis.", "o": ["großes", "großen", "großer", "große"], "r": "Akkusativ neutral nach Ihr (ohne Endung): -es.", "q": "Welche Adjektivendung passt?"}, {"s": "Mit ___ Grüßen", "o": ["freundlichen", "freundliche", "freundlicher", "freundliches"], "r": "mit + Dativ Plural: -en. Die Grußformel: Mit freundlichen Grüßen.", "q": "Welche Adjektivendung passt?"}, {"s": "Das ist keine ___ Lösung.", "o": ["gute", "guten", "guter", "gutes"], "r": "Nominativ feminin nach kein-: -e.", "q": "Welche Adjektivendung passt?"}]}, {"title": "Genitiv", "type": "mc", "intro": "Präpositionen mit Genitiv und Genitivattribute: typisch für B2-Texte.", "merk": "<p><strong>Präpositionen mit Genitiv</strong> (in der Schriftsprache): wegen, während, trotz, aufgrund, innerhalb, außerhalb, anstelle.</p>\n<div class=\"tbl\"><table><tr><th>m</th><th>f</th><th>n</th><th>Plural</th></tr>\n<tr><td>des Staus<br>eines Vorfalls</td><td>der Krankheitswelle<br>einer Woche</td><td>des Problems<br>eines Fehlers</td><td>der Mitarbeiter<br>neuer Mitarbeiter</td></tr></table></div>\n<p>Maskulin und neutral: das Nomen bekommt <strong>-s</strong> oder <strong>-es</strong>. Feminin und Plural: das Nomen bleibt unverändert.</p>", "items": [{"s": "Aufgrund ___ kam es zu Verzögerungen.", "o": ["einer Krankheitswelle", "eine Krankheitswelle", "einem Krankheitswelle", "einer Krankheitswellen"], "r": "aufgrund + Genitiv. Feminin: der / einer (+ Nomen ohne Endung).", "q": "Welche Form passt? (Genitiv)"}, {"s": "Wegen ___ konnten wir den Sekt nicht rechtzeitig servieren.", "o": ["des Personalmangels", "dem Personalmangel", "den Personalmangel", "der Personalmangels"], "r": "wegen + Genitiv. Maskulin: des + Nomen mit -(e)s.", "q": "Welche Form passt? (Genitiv)"}, {"s": "Während ___ gab es lange Wartezeiten.", "o": ["des Neujahrsempfangs", "den Neujahrsempfang", "dem Neujahrsempfang", "der Neujahrsempfangs"], "r": "während + Genitiv (in der Schriftsprache). Maskulin: des … -s.", "q": "Welche Form passt? (Genitiv)"}, {"s": "Trotz ___ hoffen wir auf Ihr Vertrauen.", "o": ["des Vorfalls", "dem Vorfall", "den Vorfall", "der Vorfalls"], "r": "trotz + Genitiv. Maskulin: des Vorfalls.", "q": "Welche Form passt? (Genitiv)"}, {"s": "Aufgrund der Einstellung ___ gab es Anfangsprobleme.", "o": ["neuer Mitarbeiter", "neue Mitarbeiter", "neuen Mitarbeitern", "neuer Mitarbeitern"], "r": "Genitiv Plural ohne Artikel: Adjektiv -er, das Nomen bleibt gleich (neuer Mitarbeiter).", "q": "Welche Form passt? (Genitiv)"}, {"s": "Der Fehler lag an der fehlenden Erfahrung ___.", "o": ["unserer neuen Kollegen", "unsere neuen Kollegen", "unseren neuen Kollegen", "unserer neue Kollegen"], "r": "Genitiv Plural nach Possessivartikel: unserer + Adjektiv -en.", "q": "Welche Form passt? (Genitiv)"}, {"s": "Die Ursache ___ war ein Lieferfehler.", "o": ["des Problems", "das Problem", "dem Problem", "der Problems"], "r": "Genitiv neutral: des Problems (-s).", "q": "Welche Form passt? (Genitiv)"}, {"s": "Wegen ___ Staus kamen die Lieferungen zu spät.", "o": ["des", "der", "dem", "den"], "r": "wegen + Genitiv. der Stau → des Staus.", "q": "Welche Form passt? (Genitiv)"}, {"s": "Innerhalb ___ Woche melden wir uns bei Ihnen.", "o": ["einer", "eine", "einem", "einen"], "r": "innerhalb + Genitiv. Feminin: einer Woche.", "q": "Welche Form passt? (Genitiv)"}, {"s": "Anstelle ___ Drucker kommt ein großer Drucker auf den Flur.", "o": ["der vielen kleinen", "die vielen kleinen", "den vielen kleinen", "der vielen kleine"], "r": "anstelle + Genitiv Plural: der vielen kleinen Drucker.", "q": "Welche Form passt? (Genitiv)"}, {"s": "Während ___ ist das Büro geschlossen.", "o": ["der Mittagspause", "die Mittagspause", "dem Mittagspause", "den Mittagspause"], "r": "während + Genitiv. Feminin: der Mittagspause.", "q": "Welche Form passt? (Genitiv)"}]}, {"title": "Fehlerjagd", "type": "mc", "intro": "Nur ein Satz ist richtig. Die Fehler stammen aus typischen Schreibleistungen.", "merk": "", "items": [{"o": ["In unserer Firma gibt es feste Büros.", "In unserem Firma gibt es feste Büros.", "In unseren Firma gibt es feste Büros.", "In unser Firma gibt es feste Büros."], "r": "die Firma → in der / in unserer Firma (Dativ feminin)."}, {"o": ["Wir bedauern, dass Sie mit unserem Service nicht zufrieden waren.", "Wir bedauern, dass Sie mit unsere Service nicht zufrieden waren.", "Wir bedauern, dass Sie mit unseren Service nicht zufrieden waren.", "Wir bedauern, dass Sie mit unser Service nicht zufrieden waren."], "r": "mit + Dativ: dem / unserem Service."}, {"o": ["Der Grund dafür war ein Fehler im Reservierungssystem.", "Das Grund dafür war ein Fehler im Reservierungssystem.", "Die Grund dafür war ein Fehler im Reservierungssystem.", "Der Grund dafür war eine Fehler im Reservierungssystem."], "r": "der Grund, der Fehler (maskulin). Das Reservierungssystem (neutral) → im Reservierungssystem."}, {"o": ["Viele von unseren Mitarbeitern waren krank.", "Viele von unsere Mitarbeiter waren krank.", "Viele von unserer Mitarbeitern waren krank.", "Viele von unseren Mitarbeiter waren krank."], "r": "von + Dativ Plural: unseren Mitarbeitern."}, {"o": ["Wir haben neues Personal eingestellt.", "Wir haben neue Personal eingestellt.", "Wir haben neuer Personal eingestellt.", "Wir haben neuen Personal eingestellt."], "r": "das Personal (neutral, Akkusativ ohne Artikel): neues Personal."}, {"o": ["Die festen Büros werden abgeschafft.", "Die festen Büro werden abgeschafft.", "Der feste Büros werden abgeschafft.", "Die fest Büros werden abgeschafft."], "r": "Plural: die Büros. Adjektiv nach die: -en (die festen Büros)."}, {"o": ["Das ist eine Unverschämtheit.", "Das ist ein Unverschämtheit.", "Das ist Unverschämtheit.", "Das ist einen Unverschämtheit."], "r": "die Unverschämtheit (-heit → feminin): eine Unverschämtheit. Den Artikel nicht weglassen."}, {"o": ["Ich muss meine Kinder aus dem Kindergarten abholen.", "Ich muss meine Kinder aus Kindergarten abholen.", "Ich muss meine Kinder aus den Kindergarten abholen.", "Ich muss meine Kinder aus der Kindergarten abholen."], "r": "aus + Dativ: der Kindergarten → aus dem Kindergarten. Den Artikel nicht weglassen."}, {"o": ["Wir bieten Ihnen einen Rabatt von 15 % an.", "Wir bieten Ihnen eine Rabatt von 15 % an.", "Wir bieten Ihnen einem Rabatt von 15 % an.", "Wir bieten Ihnen ein Rabatt von 15 % an."], "r": "der Rabatt → Akkusativ: einen Rabatt."}, {"o": ["Wegen des Staus kamen die Getränke zu spät.", "Wegen der Staus kamen die Getränke zu spät.", "Wegen den Stau kamen die Getränke zu spät.", "Wegen des Stau kamen die Getränke zu spät."], "r": "wegen + Genitiv: des Staus (maskulin: -s am Nomen)."}, {"o": ["Während des Neujahrsempfangs gab es lange Wartezeiten.", "Während den Neujahrsempfang gab es lange Wartezeiten.", "Während der Neujahrsempfang gab es lange Wartezeiten.", "Während des Neujahrsempfang gab es lange Wartezeiten."], "r": "während + Genitiv: des Neujahrsempfangs."}, {"o": ["Für ein solches Event brauchen wir mehr ausgebildete Mitarbeiter.", "Für ein solches Event brauchen wir mehr ausgebildeten Mitarbeiter.", "Für ein solches Event brauchen wir mehr ausgebildete Mitarbeitern.", "Für ein solches Event brauchen wir mehr ausgebildeter Mitarbeiter."], "r": "Plural ohne Artikel (Akkusativ): ausgebildete Mitarbeiter."}, {"o": ["Es gibt einen großen Drucker pro Etage.", "Es gibt ein großer Drucker pro Etage.", "Es gibt einen große Drucker pro Etage.", "Es gibt einem großen Drucker pro Etage."], "r": "es gibt + Akkusativ: einen großen Drucker."}, {"o": ["Der Service war diesmal nicht gut.", "Die Service war diesmal nicht gut.", "Das Service war diesmal nicht gut.", "Der Service waren diesmal nicht gut."], "r": "der Service (maskulin). Nicht: die / das Service."}]}]};
+var st = {sec:-1, queue:[], pos:0, score:0, total:0, wrong:[], locked:false, results:{}, subset:false};
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function shuffle(a){var b=a.slice(),i,j,t;for(i=b.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function range(n){var r=[],i;for(i=0;i<n;i++){r.push(i);}return r;}
+function strip(s){return s.replace(/[{}]/g,'');}
+function norm(s){return strip(s).replace(/\s+/g,' ').replace(/^\s+|\s+$/g,'');}
+function hl(s){return esc(s).replace(/\{([^}]*)\}/g,'<span class="v">$1</span>');}
+function sameOrder(a,b){var i;if(a.length!==b.length){return false;}for(i=0;i<a.length;i++){if(a[i]!==b[i]){return false;}}return true;}
+
+function renderTabs(){
+  var h='',i,r,b;
+  for(i=0;i<D.sections.length;i++){
+    r=st.results[i];
+    h+='<button class="tab'+(i===st.sec?' on':'')+'" type="button">'+(i+1)+'. '+esc(D.sections[i].title)+(r?'<span class="badge">'+esc(r)+'</span>':'')+'</button>';
+  }
+  $('tabs').innerHTML=h;
+  b=$('tabs').getElementsByTagName('button');
+  for(i=0;i<b.length;i++){b[i].onclick=(function(k){return function(){startSection(k,null);};})(i);}
+}
+function startSection(i,subset){
+  var n=D.sections[i].items.length;
+  st.sec=i;
+  st.subset=!!subset;
+  st.queue=shuffle(subset?subset:range(n));
+  st.pos=0;st.score=0;st.wrong=[];st.locked=false;st.total=st.queue.length;
+  renderTabs();
+  var s=D.sections[i];
+  $('intro').innerHTML=esc(s.intro);
+  $('merk').innerHTML=s.merk?'<details class="merk"><summary>Merkhilfe anzeigen</summary>'+s.merk+'</details>':'';
+  renderItem();
+}
+function progress(){
+  var p=Math.round(st.pos/st.total*100);
+  return '<div class="bar"><i style="width:'+p+'%"></i></div><div class="cnt">Aufgabe '+(st.pos+1)+' von '+st.total+'</div>';
+}
+function curItem(){return D.sections[st.sec].items[st.queue[st.pos]];}
+function renderItem(){
+  st.locked=false;
+  if(st.pos>=st.queue.length){renderSummary();return;}
+  var it=curItem();
+  if(D.sections[st.sec].type==='build'){renderBuild(it);}else{renderMC(it);}
+}
+function nextBtn(){
+  var b=$('next');
+  if(b){b.onclick=function(){st.pos++;renderItem();};b.focus();}
+}
+/* ---------- Multiple Choice ---------- */
+function renderMC(it){
+  var hasGap=it.s&&it.s.indexOf('___')>=0;
+  var q=it.q||(hasGap?'Welche Form passt in die Lücke?':'Welcher Satz ist richtig?');
+  var opts=shuffle(it.o),h='',i;
+  h+=progress()+'<div class="q">'+esc(q)+'</div>';
+  if(it.s){h+='<div class="sent">'+esc(it.s).replace('___','<span class="gap" id="gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>')+'</div>';}
+  h+='<div class="opts" id="opts">';
+  for(i=0;i<opts.length;i++){h+='<button class="opt" type="button">'+esc(opts[i])+'</button>';}
+  h+='</div><div id="fb"></div>';
+  $('stage').innerHTML=h;
+  var bs=$('opts').getElementsByTagName('button');
+  for(i=0;i<bs.length;i++){bs[i].onclick=(function(b,txt){return function(){answerMC(it,txt,b);};})(bs[i],opts[i]);}
+}
+function answerMC(it,choice,btn){
+  if(st.locked){return;}
+  st.locked=true;
+  var ok=(choice===it.o[0]),bs=$('opts').getElementsByTagName('button'),i,full;
+  for(i=0;i<bs.length;i++){
+    bs[i].disabled=true;
+    if(bs[i].textContent===it.o[0]){bs[i].className='opt ok';}
+  }
+  if(!ok){btn.className='opt no';st.wrong.push(st.queue[st.pos]);}else{st.score++;}
+  full=it.s?it.s.replace('___',it.o[0]):it.o[0];
+  var g=$('gap');
+  if(g){g.textContent=choice;g.className='gap '+(ok?'ok':'no');}
+  $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Nicht ganz.')+'</strong> '+(ok?'':'Richtig ist: ')+'<span class="sol">'+esc(full)+'</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+  nextBtn();
+}
+/* ---------- Satzbausteine ---------- */
+function renderBuild(it){
+  var chips=[],i,order,tries=0,placed=[],done=false;
+  for(i=0;i<it.ch.length;i++){chips.push({id:i,t:it.ch[i]});}
+  order=shuffle(range(chips.length));
+  var guard=0;
+  while(chips.length>1&&sameOrder(order,range(chips.length))&&guard<20){order=shuffle(range(chips.length));guard++;}
+  $('stage').innerHTML=progress()+'<div class="q">'+esc(it.q||'Bilde den Satz. Tippe die Bausteine in der richtigen Reihenfolge an. Tippe einen gesetzten Baustein an, um ihn zurückzulegen.')+'</div><div class="build" id="build"></div><div class="pool" id="pool"></div><div class="msg" id="msg"></div><div id="ctl"></div><div id="fb"></div>';
+  function inPlaced(id){var k;for(k=0;k<placed.length;k++){if(placed[k]===id){return true;}}return false;}
+  function draw(){
+    var h='<span class="fixed">'+esc(it.st)+'</span>',k,p='';
+    for(k=0;k<placed.length;k++){h+='<button class="chip placed" type="button" data-id="'+placed[k]+'">'+esc(chips[placed[k]].t)+'</button>';}
+    h+='<span class="fixed">.</span>';
+    $('build').innerHTML=h;
+    for(k=0;k<order.length;k++){if(!inPlaced(order[k])){p+='<button class="chip" type="button" data-id="'+order[k]+'">'+esc(chips[order[k]].t)+'</button>';}}
+    $('pool').innerHTML=p;
+    var bb=$('build').getElementsByTagName('button'),pb=$('pool').getElementsByTagName('button');
+    for(k=0;k<bb.length;k++){bb[k].onclick=(function(b){return function(){if(done){return;}var id=parseInt(b.getAttribute('data-id'),10),n=[],j;for(j=0;j<placed.length;j++){if(placed[j]!==id){n.push(placed[j]);}}placed=n;$('msg').textContent='';draw();};})(bb[k]);}
+    for(k=0;k<pb.length;k++){pb[k].onclick=(function(b){return function(){if(done){return;}placed.push(parseInt(b.getAttribute('data-id'),10));$('msg').textContent='';draw();};})(pb[k]);}
+    if(!done){
+      $('ctl').innerHTML='<button class="btn primary" id="chk" type="button">Prüfen</button><button class="btn" id="rst" type="button">Zurücksetzen</button>';
+      $('chk').onclick=check;
+      $('rst').onclick=function(){placed=[];$('msg').textContent='';draw();};
+    }
+  }
+  function finish(ok){
+    done=true;st.locked=true;
+    $('ctl').innerHTML='';
+    $('fb').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><strong>'+(ok?'Richtig!':'Hier ist die Lösung:')+'</strong> <span class="sol">'+hl(it.a[0])+'.</span><div class="rule">'+esc(it.r)+'</div></div><button class="btn primary" id="next" type="button">Weiter</button>';
+    draw();
+    nextBtn();
+  }
+  function check(){
+    var k,s,ok=false,parts=[];
+    if(placed.length<chips.length){$('msg').textContent='Setze zuerst alle Bausteine ein.';return;}
+    for(k=0;k<placed.length;k++){parts.push(chips[placed[k]].t);}
+    s=norm(it.st+' '+parts.join(' '));
+    for(k=0;k<it.a.length;k++){if(norm(it.a[k])===s){ok=true;}}
+    tries++;
+    if(ok){if(tries===1){st.score++;}finish(true);return;}
+    if(tries===1){st.wrong.push(st.queue[st.pos]);}
+    if(tries>=2){finish(false);return;}
+    $('msg').innerHTML='Noch nicht richtig. Tipp: '+esc(it.r)+' Du hast einen zweiten Versuch.';
+  }
+  draw();
+}
+/* ---------- Auswertung ---------- */
+function solText(it){
+  if(it.a){return hl(it.a[0])+'.';}
+  return esc(it.s?it.s.replace('___',it.o[0]):it.o[0]);
+}
+function renderSummary(){
+  var s=D.sections[st.sec],pct=Math.round(st.score/st.total*100),h,i,msg;
+  if(!st.subset){st.results[st.sec]=st.score+'/'+st.total;}
+  renderTabs();
+  msg=pct>=90?'Sehr sicher!':(pct>=70?'Gut. Die Wiederholung der Fehler lohnt sich.':'Weiter üben: Wiederhole zuerst die Merkhilfe und dann die Fehler.');
+  h='<div class="sum"><h2>'+st.score+' von '+st.total+' beim ersten Versuch richtig ('+pct+' %)</h2><p>'+msg+'</p>';
+  if(st.wrong.length){
+    h+='<p><strong>Das solltest du noch einmal ansehen:</strong></p><ul>';
+    for(i=0;i<st.wrong.length;i++){var it=s.items[st.wrong[i]];h+='<li>'+solText(it)+'<br><small>'+esc(it.r)+'</small></li>';}
+    h+='</ul><button class="btn primary" id="again" type="button">Fehler wiederholen</button>';
+  }
+  h+='<button class="btn" id="restart" type="button">Abschnitt neu mischen</button>';
+  if(st.sec<D.sections.length-1){h+='<button class="btn" id="nextsec" type="button">Nächster Abschnitt</button>';}
+  h+='</div>';
+  $('stage').innerHTML=h;
+  if($('again')){var w=st.wrong.slice();$('again').onclick=function(){startSection(st.sec,w);};}
+  $('restart').onclick=function(){startSection(st.sec,null);};
+  if($('nextsec')){$('nextsec').onclick=function(){startSection(st.sec+1,null);};}
+}
+document.getElementById('title').textContent=D.title;
+document.getElementById('sub').textContent=D.sub;
+window.__DTB={D:D,st:st,start:startSection};
+startSection(0,null);
+})();
+</script>
+</body>
+</html>
