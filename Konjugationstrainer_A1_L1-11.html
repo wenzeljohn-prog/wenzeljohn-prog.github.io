@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Konjugationstrainer A1 · Treffpunkt L1–L11</title>
+<style>
+
+  :root {
+    --bg:#f4f6fa; --card:#fff; --text:#1d2433; --muted:#5b667a; --line:#d5dbe6;
+    --accent:#2b5fd9; --accent-text:#fff; --chip:#e9eef8;
+    --ok:#1f7a4d; --ok-bg:#e0f3e8; --bad:#b3303f; --bad-bg:#fbe4e7; --warn-bg:#fff4d6; --mark:#fde8a6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#12161f; --card:#1b2130; --text:#e8ecf5; --muted:#9aa5ba; --line:#30394d;
+      --accent:#6b97ff; --accent-text:#0b1226; --chip:#252d40;
+      --ok:#6fd6a2; --ok-bg:#183427; --bad:#ff8a98; --bad-bg:#42202a; --warn-bg:#3a3118; --mark:#6b5a1d;
+    }
+  }
+  * { box-sizing:border-box; }
+  html,body { margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; line-height:1.45; min-height:100vh; }
+  .wrap { max-width:900px; margin:0 auto; padding:14px; }
+  h1 { font-size:1.2rem; margin:2px 0 10px; }
+  .tabs { display:flex; gap:6px; margin-bottom:12px; }
+  .tab { flex:1; min-height:48px; border-radius:12px; border:2px solid var(--line); background:var(--card); color:var(--text); font-size:1rem; cursor:pointer; font-weight:600; }
+  .tab.on { border-color:var(--accent); background:var(--chip); }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+  .panel h2 { font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 8px; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .chip { display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:6px 14px; border-radius:999px; background:var(--chip); border:2px solid transparent; cursor:pointer; user-select:none; font-size:.95rem; }
+  .chip input { position:absolute; opacity:0; pointer-events:none; }
+  .chip.on { border-color:var(--accent); font-weight:700; }
+  .chip:focus-within { outline:3px solid var(--accent); outline-offset:2px; }
+  .chip small { color:var(--muted); font-weight:400; }
+  .small { color:var(--muted); font-size:.86rem; margin-top:6px; }
+  .linkbtn { background:none; border:none; color:var(--accent); cursor:pointer; font-size:.92rem; padding:6px 4px; min-height:44px; }
+  select, input[type=text], input[type=search] { min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); color:var(--text); font-size:1rem; padding:6px 10px; }
+  label.opt { display:flex; align-items:center; gap:8px; min-height:44px; }
+  button.main { width:100%; min-height:56px; border-radius:14px; border:none; cursor:pointer; font-size:1.15rem; font-weight:700; background:var(--accent); color:var(--accent-text); }
+  button.main:disabled { opacity:.4; cursor:default; }
+  button.sec { min-height:48px; padding:0 18px; border-radius:12px; cursor:pointer; font-size:1rem; background:var(--card); color:var(--text); border:2px solid var(--line); }
+  button:focus-visible, input:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  .bar { height:10px; background:var(--chip); border-radius:999px; overflow:hidden; }
+  .bar > i { display:block; height:100%; background:var(--accent); }
+  .top { display:flex; justify-content:space-between; font-size:.9rem; color:var(--muted); margin-bottom:6px; }
+  .qcard { text-align:center; padding:18px 12px 12px; }
+  .qtask { font-size:.95rem; color:var(--muted); margin-bottom:6px; }
+  .qmean { font-size:1.1rem; color:var(--muted); min-height:1.5em; margin-bottom:6px; }
+  .qbig { font-size:clamp(2rem,9vw,3.2rem); font-weight:800; margin:8px 0 12px; word-wrap:break-word; overflow-wrap:anywhere; letter-spacing:.02em; }
+  .gap { display:inline-block; min-width:1.6em; border-bottom:4px solid var(--accent); color:var(--accent); }
+  .opts { display:grid; gap:10px; margin:10px 0; }
+  .opts.two { grid-template-columns:1fr 1fr; }
+  .opts button { min-height:68px; border-radius:14px; border:3px solid var(--line); background:var(--card); color:var(--text); font-size:1.5rem; font-weight:800; cursor:pointer; padding:6px 10px; word-wrap:break-word; overflow-wrap:anywhere; }
+  .opts.rule button { font-size:1.05rem; font-weight:700; text-align:left; min-height:60px; }
+  .opts button small.sub { font-size:.82rem; font-weight:500; color:var(--text); opacity:.85; margin-top:4px; }
+  .opts button small { display:block; font-size:.7rem; font-weight:500; color:var(--muted); }
+  .opts button.right { background:var(--ok-bg); border-color:var(--ok); color:var(--ok); }
+  .opts button.wrong { background:var(--bad-bg); border-color:var(--bad); color:var(--bad); }
+  .opts button:disabled { cursor:default; }
+  .opts button:disabled:not(.right):not(.wrong) { opacity:.5; }
+  .typebox { display:flex; gap:8px; margin:8px 0; }
+  .typebox input { flex:1; font-size:1.4rem; min-width:0; }
+  .typebox button { min-width:96px; }
+  .umlauts { display:flex; gap:6px; justify-content:center; margin-bottom:8px; }
+  .umlauts button { min-width:52px; min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); color:var(--text); font-size:1.2rem; cursor:pointer; }
+  mark.seg { background:var(--mark); color:inherit; border-radius:4px; padding:0 2px; }
+  .fb { border-radius:12px; padding:12px 14px; margin-top:6px; text-align:left; }
+  .fb.ok { background:var(--ok-bg); } .fb.bad { background:var(--bad-bg); }
+  .fb .big { font-size:1.3rem; font-weight:800; }
+  .fb .hint { margin-top:6px; padding:8px 10px; border-radius:10px; background:var(--warn-bg); font-size:.95rem; }
+  .fb s { opacity:.7; }
+  .speak { min-height:44px; padding:0 14px; border-radius:999px; border:2px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; font-size:.95rem; margin-bottom:6px; }
+  .score { font-size:2.2rem; font-weight:800; text-align:center; }
+  .rev { list-style:none; margin:8px 0 0; padding:0; }
+  .rev li { padding:10px 0; border-top:1px solid var(--line); }
+  .rev .pl { color:var(--muted); font-size:.92rem; }
+  .rev .w { font-size:1.15rem; font-weight:700; }
+  .grp h3 { font-size:1.02rem; margin:0 0 4px; }
+  .grp p { margin:0 0 8px; color:var(--muted); font-size:.92rem; }
+  .words { display:flex; flex-wrap:wrap; gap:6px; }
+  .words span { background:var(--chip); border-radius:10px; padding:4px 10px; font-size:1rem; }
+  .words span small { color:var(--muted); }
+  .rowbar { display:flex; height:14px; border-radius:999px; overflow:hidden; background:var(--chip); }
+  .rowbar i { display:block; height:100%; }
+  .seg-s { background:var(--ok); } .seg-g { background:#e0a526; }
+  table.prog { width:100%; border-collapse:collapse; font-size:.95rem; }
+  table.prog td { padding:6px 4px; border-top:1px solid var(--line); vertical-align:middle; }
+  table.prog td.n { width:44%; font-weight:600; }
+  table.prog td.c { width:92px; text-align:right; color:var(--muted); font-size:.85rem; white-space:nowrap; }
+  details summary { cursor:pointer; font-weight:600; min-height:44px; display:flex; align-items:center; }
+  .rules li { margin:6px 0; }
+  .hidden { display:none !important; }
+  @media (max-width:560px) { .opts.two { grid-template-columns:1fr; } .wrap { padding:10px; } }
+
+  .tr { color:var(--muted); }
+  .qtask.tr { margin-top:-2px; }
+  .vhead { font-size:1.15rem; margin-bottom:4px; }
+  .vinf { font-weight:800; font-size:1.5rem; }
+  .vmean { color:var(--muted); }
+  .sent { font-size:clamp(1.5rem,6.5vw,2.2rem); letter-spacing:0; line-height:1.35; }
+  .gap.okgap { color:var(--ok); border-color:var(--ok); } .gap.badgap { color:var(--bad); border-color:var(--bad); }
+  .opts.two button { font-size:1.4rem; }
+  .msg .de { font-weight:600; }
+  .msg .tr, .hint .tr { margin-top:3px; font-size:.95rem; color:var(--text); opacity:.85; }
+  .hint { margin-top:8px; }
+  .hint .de { font-weight:600; font-size:.95rem; }
+  .par { display:grid; grid-template-columns:1fr 1fr; gap:4px 12px; margin-top:6px; }
+  .pc { padding:4px 8px; border-radius:8px; background:var(--chip); font-size:1rem; overflow-wrap:anywhere; }
+  .pc small { color:var(--muted); font-size:.82rem; }
+  .pc.cur { outline:2px solid var(--accent); }
+  .pc .irr { color:var(--accent); font-weight:700; }
+  .txt { text-align:left; font-size:1.2rem; line-height:2.5; padding:6px 2px; margin:4px 0; overflow-wrap:anywhere; }
+  .vtok { font:inherit; font-weight:700; min-height:44px; padding:2px 10px; margin:0 1px; border-radius:10px; border:2px dashed var(--line); background:var(--card); color:var(--text); cursor:pointer; }
+  .vtok.marked { border:2px solid var(--accent); background:var(--mark); }
+  .vtok.hit { border-color:var(--ok); background:var(--ok-bg); color:var(--ok); }
+  .vtok.fa { border-color:var(--bad); background:var(--bad-bg); color:var(--bad); text-decoration:line-through; }
+  .vtok.miss { border:2px dashed #e0a526; background:var(--warn-bg); }
+  .vtok:disabled { cursor:default; }
+  .plainv { font-weight:700; }
+  .fixwrap { display:inline-block; white-space:nowrap; margin:0 2px; }
+  .fixin, .fixsel { font-size:1.1rem; min-height:44px; max-width:100%; }
+  .fixin { text-align:center; }
+  .fixin.okfix, .fixsel.okfix { border-color:var(--ok); background:var(--ok-bg); color:var(--ok); }
+  .fixin.badfix, .fixsel.badfix { border-color:var(--bad); background:var(--bad-bg); color:var(--bad); }
+  .corr { color:var(--ok); font-weight:700; }
+  .was { color:var(--muted); text-decoration:line-through; margin-left:4px; font-size:.8rem; }
+  .fixitem { margin-top:10px; padding-top:8px; border-top:1px solid var(--line); }
+  .fixitem .w { font-size:1.15rem; }
+  .vlist { text-align:left; margin:6px 0; }
+  .vl { margin:4px 0 4px; padding-left:20px; }
+  .tact { margin-top:8px; }
+  .vrow { padding:8px 0; border-top:1px solid var(--line); }
+  .vrow .vh { font-size:1.05rem; }
+  .tagline { color:var(--muted); }
+  .rule { margin:6px 0 10px; }
+  .rule.tr { padding:8px 10px; border-radius:10px; background:var(--chip); }
+  .tasktitle .qtask { margin-bottom:2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Konjugationstrainer &middot; Präsens &middot; A1 L1&ndash;11</h1>
+  <div class="tabs" role="tablist">
+    <button class="tab on" id="tabPractice" type="button">&Uuml;ben</button>
+    <button class="tab" id="tabList" type="button">Regeln &amp; Verben</button>
+    <button class="tab" id="tabProg" type="button">Fortschritt</button>
+  </div>
+  <div id="viewPractice"></div>
+  <div id="viewList" class="hidden"></div>
+  <div id="viewProg" class="hidden"></div>
+</div>
+<script>
+(function () {
+  "use strict";
+var VERBS = [{"k":"sein","d":"sein","l":1,"g":["irreg"],"vc":"","f":["bin","bist","ist","sind","seid","sind"],"a":{},"e":null,"se":"e","hl":[true,true,true,true,true,true],"m":{"en":"to be","tr":"olmak","ru":"быть","ar":"يكون"},"c":["müde","im Kurs","sehr nett","hier"],"w":[[["sein",0],["bist",8],["ist",8],["sind",8],["seid",8],["sin",8]],[["sein",0],["bin",8],["ist",8],["sind",8],["seid",8],["seist",8]],[["sein",0],["bin",8],["bist",8],["sind",8],["seid",8]],[["sein",0],["bin",8],["bist",8],["ist",8],["seid",8]],[["sein",0],["bin",8],["bist",8],["ist",8],["sind",8]],[["sein",0],["bin",8],["bist",8],["ist",8],["seid",8]]],"tm":0},{"k":"heißen","d":"heißen","l":1,"g":["sz"],"vc":"","f":["heiße","heißt","heißt","heißen","heißt","heißen"],"a":{},"e":["e","t","t","en","t","en"],"se":"ß","hl":[false,false,false,false,false,false],"m":{"en":"to be called","tr":"adı olmak","ru":"зваться, называться","ar":"يُسمّى"},"c":["Ahmed","Tom","Karim"],"w":[[["heißen",0],["heißt",1],["heiß",2]],[["heißen",0],["heiße",1],["heiß",2],["heißst",6]],[["heißen",0],["heiße",1],["heiß",2]],[["heiße",1],["heißt",1],["heiß",2],["heißst",1]],[["heißen",0],["heiße",1],["heiß",2]],[["heiße",1],["heißt",1],["heiß",2],["heißst",1]]],"sg":["Mein Bruder","Der Lehrer"],"ps":[0,1,2],"tm":0},{"k":"kommen","d":"kommen","l":1,"g":["reg"],"vc":"","f":["komme","kommst","kommt","kommen","kommt","kommen"],"a":{},"e":["e","st","t","en","t","en"],"se":"m","hl":[false,false,false,false,false,false],"m":{"en":"to come","tr":"gelmek","ru":"приходить, приезжать","ar":"يأتي"},"c":["aus Syrien","aus der Ukraine","heute zum Kurs"],"w":[[["kommen",0],["kommst",1],["kommt",1],["komm",2]],[["kommen",0],["komme",1],["kommt",1],["komm",2]],[["kommen",0],["komme",1],["kommst",1],["komm",2]],[["komme",1],["kommst",1],["kommt",1],["komm",2]],[["kommen",0],["komme",1],["kommst",1],["komm",2]],[["komme",1],["kommst",1],["kommt",1],["komm",2]]],"tm":0},{"k":"sprechen","d":"sprechen","l":1,"g":["vowel"],"vc":"e → i","f":["spreche","sprichst","spricht","sprechen","sprecht","sprechen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,true,true,false,false,false],"m":{"en":"to speak","tr":"konuşmak","ru":"говорить","ar":"يتحدّث"},"c":["Deutsch","Arabisch und Englisch","mit der Lehrerin"],"w":[[["sprechen",0],["sprichst",1],["spricht",1],["sprecht",1],["spriche",4],["sprech",2],["sprechst",1]],[["sprechen",0],["spreche",1],["spricht",1],["sprecht",1],["sprechst",3],["sprech",2]],[["sprechen",0],["spreche",1],["sprichst",1],["sprecht",1],["sprech",2]],[["spreche",1],["sprichst",1],["spricht",1],["sprecht",1],["sprichen",4],["sprech",2],["sprechst",1]],[["sprechen",0],["spreche",1],["sprichst",1],["spricht",1],["sprech",2]],[["spreche",1],["sprichst",1],["spricht",1],["sprecht",1],["sprichen",4],["sprech",2],["sprechst",1]]]},{"k":"schreiben","d":"schreiben","l":1,"g":["reg"],"vc":"","f":["schreibe","schreibst","schreibt","schreiben","schreibt","schreiben"],"a":{},"e":["e","st","t","en","t","en"],"se":"b","hl":[false,false,false,false,false,false],"m":{"en":"to write","tr":"yazmak","ru":"писать","ar":"يكتب"},"c":["einen Brief","eine E-Mail","die Adresse"],"w":[[["schreiben",0],["schreibst",1],["schreibt",1],["schreib",2]],[["schreiben",0],["schreibe",1],["schreibt",1],["schreib",2]],[["schreiben",0],["schreibe",1],["schreibst",1],["schreib",2]],[["schreibe",1],["schreibst",1],["schreibt",1],["schreib",2]],[["schreiben",0],["schreibe",1],["schreibst",1],["schreib",2]],[["schreibe",1],["schreibst",1],["schreibt",1],["schreib",2]]]},{"k":"buchstabieren","d":"buchstabieren","l":1,"g":["reg"],"vc":"","f":["buchstabiere","buchstabierst","buchstabiert","buchstabieren","buchstabiert","buchstabieren"],"a":{},"e":["e","st","t","en","t","en"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to spell","tr":"harf harf söylemek","ru":"произносить по буквам","ar":"يتهجّى"},"c":["den Namen","das Wort"],"w":[[["buchstabieren",0],["buchstabierst",1],["buchstabiert",1],["buchstabier",2]],[["buchstabieren",0],["buchstabiere",1],["buchstabiert",1],["buchstabier",2]],[["buchstabieren",0],["buchstabiere",1],["buchstabierst",1],["buchstabier",2]],[["buchstabiere",1],["buchstabierst",1],["buchstabiert",1],["buchstabier",2]],[["buchstabieren",0],["buchstabiere",1],["buchstabierst",1],["buchstabier",2]],[["buchstabiere",1],["buchstabierst",1],["buchstabiert",1],["buchstabier",2]]]},{"k":"arbeiten","d":"arbeiten","l":2,"g":["rege"],"vc":"","f":["arbeite","arbeitest","arbeitet","arbeiten","arbeitet","arbeiten"],"a":{},"e":["e","est","et","en","et","en"],"se":"t","hl":[false,false,false,false,false,false],"m":{"en":"to work","tr":"çalışmak","ru":"работать","ar":"يعمل"},"c":["bei einer Firma","in einem Restaurant","viel"],"w":[[["arbeiten",0],["arbeitest",1],["arbeitet",1],["arbeit",2],["arbeitst",1]],[["arbeiten",0],["arbeite",1],["arbeitet",1],["arbeit",5],["arbeitst",5]],[["arbeiten",0],["arbeite",1],["arbeitest",1],["arbeit",5]],[["arbeite",1],["arbeitest",1],["arbeitet",1],["arbeit",2],["arbeitst",1]],[["arbeiten",0],["arbeite",1],["arbeitest",1],["arbeit",5]],[["arbeite",1],["arbeitest",1],["arbeitet",1],["arbeit",2],["arbeitst",1]]]},{"k":"lernen","d":"lernen","l":2,"g":["reg"],"vc":"","f":["lerne","lernst","lernt","lernen","lernt","lernen"],"a":{},"e":["e","st","t","en","t","en"],"se":"n","hl":[false,false,false,false,false,false],"m":{"en":"to learn","tr":"öğrenmek","ru":"учить, изучать","ar":"يتعلّم"},"c":["Deutsch","jeden Tag Vokabeln"],"w":[[["lernen",0],["lernst",1],["lernt",1],["lern",2]],[["lernen",0],["lerne",1],["lernt",1],["lern",2]],[["lernen",0],["lerne",1],["lernst",1],["lern",2]],[["lerne",1],["lernst",1],["lernt",1],["lern",2]],[["lernen",0],["lerne",1],["lernst",1],["lern",2]],[["lerne",1],["lernst",1],["lernt",1],["lern",2]]]},{"k":"reparieren","d":"reparieren","l":2,"g":["reg"],"vc":"","f":["repariere","reparierst","repariert","reparieren","repariert","reparieren"],"a":{},"e":["e","st","t","en","t","en"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to repair","tr":"tamir etmek","ru":"ремонтировать","ar":"يصلّح"},"c":["das Auto","das Fahrrad"],"w":[[["reparieren",0],["reparierst",1],["repariert",1],["reparier",2]],[["reparieren",0],["repariere",1],["repariert",1],["reparier",2]],[["reparieren",0],["repariere",1],["reparierst",1],["reparier",2]],[["repariere",1],["reparierst",1],["repariert",1],["reparier",2]],[["reparieren",0],["repariere",1],["reparierst",1],["reparier",2]],[["repariere",1],["reparierst",1],["repariert",1],["reparier",2]]]},{"k":"studieren","d":"studieren","l":2,"g":["reg"],"vc":"","f":["studiere","studierst","studiert","studieren","studiert","studieren"],"a":{},"e":["e","st","t","en","t","en"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to study","tr":"okumak / öğrenim görmek","ru":"учиться","ar":"يدرس"},"c":["Medizin","in Jena"],"w":[[["studieren",0],["studierst",1],["studiert",1],["studier",2]],[["studieren",0],["studiere",1],["studiert",1],["studier",2]],[["studieren",0],["studiere",1],["studierst",1],["studier",2]],[["studiere",1],["studierst",1],["studiert",1],["studier",2]],[["studieren",0],["studiere",1],["studierst",1],["studier",2]],[["studiere",1],["studierst",1],["studiert",1],["studier",2]]]},{"k":"wohnen","d":"wohnen","l":2,"g":["reg"],"vc":"","f":["wohne","wohnst","wohnt","wohnen","wohnt","wohnen"],"a":{},"e":["e","st","t","en","t","en"],"se":"n","hl":[false,false,false,false,false,false],"m":{"en":"to live","tr":"oturmak","ru":"жить","ar":"يسكن"},"c":["in Erfurt","in einer WG","bei der Familie"],"w":[[["wohnen",0],["wohnst",1],["wohnt",1],["wohn",2]],[["wohnen",0],["wohne",1],["wohnt",1],["wohn",2]],[["wohnen",0],["wohne",1],["wohnst",1],["wohn",2]],[["wohne",1],["wohnst",1],["wohnt",1],["wohn",2]],[["wohnen",0],["wohne",1],["wohnst",1],["wohn",2]],[["wohne",1],["wohnst",1],["wohnt",1],["wohn",2]]],"tm":0},{"k":"trainieren","d":"trainieren","l":2,"g":["reg"],"vc":"","f":["trainiere","trainierst","trainiert","trainieren","trainiert","trainieren"],"a":{},"e":["e","st","t","en","t","en"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to train / practice","tr":"antrenman yapmak","ru":"тренироваться","ar":"يتدرّب"},"c":["jeden Tag","im Verein"],"w":[[["trainieren",0],["trainierst",1],["trainiert",1],["trainier",2]],[["trainieren",0],["trainiere",1],["trainiert",1],["trainier",2]],[["trainieren",0],["trainiere",1],["trainierst",1],["trainier",2]],[["trainiere",1],["trainierst",1],["trainiert",1],["trainier",2]],[["trainieren",0],["trainiere",1],["trainierst",1],["trainier",2]],[["trainiere",1],["trainierst",1],["trainiert",1],["trainier",2]]]},{"k":"tanzen","d":"tanzen","l":2,"g":["sz"],"vc":"","f":["tanze","tanzt","tanzt","tanzen","tanzt","tanzen"],"a":{},"e":["e","t","t","en","t","en"],"se":"z","hl":[false,false,false,false,false,false],"m":{"en":"to dance","tr":"dans etmek","ru":"танцевать","ar":"يرقص"},"c":["gern","auf der Party"],"w":[[["tanzen",0],["tanzt",1],["tanz",2]],[["tanzen",0],["tanze",1],["tanz",2],["tanzst",6]],[["tanzen",0],["tanze",1],["tanz",2]],[["tanze",1],["tanzt",1],["tanz",2],["tanzst",1]],[["tanzen",0],["tanze",1],["tanz",2]],[["tanze",1],["tanzt",1],["tanz",2],["tanzst",1]]]},{"k":"trinken","d":"trinken","l":2,"g":["reg"],"vc":"","f":["trinke","trinkst","trinkt","trinken","trinkt","trinken"],"a":{},"e":["e","st","t","en","t","en"],"se":"k","hl":[false,false,false,false,false,false],"m":{"en":"to drink","tr":"içmek","ru":"пить","ar":"يشرب"},"c":["einen Tee","Wasser","gern Kaffee"],"w":[[["trinken",0],["trinkst",1],["trinkt",1],["trink",2]],[["trinken",0],["trinke",1],["trinkt",1],["trink",2]],[["trinken",0],["trinke",1],["trinkst",1],["trink",2]],[["trinke",1],["trinkst",1],["trinkt",1],["trink",2]],[["trinken",0],["trinke",1],["trinkst",1],["trink",2]],[["trinke",1],["trinkst",1],["trinkt",1],["trink",2]]]},{"k":"bedeuten","d":"bedeuten","l":2,"g":["rege"],"vc":"","f":["bedeute","bedeutest","bedeutet","bedeuten","bedeutet","bedeuten"],"a":{},"e":["e","est","et","en","et","en"],"se":"t","hl":[false,false,false,false,false,false],"m":{"en":"to mean","tr":"anlamına gelmek","ru":"означать","ar":"يعني"},"c":["das Gleiche","etwas anderes"],"w":[[["bedeuten",0],["bedeutest",1],["bedeutet",1],["bedeut",2],["bedeutst",1]],[["bedeuten",0],["bedeute",1],["bedeutet",1],["bedeut",5],["bedeutst",5]],[["bedeuten",0],["bedeute",1],["bedeutest",1],["bedeut",5]],[["bedeute",1],["bedeutest",1],["bedeutet",1],["bedeut",2],["bedeutst",1]],[["bedeuten",0],["bedeute",1],["bedeutest",1],["bedeut",5]],[["bedeute",1],["bedeutest",1],["bedeutet",1],["bedeut",2],["bedeutst",1]]],"sg":["Das Wort","Das Schild"],"pl":["Die Wörter","Die Schilder"],"ps":[2,5],"tm":0},{"k":"verstehen","d":"verstehen","l":2,"g":["reg"],"vc":"","f":["verstehe","verstehst","versteht","verstehen","versteht","verstehen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to understand","tr":"anlamak","ru":"понимать","ar":"يفهم"},"c":["das Wort","die Frage","den Lehrer"],"w":[[["verstehen",0],["verstehst",1],["versteht",1],["versteh",2]],[["verstehen",0],["verstehe",1],["versteht",1],["versteh",2]],[["verstehen",0],["verstehe",1],["verstehst",1],["versteh",2]],[["verstehe",1],["verstehst",1],["versteht",1],["versteh",2]],[["verstehen",0],["verstehe",1],["verstehst",1],["versteh",2]],[["verstehe",1],["verstehst",1],["versteht",1],["versteh",2]]]},{"k":"helfen","d":"helfen","l":2,"g":["vowel"],"vc":"e → i","f":["helfe","hilfst","hilft","helfen","helft","helfen"],"a":{},"e":["e","st","t","en","t","en"],"se":"f","hl":[false,true,true,false,false,false],"m":{"en":"to help","tr":"yardım etmek","ru":"помогать","ar":"يساعد"},"c":["den Nachbarn","der Mutter","gern"],"w":[[["helfen",0],["hilfst",1],["hilft",1],["helft",1],["hilfe",4],["helf",2],["helfst",1]],[["helfen",0],["helfe",1],["hilft",1],["helft",1],["helfst",3],["helf",2]],[["helfen",0],["helfe",1],["hilfst",1],["helft",1],["helf",2]],[["helfe",1],["hilfst",1],["hilft",1],["helft",1],["hilfen",4],["helf",2],["helfst",1]],[["helfen",0],["helfe",1],["hilfst",1],["hilft",1],["helf",2]],[["helfe",1],["hilfst",1],["hilft",1],["helft",1],["hilfen",4],["helf",2],["helfst",1]]]},{"k":"hören","d":"hören","l":3,"g":["reg"],"vc":"","f":["höre","hörst","hört","hören","hört","hören"],"a":{},"e":["e","st","t","en","t","en"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to hear / to listen","tr":"duymak / dinlemek","ru":"слышать, слушать","ar":"يسمع / يستمع"},"c":["Musik","gern Radio","den Lehrer"],"w":[[["hören",0],["hörst",1],["hört",1],["hör",2]],[["hören",0],["höre",1],["hört",1],["hör",2]],[["hören",0],["höre",1],["hörst",1],["hör",2]],[["höre",1],["hörst",1],["hört",1],["hör",2]],[["hören",0],["höre",1],["hörst",1],["hör",2]],[["höre",1],["hörst",1],["hört",1],["hör",2]]]},{"k":"spielen","d":"spielen","l":3,"g":["reg"],"vc":"","f":["spiele","spielst","spielt","spielen","spielt","spielen"],"a":{},"e":["e","st","t","en","t","en"],"se":"l","hl":[false,false,false,false,false,false],"m":{"en":"to play","tr":"oynamak","ru":"играть","ar":"يلعب"},"c":["Fußball","Karten","Tischtennis"],"w":[[["spielen",0],["spielst",1],["spielt",1],["spiel",2]],[["spielen",0],["spiele",1],["spielt",1],["spiel",2]],[["spielen",0],["spiele",1],["spielst",1],["spiel",2]],[["spiele",1],["spielst",1],["spielt",1],["spiel",2]],[["spielen",0],["spiele",1],["spielst",1],["spiel",2]],[["spiele",1],["spielst",1],["spielt",1],["spiel",2]]]},{"k":"stehen","d":"stehen","l":3,"g":["reg"],"vc":"","f":["stehe","stehst","steht","stehen","steht","stehen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to stand","tr":"durmak / ayakta durmak","ru":"стоять","ar":"يقف"},"c":["an der Tür","vor dem Haus"],"w":[[["stehen",0],["stehst",1],["steht",1],["steh",2]],[["stehen",0],["stehe",1],["steht",1],["steh",2]],[["stehen",0],["stehe",1],["stehst",1],["steh",2]],[["stehe",1],["stehst",1],["steht",1],["steh",2]],[["stehen",0],["stehe",1],["stehst",1],["steh",2]],[["stehe",1],["stehst",1],["steht",1],["steh",2]]]},{"k":"funktionieren","d":"funktionieren","l":3,"g":["reg"],"vc":"","f":["funktioniere","funktionierst","funktioniert","funktionieren","funktioniert","funktionieren"],"a":{},"e":["e","st","t","en","t","en"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to function / to work","tr":"çalışmak","ru":"работать, функционировать","ar":"يعمل"},"c":["nicht","gut"],"w":[[["funktionieren",0],["funktionierst",1],["funktioniert",1],["funktionier",2]],[["funktionieren",0],["funktioniere",1],["funktioniert",1],["funktionier",2]],[["funktionieren",0],["funktioniere",1],["funktionierst",1],["funktionier",2]],[["funktioniere",1],["funktionierst",1],["funktioniert",1],["funktionier",2]],[["funktionieren",0],["funktioniere",1],["funktionierst",1],["funktionier",2]],[["funktioniere",1],["funktionierst",1],["funktioniert",1],["funktionier",2]]],"sg":["Das Handy","Die Lampe","Der Computer"],"pl":["Die Lampen","Die Handys"],"ps":[2,5],"tm":0},{"k":"kosten","d":"kosten","l":3,"g":["rege"],"vc":"","f":["koste","kostest","kostet","kosten","kostet","kosten"],"a":{},"e":["e","est","et","en","et","en"],"se":"t","hl":[false,false,false,false,false,false],"m":{"en":"to cost","tr":"(fiyat) etmek / mal olmak","ru":"стоить","ar":"يُكلّف"},"c":["zwei Euro","nicht viel"],"w":[[["kosten",0],["kostest",1],["kostet",1],["kost",2],["kostst",1]],[["kosten",0],["koste",1],["kostet",1],["kost",5],["kostst",5]],[["kosten",0],["koste",1],["kostest",1],["kost",5]],[["koste",1],["kostest",1],["kostet",1],["kost",2],["kostst",1]],[["kosten",0],["koste",1],["kostest",1],["kost",5]],[["koste",1],["kostest",1],["kostet",1],["kost",2],["kostst",1]]],"sg":["Das Brot","Die Jacke","Der Kaffee"],"pl":["Die Äpfel","Die Schuhe"],"ps":[2,5],"tm":0},{"k":"wissen","d":"wissen","l":3,"g":["irreg"],"vc":"","f":["weiß","weißt","weiß","wissen","wisst","wissen"],"a":{},"e":null,"se":"s","hl":[true,true,true,true,true,true],"m":{"en":"to know (a fact)","tr":"bilmek","ru":"знать (факт)","ar":"يعرف (معلومة)"},"c":["das nicht","die Antwort nicht"],"w":[[["wissen",0],["weißt",8],["wisst",8],["wisse",8]],[["wissen",0],["weiß",8],["wisst",8],["weißst",8]],[["wissen",0],["weißt",8],["wisst",8]],[["weiß",8],["weißt",8],["wisst",8]],[["wissen",0],["weiß",8],["weißt",8]],[["weiß",8],["weißt",8],["wisst",8]]],"tm":0},{"k":"denken","d":"denken","l":4,"g":["reg"],"vc":"","f":["denke","denkst","denkt","denken","denkt","denken"],"a":{},"e":["e","st","t","en","t","en"],"se":"k","hl":[false,false,false,false,false,false],"m":{"en":"to think","tr":"düşünmek","ru":"думать","ar":"يفكّر"},"c":["an die Familie","an das Wochenende"],"w":[[["denken",0],["denkst",1],["denkt",1],["denk",2]],[["denken",0],["denke",1],["denkt",1],["denk",2]],[["denken",0],["denke",1],["denkst",1],["denk",2]],[["denke",1],["denkst",1],["denkt",1],["denk",2]],[["denken",0],["denke",1],["denkst",1],["denk",2]],[["denke",1],["denkst",1],["denkt",1],["denk",2]]]},{"k":"haben","d":"haben","l":4,"g":["irreg"],"vc":"","f":["habe","hast","hat","haben","habt","haben"],"a":{},"e":null,"se":"b","hl":[true,true,true,true,true,true],"m":{"en":"to have","tr":"sahip olmak","ru":"иметь","ar":"يملك / لديه"},"c":["Hunger","keine Zeit","zwei Kinder","einen Termin"],"w":[[["haben",0],["hast",8],["hat",8],["habt",8]],[["haben",0],["habe",8],["hat",8],["habt",8],["habst",8]],[["haben",0],["habe",8],["hast",8],["habt",8],["habet",8]],[["habe",8],["hast",8],["hat",8],["habt",8]],[["haben",0],["habe",8],["hast",8],["hat",8]],[["habe",8],["hast",8],["hat",8],["habt",8]]],"tm":0},{"k":"besuchen","d":"besuchen","l":4,"g":["reg"],"vc":"","f":["besuche","besuchst","besucht","besuchen","besucht","besuchen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to visit","tr":"ziyaret etmek","ru":"навещать, посещать","ar":"يزور"},"c":["die Großeltern","einen Freund","den Deutschkurs"],"w":[[["besuchen",0],["besuchst",1],["besucht",1],["besuch",2]],[["besuchen",0],["besuche",1],["besucht",1],["besuch",2]],[["besuchen",0],["besuche",1],["besuchst",1],["besuch",2]],[["besuche",1],["besuchst",1],["besucht",1],["besuch",2]],[["besuchen",0],["besuche",1],["besuchst",1],["besuch",2]],[["besuche",1],["besuchst",1],["besucht",1],["besuch",2]]]},{"k":"kennen","d":"kennen","l":4,"g":["reg"],"vc":"","f":["kenne","kennst","kennt","kennen","kennt","kennen"],"a":{},"e":["e","st","t","en","t","en"],"se":"n","hl":[false,false,false,false,false,false],"m":{"en":"to know / be acquainted with","tr":"tanımak","ru":"знать, быть знакомым","ar":"يعرف"},"c":["die Stadt","den Lehrer","Anna"],"w":[[["kennen",0],["kennst",1],["kennt",1],["kenn",2]],[["kennen",0],["kenne",1],["kennt",1],["kenn",2]],[["kennen",0],["kenne",1],["kennst",1],["kenn",2]],[["kenne",1],["kennst",1],["kennt",1],["kenn",2]],[["kennen",0],["kenne",1],["kennst",1],["kenn",2]],[["kenne",1],["kennst",1],["kennt",1],["kenn",2]]],"tm":0},{"k":"leben","d":"leben","l":4,"g":["reg"],"vc":"","f":["lebe","lebst","lebt","leben","lebt","leben"],"a":{},"e":["e","st","t","en","t","en"],"se":"b","hl":[false,false,false,false,false,false],"m":{"en":"to live / be alive","tr":"yaşamak / hayatta olmak","ru":"жить, быть живым","ar":"يعيش / يكون على قيد الحياة"},"c":["in Deutschland","gern hier"],"w":[[["leben",0],["lebst",1],["lebt",1],["leb",2]],[["leben",0],["lebe",1],["lebt",1],["leb",2]],[["leben",0],["lebe",1],["lebst",1],["leb",2]],[["lebe",1],["lebst",1],["lebt",1],["leb",2]],[["leben",0],["lebe",1],["lebst",1],["leb",2]],[["lebe",1],["lebst",1],["lebt",1],["leb",2]]],"tm":0},{"k":"duschen","d":"duschen","l":5,"g":["reg"],"vc":"","f":["dusche","duschst","duscht","duschen","duscht","duschen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to shower","tr":"duş almak","ru":"принимать душ","ar":"يستحمّ"},"c":["am Morgen","kalt"],"w":[[["duschen",0],["duschst",1],["duscht",1],["dusch",2]],[["duschen",0],["dusche",1],["duscht",1],["dusch",2]],[["duschen",0],["dusche",1],["duschst",1],["dusch",2]],[["dusche",1],["duschst",1],["duscht",1],["dusch",2]],[["duschen",0],["dusche",1],["duschst",1],["dusch",2]],[["dusche",1],["duschst",1],["duscht",1],["dusch",2]]]},{"k":"frühstücken","d":"frühstücken","l":5,"g":["reg"],"vc":"","f":["frühstücke","frühstückst","frühstückt","frühstücken","frühstückt","frühstücken"],"a":{},"e":["e","st","t","en","t","en"],"se":"k","hl":[false,false,false,false,false,false],"m":{"en":"to have breakfast","tr":"kahvaltı yapmak","ru":"завтракать","ar":"يتناول الفطور"},"c":["um acht Uhr","zusammen"],"w":[[["frühstücken",0],["frühstückst",1],["frühstückt",1],["frühstück",2]],[["frühstücken",0],["frühstücke",1],["frühstückt",1],["frühstück",2]],[["frühstücken",0],["frühstücke",1],["frühstückst",1],["frühstück",2]],[["frühstücke",1],["frühstückst",1],["frühstückt",1],["frühstück",2]],[["frühstücken",0],["frühstücke",1],["frühstückst",1],["frühstück",2]],[["frühstücke",1],["frühstückst",1],["frühstückt",1],["frühstück",2]]]},{"k":"gehen","d":"gehen","l":5,"g":["reg"],"vc":"","f":["gehe","gehst","geht","gehen","geht","gehen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to go","tr":"gitmek","ru":"идти, ходить","ar":"يذهب"},"c":["zur Arbeit","ins Bett","in die Stadt"],"w":[[["gehen",0],["gehst",1],["geht",1],["geh",2]],[["gehen",0],["gehe",1],["geht",1],["geh",2]],[["gehen",0],["gehe",1],["gehst",1],["geh",2]],[["gehe",1],["gehst",1],["geht",1],["geh",2]],[["gehen",0],["gehe",1],["gehst",1],["geh",2]],[["gehe",1],["gehst",1],["geht",1],["geh",2]]]},{"k":"kochen","d":"kochen","l":5,"g":["reg"],"vc":"","f":["koche","kochst","kocht","kochen","kocht","kochen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to cook","tr":"yemek pişirmek","ru":"готовить","ar":"يطبخ"},"c":["Suppe","das Essen","gern Reis"],"w":[[["kochen",0],["kochst",1],["kocht",1],["koch",2]],[["kochen",0],["koche",1],["kocht",1],["koch",2]],[["kochen",0],["koche",1],["kochst",1],["koch",2]],[["koche",1],["kochst",1],["kocht",1],["koch",2]],[["kochen",0],["koche",1],["kochst",1],["koch",2]],[["koche",1],["kochst",1],["kocht",1],["koch",2]]]},{"k":"kaufen","d":"kaufen","l":5,"g":["reg"],"vc":"","f":["kaufe","kaufst","kauft","kaufen","kauft","kaufen"],"a":{},"e":["e","st","t","en","t","en"],"se":"f","hl":[false,false,false,false,false,false],"m":{"en":"to buy","tr":"satın almak","ru":"покупать","ar":"يشتري"},"c":["Brot","ein Fahrrad","Obst und Gemüse"],"w":[[["kaufen",0],["kaufst",1],["kauft",1],["kauf",2]],[["kaufen",0],["kaufe",1],["kauft",1],["kauf",2]],[["kaufen",0],["kaufe",1],["kaufst",1],["kauf",2]],[["kaufe",1],["kaufst",1],["kauft",1],["kauf",2]],[["kaufen",0],["kaufe",1],["kaufst",1],["kauf",2]],[["kaufe",1],["kaufst",1],["kauft",1],["kauf",2]]]},{"k":"putzen","d":"putzen","l":5,"g":["sz"],"vc":"","f":["putze","putzt","putzt","putzen","putzt","putzen"],"a":{},"e":["e","t","t","en","t","en"],"se":"z","hl":[false,false,false,false,false,false],"m":{"en":"to clean","tr":"temizlemek","ru":"убирать, чистить","ar":"ينظّف"},"c":["die Wohnung","das Bad","die Fenster"],"w":[[["putzen",0],["putzt",1],["putz",2]],[["putzen",0],["putze",1],["putz",2],["putzst",6]],[["putzen",0],["putze",1],["putz",2]],[["putze",1],["putzt",1],["putz",2],["putzst",1]],[["putzen",0],["putze",1],["putz",2]],[["putze",1],["putzt",1],["putz",2],["putzst",1]]]},{"k":"schlafen","d":"schlafen","l":5,"g":["vowel"],"vc":"a → ä","f":["schlafe","schläfst","schläft","schlafen","schlaft","schlafen"],"a":{},"e":["e","st","t","en","t","en"],"se":"f","hl":[false,true,true,false,false,false],"m":{"en":"to sleep","tr":"uyumak","ru":"спать","ar":"ينام"},"c":["lange","bis acht Uhr","gut"],"w":[[["schlafen",0],["schläfst",1],["schläft",1],["schlaft",1],["schläfe",4],["schlaf",2],["schlafst",1]],[["schlafen",0],["schlafe",1],["schläft",1],["schlaft",1],["schlafst",3],["schlaf",2]],[["schlafen",0],["schlafe",1],["schläfst",1],["schlaft",1],["schlaf",2]],[["schlafe",1],["schläfst",1],["schläft",1],["schlaft",1],["schläfen",4],["schlaf",2],["schlafst",1]],[["schlafen",0],["schlafe",1],["schläfst",1],["schläft",1],["schlaf",2]],[["schlafe",1],["schläfst",1],["schläft",1],["schlaft",1],["schläfen",4],["schlaf",2],["schlafst",1]]]},{"k":"telefonieren","d":"telefonieren","l":5,"g":["reg"],"vc":"","f":["telefoniere","telefonierst","telefoniert","telefonieren","telefoniert","telefonieren"],"a":{},"e":["e","st","t","en","t","en"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to make a phone call","tr":"telefonla konuşmak","ru":"разговаривать по телефону","ar":"يتحدّث بالهاتف"},"c":["mit der Mutter","mit Anna"],"w":[[["telefonieren",0],["telefonierst",1],["telefoniert",1],["telefonier",2]],[["telefonieren",0],["telefoniere",1],["telefoniert",1],["telefonier",2]],[["telefonieren",0],["telefoniere",1],["telefonierst",1],["telefonier",2]],[["telefoniere",1],["telefonierst",1],["telefoniert",1],["telefonier",2]],[["telefonieren",0],["telefoniere",1],["telefonierst",1],["telefonier",2]],[["telefoniere",1],["telefonierst",1],["telefoniert",1],["telefonier",2]]]},{"k":"essen","d":"essen","l":5,"g":["vowel"],"vc":"e → i","f":["esse","isst","isst","essen","esst","essen"],"a":{},"e":["e","t","t","en","t","en"],"se":"s","hl":[false,true,true,false,false,false],"m":{"en":"to eat","tr":"yemek yemek","ru":"есть","ar":"يأكل"},"c":["Reis","gern Fisch","zu Mittag"],"w":[[["essen",0],["isst",1],["esst",1],["isse",4],["ess",2]],[["essen",0],["esse",1],["esst",1],["ess",2]],[["essen",0],["esse",1],["esst",1],["ess",2]],[["esse",1],["isst",1],["esst",1],["ess",2]],[["essen",0],["esse",1],["isst",1],["ess",2]],[["esse",1],["isst",1],["esst",1],["ess",2]]]},{"k":"fahren","d":"fahren","l":5,"g":["vowel"],"vc":"a → ä","f":["fahre","fährst","fährt","fahren","fahrt","fahren"],"a":{},"e":["e","st","t","en","t","en"],"se":"r","hl":[false,true,true,false,false,false],"m":{"en":"to drive / to go","tr":"(araçla) gitmek / sürmek","ru":"ехать, ездить","ar":"يركب / يقود"},"c":["Fahrrad","mit dem Bus zur Arbeit","nach Berlin"],"w":[[["fahren",0],["fährst",1],["fährt",1],["fahrt",1],["fähre",4],["fahr",2],["fahrst",1]],[["fahren",0],["fahre",1],["fährt",1],["fahrt",1],["fahrst",3],["fahr",2]],[["fahren",0],["fahre",1],["fährst",1],["fahrt",1],["fahr",2]],[["fahre",1],["fährst",1],["fährt",1],["fahrt",1],["fähren",4],["fahr",2],["fahrst",1]],[["fahren",0],["fahre",1],["fährst",1],["fährt",1],["fahr",2]],[["fahre",1],["fährst",1],["fährt",1],["fahrt",1],["fähren",4],["fahr",2],["fahrst",1]]]},{"k":"grillen","d":"grillen","l":5,"g":["reg"],"vc":"","f":["grille","grillst","grillt","grillen","grillt","grillen"],"a":{},"e":["e","st","t","en","t","en"],"se":"l","hl":[false,false,false,false,false,false],"m":{"en":"to grill / to barbecue","tr":"ızgara yapmak","ru":"жарить на гриле","ar":"يشوي"},"c":["Fleisch","im Garten"],"w":[[["grillen",0],["grillst",1],["grillt",1],["grill",2]],[["grillen",0],["grille",1],["grillt",1],["grill",2]],[["grillen",0],["grille",1],["grillst",1],["grill",2]],[["grille",1],["grillst",1],["grillt",1],["grill",2]],[["grillen",0],["grille",1],["grillst",1],["grill",2]],[["grille",1],["grillst",1],["grillt",1],["grill",2]]]},{"k":"laufen","d":"laufen","l":5,"g":["vowel"],"vc":"au → äu","f":["laufe","läufst","läuft","laufen","lauft","laufen"],"a":{},"e":["e","st","t","en","t","en"],"se":"f","hl":[false,true,true,false,false,false],"m":{"en":"to run / to walk","tr":"koşmak / yürümek","ru":"бегать, ходить пешком","ar":"يركض / يمشي"},"c":["im Park","jeden Morgen"],"w":[[["laufen",0],["läufst",1],["läuft",1],["lauft",1],["läufe",4],["lauf",2],["laufst",1]],[["laufen",0],["laufe",1],["läuft",1],["lauft",1],["laufst",3],["lauf",2]],[["laufen",0],["laufe",1],["läufst",1],["lauft",1],["lauf",2]],[["laufe",1],["läufst",1],["läuft",1],["lauft",1],["läufen",4],["lauf",2],["laufst",1]],[["laufen",0],["laufe",1],["läufst",1],["läuft",1],["lauf",2]],[["laufe",1],["läufst",1],["läuft",1],["lauft",1],["läufen",4],["lauf",2],["laufst",1]]]},{"k":"lesen","d":"lesen","l":5,"g":["vowel"],"vc":"e → ie","f":["lese","liest","liest","lesen","lest","lesen"],"a":{},"e":["e","t","t","en","t","en"],"se":"s","hl":[false,true,true,false,false,false],"m":{"en":"to read","tr":"okumak","ru":"читать","ar":"يقرأ"},"c":["ein Buch","die Zeitung"],"w":[[["lesen",0],["liest",1],["lest",1],["liese",4],["les",2]],[["lesen",0],["lese",1],["lest",1],["les",2]],[["lesen",0],["lese",1],["lest",1],["les",2]],[["lese",1],["liest",1],["lest",1],["liesen",4],["les",2]],[["lesen",0],["lese",1],["liest",1],["les",2]],[["lese",1],["liest",1],["lest",1],["liesen",4],["les",2]]]},{"k":"schwimmen","d":"schwimmen","l":5,"g":["reg"],"vc":"","f":["schwimme","schwimmst","schwimmt","schwimmen","schwimmt","schwimmen"],"a":{},"e":["e","st","t","en","t","en"],"se":"m","hl":[false,false,false,false,false,false],"m":{"en":"to swim","tr":"yüzmek","ru":"плавать","ar":"يسبح"},"c":["im See","im Schwimmbad"],"w":[[["schwimmen",0],["schwimmst",1],["schwimmt",1],["schwimm",2]],[["schwimmen",0],["schwimme",1],["schwimmt",1],["schwimm",2]],[["schwimmen",0],["schwimme",1],["schwimmst",1],["schwimm",2]],[["schwimme",1],["schwimmst",1],["schwimmt",1],["schwimm",2]],[["schwimmen",0],["schwimme",1],["schwimmst",1],["schwimm",2]],[["schwimme",1],["schwimmst",1],["schwimmt",1],["schwimm",2]]]},{"k":"sehen","d":"sehen","l":5,"g":["vowel"],"vc":"e → ie","f":["sehe","siehst","sieht","sehen","seht","sehen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,true,true,false,false,false],"m":{"en":"to see / to watch","tr":"görmek / izlemek","ru":"видеть, смотреть","ar":"يرى / يشاهد"},"c":["einen Film","den Bus","das Haus"],"w":[[["sehen",0],["siehst",1],["sieht",1],["seht",1],["siehe",4],["seh",2],["sehst",1]],[["sehen",0],["sehe",1],["sieht",1],["seht",1],["sehst",3],["seh",2]],[["sehen",0],["sehe",1],["siehst",1],["seht",1],["seh",2]],[["sehe",1],["siehst",1],["sieht",1],["seht",1],["siehen",4],["seh",2],["sehst",1]],[["sehen",0],["sehe",1],["siehst",1],["sieht",1],["seh",2]],[["sehe",1],["siehst",1],["sieht",1],["seht",1],["siehen",4],["seh",2],["sehst",1]]]},{"k":"treffen","d":"treffen","l":5,"g":["vowel"],"vc":"e → i","f":["treffe","triffst","trifft","treffen","trefft","treffen"],"a":{},"e":["e","st","t","en","t","en"],"se":"f","hl":[false,true,true,false,false,false],"m":{"en":"to meet","tr":"buluşmak","ru":"встречаться, встречать","ar":"يلتقي"},"c":["Freunde","Leute","Anna im Café"],"w":[[["treffen",0],["triffst",1],["trifft",1],["trefft",1],["triffe",4],["treff",2],["treffst",1]],[["treffen",0],["treffe",1],["trifft",1],["trefft",1],["treffst",3],["treff",2]],[["treffen",0],["treffe",1],["triffst",1],["trefft",1],["treff",2]],[["treffe",1],["triffst",1],["trifft",1],["trefft",1],["triffen",4],["treff",2],["treffst",1]],[["treffen",0],["treffe",1],["triffst",1],["trifft",1],["treff",2]],[["treffe",1],["triffst",1],["trifft",1],["trefft",1],["triffen",4],["treff",2],["treffst",1]]]},{"k":"finden","d":"finden","l":5,"g":["rege"],"vc":"","f":["finde","findest","findet","finden","findet","finden"],"a":{},"e":["e","est","et","en","et","en"],"se":"d","hl":[false,false,false,false,false,false],"m":{"en":"to find; to think","tr":"bulmak / düşünmek","ru":"находить; считать","ar":"يجد / يرى"},"c":["die Stadt schön","den Film gut","das Buch interessant"],"w":[[["finden",0],["findest",1],["findet",1],["find",2],["findst",1]],[["finden",0],["finde",1],["findet",1],["find",5],["findst",5]],[["finden",0],["finde",1],["findest",1],["find",5],["findt",5]],[["finde",1],["findest",1],["findet",1],["find",2],["findst",1],["findt",1]],[["finden",0],["finde",1],["findest",1],["find",5],["findt",5]],[["finde",1],["findest",1],["findet",1],["find",2],["findst",1]]]},{"k":"boxen","d":"boxen","l":5,"g":["sz"],"vc":"","f":["boxe","boxt","boxt","boxen","boxt","boxen"],"a":{},"e":["e","t","t","en","t","en"],"se":"x","hl":[false,false,false,false,false,false],"m":{"en":"to box","tr":"boks yapmak","ru":"заниматься боксом","ar":"يمارس الملاكمة"},"c":["im Verein","gern"],"w":[[["boxen",0],["boxt",1],["box",2]],[["boxen",0],["boxe",1],["box",2],["boxst",6]],[["boxen",0],["boxe",1],["box",2]],[["boxe",1],["boxt",1],["box",2],["boxst",1]],[["boxen",0],["boxe",1],["box",2]],[["boxe",1],["boxt",1],["box",2],["boxst",1]]]},{"k":"beginnen","d":"beginnen","l":6,"g":["reg"],"vc":"","f":["beginne","beginnst","beginnt","beginnen","beginnt","beginnen"],"a":{},"e":["e","st","t","en","t","en"],"se":"n","hl":[false,false,false,false,false,false],"m":{"en":"to begin","tr":"başlamak","ru":"начинаться, начинать","ar":"يبدأ"},"c":["um neun Uhr","pünktlich"],"w":[[["beginnen",0],["beginnst",1],["beginnt",1],["beginn",2]],[["beginnen",0],["beginne",1],["beginnt",1],["beginn",2]],[["beginnen",0],["beginne",1],["beginnst",1],["beginn",2]],[["beginne",1],["beginnst",1],["beginnt",1],["beginn",2]],[["beginnen",0],["beginne",1],["beginnst",1],["beginn",2]],[["beginne",1],["beginnst",1],["beginnt",1],["beginn",2]]]},{"k":"aufmachen","d":"auf|machen","l":6,"g":["reg","sep"],"vc":"","f":["mache","machst","macht","machen","macht","machen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to open","tr":"açmak","ru":"открывать","ar":"يفتح"},"c":["das Fenster","die Tür"],"w":[[["machen",0],["machst",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["machst",1],["mach",2]],[["mache",1],["machst",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["machst",1],["mach",2]],[["mache",1],["machst",1],["macht",1],["mach",2]]]},{"k":"zumachen","d":"zu|machen","l":6,"g":["reg","sep"],"vc":"","f":["mache","machst","macht","machen","macht","machen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to close / to shut","tr":"kapatmak","ru":"закрывать","ar":"يُغلق"},"c":["das Fenster","die Tür"],"w":[[["machen",0],["machst",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["machst",1],["mach",2]],[["mache",1],["machst",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["machst",1],["mach",2]],[["mache",1],["machst",1],["macht",1],["mach",2]]]},{"k":"einkaufen","d":"ein|kaufen","l":6,"g":["reg","sep"],"vc":"","f":["kaufe","kaufst","kauft","kaufen","kauft","kaufen"],"a":{},"e":["e","st","t","en","t","en"],"se":"f","hl":[false,false,false,false,false,false],"m":{"en":"to shop / to go shopping","tr":"alışveriş yapmak","ru":"делать покупки","ar":"يتسوّق"},"c":["heute","im Supermarkt"],"w":[[["kaufen",0],["kaufst",1],["kauft",1],["kauf",2]],[["kaufen",0],["kaufe",1],["kauft",1],["kauf",2]],[["kaufen",0],["kaufe",1],["kaufst",1],["kauf",2]],[["kaufe",1],["kaufst",1],["kauft",1],["kauf",2]],[["kaufen",0],["kaufe",1],["kaufst",1],["kauf",2]],[["kaufe",1],["kaufst",1],["kauft",1],["kauf",2]]]},{"k":"anmachen","d":"an|machen","l":6,"g":["reg","sep"],"vc":"","f":["mache","machst","macht","machen","macht","machen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to turn on","tr":"açmak","ru":"включать","ar":"يُشغّل"},"c":["das Licht","das Radio"],"w":[[["machen",0],["machst",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["machst",1],["mach",2]],[["mache",1],["machst",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["machst",1],["mach",2]],[["mache",1],["machst",1],["macht",1],["mach",2]]]},{"k":"ausmachen","d":"aus|machen","l":6,"g":["reg","sep"],"vc":"","f":["mache","machst","macht","machen","macht","machen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to turn off","tr":"kapatmak","ru":"выключать","ar":"يُطفئ"},"c":["das Licht","den Fernseher"],"w":[[["machen",0],["machst",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["machst",1],["mach",2]],[["mache",1],["machst",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["machst",1],["mach",2]],[["mache",1],["machst",1],["macht",1],["mach",2]]]},{"k":"anziehen","d":"an|ziehen","l":6,"g":["reg","sep"],"vc":"","f":["ziehe","ziehst","zieht","ziehen","zieht","ziehen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to put on","tr":"giymek","ru":"надевать","ar":"يرتدي"},"c":["die Jacke","die Schuhe"],"w":[[["ziehen",0],["ziehst",1],["zieht",1],["zieh",2]],[["ziehen",0],["ziehe",1],["zieht",1],["zieh",2]],[["ziehen",0],["ziehe",1],["ziehst",1],["zieh",2]],[["ziehe",1],["ziehst",1],["zieht",1],["zieh",2]],[["ziehen",0],["ziehe",1],["ziehst",1],["zieh",2]],[["ziehe",1],["ziehst",1],["zieht",1],["zieh",2]]]},{"k":"ausziehen","d":"aus|ziehen","l":6,"g":["reg","sep"],"vc":"","f":["ziehe","ziehst","zieht","ziehen","zieht","ziehen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to take off","tr":"çıkarmak","ru":"снимать","ar":"يخلع"},"c":["die Schuhe","die Jacke"],"w":[[["ziehen",0],["ziehst",1],["zieht",1],["zieh",2]],[["ziehen",0],["ziehe",1],["zieht",1],["zieh",2]],[["ziehen",0],["ziehe",1],["ziehst",1],["zieh",2]],[["ziehe",1],["ziehst",1],["zieht",1],["zieh",2]],[["ziehen",0],["ziehe",1],["ziehst",1],["zieh",2]],[["ziehe",1],["ziehst",1],["zieht",1],["zieh",2]]]},{"k":"aufräumen","d":"auf|räumen","l":6,"g":["reg","sep"],"vc":"","f":["räume","räumst","räumt","räumen","räumt","räumen"],"a":{},"e":["e","st","t","en","t","en"],"se":"m","hl":[false,false,false,false,false,false],"m":{"en":"to tidy up","tr":"toplamak / düzenlemek","ru":"убирать, наводить порядок","ar":"يُرتّب"},"c":["das Zimmer","die Wohnung"],"w":[[["räumen",0],["räumst",1],["räumt",1],["räum",2]],[["räumen",0],["räume",1],["räumt",1],["räum",2]],[["räumen",0],["räume",1],["räumst",1],["räum",2]],[["räume",1],["räumst",1],["räumt",1],["räum",2]],[["räumen",0],["räume",1],["räumst",1],["räum",2]],[["räume",1],["räumst",1],["räumt",1],["räum",2]]]},{"k":"vorbereiten","d":"vor|bereiten","l":6,"g":["rege","sep"],"vc":"","f":["bereite","bereitest","bereitet","bereiten","bereitet","bereiten"],"a":{},"e":["e","est","et","en","et","en"],"se":"t","hl":[false,false,false,false,false,false],"m":{"en":"to prepare","tr":"hazırlamak","ru":"готовить, подготавливать","ar":"يُحضّر"},"c":["das Essen","das Frühstück"],"w":[[["bereiten",0],["bereitest",1],["bereitet",1],["bereit",2],["bereitst",1]],[["bereiten",0],["bereite",1],["bereitet",1],["bereit",5],["bereitst",5]],[["bereiten",0],["bereite",1],["bereitest",1],["bereit",5]],[["bereite",1],["bereitest",1],["bereitet",1],["bereit",2],["bereitst",1]],[["bereiten",0],["bereite",1],["bereitest",1],["bereit",5]],[["bereite",1],["bereitest",1],["bereitet",1],["bereit",2],["bereitst",1]]]},{"k":"anrufen","d":"an|rufen","l":6,"g":["reg","sep"],"vc":"","f":["rufe","rufst","ruft","rufen","ruft","rufen"],"a":{},"e":["e","st","t","en","t","en"],"se":"f","hl":[false,false,false,false,false,false],"m":{"en":"to call","tr":"aramak","ru":"звонить","ar":"يتّصل"},"c":["die Mutter","den Arzt","Anna"],"w":[[["rufen",0],["rufst",1],["ruft",1],["ruf",2]],[["rufen",0],["rufe",1],["ruft",1],["ruf",2]],[["rufen",0],["rufe",1],["rufst",1],["ruf",2]],[["rufe",1],["rufst",1],["ruft",1],["ruf",2]],[["rufen",0],["rufe",1],["rufst",1],["ruf",2]],[["rufe",1],["rufst",1],["ruft",1],["ruf",2]]]},{"k":"abholen","d":"ab|holen","l":6,"g":["reg","sep"],"vc":"","f":["hole","holst","holt","holen","holt","holen"],"a":{},"e":["e","st","t","en","t","en"],"se":"l","hl":[false,false,false,false,false,false],"m":{"en":"to pick up / to collect","tr":"almak / karşılamak","ru":"забирать, встречать","ar":"يستلم / يستقبل"},"c":["das Kind","die Freundin"],"w":[[["holen",0],["holst",1],["holt",1],["hol",2]],[["holen",0],["hole",1],["holt",1],["hol",2]],[["holen",0],["hole",1],["holst",1],["hol",2]],[["hole",1],["holst",1],["holt",1],["hol",2]],[["holen",0],["hole",1],["holst",1],["hol",2]],[["hole",1],["holst",1],["holt",1],["hol",2]]]},{"k":"aufstehen","d":"auf|stehen","l":6,"g":["reg","sep"],"vc":"","f":["stehe","stehst","steht","stehen","steht","stehen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to get up","tr":"kalkmak","ru":"вставать","ar":"يستيقظ / ينهض"},"c":["um sechs Uhr","früh"],"w":[[["stehen",0],["stehst",1],["steht",1],["steh",2]],[["stehen",0],["stehe",1],["steht",1],["steh",2]],[["stehen",0],["stehe",1],["stehst",1],["steh",2]],[["stehe",1],["stehst",1],["steht",1],["steh",2]],[["stehen",0],["stehe",1],["stehst",1],["steh",2]],[["stehe",1],["stehst",1],["steht",1],["steh",2]]]},{"k":"aufhören","d":"auf|hören","l":6,"g":["reg","sep"],"vc":"","f":["höre","hörst","hört","hören","hört","hören"],"a":{},"e":["e","st","t","en","t","en"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to stop / to finish","tr":"bitirmek / durmak","ru":"заканчивать, прекращать","ar":"يتوقّف / ينتهي"},"c":["um fünf Uhr","jetzt"],"w":[[["hören",0],["hörst",1],["hört",1],["hör",2]],[["hören",0],["höre",1],["hört",1],["hör",2]],[["hören",0],["höre",1],["hörst",1],["hör",2]],[["höre",1],["hörst",1],["hört",1],["hör",2]],[["hören",0],["höre",1],["hörst",1],["hör",2]],[["höre",1],["hörst",1],["hört",1],["hör",2]]]},{"k":"glauben","d":"glauben","l":6,"g":["reg"],"vc":"","f":["glaube","glaubst","glaubt","glauben","glaubt","glauben"],"a":{},"e":["e","st","t","en","t","en"],"se":"b","hl":[false,false,false,false,false,false],"m":{"en":"to believe / to think","tr":"inanmak / sanmak","ru":"верить, думать","ar":"يعتقد / يظن"},"c":["das nicht","dem Lehrer"],"w":[[["glauben",0],["glaubst",1],["glaubt",1],["glaub",2]],[["glauben",0],["glaube",1],["glaubt",1],["glaub",2]],[["glauben",0],["glaube",1],["glaubst",1],["glaub",2]],[["glaube",1],["glaubst",1],["glaubt",1],["glaub",2]],[["glauben",0],["glaube",1],["glaubst",1],["glaub",2]],[["glaube",1],["glaubst",1],["glaubt",1],["glaub",2]]],"tm":0},{"k":"fragen","d":"fragen","l":6,"g":["reg"],"vc":"","f":["frage","fragst","fragt","fragen","fragt","fragen"],"a":{},"e":["e","st","t","en","t","en"],"se":"g","hl":[false,false,false,false,false,false],"m":{"en":"to ask","tr":"sormak","ru":"спрашивать","ar":"يسأل"},"c":["den Lehrer","nach dem Weg"],"w":[[["fragen",0],["fragst",1],["fragt",1],["frag",2]],[["fragen",0],["frage",1],["fragt",1],["frag",2]],[["fragen",0],["frage",1],["fragst",1],["frag",2]],[["frage",1],["fragst",1],["fragt",1],["frag",2]],[["fragen",0],["frage",1],["fragst",1],["frag",2]],[["frage",1],["fragst",1],["fragt",1],["frag",2]]]},{"k":"suchen","d":"suchen","l":6,"g":["reg"],"vc":"","f":["suche","suchst","sucht","suchen","sucht","suchen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to look for / to search","tr":"aramak","ru":"искать","ar":"يبحث عن"},"c":["die Schlüssel","eine Wohnung","ein Zimmer"],"w":[[["suchen",0],["suchst",1],["sucht",1],["such",2]],[["suchen",0],["suche",1],["sucht",1],["such",2]],[["suchen",0],["suche",1],["suchst",1],["such",2]],[["suche",1],["suchst",1],["sucht",1],["such",2]],[["suchen",0],["suche",1],["suchst",1],["such",2]],[["suche",1],["suchst",1],["sucht",1],["such",2]]]},{"k":"anfangen","d":"an|fangen","l":6,"g":["sep","vowel"],"vc":"a → ä","f":["fange","fängst","fängt","fangen","fangt","fangen"],"a":{},"e":["e","st","t","en","t","en"],"se":"g","hl":[false,true,true,false,false,false],"m":{"en":"to start / to begin","tr":"başlamak","ru":"начинать","ar":"يبدأ"},"c":["um acht Uhr","mit der Arbeit"],"w":[[["fangen",0],["fängst",1],["fängt",1],["fangt",1],["fänge",4],["fang",2],["fangst",1]],[["fangen",0],["fange",1],["fängt",1],["fangt",1],["fangst",3],["fang",2]],[["fangen",0],["fange",1],["fängst",1],["fangt",1],["fang",2]],[["fange",1],["fängst",1],["fängt",1],["fangt",1],["fängen",4],["fang",2],["fangst",1]],[["fangen",0],["fange",1],["fängst",1],["fängt",1],["fang",2]],[["fange",1],["fängst",1],["fängt",1],["fangt",1],["fängen",4],["fang",2],["fangst",1]]]},{"k":"kontrollieren","d":"kontrollieren","l":6,"g":["reg"],"vc":"","f":["kontrolliere","kontrollierst","kontrolliert","kontrollieren","kontrolliert","kontrollieren"],"a":{},"e":["e","st","t","en","t","en"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to check / to control","tr":"kontrol etmek","ru":"проверять, контролировать","ar":"يراقب / يتحقّق من"},"c":["den Pass","die Fahrkarten"],"w":[[["kontrollieren",0],["kontrollierst",1],["kontrolliert",1],["kontrollier",2]],[["kontrollieren",0],["kontrolliere",1],["kontrolliert",1],["kontrollier",2]],[["kontrollieren",0],["kontrolliere",1],["kontrollierst",1],["kontrollier",2]],[["kontrolliere",1],["kontrollierst",1],["kontrolliert",1],["kontrollier",2]],[["kontrollieren",0],["kontrolliere",1],["kontrollierst",1],["kontrollier",2]],[["kontrolliere",1],["kontrollierst",1],["kontrolliert",1],["kontrollier",2]]]},{"k":"schließen","d":"schließen","l":6,"g":["sz"],"vc":"","f":["schließe","schließt","schließt","schließen","schließt","schließen"],"a":{},"e":["e","t","t","en","t","en"],"se":"ß","hl":[false,false,false,false,false,false],"m":{"en":"to close","tr":"kapatmak / kapanmak","ru":"закрывать","ar":"يُغلق"},"c":["die Tür","das Fenster","um 18 Uhr"],"w":[[["schließen",0],["schließt",1],["schließ",2]],[["schließen",0],["schließe",1],["schließ",2],["schließst",6]],[["schließen",0],["schließe",1],["schließ",2]],[["schließe",1],["schließt",1],["schließ",2],["schließst",1]],[["schließen",0],["schließe",1],["schließ",2]],[["schließe",1],["schließt",1],["schließ",2],["schließst",1]]]},{"k":"mögen","d":"mögen","l":7,"g":["modal"],"vc":"","f":["mag","magst","mag","mögen","mögt","mögen"],"a":{},"e":null,"se":"g","hl":[true,true,true,true,true,true],"m":{"en":"to like","tr":"sevmek","ru":"любить, нравиться","ar":"يحبّ"},"c":["Pizza","Tee","Musik"],"w":[[["mögen",0],["magst",7],["mögt",7],["möge",7],["mög",7]],[["mögen",0],["mag",7],["mögt",7],["mögst",7]],[["mögen",0],["magst",7],["mögt",7],["mög",7]],[["mag",7],["magst",7],["mögt",7]],[["mögen",0],["mag",7],["magst",7]],[["mag",7],["magst",7],["mögt",7]]],"tm":0},{"k":"machen","d":"machen","l":7,"g":["reg"],"vc":"","f":["mache","machst","macht","machen","macht","machen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to do / to make","tr":"yapmak","ru":"делать","ar":"يفعل / يصنع"},"c":["die Hausaufgaben","Sport","einen Kaffee"],"w":[[["machen",0],["machst",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["machst",1],["mach",2]],[["mache",1],["machst",1],["macht",1],["mach",2]],[["machen",0],["mache",1],["machst",1],["mach",2]],[["mache",1],["machst",1],["macht",1],["mach",2]]]},{"k":"möchten","d":"möchten","l":7,"g":["modal"],"vc":"","f":["möchte","möchtest","möchte","möchten","möchtet","möchten"],"a":{},"e":null,"se":"t","hl":[true,true,true,true,true,true],"m":{"en":"would like to","tr":"istemek","ru":"хотел бы","ar":"يودّ / يرغب"},"c":["einen Kaffee","ein Brot","Deutsch lernen"],"w":[[["möchten",0],["möchtest",7],["möchtet",7],["möcht",7]],[["möchten",0],["möchte",7],["möchtet",7]],[["möchten",0],["möchtest",7],["möchtet",7],["möcht",7]],[["möchte",7],["möchtest",7],["möchtet",7]],[["möchten",0],["möchte",7],["möchtest",7]],[["möchte",7],["möchtest",7],["möchtet",7]]],"tm":0},{"k":"aussehen","d":"aus|sehen","l":8,"g":["sep","vowel"],"vc":"e → ie","f":["sehe","siehst","sieht","sehen","seht","sehen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,true,true,false,false,false],"m":{"en":"to look / to appear","tr":"görünmek","ru":"выглядеть","ar":"يبدو"},"c":["müde","gut"],"w":[[["sehen",0],["siehst",1],["sieht",1],["seht",1],["siehe",4],["seh",2],["sehst",1]],[["sehen",0],["sehe",1],["sieht",1],["seht",1],["sehst",3],["seh",2]],[["sehen",0],["sehe",1],["siehst",1],["seht",1],["seh",2]],[["sehe",1],["siehst",1],["sieht",1],["seht",1],["siehen",4],["seh",2],["sehst",1]],[["sehen",0],["sehe",1],["siehst",1],["sieht",1],["seh",2]],[["sehe",1],["siehst",1],["sieht",1],["seht",1],["siehen",4],["seh",2],["sehst",1]]],"tm":0},{"k":"backen","d":"backen","l":8,"g":["reg"],"vc":"","f":["backe","backst","backt","backen","backt","backen"],"a":{"1":["bäckst"],"2":["bäckt"]},"e":["e","st","t","en","t","en"],"se":"k","hl":[false,false,false,false,false,false],"m":{"en":"to bake","tr":"pişirmek","ru":"печь","ar":"يخبز"},"c":["einen Kuchen","Brot"],"w":[[["backen",0],["backst",1],["backt",1],["back",2]],[["backen",0],["backe",1],["backt",1],["back",2]],[["backen",0],["backe",1],["backst",1],["back",2]],[["backe",1],["backst",1],["backt",1],["back",2]],[["backen",0],["backe",1],["backst",1],["back",2]],[["backe",1],["backst",1],["backt",1],["back",2]]]},{"k":"können","d":"können","l":8,"g":["modal"],"vc":"","f":["kann","kannst","kann","können","könnt","können"],"a":{},"e":null,"se":"n","hl":[true,true,true,true,true,true],"m":{"en":"can / to be able to","tr":"yapabilmek / -ebilmek","ru":"мочь, уметь","ar":"يستطيع / يقدر"},"c":["gut schwimmen","Deutsch sprechen","sehr gut kochen"],"w":[[["können",0],["kannst",7],["könnt",7],["könne",7],["könn",7]],[["können",0],["kann",7],["könnt",7],["könnst",7]],[["können",0],["kannst",7],["könnt",7],["könn",7]],[["kann",7],["kannst",7],["könnt",7]],[["können",0],["kann",7],["kannst",7]],[["kann",7],["kannst",7],["könnt",7]]],"tm":0},{"k":"mitbringen","d":"mit|bringen","l":8,"g":["reg","sep"],"vc":"","f":["bringe","bringst","bringt","bringen","bringt","bringen"],"a":{},"e":["e","st","t","en","t","en"],"se":"g","hl":[false,false,false,false,false,false],"m":{"en":"to bring","tr":"getirmek","ru":"приносить","ar":"يُحضر معه"},"c":["einen Kuchen","Getränke"],"w":[[["bringen",0],["bringst",1],["bringt",1],["bring",2]],[["bringen",0],["bringe",1],["bringt",1],["bring",2]],[["bringen",0],["bringe",1],["bringst",1],["bring",2]],[["bringe",1],["bringst",1],["bringt",1],["bring",2]],[["bringen",0],["bringe",1],["bringst",1],["bring",2]],[["bringe",1],["bringst",1],["bringt",1],["bring",2]]]},{"k":"organisieren","d":"organisieren","l":8,"g":["reg"],"vc":"","f":["organisiere","organisierst","organisiert","organisieren","organisiert","organisieren"],"a":{},"e":["e","st","t","en","t","en"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to organize","tr":"organize etmek / düzenlemek","ru":"организовывать","ar":"يُنظّم"},"c":["die Party","das Treffen"],"w":[[["organisieren",0],["organisierst",1],["organisiert",1],["organisier",2]],[["organisieren",0],["organisiere",1],["organisiert",1],["organisier",2]],[["organisieren",0],["organisiere",1],["organisierst",1],["organisier",2]],[["organisiere",1],["organisierst",1],["organisiert",1],["organisier",2]],[["organisieren",0],["organisiere",1],["organisierst",1],["organisier",2]],[["organisiere",1],["organisierst",1],["organisiert",1],["organisier",2]]]},{"k":"bestellen","d":"bestellen","l":8,"g":["reg"],"vc":"","f":["bestelle","bestellst","bestellt","bestellen","bestellt","bestellen"],"a":{},"e":["e","st","t","en","t","en"],"se":"l","hl":[false,false,false,false,false,false],"m":{"en":"to order","tr":"sipariş etmek","ru":"заказывать","ar":"يطلب"},"c":["eine Pizza","einen Kaffee"],"w":[[["bestellen",0],["bestellst",1],["bestellt",1],["bestell",2]],[["bestellen",0],["bestelle",1],["bestellt",1],["bestell",2]],[["bestellen",0],["bestelle",1],["bestellst",1],["bestell",2]],[["bestelle",1],["bestellst",1],["bestellt",1],["bestell",2]],[["bestellen",0],["bestelle",1],["bestellst",1],["bestell",2]],[["bestelle",1],["bestellst",1],["bestellt",1],["bestell",2]]]},{"k":"antworten","d":"antworten","l":8,"g":["rege"],"vc":"","f":["antworte","antwortest","antwortet","antworten","antwortet","antworten"],"a":{},"e":["e","est","et","en","et","en"],"se":"t","hl":[false,false,false,false,false,false],"m":{"en":"to answer / to reply","tr":"cevap vermek","ru":"отвечать","ar":"يجيب / يرد"},"c":["auf die E-Mail","schnell"],"w":[[["antworten",0],["antwortest",1],["antwortet",1],["antwort",2],["antwortst",1]],[["antworten",0],["antworte",1],["antwortet",1],["antwort",5],["antwortst",5]],[["antworten",0],["antworte",1],["antwortest",1],["antwort",5]],[["antworte",1],["antwortest",1],["antwortet",1],["antwort",2],["antwortst",1]],[["antworten",0],["antworte",1],["antwortest",1],["antwort",5]],[["antworte",1],["antwortest",1],["antwortet",1],["antwort",2],["antwortst",1]]]},{"k":"einladen","d":"ein|laden","l":8,"g":["sep","vowel"],"vc":"a → ä","f":["lade","lädst","lädt","laden","ladet","laden"],"a":{},"e":["e","est","et","en","et","en"],"se":"d","hl":[false,true,true,false,false,false],"m":{"en":"to invite","tr":"davet etmek","ru":"приглашать","ar":"يدعو"},"c":["die Nachbarn","die Freunde"],"w":[[["laden",0],["lädst",1],["lädt",1],["ladet",1],["läde",4],["lad",2],["ladst",1]],[["laden",0],["lade",1],["lädt",1],["ladet",1],["ladest",3],["lad",5],["ladst",5]],[["laden",0],["lade",1],["lädst",1],["ladet",1],["lad",5],["ladt",5]],[["lade",1],["lädst",1],["lädt",1],["ladet",1],["läden",4],["lad",2],["ladst",1],["ladt",1]],[["laden",0],["lade",1],["lädst",1],["lädt",1],["lädet",4],["lad",5],["ladt",5]],[["lade",1],["lädst",1],["lädt",1],["ladet",1],["läden",4],["lad",2],["ladst",1]]]},{"k":"feiern","d":"feiern","l":8,"g":["reg"],"vc":"","f":["feiere","feierst","feiert","feiern","feiert","feiern"],"a":{},"e":["e","st","t","n","t","n"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to celebrate","tr":"kutlamak","ru":"праздновать","ar":"يحتفل"},"c":["eine Party","den Geburtstag"],"w":[[["feiern",0],["feierst",1],["feiert",1],["feier",2],["feieren",1]],[["feiern",0],["feiere",1],["feiert",1],["feier",2]],[["feiern",0],["feiere",1],["feierst",1],["feier",2]],[["feiere",1],["feierst",1],["feiert",1],["feier",2]],[["feiern",0],["feiere",1],["feierst",1],["feier",2]],[["feiere",1],["feierst",1],["feiert",1],["feier",2]]]},{"k":"probieren","d":"probieren","l":8,"g":["reg"],"vc":"","f":["probiere","probierst","probiert","probieren","probiert","probieren"],"a":{},"e":["e","st","t","en","t","en"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to try / to taste","tr":"denemek / tatmak","ru":"пробовать","ar":"يجرّب / يتذوّق"},"c":["den Kuchen","die Suppe"],"w":[[["probieren",0],["probierst",1],["probiert",1],["probier",2]],[["probieren",0],["probiere",1],["probiert",1],["probier",2]],[["probieren",0],["probiere",1],["probierst",1],["probier",2]],[["probiere",1],["probierst",1],["probiert",1],["probier",2]],[["probieren",0],["probiere",1],["probierst",1],["probier",2]],[["probiere",1],["probierst",1],["probiert",1],["probier",2]]]},{"k":"nehmen","d":"nehmen","l":8,"g":["vowel"],"vc":"e → i","f":["nehme","nimmst","nimmt","nehmen","nehmt","nehmen"],"a":{},"e":["e","st","t","en","t","en"],"se":"m","hl":[false,true,true,false,false,false],"m":{"en":"to take/have","tr":"almak","ru":"брать, взять","ar":"يأخذ"},"c":["die Suppe","den Bus","ein Brot"],"w":[[["nehmen",0],["nimmst",1],["nimmt",1],["nehmt",1],["nimme",4],["nehm",2],["nehmst",1]],[["nehmen",0],["nehme",1],["nimmt",1],["nehmt",1],["nehmst",3],["nehm",2]],[["nehmen",0],["nehme",1],["nimmst",1],["nehmt",1],["nehm",2]],[["nehme",1],["nimmst",1],["nimmt",1],["nehmt",1],["nimmen",4],["nehm",2],["nehmst",1]],[["nehmen",0],["nehme",1],["nimmst",1],["nimmt",1],["nehm",2]],[["nehme",1],["nimmst",1],["nimmt",1],["nehmt",1],["nimmen",4],["nehm",2],["nehmst",1]]]},{"k":"schmecken","d":"schmecken","l":8,"g":["reg"],"vc":"","f":["schmecke","schmeckst","schmeckt","schmecken","schmeckt","schmecken"],"a":{},"e":["e","st","t","en","t","en"],"se":"k","hl":[false,false,false,false,false,false],"m":{"en":"to taste","tr":"tadı olmak / tat vermek","ru":"быть на вкус","ar":"يتذوّق / طعمه"},"c":["gut","sehr lecker"],"w":[[["schmecken",0],["schmeckst",1],["schmeckt",1],["schmeck",2]],[["schmecken",0],["schmecke",1],["schmeckt",1],["schmeck",2]],[["schmecken",0],["schmecke",1],["schmeckst",1],["schmeck",2]],[["schmecke",1],["schmeckst",1],["schmeckt",1],["schmeck",2]],[["schmecken",0],["schmecke",1],["schmeckst",1],["schmeck",2]],[["schmecke",1],["schmeckst",1],["schmeckt",1],["schmeck",2]]],"sg":["Die Suppe","Das Essen","Der Kuchen"],"pl":["Die Nudeln","Die Kartoffeln"],"ps":[2,5],"tm":0},{"k":"abgeben","d":"ab|geben","l":9,"g":["sep","vowel"],"vc":"e → i","f":["gebe","gibst","gibt","geben","gebt","geben"],"a":{},"e":["e","st","t","en","t","en"],"se":"b","hl":[false,true,true,false,false,false],"m":{"en":"to hand in / to submit","tr":"teslim etmek","ru":"сдавать, передавать","ar":"يُسلّم"},"c":["das Formular","die Hausaufgaben"],"w":[[["geben",0],["gibst",1],["gibt",1],["gebt",1],["gibe",4],["geb",2],["gebst",1]],[["geben",0],["gebe",1],["gibt",1],["gebt",1],["gebst",3],["geb",2]],[["geben",0],["gebe",1],["gibst",1],["gebt",1],["geb",2]],[["gebe",1],["gibst",1],["gibt",1],["gebt",1],["giben",4],["geb",2],["gebst",1]],[["geben",0],["gebe",1],["gibst",1],["gibt",1],["geb",2]],[["gebe",1],["gibst",1],["gibt",1],["gebt",1],["giben",4],["geb",2],["gebst",1]]]},{"k":"anmelden","d":"an|melden","l":9,"g":["rege","sep"],"vc":"","f":["melde","meldest","meldet","melden","meldet","melden"],"a":{},"e":["e","est","et","en","et","en"],"se":"d","hl":[false,false,false,false,false,false],"m":{"en":"to register","tr":"kaydettirmek / kayıt yaptırmak","ru":"регистрировать, записывать","ar":"يُسجّل"},"c":["das Kind in der Schule","den Sohn im Kurs"],"w":[[["melden",0],["meldest",1],["meldet",1],["meld",2],["meldst",1]],[["melden",0],["melde",1],["meldet",1],["meld",5],["meldst",5]],[["melden",0],["melde",1],["meldest",1],["meld",5],["meldt",5]],[["melde",1],["meldest",1],["meldet",1],["meld",2],["meldst",1],["meldt",1]],[["melden",0],["melde",1],["meldest",1],["meld",5],["meldt",5]],[["melde",1],["meldest",1],["meldet",1],["meld",2],["meldst",1]]]},{"k":"überweisen","d":"überweisen","l":9,"g":["sz"],"vc":"","f":["überweise","überweist","überweist","überweisen","überweist","überweisen"],"a":{},"e":["e","t","t","en","t","en"],"se":"s","hl":[false,false,false,false,false,false],"m":{"en":"to transfer","tr":"havale etmek","ru":"переводить","ar":"يحوّل"},"c":["das Geld","die Miete"],"w":[[["überweisen",0],["überweist",1],["überweis",2]],[["überweisen",0],["überweise",1],["überweis",2],["überweisst",6]],[["überweisen",0],["überweise",1],["überweis",2]],[["überweise",1],["überweist",1],["überweis",2]],[["überweisen",0],["überweise",1],["überweis",2]],[["überweise",1],["überweist",1],["überweis",2]]]},{"k":"vereinbaren","d":"vereinbaren","l":9,"g":["reg"],"vc":"","f":["vereinbare","vereinbarst","vereinbart","vereinbaren","vereinbart","vereinbaren"],"a":{},"e":["e","st","t","en","t","en"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to arrange / to agree on","tr":"kararlaştırmak / ayarlamak","ru":"договариваться","ar":"يتّفق على"},"c":["einen Termin","ein Treffen"],"w":[[["vereinbaren",0],["vereinbarst",1],["vereinbart",1],["vereinbar",2]],[["vereinbaren",0],["vereinbare",1],["vereinbart",1],["vereinbar",2]],[["vereinbaren",0],["vereinbare",1],["vereinbarst",1],["vereinbar",2]],[["vereinbare",1],["vereinbarst",1],["vereinbart",1],["vereinbar",2]],[["vereinbaren",0],["vereinbare",1],["vereinbarst",1],["vereinbar",2]],[["vereinbare",1],["vereinbarst",1],["vereinbart",1],["vereinbar",2]]]},{"k":"müssen","d":"müssen","l":9,"g":["modal"],"vc":"","f":["muss","musst","muss","müssen","müsst","müssen"],"a":{},"e":null,"se":"s","hl":[true,true,true,true,true,true],"m":{"en":"must / to have to","tr":"zorunda olmak / -meli","ru":"быть должным, должен","ar":"يجب / لا بدّ"},"c":["heute arbeiten","viel lernen","früh aufstehen"],"w":[[["müssen",0],["musst",7],["müsst",7],["müsse",7],["müss",7]],[["müssen",0],["muss",7],["müsst",7]],[["müssen",0],["musst",7],["müsst",7],["müss",7]],[["muss",7],["musst",7],["müsst",7]],[["müssen",0],["muss",7],["musst",7]],[["muss",7],["musst",7],["müsst",7]]],"tm":0},{"k":"vergessen","d":"vergessen","l":9,"g":["vowel"],"vc":"e → i","f":["vergesse","vergisst","vergisst","vergessen","vergesst","vergessen"],"a":{},"e":["e","t","t","en","t","en"],"se":"s","hl":[false,true,true,false,false,false],"m":{"en":"to forget","tr":"unutmak","ru":"забывать","ar":"ينسى"},"c":["den Schlüssel","die Hausaufgaben"],"w":[[["vergessen",0],["vergisst",1],["vergesst",1],["vergisse",4],["vergess",2]],[["vergessen",0],["vergesse",1],["vergesst",1],["vergess",2]],[["vergessen",0],["vergesse",1],["vergesst",1],["vergess",2]],[["vergesse",1],["vergisst",1],["vergesst",1],["vergissen",4],["vergess",2]],[["vergessen",0],["vergesse",1],["vergisst",1],["vergess",2]],[["vergesse",1],["vergisst",1],["vergesst",1],["vergissen",4],["vergess",2]]]},{"k":"mitkommen","d":"mit|kommen","l":9,"g":["reg","sep"],"vc":"","f":["komme","kommst","kommt","kommen","kommt","kommen"],"a":{},"e":["e","st","t","en","t","en"],"se":"m","hl":[false,false,false,false,false,false],"m":{"en":"to come along","tr":"birlikte gelmek / katılmak","ru":"пойти вместе, присоединиться","ar":"يرافق"},"c":["heute Abend","zur Party"],"w":[[["kommen",0],["kommst",1],["kommt",1],["komm",2]],[["kommen",0],["komme",1],["kommt",1],["komm",2]],[["kommen",0],["komme",1],["kommst",1],["komm",2]],[["komme",1],["kommst",1],["kommt",1],["komm",2]],[["kommen",0],["komme",1],["kommst",1],["komm",2]],[["komme",1],["kommst",1],["kommt",1],["komm",2]]]},{"k":"dauern","d":"dauern","l":10,"g":["reg"],"vc":"","f":["dauere","dauerst","dauert","dauern","dauert","dauern"],"a":{},"e":["e","st","t","n","t","n"],"se":"r","hl":[false,false,false,false,false,false],"m":{"en":"to take/last","tr":"sürmek","ru":"длиться, занимать","ar":"يستغرق"},"c":["eine Stunde","lange"],"w":[[["dauern",0],["dauerst",1],["dauert",1],["dauer",2],["daueren",1]],[["dauern",0],["dauere",1],["dauert",1],["dauer",2]],[["dauern",0],["dauere",1],["dauerst",1],["dauer",2]],[["dauere",1],["dauerst",1],["dauert",1],["dauer",2]],[["dauern",0],["dauere",1],["dauerst",1],["dauer",2]],[["dauere",1],["dauerst",1],["dauert",1],["dauer",2]]],"sg":["Der Kurs","Die Fahrt","Das Treffen"],"pl":["Die Kurse","Die Fahrten"],"ps":[2,5],"tm":0},{"k":"aussteigen","d":"aus|steigen","l":10,"g":["reg","sep"],"vc":"","f":["steige","steigst","steigt","steigen","steigt","steigen"],"a":{},"e":["e","st","t","en","t","en"],"se":"g","hl":[false,false,false,false,false,false],"m":{"en":"to get off / to exit","tr":"inmek","ru":"выходить","ar":"ينزل"},"c":["am Bahnhof","hier"],"w":[[["steigen",0],["steigst",1],["steigt",1],["steig",2]],[["steigen",0],["steige",1],["steigt",1],["steig",2]],[["steigen",0],["steige",1],["steigst",1],["steig",2]],[["steige",1],["steigst",1],["steigt",1],["steig",2]],[["steigen",0],["steige",1],["steigst",1],["steig",2]],[["steige",1],["steigst",1],["steigt",1],["steig",2]]]},{"k":"umsteigen","d":"um|steigen","l":10,"g":["reg","sep"],"vc":"","f":["steige","steigst","steigt","steigen","steigt","steigen"],"a":{},"e":["e","st","t","en","t","en"],"se":"g","hl":[false,false,false,false,false,false],"m":{"en":"to change / to transfer","tr":"aktarma yapmak","ru":"пересаживаться","ar":"يُبدّل"},"c":["am Hauptbahnhof","in Erfurt"],"w":[[["steigen",0],["steigst",1],["steigt",1],["steig",2]],[["steigen",0],["steige",1],["steigt",1],["steig",2]],[["steigen",0],["steige",1],["steigst",1],["steig",2]],[["steige",1],["steigst",1],["steigt",1],["steig",2]],[["steigen",0],["steige",1],["steigst",1],["steig",2]],[["steige",1],["steigst",1],["steigt",1],["steig",2]]]},{"k":"dürfen","d":"dürfen","l":10,"g":["modal"],"vc":"","f":["darf","darfst","darf","dürfen","dürft","dürfen"],"a":{},"e":null,"se":"f","hl":[true,true,true,true,true,true],"m":{"en":"may / to be allowed to","tr":"izinli olmak / -ebilmek","ru":"мочь, иметь разрешение","ar":"يُسمح له / يجوز"},"c":["hier nicht rauchen","heute länger schlafen"],"w":[[["dürfen",0],["darfst",7],["dürft",7],["dürfe",7],["dürf",7]],[["dürfen",0],["darf",7],["dürft",7],["dürfst",7]],[["dürfen",0],["darfst",7],["dürft",7],["dürf",7]],[["darf",7],["darfst",7],["dürft",7]],[["dürfen",0],["darf",7],["darfst",7]],[["darf",7],["darfst",7],["dürft",7]]],"tm":0},{"k":"rauchen","d":"rauchen","l":10,"g":["reg"],"vc":"","f":["rauche","rauchst","raucht","rauchen","raucht","rauchen"],"a":{},"e":["e","st","t","en","t","en"],"se":"h","hl":[false,false,false,false,false,false],"m":{"en":"to smoke","tr":"sigara içmek","ru":"курить","ar":"يُدخّن"},"c":["nicht","viel"],"w":[[["rauchen",0],["rauchst",1],["raucht",1],["rauch",2]],[["rauchen",0],["rauche",1],["raucht",1],["rauch",2]],[["rauchen",0],["rauche",1],["rauchst",1],["rauch",2]],[["rauche",1],["rauchst",1],["raucht",1],["rauch",2]],[["rauchen",0],["rauche",1],["rauchst",1],["rauch",2]],[["rauche",1],["rauchst",1],["raucht",1],["rauch",2]]]},{"k":"mitnehmen","d":"mit|nehmen","l":10,"g":["sep","vowel"],"vc":"e → i","f":["nehme","nimmst","nimmt","nehmen","nehmt","nehmen"],"a":{},"e":["e","st","t","en","t","en"],"se":"m","hl":[false,true,true,false,false,false],"m":{"en":"to take","tr":"götürmek","ru":"брать с собой","ar":"يأخذ معه"},"c":["den Schirm","das Buch"],"w":[[["nehmen",0],["nimmst",1],["nimmt",1],["nehmt",1],["nimme",4],["nehm",2],["nehmst",1]],[["nehmen",0],["nehme",1],["nimmt",1],["nehmt",1],["nehmst",3],["nehm",2]],[["nehmen",0],["nehme",1],["nimmst",1],["nehmt",1],["nehm",2]],[["nehme",1],["nimmst",1],["nimmt",1],["nehmt",1],["nimmen",4],["nehm",2],["nehmst",1]],[["nehmen",0],["nehme",1],["nimmst",1],["nimmt",1],["nehm",2]],[["nehme",1],["nimmst",1],["nimmt",1],["nehmt",1],["nimmen",4],["nehm",2],["nehmst",1]]]},{"k":"baden","d":"baden","l":10,"g":["rege"],"vc":"","f":["bade","badest","badet","baden","badet","baden"],"a":{},"e":["e","est","et","en","et","en"],"se":"d","hl":[false,false,false,false,false,false],"m":{"en":"to bathe / to swim","tr":"yüzmek / banyo yapmak","ru":"купаться","ar":"يستحم / يسبح"},"c":["im See","im Meer"],"w":[[["baden",0],["badest",1],["badet",1],["bad",2],["badst",1]],[["baden",0],["bade",1],["badet",1],["bad",5],["badst",5]],[["baden",0],["bade",1],["badest",1],["bad",5],["badt",5]],[["bade",1],["badest",1],["badet",1],["bad",2],["badst",1],["badt",1]],[["baden",0],["bade",1],["badest",1],["bad",5],["badt",5]],[["bade",1],["badest",1],["badet",1],["bad",2],["badst",1]]]},{"k":"hängen","d":"hängen","l":11,"g":["reg"],"vc":"","f":["hänge","hängst","hängt","hängen","hängt","hängen"],"a":{},"e":["e","st","t","en","t","en"],"se":"g","hl":[false,false,false,false,false,false],"m":{"en":"to hang","tr":"asmak / asılı olmak","ru":"висеть, вешать","ar":"يُعلّق / يكون معلّقاً"},"c":["das Bild an die Wand","die Jacke an die Tür"],"w":[[["hängen",0],["hängst",1],["hängt",1],["häng",2]],[["hängen",0],["hänge",1],["hängt",1],["häng",2]],[["hängen",0],["hänge",1],["hängst",1],["häng",2]],[["hänge",1],["hängst",1],["hängt",1],["häng",2]],[["hängen",0],["hänge",1],["hängst",1],["häng",2]],[["hänge",1],["hängst",1],["hängt",1],["häng",2]]]},{"k":"mieten","d":"mieten","l":11,"g":["rege"],"vc":"","f":["miete","mietest","mietet","mieten","mietet","mieten"],"a":{},"e":["e","est","et","en","et","en"],"se":"t","hl":[false,false,false,false,false,false],"m":{"en":"to rent","tr":"kiralamak","ru":"снимать","ar":"يستأجر"},"c":["eine Wohnung","ein Zimmer"],"w":[[["mieten",0],["mietest",1],["mietet",1],["miet",2],["mietst",1]],[["mieten",0],["miete",1],["mietet",1],["miet",5],["mietst",5]],[["mieten",0],["miete",1],["mietest",1],["miet",5]],[["miete",1],["mietest",1],["mietet",1],["miet",2],["mietst",1]],[["mieten",0],["miete",1],["mietest",1],["miet",5]],[["miete",1],["mietest",1],["mietet",1],["miet",2],["mietst",1]]]},{"k":"kennenlernen","d":"kennen|lernen","l":11,"g":["reg","sep"],"vc":"","f":["lerne","lernst","lernt","lernen","lernt","lernen"],"a":{},"e":["e","st","t","en","t","en"],"se":"n","hl":[false,false,false,false,false,false],"m":{"en":"to get to know / to meet","tr":"tanışmak","ru":"знакомиться","ar":"يتعرّف على"},"c":["Anna","die Nachbarn"],"w":[[["lernen",0],["lernst",1],["lernt",1],["lern",2]],[["lernen",0],["lerne",1],["lernt",1],["lern",2]],[["lernen",0],["lerne",1],["lernst",1],["lern",2]],[["lerne",1],["lernst",1],["lernt",1],["lern",2]],[["lernen",0],["lerne",1],["lernst",1],["lern",2]],[["lerne",1],["lernst",1],["lernt",1],["lern",2]]]},{"k":"reden","d":"reden","l":11,"g":["rege"],"vc":"","f":["rede","redest","redet","reden","redet","reden"],"a":{},"e":["e","est","et","en","et","en"],"se":"d","hl":[false,false,false,false,false,false],"m":{"en":"to talk","tr":"konuşmak","ru":"разговаривать, говорить","ar":"يتحدّث"},"c":["mit dem Nachbarn","viel"],"w":[[["reden",0],["redest",1],["redet",1],["red",2],["redst",1]],[["reden",0],["rede",1],["redet",1],["red",5],["redst",5]],[["reden",0],["rede",1],["redest",1],["red",5],["redt",5]],[["rede",1],["redest",1],["redet",1],["red",2],["redst",1],["redt",1]],[["reden",0],["rede",1],["redest",1],["red",5],["redt",5]],[["rede",1],["redest",1],["redet",1],["red",2],["redst",1]]]},{"k":"abstellen","d":"ab|stellen","l":11,"g":["reg","sep"],"vc":"","f":["stelle","stellst","stellt","stellen","stellt","stellen"],"a":{},"e":["e","st","t","en","t","en"],"se":"l","hl":[false,false,false,false,false,false],"m":{"en":"to put (down) / to park","tr":"park etmek / bırakmak","ru":"ставить, парковать","ar":"يضع / يركن"},"c":["das Fahrrad im Keller","den Fernseher"],"w":[[["stellen",0],["stellst",1],["stellt",1],["stell",2]],[["stellen",0],["stelle",1],["stellt",1],["stell",2]],[["stellen",0],["stelle",1],["stellst",1],["stell",2]],[["stelle",1],["stellst",1],["stellt",1],["stell",2]],[["stellen",0],["stelle",1],["stellst",1],["stell",2]],[["stelle",1],["stellst",1],["stellt",1],["stell",2]]]},{"k":"ablesen","d":"ab|lesen","l":11,"g":["sep","vowel"],"vc":"e → ie","f":["lese","liest","liest","lesen","lest","lesen"],"a":{},"e":["e","t","t","en","t","en"],"se":"s","hl":[false,true,true,false,false,false],"m":{"en":"to read (a meter)","tr":"okumak (sayaç)","ru":"снимать показания","ar":"يقرأ (العدّاد)"},"c":["den Zähler","die Uhr"],"w":[[["lesen",0],["liest",1],["lest",1],["liese",4],["les",2]],[["lesen",0],["lese",1],["lest",1],["les",2]],[["lesen",0],["lese",1],["lest",1],["les",2]],[["lese",1],["liest",1],["lest",1],["liesen",4],["les",2]],[["lesen",0],["lese",1],["liest",1],["les",2]],[["lese",1],["liest",1],["lest",1],["liesen",4],["les",2]]]},{"k":"gießen","d":"gießen","l":11,"g":["sz"],"vc":"","f":["gieße","gießt","gießt","gießen","gießt","gießen"],"a":{},"e":["e","t","t","en","t","en"],"se":"ß","hl":[false,false,false,false,false,false],"m":{"en":"to water","tr":"sulamak","ru":"поливать","ar":"يسقي"},"c":["die Blumen","die Pflanzen"],"w":[[["gießen",0],["gießt",1],["gieß",2]],[["gießen",0],["gieße",1],["gieß",2],["gießst",6]],[["gießen",0],["gieße",1],["gieß",2]],[["gieße",1],["gießt",1],["gieß",2],["gießst",1]],[["gießen",0],["gieße",1],["gieß",2]],[["gieße",1],["gießt",1],["gieß",2],["gießst",1]]]}];
+var TEXTS = [{"id":1,"t":"Vorstellung","l":1,"s":"Hallo! Ich {heißen:0} Ahmed. Ich {kommen:0} aus Syrien und {sprechen:0} Arabisch und Englisch. Das {sein:2} Maria. Maria {kommen:2} aus der Ukraine. Maria und ich {sein:3} im Kurs. Wir {sprechen:3} jetzt Deutsch. Und du? Wie {heißen:1} du? Woher {kommen:1} du?","n":9},{"id":2,"t":"Wohnen und Arbeiten","l":2,"s":"Ich {wohnen:0} in Erfurt und {arbeiten:0} in einem Restaurant. Mein Bruder {studieren:2} Medizin in Jena. Er {lernen:2} jeden Tag Vokabeln. Meine Eltern {wohnen:5} in Syrien. Du {arbeiten:1} auch, oder? Was {bedeuten:2} das Wort „Firma“? Wir {trinken:3} gern Tee und {lernen:3} zusammen.","n":9},{"id":3,"t":"Am Samstag","l":4,"s":"Am Samstag {spielen:3} wir Fußball im Park. Ahmed und Tom {spielen:5} Tischtennis. Anna {hören:2} Musik und {denken:2} an das Wochenende. Ich {wissen:0} das nicht. Das Handy {funktionieren:2} nicht. Du {helfen:1} mir, oder?","n":7},{"id":4,"t":"Meine Familie","l":4,"s":"Ich {haben:0} zwei Kinder. Meine Eltern {leben:5} in Deutschland. Am Sonntag {besuchen:3} wir die Großeltern. Meine Schwester {haben:2} einen Termin. Mein Bruder {kennen:2} die Stadt gut. {+haben:1} du auch Geschwister?","n":6},{"id":16,"t":"Wer bin ich?","l":4,"s":"Mein Name {sein:2} Ahmed. Wir {sein:3} sechs Personen in der Familie. Ich {haben:0} zwei Brüder und eine Schwester. Meine Schwester {sein:2} Ärztin und {haben:2} viel Arbeit. {+sein:1} du müde? {+haben:1} du Hunger?","n":7},{"id":5,"t":"Ein normaler Tag","l":5,"s":"Am Morgen {duschen:0} ich und {frühstücken:0} um acht Uhr. Dann {fahren:0} ich mit dem Bus zur Arbeit. Mein Mann {schlafen:2} bis acht Uhr. Er {essen:2} Brot und {trinken:2} Kaffee. Am Abend {kochen:3} wir Suppe. Und du? {+lesen:1} du abends ein Buch?","n":8},{"id":6,"t":"Das Wochenende","l":5,"s":"Am Sonntag {treffen:0} ich Freunde im Park. Wir {grillen:3} Fleisch und {laufen:3} danach im Park. Anna {schwimmen:2} im See. Tom und Ahmed {sehen:5} einen Film. Wie {finden:4} ihr den Film?","n":6},{"id":7,"t":"Der Tag beginnt","l":6,"s":"Ich {aufstehen:0} um sechs Uhr auf und {aufräumen:0} die Wohnung auf. Dann {anrufen:0} ich meine Mutter an. Der Kurs {beginnen:2} um neun Uhr. Der Lehrer {aufmachen:2} das Fenster auf. Um fünf Uhr {aufhören:2} der Kurs auf. Wir {einkaufen:3} danach im Supermarkt ein.","n":7},{"id":8,"t":"Es ist kalt","l":6,"s":"Es {sein:2} kalt. Ich {anziehen:0} die Jacke an. Du {ausziehen:1} die Schuhe aus. Anna {zumachen:2} das Fenster zu. Ahmed {anmachen:2} das Licht an. Wir {abholen:3} das Kind ab. Ihr {kontrollieren:4} die Fahrkarten.","n":7},{"id":17,"t":"Ich weiß nicht","l":6,"s":"Ich {wissen:0} das nicht. {+wissen:1} du die Antwort? Ahmed {kennen:2} den Lehrer. Er {glauben:2} das nicht. Wir {denken:3} an die Prüfung. {+wissen:4} ihr es? Die Kinder {fragen:5} den Lehrer.","n":7},{"id":22,"t":"Einkaufen","l":6,"s":"Ich {einkaufen:0} heute im Supermarkt ein. Ich {kaufen:0} Brot, Obst und Gemüse. Das Brot {kosten:2} zwei Euro. Die Äpfel {kosten:5} nicht viel. Meine Frau {kochen:2} die Suppe. Wir {essen:3} zusammen.","n":6},{"id":23,"t":"Im Kurs","l":6,"s":"Anna {telefonieren:2} mit der Mutter und {fragen:2} nach dem Weg. Ich {schreiben:0} eine E-Mail. Der Lehrer {buchstabieren:2} das Wort. Wir {verstehen:3} die Frage nicht. Ihr {schreiben:4} die Adresse.","n":6},{"id":24,"t":"Morgens","l":6,"s":"Ich {schlafen:0} lange. Mein Mann {aufstehen:2} früh auf. Er {duschen:2} kalt und {kochen:2} Kaffee. Die Kinder {frühstücken:5} um acht. Ich {anfangen:0} um neun Uhr mit der Arbeit an. Meine Kollegin {schlafen:2} noch.","n":7},{"id":9,"t":"Essen und Trinken","l":7,"s":"Was {möchten:1} du trinken? Ich {möchten:0} einen Kaffee. Ahmed {mögen:2} Tee, aber ich {mögen:0} Kaffee. Wir {machen:3} zusammen die Hausaufgaben. {+mögen:4} ihr Pizza? Die Kinder {mögen:5} Pizza sehr.","n":7},{"id":10,"t":"Die Party","l":8,"s":"Am Samstag {feiern:3} wir eine Party. Ich {organisieren:0} das Essen. Anna {backen:2} einen Kuchen. Ahmed {mitbringen:2} Getränke mit. Tom {können:2} sehr gut kochen. Wir {einladen:3} die Nachbarn ein. Du {können:1} auch kommen, oder?","n":7},{"id":11,"t":"Im Restaurant","l":8,"s":"Wir {sein:3} im Restaurant. Ich {nehmen:0} die Suppe. Du {nehmen:1} eine Pizza, oder? Die Suppe {schmecken:2} sehr gut. Ahmed {bestellen:2} einen Kaffee. Wir {probieren:3} den Kuchen. Der Kuchen {aussehen:2} lecker aus.","n":7},{"id":18,"t":"Im Alltag","l":8,"s":"Anna {sprechen:2} Deutsch und {lesen:2} gern Bücher. Tom {sehen:2} einen Film. Du {essen:1} gern Fisch und {nehmen:1} die Suppe. Der Lehrer {helfen:2} Ahmed. Wir {treffen:3} Freunde. Meine Frau {fahren:2} Fahrrad, aber ich {laufen:0} lieber.","n":9},{"id":12,"t":"Auf dem Amt","l":9,"s":"Ich {müssen:0} heute zum Amt. Ich {abgeben:0} das Formular ab. Meine Frau {vereinbaren:2} einen Termin. Wir {anmelden:3} das Kind in der Schule an. Ihr {müssen:4} viel lernen. Anna {überweisen:2} die Miete. Ich {vergessen:0} den Schlüssel nicht.","n":7},{"id":13,"t":"Kommst du mit?","l":9,"s":"Wir {haben:3} eine Party. {+mitkommen:1} du mit? Ich {müssen:0} arbeiten. Das {sein:2} schade. Ahmed {mitkommen:2} mit. Er {wissen:2} den Weg.","n":6},{"id":14,"t":"Die Reise","l":10,"s":"Wir {fahren:3} nach Berlin. Der Zug {dauern:2} zwei Stunden. In Erfurt {umsteigen:3} wir um. Am Hauptbahnhof {aussteigen:3} wir aus. Man {dürfen:2} hier nicht rauchen. Anna {mitnehmen:2} den Schirm mit. Im Sommer {baden:3} wir im See.","n":7},{"id":21,"t":"Was kann ich?","l":10,"s":"Ich {können:0} gut schwimmen. Du {können:1} sehr gut kochen. Er {müssen:2} heute arbeiten. Wir {dürfen:3} hier nicht rauchen. Ihr {müssen:4} früh aufstehen. Ich {möchten:0} Deutsch lernen. Die Kinder {dürfen:5} heute länger schlafen.","n":7},{"id":15,"t":"Die neue Wohnung","l":11,"s":"Ich {mieten:0} eine Wohnung in Jena. Ich {kennenlernen:0} die Nachbarn kennen. Die Nachbarn {reden:5} viel. Der Vermieter {ablesen:2} den Zähler ab. Ahmed {abstellen:2} das Fahrrad im Keller ab. Wir {hängen:3} die Bilder an die Wand. Du {gießen:1} die Blumen.","n":7},{"id":19,"t":"Arbeit und Preise","l":11,"s":"Du {arbeiten:1} viel. Er {arbeiten:2} bei einer Firma. Ahmed {finden:2} die Stadt schön. Ihr {antworten:4} schnell. Die Lehrerin {antworten:2} auf die E-Mail. Wir {mieten:3} eine Wohnung. Das Brot {kosten:2} zwei Euro. Ihr {reden:4} viel.","n":8},{"id":20,"t":"Heißen, tanzen, putzen","l":11,"s":"Ich {heißen:0} Maria. Wie {heißen:1} du? Du {tanzen:1} gern. Anna {putzen:2} die Wohnung. Ahmed {boxen:2} im Verein. Du {überweisen:1} die Miete. Sie {gießen:2} die Blumen. Wir {tanzen:3} auf der Party.","n":8}];
+var TYPES = ["inf", "ending", "ending0", "vowel", "vowelwrong", "einsch", "sz", "modal", "irreg"];
+  var STORAGE_KEY = "daz_konj_a1_l1_11_v1";
+  var LESSONS = 11;
+  var WEIGHTS = [3, 2, 1];
+  var PRON = ["ich", "du", "er/sie/es", "wir", "ihr", "sie/Sie"];
+  var ISO_O = "⁦", ISO_C = "⁩";
+  var FORMATS = [
+    { id: "mix",    label: "Mix" },
+    { id: "choose", label: "Form wählen" },
+    { id: "text",   label: "Fehlertext" },
+    { id: "type",   label: "Form tippen" }
+  ];
+  var FIXMODES = [
+    { id: "type",   label: "Tippen" },
+    { id: "choose", label: "Auswählen" }
+  ];
+
+  /* ---------- Texte in den Sprachen ---------- */
+  var LANGS = [
+    { id: "en", label: "English" },
+    { id: "ru", label: "Русский" },
+    { id: "ar", label: "العربية" },
+    { id: "tr", label: "Türkçe" },
+    { id: "", label: "keine Hilfe" }
+  ];
+  /* Platzhalter: {pron} {end} {se} {vc} {form} {inf}; ⟦…⟧ = lateinischer Abschnitt (im Arabischen isoliert) */
+  var MSG = {
+    de: {
+      k_ending: "Bei „{pron}“ endet das Verb auf -{end}: {form}",
+      k_einsch: "Der Stamm endet auf -{se}. Bei „{pron}“ steht deshalb ein -e- vor der Endung: {form}",
+      k_sz: "Der Stamm endet auf -{se}. Bei „du“ steht deshalb nur -t (nicht -st): {form}",
+      k_vowel: "Bei „du“ und „er/sie/es“ wechselt der Vokal ({vc}): {form}",
+      k_modal: "Modalverb, unregelmäßig: „ich“ und „er/sie/es“ haben dieselbe Form, ohne -t: {form}",
+      k_irreg: "„{inf}“ ist unregelmäßig. Diese Formen muss man lernen: {form}",
+      w_inf: "Das Verb steht im Infinitiv. Man braucht die konjugierte Form.",
+      w_ending: "Diese Form gehört zu einer anderen Person.",
+      w_ending0: "Die Endung fehlt.",
+      w_vowel: "Der Vokalwechsel fehlt.",
+      w_vowelwrong: "Den Vokalwechsel gibt es nur bei „du“ und „er/sie/es“.",
+      w_einsch: "Nach t/d im Stamm fehlt das -e-.",
+      w_sz: "Nach s, ß, x, z hat „du“ nur die Endung -t.",
+      w_irreg: "Diese Form passt nicht zu „{pron}“. Unregelmäßige Verben muss man lernen.",
+      t_choose: "Welche Form passt in die Lücke?",
+      t_type: "Schreibe die richtige Form des Verbs.",
+      t_mark: "Schritt 1: Tippe auf die Verbformen, die falsch sind.",
+      t_fix: "Schritt 2: Korrigiere die falschen Formen."
+    },
+    en: {
+      k_ending: "With “{pron}” the verb ends in -{end}: {form}",
+      k_einsch: "The stem ends in -{se}, so with “{pron}” an -e- goes before the ending: {form}",
+      k_sz: "The stem ends in -{se}, so with “du” the ending is only -t (not -st): {form}",
+      k_vowel: "With “du” and “er/sie/es” the vowel changes ({vc}): {form}",
+      k_modal: "Modal verb, irregular: “ich” and “er/sie/es” have the same form, without -t: {form}",
+      k_irreg: "“{inf}” is irregular. You have to learn these forms: {form}",
+      w_inf: "The verb is in the infinitive. You need the conjugated form.",
+      w_ending: "This form belongs to a different person.",
+      w_ending0: "The ending is missing.",
+      w_vowel: "The vowel change is missing.",
+      w_vowelwrong: "The vowel change only happens with “du” and “er/sie/es”.",
+      w_einsch: "After t/d in the stem, the -e- is missing.",
+      w_sz: "After s, ß, x, z the ending for “du” is only -t.",
+      w_irreg: "This form does not fit “{pron}”. Irregular verbs have to be learned.",
+      t_choose: "Which form fits the gap?",
+      t_type: "Write the correct form of the verb.",
+      t_mark: "Step 1: Tap the verb forms that are wrong.",
+      t_fix: "Step 2: Correct the wrong forms."
+    },
+    tr: {
+      k_ending: "“{pron}” ile fiil -{end} ile biter: {form}",
+      k_einsch: "Fiil kökü -{se} ile bittiği için “{pron}” ile ekten önce bir -e- gelir: {form}",
+      k_sz: "Fiil kökü -{se} ile bittiği için “du” ile yalnızca -t gelir (-st değil): {form}",
+      k_vowel: "“du” ve “er/sie/es” ile ünlü değişir ({vc}): {form}",
+      k_modal: "Kipli fiil, düzensiz: “ich” ve “er/sie/es” aynı biçimi alır, -t eki yoktur: {form}",
+      k_irreg: "“{inf}” düzensiz bir fiildir. Bu biçimleri ezberlemek gerekir: {form}",
+      w_inf: "Fiil mastar halinde. Çekimli biçim gerekir.",
+      w_ending: "Bu biçim başka bir kişiye aittir.",
+      w_ending0: "Ek eksik.",
+      w_vowel: "Ünlü değişimi eksik.",
+      w_vowelwrong: "Ünlü değişimi yalnızca “du” ve “er/sie/es” ile olur.",
+      w_einsch: "Kök t/d ile bittiğinde -e- eksik.",
+      w_sz: "s, ß, x, z’den sonra “du” için ek yalnızca -t’dir.",
+      w_irreg: "Bu biçim “{pron}” ile uymuyor. Düzensiz fiiller ezberlenmelidir.",
+      t_choose: "Boşluğa hangi biçim uyar?",
+      t_type: "Fiilin doğru biçimini yaz.",
+      t_mark: "1. adım: Yanlış fiil biçimlerine dokun.",
+      t_fix: "2. adım: Yanlış biçimleri düzelt."
+    },
+    ru: {
+      k_ending: "С «{pron}» глагол оканчивается на -{end}: {form}",
+      k_einsch: "Основа оканчивается на -{se}, поэтому с «{pron}» перед окончанием стоит -e-: {form}",
+      k_sz: "Основа оканчивается на -{se}, поэтому с «du» окончание только -t (не -st): {form}",
+      k_vowel: "С «du» и «er/sie/es» гласный меняется ({vc}): {form}",
+      k_modal: "Модальный глагол, неправильный: у «ich» и «er/sie/es» одинаковая форма, без -t: {form}",
+      k_irreg: "«{inf}» — неправильный глагол. Эти формы нужно выучить: {form}",
+      w_inf: "Глагол стоит в инфинитиве. Нужна спрягаемая форма.",
+      w_ending: "Эта форма относится к другому лицу.",
+      w_ending0: "Нет окончания.",
+      w_vowel: "Нет смены гласного.",
+      w_vowelwrong: "Смена гласного бывает только с «du» и «er/sie/es».",
+      w_einsch: "После t/d в основе пропущено -e-.",
+      w_sz: "После s, ß, x, z у «du» окончание только -t.",
+      w_irreg: "Эта форма не подходит к «{pron}». Неправильные глаголы нужно учить.",
+      t_choose: "Какая форма подходит?",
+      t_type: "Напишите правильную форму глагола.",
+      t_mark: "Шаг 1: Нажмите на неправильные формы глагола.",
+      t_fix: "Шаг 2: Исправьте неправильные формы."
+    },
+    ar: {
+      k_ending: "مع «{pron}» ينتهي الفعل بـ -{end}: {form}",
+      k_einsch: "جذع الفعل ينتهي بـ -{se}، لذلك مع «{pron}» يوضع -e- قبل النهاية: {form}",
+      k_sz: "جذع الفعل ينتهي بـ -{se}، لذلك مع «du» تكون النهاية -t فقط (وليس -st): {form}",
+      k_vowel: "مع «du» و«er/sie/es» يتغيّر حرف العلة ({vc}): {form}",
+      k_modal: "فعل مساعد شاذّ: لـ «ich» و«er/sie/es» الصيغة نفسها دون -t: {form}",
+      k_irreg: "«{inf}» فعل شاذّ. يجب حفظ هذه الصيغ: {form}",
+      w_inf: "الفعل في صيغة المصدر. المطلوب هو الفعل المصرَّف.",
+      w_ending: "هذه الصيغة تخصّ ضميرًا آخر.",
+      w_ending0: "النهاية ناقصة.",
+      w_vowel: "تغيّر حرف العلة ناقص.",
+      w_vowelwrong: "تغيّر حرف العلة يحدث فقط مع «du» و«er/sie/es».",
+      w_einsch: "بعد t/d في الجذع ينقص الحرف -e-.",
+      w_sz: "بعد s و ß و x و z تكون نهاية «du» هي -t فقط.",
+      w_irreg: "هذه الصيغة لا تناسب «{pron}». الأفعال الشاذة يجب حفظها.",
+      t_choose: "أيّ صيغة تناسب الفراغ؟",
+      t_type: "اكتب الصيغة الصحيحة للفعل.",
+      t_mark: "الخطوة 1: اضغط على صيغ الأفعال الخاطئة.",
+      t_fix: "الخطوة 2: صحّح الصيغ الخاطئة."
+    }
+  };
+  /* Regeln: Titel + Text in allen Sprachen */
+  var RULES = [
+    { id: "end",
+      t: { de: "Die Endungen", en: "The endings", tr: "Ekler", ru: "Окончания", ar: "النهايات" },
+      x: {
+        de: "Im Präsens: ⟦ich -e, du -st, er/sie/es -t, wir -en, ihr -t, sie/Sie -en⟧. Beispiel: ⟦kommen → ich komme, du kommst, er kommt, wir kommen, ihr kommt, sie kommen⟧.",
+        en: "Present tense: ⟦ich -e, du -st, er/sie/es -t, wir -en, ihr -t, sie/Sie -en⟧. Example: ⟦kommen → ich komme, du kommst, er kommt, wir kommen, ihr kommt, sie kommen⟧.",
+        tr: "Şimdiki zaman (Präsens): ⟦ich -e, du -st, er/sie/es -t, wir -en, ihr -t, sie/Sie -en⟧. Örnek: ⟦kommen → ich komme, du kommst, er kommt, wir kommen, ihr kommt, sie kommen⟧.",
+        ru: "Настоящее время (Präsens): ⟦ich -e, du -st, er/sie/es -t, wir -en, ihr -t, sie/Sie -en⟧. Пример: ⟦kommen → ich komme, du kommst, er kommt, wir kommen, ihr kommt, sie kommen⟧.",
+        ar: "المضارع (Präsens): ⟦ich -e, du -st, er/sie/es -t, wir -en, ihr -t, sie/Sie -en⟧. مثال: ⟦kommen → ich komme, du kommst, er kommt, wir kommen, ihr kommt, sie kommen⟧." } },
+    { id: "einsch",
+      t: { de: "Stamm auf -t oder -d: ein -e- einschieben", en: "Stem ending in -t or -d: insert -e-", tr: "Kök -t veya -d ile bitiyorsa: -e- eklenir", ru: "Основа на -t или -d: добавляется -e-", ar: "جذع ينتهي بـ t أو d: يُضاف e" },
+      x: {
+        de: "Endet der Stamm auf -t oder -d, steht bei ⟦du, er/sie/es⟧ und ⟦ihr⟧ ein -e- vor der Endung: ⟦arbeiten → du arbeitest, er arbeitet, ihr arbeitet; finden → du findest, er findet⟧.",
+        en: "If the stem ends in -t or -d, an -e- goes before the ending with ⟦du, er/sie/es⟧ and ⟦ihr⟧: ⟦arbeiten → du arbeitest, er arbeitet, ihr arbeitet; finden → du findest, er findet⟧.",
+        tr: "Kök -t veya -d ile bitiyorsa, ⟦du, er/sie/es⟧ ve ⟦ihr⟧ ile ekten önce bir -e- gelir: ⟦arbeiten → du arbeitest, er arbeitet, ihr arbeitet; finden → du findest, er findet⟧.",
+        ru: "Если основа оканчивается на -t или -d, то с ⟦du, er/sie/es⟧ и ⟦ihr⟧ перед окончанием ставится -e-: ⟦arbeiten → du arbeitest, er arbeitet, ihr arbeitet; finden → du findest, er findet⟧.",
+        ar: "إذا انتهى جذع الفعل بـ t أو d يُضاف الحرف e قبل النهاية مع ⟦du, er/sie/es⟧ و⟦ihr⟧: ⟦arbeiten → du arbeitest, er arbeitet, ihr arbeitet; finden → du findest, er findet⟧." } },
+    { id: "sz",
+      t: { de: "Stamm auf -s, -ß, -x, -z: bei „du“ nur -t", en: "Stem ending in -s, -ß, -x, -z: only -t with “du”", tr: "Kök -s, -ß, -x, -z ile bitiyorsa: “du” ile yalnızca -t", ru: "Основа на -s, -ß, -x, -z: у «du» только -t", ar: "جذع ينتهي بـ s أو ß أو x أو z: مع du النهاية t فقط" },
+      x: {
+        de: "Bei ⟦du⟧ fällt das -s- der Endung weg: ⟦heißen → du heißt; tanzen → du tanzt; boxen → du boxt; essen → du isst⟧. Dann sind ⟦du⟧ und ⟦er/sie/es⟧ gleich.",
+        en: "With ⟦du⟧ the -s- of the ending is dropped: ⟦heißen → du heißt; tanzen → du tanzt; boxen → du boxt; essen → du isst⟧. Then ⟦du⟧ and ⟦er/sie/es⟧ are the same.",
+        tr: "⟦du⟧ ile ekteki -s- düşer: ⟦heißen → du heißt; tanzen → du tanzt; boxen → du boxt; essen → du isst⟧. Böylece ⟦du⟧ ve ⟦er/sie/es⟧ aynı olur.",
+        ru: "У ⟦du⟧ -s- окончания выпадает: ⟦heißen → du heißt; tanzen → du tanzt; boxen → du boxt; essen → du isst⟧. Поэтому формы ⟦du⟧ и ⟦er/sie/es⟧ совпадают.",
+        ar: "مع ⟦du⟧ يسقط الحرف s من النهاية: ⟦heißen → du heißt; tanzen → du tanzt; boxen → du boxt; essen → du isst⟧. وهكذا تتطابق صيغتا ⟦du⟧ و⟦er/sie/es⟧." } },
+    { id: "vowel",
+      t: { de: "Vokalwechsel bei „du“ und „er/sie/es“", en: "Vowel change with “du” and “er/sie/es”", tr: "“du” ve “er/sie/es” ile ünlü değişimi", ru: "Смена гласного у «du» и «er/sie/es»", ar: "تغيّر حرف العلة مع du و er/sie/es" },
+      x: {
+        de: "Einige Verben wechseln den Vokal – nur bei ⟦du⟧ und ⟦er/sie/es⟧: ⟦e → i: sprechen → du sprichst, er spricht⟧; ⟦e → ie: lesen → du liest, er liest⟧; ⟦a → ä: fahren → du fährst, er fährt⟧; ⟦au → äu: laufen → du läufst, er läuft⟧. Bei ⟦ich, wir, ihr, sie⟧ bleibt der Stamm: ⟦ich spreche, wir sprechen, ihr sprecht⟧.",
+        en: "Some verbs change their vowel – only with ⟦du⟧ and ⟦er/sie/es⟧: ⟦e → i: sprechen → du sprichst, er spricht⟧; ⟦e → ie: lesen → du liest, er liest⟧; ⟦a → ä: fahren → du fährst, er fährt⟧; ⟦au → äu: laufen → du läufst, er läuft⟧. With ⟦ich, wir, ihr, sie⟧ the stem stays: ⟦ich spreche, wir sprechen, ihr sprecht⟧.",
+        tr: "Bazı fiillerde ünlü değişir – yalnızca ⟦du⟧ ve ⟦er/sie/es⟧ ile: ⟦e → i: sprechen → du sprichst, er spricht⟧; ⟦e → ie: lesen → du liest, er liest⟧; ⟦a → ä: fahren → du fährst, er fährt⟧; ⟦au → äu: laufen → du läufst, er läuft⟧. ⟦ich, wir, ihr, sie⟧ ile kök değişmez: ⟦ich spreche, wir sprechen, ihr sprecht⟧.",
+        ru: "У некоторых глаголов меняется гласный – только у ⟦du⟧ и ⟦er/sie/es⟧: ⟦e → i: sprechen → du sprichst, er spricht⟧; ⟦e → ie: lesen → du liest, er liest⟧; ⟦a → ä: fahren → du fährst, er fährt⟧; ⟦au → äu: laufen → du läufst, er läuft⟧. У ⟦ich, wir, ihr, sie⟧ основа не меняется: ⟦ich spreche, wir sprechen, ihr sprecht⟧.",
+        ar: "بعض الأفعال يتغيّر فيها حرف العلة – فقط مع ⟦du⟧ و⟦er/sie/es⟧: ⟦e → i: sprechen → du sprichst, er spricht⟧؛ ⟦e → ie: lesen → du liest, er liest⟧؛ ⟦a → ä: fahren → du fährst, er fährt⟧؛ ⟦au → äu: laufen → du läufst, er läuft⟧. مع ⟦ich, wir, ihr, sie⟧ يبقى الجذع كما هو: ⟦ich spreche, wir sprechen, ihr sprecht⟧." } },
+    { id: "modal",
+      t: { de: "Modalverben", en: "Modal verbs", tr: "Kipli fiiller (Modalverben)", ru: "Модальные глаголы", ar: "الأفعال المساعدة (Modalverben)" },
+      x: {
+        de: "⟦ich⟧ und ⟦er/sie/es⟧ haben dieselbe Form, ohne -t: ⟦können: ich kann, du kannst, er kann, wir können, ihr könnt⟧; ⟦müssen: muss, musst, muss, müssen, müsst⟧; ⟦dürfen: darf, darfst, darf, dürfen, dürft⟧; ⟦mögen: mag, magst, mag, mögen, mögt⟧; ⟦möchten: möchte, möchtest, möchte, möchten, möchtet⟧.",
+        en: "⟦ich⟧ and ⟦er/sie/es⟧ have the same form, without -t: ⟦können: ich kann, du kannst, er kann, wir können, ihr könnt⟧; ⟦müssen: muss, musst, muss, müssen, müsst⟧; ⟦dürfen: darf, darfst, darf, dürfen, dürft⟧; ⟦mögen: mag, magst, mag, mögen, mögt⟧; ⟦möchten: möchte, möchtest, möchte, möchten, möchtet⟧.",
+        tr: "⟦ich⟧ ve ⟦er/sie/es⟧ aynı biçimi alır, -t eki yoktur: ⟦können: ich kann, du kannst, er kann, wir können, ihr könnt⟧; ⟦müssen: muss, musst, muss, müssen, müsst⟧; ⟦dürfen: darf, darfst, darf, dürfen, dürft⟧; ⟦mögen: mag, magst, mag, mögen, mögt⟧; ⟦möchten: möchte, möchtest, möchte, möchten, möchtet⟧.",
+        ru: "У ⟦ich⟧ и ⟦er/sie/es⟧ одинаковая форма, без -t: ⟦können: ich kann, du kannst, er kann, wir können, ihr könnt⟧; ⟦müssen: muss, musst, muss, müssen, müsst⟧; ⟦dürfen: darf, darfst, darf, dürfen, dürft⟧; ⟦mögen: mag, magst, mag, mögen, mögt⟧; ⟦möchten: möchte, möchtest, möchte, möchten, möchtet⟧.",
+        ar: "لـ ⟦ich⟧ و⟦er/sie/es⟧ الصيغة نفسها، دون -t: ⟦können: ich kann, du kannst, er kann, wir können, ihr könnt⟧؛ ⟦müssen: muss, musst, muss, müssen, müsst⟧؛ ⟦dürfen: darf, darfst, darf, dürfen, dürft⟧؛ ⟦mögen: mag, magst, mag, mögen, mögt⟧؛ ⟦möchten: möchte, möchtest, möchte, möchten, möchtet⟧." } },
+    { id: "irreg",
+      t: { de: "sein, haben, wissen", en: "sein, haben, wissen", tr: "sein, haben, wissen", ru: "sein, haben, wissen", ar: "sein, haben, wissen" },
+      x: {
+        de: "Diese Verben sind unregelmäßig: ⟦sein: bin, bist, ist, sind, seid, sind⟧; ⟦haben: habe, hast, hat, haben, habt, haben⟧; ⟦wissen: weiß, weißt, weiß, wissen, wisst, wissen⟧.",
+        en: "These verbs are irregular: ⟦sein: bin, bist, ist, sind, seid, sind⟧; ⟦haben: habe, hast, hat, haben, habt, haben⟧; ⟦wissen: weiß, weißt, weiß, wissen, wisst, wissen⟧.",
+        tr: "Bu fiiller düzensizdir: ⟦sein: bin, bist, ist, sind, seid, sind⟧; ⟦haben: habe, hast, hat, haben, habt, haben⟧; ⟦wissen: weiß, weißt, weiß, wissen, wisst, wissen⟧.",
+        ru: "Эти глаголы неправильные: ⟦sein: bin, bist, ist, sind, seid, sind⟧; ⟦haben: habe, hast, hat, haben, habt, haben⟧; ⟦wissen: weiß, weißt, weiß, wissen, wisst, wissen⟧.",
+        ar: "هذه الأفعال شاذّة: ⟦sein: bin, bist, ist, sind, seid, sind⟧؛ ⟦haben: habe, hast, hat, haben, habt, haben⟧؛ ⟦wissen: weiß, weißt, weiß, wissen, wisst, wissen⟧." } },
+    { id: "sep",
+      t: { de: "Trennbare Verben", en: "Separable verbs", tr: "Ayrılabilen fiiller", ru: "Отделяемые глаголы", ar: "الأفعال المنفصلة" },
+      x: {
+        de: "Die Vorsilbe steht am Satzende, die Personalform an Position 2: ⟦aufstehen → Ich stehe um sechs Uhr auf. Steht er früh auf?⟧ Im Trainer ist nur die Personalform gefragt; die Vorsilbe steht schon im Satz.",
+        en: "The prefix goes to the end of the sentence, the conjugated form is in position 2: ⟦aufstehen → Ich stehe um sechs Uhr auf. Steht er früh auf?⟧ In the trainer only the conjugated form is asked; the prefix is already in the sentence.",
+        tr: "Ön ek cümlenin sonuna gider, çekimli fiil 2. sıradadır: ⟦aufstehen → Ich stehe um sechs Uhr auf. Steht er früh auf?⟧ Alıştırmada yalnızca çekimli biçim sorulur; ön ek cümlede zaten yazılıdır.",
+        ru: "Приставка стоит в конце предложения, спрягаемая форма – на втором месте: ⟦aufstehen → Ich stehe um sechs Uhr auf. Steht er früh auf?⟧ В тренажёре спрашивается только спрягаемая форма; приставка уже есть в предложении.",
+        ar: "تأتي البادئة في نهاية الجملة، ويأتي الفعل المصرَّف في المرتبة الثانية: ⟦aufstehen → Ich stehe um sechs Uhr auf. Steht er früh auf?⟧ في هذا التدريب يُسأل فقط عن الفعل المصرَّف؛ البادئة موجودة في الجملة." } },
+    { id: "ern",
+      t: { de: "Verben auf -ern / -eln", en: "Verbs ending in -ern / -eln", tr: "-ern / -eln ile biten fiiller", ru: "Глаголы на -ern / -eln", ar: "الأفعال المنتهية بـ -ern / -eln" },
+      x: {
+        de: "Bei ⟦wir⟧ und ⟦sie/Sie⟧ steht nur -n: ⟦feiern → wir feiern, sie feiern⟧; ⟦dauern → sie dauern⟧. Bei ⟦ich⟧ bleibt das -e-: ⟦ich feiere⟧.",
+        en: "With ⟦wir⟧ and ⟦sie/Sie⟧ there is only -n: ⟦feiern → wir feiern, sie feiern⟧; ⟦dauern → sie dauern⟧. With ⟦ich⟧ the -e- stays: ⟦ich feiere⟧.",
+        tr: "⟦wir⟧ ve ⟦sie/Sie⟧ ile yalnızca -n gelir: ⟦feiern → wir feiern, sie feiern⟧; ⟦dauern → sie dauern⟧. ⟦ich⟧ ile -e- kalır: ⟦ich feiere⟧.",
+        ru: "У ⟦wir⟧ и ⟦sie/Sie⟧ только -n: ⟦feiern → wir feiern, sie feiern⟧; ⟦dauern → sie dauern⟧. У ⟦ich⟧ сохраняется -e-: ⟦ich feiere⟧.",
+        ar: "مع ⟦wir⟧ و⟦sie/Sie⟧ تكون النهاية -n فقط: ⟦feiern → wir feiern, sie feiern⟧؛ ⟦dauern → sie dauern⟧. ومع ⟦ich⟧ يبقى e: ⟦ich feiere⟧." } },
+    { id: "pos",
+      t: { de: "Satzstellung", en: "Word order", tr: "Cümle sırası", ru: "Порядок слов", ar: "ترتيب الجملة" },
+      x: {
+        de: "Die Personalform steht im Aussagesatz an Position 2 (⟦Heute kommt er.⟧) und in der Ja/Nein-Frage an Position 1 (⟦Kommt er heute?⟧). Das Subjekt entscheidet über die Form.",
+        en: "In a statement the conjugated verb is in position 2 (⟦Heute kommt er.⟧), in a yes/no question in position 1 (⟦Kommt er heute?⟧). The subject decides the form.",
+        tr: "Çekimli fiil olumlu cümlede 2. sıradadır (⟦Heute kommt er.⟧), evet/hayır sorusunda 1. sıradadır (⟦Kommt er heute?⟧). Biçimi özne belirler.",
+        ru: "В повествовательном предложении спрягаемый глагол стоит на втором месте (⟦Heute kommt er.⟧), в вопросе без вопросительного слова – на первом (⟦Kommt er heute?⟧). Форму определяет подлежащее.",
+        ar: "في الجملة الخبرية يأتي الفعل المصرَّف في المرتبة الثانية (⟦Heute kommt er.⟧)، وفي سؤال نعم/لا في المرتبة الأولى (⟦Kommt er heute?⟧). والفاعل هو الذي يحدّد الصيغة." } }
+  ];
+  var TAGS = [
+    { id: "reg",    label: "regelmäßig" },
+    { id: "rege",   label: "Stamm auf -t/-d (-est, -et)" },
+    { id: "sz",     label: "Stamm auf -s/-ß/-x/-z (du -t)" },
+    { id: "vowel",  label: "Vokalwechsel" },
+    { id: "modal",  label: "Modalverben" },
+    { id: "irreg",  label: "sein, haben, wissen" },
+    { id: "sep",    label: "trennbare Verben" }
+  ];
+
+
+  var store = { settings: { lessons: [], tags: [], format: "mix", lang: "", langSet: false, size: 20, tsize: 3, auto: true, fix: "type" }, verbs: {}, texts: {} };
+  var i;
+  for (i = 0; i < LESSONS; i++) { store.settings.lessons.push(true); }
+  for (i = 0; i < TAGS.length; i++) { store.settings.tags.push(true); }
+
+  var session = null;
+  var autoTimer = null;
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) { e.className = cls; }
+    if (text !== undefined && text !== null) { e.textContent = text; }
+    return e;
+  }
+  function clear(node) { while (node.firstChild) { node.removeChild(node.firstChild); } }
+  function shuffle(a) {
+    var r = a.slice();
+    for (var k = r.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)); var t = r[k]; r[k] = r[j]; r[j] = t; }
+    return r;
+  }
+  function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
+  function cap1(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  /* ---------- Speicher ---------- */
+  function load() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) { return; }
+      var s = JSON.parse(raw), k;
+      if (s && s.settings) {
+        var st = s.settings;
+        if (st.lessons && st.lessons.length === LESSONS) { for (k = 0; k < LESSONS; k++) { store.settings.lessons[k] = !!st.lessons[k]; } }
+        if (st.tags && st.tags.length === TAGS.length) { for (k = 0; k < TAGS.length; k++) { store.settings.tags[k] = !!st.tags[k]; } }
+        if (typeof st.format === "string") { store.settings.format = st.format; }
+        if (typeof st.lang === "string") { store.settings.lang = st.lang; }
+        store.settings.langSet = st.langSet === true || !!st.lang;
+        if (typeof st.size === "number") { store.settings.size = st.size; }
+        if (typeof st.tsize === "number") { store.settings.tsize = st.tsize; }
+        if (typeof st.auto === "boolean") { store.settings.auto = st.auto; }
+        if (st.fix === "type" || st.fix === "choose") { store.settings.fix = st.fix; }
+      }
+      if (s && s.verbs) { store.verbs = s.verbs; }
+      if (s && s.texts) { store.texts = s.texts; }
+    } catch (e) { /* ohne Speicher weiterarbeiten */ }
+  }
+  function save() { try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); } catch (e) { /* egal */ } }
+
+  /* ---------- Daten ---------- */
+  var byKey = {};
+  VERBS.forEach(function (v) { byKey[v.k] = v; });
+  function hasTag(v, t) { return v.g.indexOf(t) >= 0; }
+  function infShown(v) { return v.d; }
+  function infPlain(v) { return v.d.replace("|", ""); }
+  function prefixOf(v) { return v.d.indexOf("|") >= 0 ? v.d.split("|")[0] : ""; }
+  function lang() { return store.settings.lang || ""; }
+  function meaning(v) { var l = lang(); return l ? (v.m[l] || "") : ""; }
+
+  function rec(key) { return store.verbs[key] || null; }
+  function weightOf(key) { var r = rec(key); return (!r || r.box === undefined) ? 1 : WEIGHTS[r.box]; }
+  function isSure(key) { var r = rec(key); return !!(r && r.s >= 2); }
+  function mark(key, ok) {
+    var r = store.verbs[key] || { n: 0, c: 0, s: 0 };
+    r.n += 1;
+    if (ok) { r.c += 1; r.s += 1; if (r.box !== undefined && r.box < 2) { r.box += 1; } }
+    else { r.s = 0; r.box = 0; }
+    store.verbs[key] = r;
+  }
+
+  /* Welche Form-Art ist die richtige Form? */
+  function kindOf(v, p) {
+    if (hasTag(v, "irreg")) { return "irreg"; }
+    if (hasTag(v, "modal")) { return "modal"; }
+    if (hasTag(v, "vowel") && (p === 1 || p === 2)) { return "vowel"; }
+    if (hasTag(v, "rege") && (p === 1 || p === 2 || p === 4)) { return "einsch"; }
+    if (hasTag(v, "sz") && p === 1) { return "sz"; }
+    return "ending";
+  }
+  function allowedPersons(v) {
+    if (v.ps) { return v.ps.slice(); }
+    return [0, 1, 2, 3, 4, 5];
+  }
+  function pickPerson(v) {
+    var ps = allowedPersons(v), w = [], tot = 0, k;
+    for (k = 0; k < ps.length; k++) { var x = kindOf(v, ps[k]) === "ending" ? 1 : 3; w.push(x); tot += x; }
+    var r = Math.random() * tot;
+    for (k = 0; k < ps.length; k++) { r -= w[k]; if (r <= 0) { return ps[k]; } }
+    return ps[ps.length - 1];
+  }
+
+  function poolKeys() {
+    var out = [];
+    VERBS.forEach(function (v) {
+      if (!store.settings.lessons[v.l - 1]) { return; }
+      for (var k = 0; k < TAGS.length; k++) {
+        if (store.settings.tags[k] && hasTag(v, TAGS[k].id)) { out.push(v.k); return; }
+      }
+    });
+    return out;
+  }
+  function textPool() {
+    return TEXTS.filter(function (t) { return store.settings.lessons[t.l - 1]; });
+  }
+  function weightedSample(ids, count, wfn) {
+    var keyed = ids.map(function (id) { return { id: id, k: Math.pow(Math.random(), 1 / wfn(id)) }; });
+    keyed.sort(function (a, b) { return b.k - a.k; });
+    var n = (count > 0 && count < keyed.length) ? count : keyed.length;
+    var out = [];
+    for (var k = 0; k < n; k++) { out.push(keyed[k].id); }
+    return out;
+  }
+  function textWeight(tid) {
+    var t = textById(tid), s = 0, n = 0;
+    parseText(t).forEach(function (pt) { if (pt.k) { s += weightOf(pt.k); n += 1; } });
+    var w = n ? s / n : 1;
+    var tr = store.texts[tid];
+    if (!tr) { w += 0.5; }
+    return w;
+  }
+  var textIndex = {};
+  TEXTS.forEach(function (t) { textIndex[t.id] = t; });
+  function textById(id) { return textIndex[id]; }
+  var parsedCache = {};
+  function parseText(t) {
+    if (parsedCache[t.id]) { return parsedCache[t.id]; }
+    var parts = [], re = /\{(\+?)([^:}]+):(\d)\}/g, last = 0, m;
+    while ((m = re.exec(t.s)) !== null) {
+      if (m.index > last) { parts.push({ s: t.s.slice(last, m.index) }); }
+      parts.push({ k: m[2], p: parseInt(m[3], 10), cap: m[1] === "+" });
+      last = m.index + m[0].length;
+    }
+    if (last < t.s.length) { parts.push({ s: t.s.slice(last) }); }
+    parsedCache[t.id] = parts;
+    return parts;
+  }
+
+  /* ---------- Meldungen ---------- */
+  function fillMsg(key, l, vars) {
+    var src = MSG[l] || MSG.de;
+    var s = src[key] || MSG.de[key];
+    return s.replace(/\{(\w+)\}/g, function (m, n) {
+      var v = vars[n];
+      if (v === undefined) { return m; }
+      return l === "ar" ? ISO_O + v + ISO_C : v;
+    }).replace(/(^|\s)-(?=[A-Za-zäöüß])/g, "$1\u2011");
+  }
+  function rules(s, l) { return s.replace(/⟦/g, l === "ar" ? ISO_O : "").replace(/⟧/g, l === "ar" ? ISO_C : "").replace(/(^|\s)-(?=[A-Za-zäöüß⁦])/g, "$1\u2011"); }
+  /* Block mit deutschem Text und (falls gewählt) Übersetzung */
+  function msgBlock(key, vars, cls) {
+    var box = el("div", cls || "msg");
+    box.appendChild(el("div", "de", fillMsg(key, "de", vars)));
+    var l = lang();
+    if (l) {
+      var t = el("div", "tr", fillMsg(key, l, vars));
+      if (l === "ar") { t.setAttribute("dir", "rtl"); }
+      box.appendChild(t);
+    }
+    return box;
+  }
+  function msgVars(v, p, form) {
+    return { pron: PRON[p], end: v.e ? v.e[p] : "", se: v.se, vc: v.vc.replace(/ /g, "\u00A0"), form: form, inf: infPlain(v) };
+  }
+  function wrongKey(t) {
+    var n = TYPES[t];
+    if (n === "modal") { n = "irreg"; }
+    return "w_" + n;
+  }
+  function taskLine(card, key) {
+    card.appendChild(el("div", "qtask", MSG.de[key]));
+    var l = lang();
+    if (l) {
+      var t = el("div", "qtask tr", MSG[l][key]);
+      if (l === "ar") { t.setAttribute("dir", "rtl"); }
+      card.appendChild(t);
+    }
+  }
+
+  /* ---------- Satzbau ---------- */
+  var SUBJ = {
+    0: ["Ich"],
+    1: ["Du"],
+    2: ["Er", "Anna", "Ahmed", "Herr Weber", "Die Lehrerin", "Der Nachbar", "Meine Mutter"],
+    3: ["Wir", "Anna und ich", "Tom und ich"],
+    4: ["Ihr", "Ihr beiden"],
+    5: ["Die Kinder", "Anna und Tom", "Meine Eltern", "Die Nachbarn"]
+  };
+  var LOWER_FIRST = { Ich: 1, Du: 1, Er: 1, Wir: 1, Ihr: 1, Der: 1, Die: 1, Das: 1, Mein: 1, Meine: 1, Es: 1 };
+  function lowerSubj(s) {
+    var w = s.split(" ")[0];
+    return LOWER_FIRST[w] ? s.charAt(0).toLowerCase() + s.slice(1) : s;
+  }
+  function subjectsFor(v, p, frame) {
+    var l = SUBJ[p];
+    if (v.sg && p === 2) { l = v.sg; }
+    if (v.pl && p === 5) { l = v.pl; }
+    if (p === 5 && frame === "q" && !v.pl) { l = l.concat(["Sie"]); }
+    return l;
+  }
+  function conflicts(c, s) {
+    var ws = c.split(" ");
+    for (var k = 0; k < ws.length; k++) { if (ws[k].length > 3 && s.indexOf(ws[k]) >= 0) { return true; } }
+    return false;
+  }
+  var TM_ADV = ["Heute", "Am Montag", "Am Wochenende", "Oft"];
+  function makeSentence(v, p) {
+    var frames = ["st", "st", "st", "q", "q"];
+    var c0 = v.c[0] || "";
+    var okTm = v.tm !== 0;
+    var k0;
+    if (okTm) { for (k0 = 0; k0 < v.c.length; k0++) { if (/heute|jeden|morgen|abend|oft|immer/i.test(v.c[k0])) { okTm = false; } } }
+    if (okTm) { frames.push("tm"); frames.push("tm"); }
+    if (p === 0) { frames = frames.filter(function (f) { return f !== "q"; }); }
+    var frame = pick(frames);
+    var subs = subjectsFor(v, p, frame), subj, c, tries = 0;
+    do {
+      subj = pick(subs); c = v.c.length ? pick(v.c) : "";
+      tries += 1;
+    } while (c && conflicts(c, subj) && tries < 30);
+    var pf = prefixOf(v);
+    var rest = (c ? " " + c : "") + (pf ? " " + pf : "") + ".";
+    if (frame === "q") { rest = rest.slice(0, -1) + "?"; }
+    var pre, post, capGap = false;
+    if (frame === "st") { pre = subj + " "; post = rest; }
+    else if (frame === "tm") { pre = pick(TM_ADV) + " "; post = " " + lowerSubj(subj) + rest; }
+    else { pre = ""; post = " " + lowerSubj(subj) + rest; capGap = true; }
+    return { pre: pre, post: post, capGap: capGap, frame: frame, subj: subj, c: c };
+  }
+  function sentenceFilled(sent, form) { return sent.pre + (sent.capGap ? cap1(form) : form) + sent.post; }
+  function sentenceNode(sent, form, v) {
+    var big = el("div", "qbig sent");
+    big.appendChild(document.createTextNode(sent.pre));
+    if (form === null) { big.appendChild(el("span", "gap", "      ")); big.lastChild.id = "gapSpot"; }
+    else { big.appendChild(el("mark", "seg", sent.capGap ? cap1(form) : form)); }
+    big.appendChild(document.createTextNode(sent.post));
+    return big;
+  }
+
+  /* Antwortoptionen */
+  function bonusOf(t) {
+    if (t >= 3) { return 2; }
+    if (t === 2) { return 0.8; }
+    if (t === 0) { return 0.7; }
+    return 0;
+  }
+  function makeOptions(v, p) {
+    var correct = v.f[p];
+    var c = v.w[p].map(function (x) { return { f: x[0], t: x[1], sc: Math.random() + bonusOf(x[1]) }; });
+    c.sort(function (a, b) { return b.sc - a.sc; });
+    var opts = [{ f: correct, t: -1 }], seen = {}; seen[correct] = 1;
+    for (var k = 0; k < c.length && opts.length < 4; k++) {
+      if (!seen[c[k].f]) { seen[c[k].f] = 1; opts.push({ f: c[k].f, t: c[k].t }); }
+    }
+    return shuffle(opts);
+  }
+  function wrongTypeOf(v, p, form) {
+    var l = v.w[p];
+    for (var k = 0; k < l.length; k++) { if (l[k][0] === form) { return l[k][1]; } }
+    return -1;
+  }
+  function isCorrectForm(v, p, val, capGap) {
+    var x = val.replace(/^\s+|\s+$/g, "").toLowerCase();
+    if (!x) { return false; }
+    if (x === v.f[p].toLowerCase()) { return true; }
+    var alts = v.a[String(p)] || [];
+    for (var k = 0; k < alts.length; k++) { if (x === alts[k].toLowerCase()) { return true; } }
+    return false;
+  }
+
+  /* kleine Tabelle mit allen Formen */
+  function paradigmNode(v, hiP) {
+    var box = el("div", "par");
+    var order = [0, 3, 1, 4, 2, 5];
+    var pf = prefixOf(v);
+    order.forEach(function (p) {
+      var cell = el("div", "pc" + (p === hiP ? " cur" : ""));
+      cell.appendChild(el("small", null, PRON[p] + " "));
+      cell.appendChild(el("span", v.hl[p] ? "irr" : null, v.f[p] + (pf ? " … " + pf : "")));
+      box.appendChild(cell);
+    });
+    return box;
+  }
+  function meaningNode(v) {
+    var m = meaning(v);
+    if (!m) { return null; }
+    var wrap = el("span", "vmean");
+    wrap.appendChild(document.createTextNode(" = "));
+    var s = el("bdi", null, m);
+    if (lang() === "ar") { s.setAttribute("dir", "rtl"); }
+    wrap.appendChild(s);
+    return wrap;
+  }
+  function verbHead(card, v) {
+    var h = el("div", "vhead");
+    h.appendChild(el("span", "vinf", infShown(v)));
+    var mn = meaningNode(v);
+    if (mn) { h.appendChild(mn); }
+    card.appendChild(h);
+  }
+
+  /* ---------- Auswahlchips ---------- */
+  function lessonCount(l) { var c = 0; VERBS.forEach(function (v) { if (v.l === l) { c += 1; } }); return c; }
+  function tagCount(t) { var c = 0; VERBS.forEach(function (v) { if (hasTag(v, t)) { c += 1; } }); return c; }
+  function chipsRow(container, labels, getOn, setOn, onChange) {
+    var row = el("div", "row");
+    labels.forEach(function (lab, idx) {
+      var l = el("label", "chip" + (getOn(idx) ? " on" : ""));
+      var inp = document.createElement("input"); inp.type = "checkbox"; inp.checked = getOn(idx);
+      inp.addEventListener("change", function () { setOn(idx, inp.checked); save(); onChange(); });
+      l.appendChild(inp);
+      l.appendChild(document.createTextNode(lab.t + " "));
+      l.appendChild(el("small", null, "(" + lab.n + ")"));
+      row.appendChild(l);
+    });
+    container.appendChild(row);
+    var links = el("div");
+    var all = el("button", "linkbtn", "alle"); all.type = "button";
+    var none = el("button", "linkbtn", "keine"); none.type = "button";
+    all.addEventListener("click", function () { for (var k = 0; k < labels.length; k++) { setOn(k, true); } save(); onChange(); });
+    none.addEventListener("click", function () { for (var k = 0; k < labels.length; k++) { setOn(k, false); } save(); onChange(); });
+    links.appendChild(all); links.appendChild(document.createTextNode(" · ")); links.appendChild(none);
+    container.appendChild(links);
+  }
+  function tagChips(container, onChange) {
+    chipsRow(container, TAGS.map(function (k) { return { t: k.label, n: tagCount(k.id) }; }),
+      function (i2) { return store.settings.tags[i2]; }, function (i2, v) { store.settings.tags[i2] = v; }, onChange);
+  }
+  function lessonChips(container, onChange) {
+    var labels = [];
+    for (var l = 1; l <= LESSONS; l++) { labels.push({ t: "L" + l, n: lessonCount(l) }); }
+    chipsRow(container, labels, function (i2) { return store.settings.lessons[i2]; }, function (i2, v) { store.settings.lessons[i2] = v; }, onChange);
+  }
+
+  /* ---------- Üben ---------- */
+  function renderPractice() {
+    var v = $("viewPractice"); clear(v);
+    if (!session) { renderSetup(v); }
+    else if (session.pos >= session.queue.length) { renderEnd(v); }
+    else { renderQuestion(v); }
+  }
+
+  function radioRow(panelTitle, items, getId, setId, descMap) {
+    var p = el("div", "panel"); p.appendChild(el("h2", null, panelTitle));
+    var r = el("div", "row");
+    items.forEach(function (f) {
+      var on = getId() === f.id;
+      var l = el("label", "chip" + (on ? " on" : ""));
+      var inp = document.createElement("input"); inp.type = "radio"; inp.name = f.group; inp.checked = on;
+      inp.addEventListener("change", function () { setId(f.id); save(); renderPractice(); });
+      l.appendChild(inp); l.appendChild(document.createTextNode(f.label)); r.appendChild(l);
+    });
+    p.appendChild(r);
+    return p;
+  }
+
+  function renderSetup(v) {
+    /* 1. Sprache */
+    var pl = el("div", "panel"); pl.appendChild(el("h2", null, "1. Sprache für Bedeutungen und Erklärungen"));
+    var rl = el("div", "row");
+    LANGS.forEach(function (lg) {
+      var on = store.settings.langSet && store.settings.lang === lg.id;
+      var l = el("label", "chip" + (on ? " on" : ""));
+      var inp = document.createElement("input"); inp.type = "radio"; inp.name = "lang"; inp.checked = on;
+      inp.addEventListener("change", function () { store.settings.lang = lg.id; store.settings.langSet = true; save(); renderPractice(); });
+      l.appendChild(inp); l.appendChild(document.createTextNode(lg.label)); rl.appendChild(l);
+    });
+    pl.appendChild(rl);
+    pl.appendChild(el("div", "small", "In dieser Sprache erscheinen die Bedeutung des Verbs, die Aufgabenstellung und die Erklärungen. Die deutsche Erklärung steht immer dabei."));
+    if (!store.settings.langSet) { var w0 = el("div", "small", "Bitte zuerst eine Sprache wählen."); w0.style.fontWeight = "700"; pl.appendChild(w0); }
+    v.appendChild(pl);
+
+    /* 2. Format */
+    var fm = FORMATS.map(function (f) { return { id: f.id, label: f.label, group: "fmt" }; });
+    var p0 = radioRow("2. Aufgabenformat", fm, function () { return store.settings.format; }, function (id) { store.settings.format = id; });
+    var desc = {
+      mix: "Abwechslung: Sätze mit Lücke – mal auswählen, mal tippen.",
+      choose: "Ein Satz mit Lücke, vier Formen zur Auswahl.",
+      text: "Ein kurzer Text mit falschen Verbformen: erst die falschen Formen markieren, dann korrigieren.",
+      type: "Ein Satz mit Lücke: Die richtige Form wird getippt."
+    };
+    p0.appendChild(el("div", "small", desc[store.settings.format]));
+    if (store.settings.format === "text") {
+      var fx = el("div", "row"); fx.style.marginTop = "8px";
+      fx.appendChild(el("span", "small", "Korrigieren durch:"));
+      FIXMODES.forEach(function (f) {
+        var on = store.settings.fix === f.id;
+        var l = el("label", "chip" + (on ? " on" : ""));
+        var inp = document.createElement("input"); inp.type = "radio"; inp.name = "fix"; inp.checked = on;
+        inp.addEventListener("change", function () { store.settings.fix = f.id; save(); renderPractice(); });
+        l.appendChild(inp); l.appendChild(document.createTextNode(f.label)); fx.appendChild(l);
+      });
+      p0.appendChild(fx);
+    }
+    v.appendChild(p0);
+
+    if (store.settings.format !== "text") {
+      var p1 = el("div", "panel"); p1.appendChild(el("h2", null, "Themen")); tagChips(p1, renderPractice); v.appendChild(p1);
+    }
+    var p1b = el("div", "panel"); p1b.appendChild(el("h2", null, "Lektionen"));
+    lessonChips(p1b, renderPractice);
+    if (store.settings.format === "text") { p1b.appendChild(el("div", "small", "Ein Text gehört zu der Lektion, in der das letzte seiner Verben vorkommt.")); }
+    v.appendChild(p1b);
+
+    var p2 = el("div", "panel"); p2.appendChild(el("h2", null, "Einstellungen"));
+    var r1 = el("div", "row");
+    var l2 = el("label", "opt");
+    var sel2 = document.createElement("select");
+    var isText = store.settings.format === "text";
+    if (isText) {
+      l2.appendChild(document.createTextNode("Runde mit: "));
+      [[2, "2 Texten"], [3, "3 Texten"], [5, "5 Texten"], [0, "allen Texten"]].forEach(function (o) {
+        var op = document.createElement("option"); op.value = String(o[0]); op.textContent = o[1]; if (o[0] === store.settings.tsize) { op.selected = true; } sel2.appendChild(op);
+      });
+      sel2.addEventListener("change", function () { store.settings.tsize = parseInt(sel2.value, 10); save(); });
+    } else {
+      l2.appendChild(document.createTextNode("Runde mit: "));
+      [[10, "10 Aufgaben"], [20, "20 Aufgaben"], [40, "40 Aufgaben"], [0, "allen Verben (je 1×)"]].forEach(function (o) {
+        var op = document.createElement("option"); op.value = String(o[0]); op.textContent = o[1]; if (o[0] === store.settings.size) { op.selected = true; } sel2.appendChild(op);
+      });
+      sel2.addEventListener("change", function () { store.settings.size = parseInt(sel2.value, 10); save(); });
+    }
+    l2.appendChild(sel2); r1.appendChild(l2);
+    p2.appendChild(r1);
+    if (!isText) {
+      var l3 = el("label", "opt");
+      var cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = store.settings.auto;
+      cb.addEventListener("change", function () { store.settings.auto = cb.checked; save(); });
+      l3.appendChild(cb); l3.appendChild(document.createTextNode("Bei richtiger Antwort automatisch weiter"));
+      p2.appendChild(l3);
+    }
+    v.appendChild(p2);
+
+    var keys = poolKeys(), tpool = textPool();
+    var info;
+    if (isText) { info = el("div", "small", tpool.length + " Texte im Pool."); }
+    else {
+      var rep = 0;
+      keys.forEach(function (k) { var r = rec(k); if (r && r.box !== undefined && r.box < 2) { rep += 1; } });
+      info = el("div", "small", keys.length + " Verben im Pool" + (rep ? " · " + rep + " davon kommen wegen früherer Fehler häufiger dran." : ". Verben, die du falsch beantwortest, kommen danach häufiger dran."));
+    }
+    info.style.marginBottom = "10px"; v.appendChild(info);
+    var empty = isText ? tpool.length === 0 : keys.length === 0;
+    var go = el("button", "main", "Start"); go.type = "button"; go.disabled = empty || !store.settings.langSet;
+    go.addEventListener("click", function () { startRound(); });
+    v.appendChild(go);
+    if (go.disabled) {
+      v.appendChild(el("div", "small", !store.settings.langSet ? "Bitte zuerst oben eine Sprache wählen (oder „keine Hilfe“)." : "Bitte mindestens eine Lektion" + (isText ? "" : " und ein Thema") + " wählen."));
+    }
+  }
+
+  function sentenceFmt() {
+    var f = store.settings.format;
+    if (f === "mix") { return Math.random() < 0.6 ? "choose" : "type"; }
+    return f;
+  }
+  function startRound() {
+    var queue = [], keys, k;
+    if (store.settings.format === "text") {
+      var ids = textPool().map(function (t) { return t.id; });
+      var chosen = weightedSample(ids, store.settings.tsize, textWeight);
+      queue = chosen.map(function (id) { return { kind: "t", tid: id }; });
+    } else {
+      keys = poolKeys();
+      var size = store.settings.size;
+      var guard = 0;
+      while ((size === 0 ? queue.length === 0 : queue.length < size) && guard < 20) {
+        var pass = weightedSample(keys, 0, weightOf);
+        pass.forEach(function (key) {
+          if (size > 0 && queue.length >= size) { return; }
+          queue.push({ kind: "s", key: key, p: pickPerson(byKey[key]), fmt: sentenceFmt() });
+        });
+        guard += 1;
+      }
+    }
+    startSession(queue, false);
+  }
+  function startSession(queue, isReview) {
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+    session = { queue: queue, pos: 0, results: [], answered: false, review: isReview, step: 1 };
+    renderPractice();
+  }
+
+  function renderQuestion(v) {
+    var q = session.queue[session.pos];
+    var total = session.queue.length;
+    var top = el("div", "top");
+    top.appendChild(el("span", null, (session.review ? "Wiederholung · " : "") + (q.kind === "t" ? "Text " : "Frage ") + (session.pos + 1) + " / " + total));
+    var right = 0; session.results.forEach(function (r) { if (r.ok) { right += 1; } });
+    top.appendChild(el("span", null, right + " richtig"));
+    v.appendChild(top);
+    var bar = el("div", "bar"); var fill = el("i"); fill.style.width = Math.round(100 * session.pos / total) + "%"; bar.appendChild(fill); v.appendChild(bar);
+
+    var card = el("div", "panel qcard");
+    session.answered = false;
+    if (q.kind === "t") { renderTextTask(card, q); }
+    else {
+      var vb = byKey[q.key];
+      q.sent = q.sent || makeSentence(vb, q.p);
+      q.opts = q.opts || makeOptions(vb, q.p);
+      session.current = { v: vb, p: q.p, sent: q.sent, fmt: q.fmt };
+      if (q.fmt === "choose") { renderChoose(card, q, vb); } else { renderType(card, q, vb); }
+    }
+    var fb = el("div"); fb.id = "fbBox"; card.appendChild(fb);
+    var nxt = el("button", "main hidden", session.pos + 1 >= total ? "Auswertung" : "Weiter"); nxt.type = "button"; nxt.id = "nextBtn"; nxt.style.marginTop = "10px";
+    nxt.addEventListener("click", nextQuestion); card.appendChild(nxt);
+    v.appendChild(card);
+    if (q.kind === "t") { renderTextStep(q); }
+    var quit = el("button", "linkbtn", "Runde abbrechen"); quit.type = "button";
+    quit.addEventListener("click", function () { if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; } session = null; renderPractice(); });
+    v.appendChild(quit);
+    if (q.kind === "s" && q.fmt === "type") { var inp = $("typeInput"); if (inp && inp.focus) { try { inp.focus(); } catch (e) { /* egal */ } } }
+  }
+
+  function renderChoose(card, q, v) {
+    taskLine(card, "t_choose");
+    verbHead(card, v);
+    card.appendChild(sentenceNode(q.sent, null, v));
+    var box = el("div", "opts two"); box.id = "optRow";
+    q.opts.forEach(function (o, k) {
+      var b = el("button", null, q.sent.capGap ? cap1(o.f) : o.f); b.type = "button"; b.setAttribute("data-f", o.f);
+      b.appendChild(el("small", null, "Taste " + (k + 1)));
+      b.addEventListener("click", function () { answerSentence(o.f); });
+      box.appendChild(b);
+    });
+    card.appendChild(box);
+  }
+
+  function renderType(card, q, v) {
+    taskLine(card, "t_type");
+    verbHead(card, v);
+    card.appendChild(sentenceNode(q.sent, null, v));
+    var uml = el("div", "umlauts");
+    ["ä", "ö", "ü", "ß"].forEach(function (c) {
+      var b = el("button", null, c); b.type = "button";
+      b.addEventListener("click", function () { var inp = $("typeInput"); if (inp && !inp.disabled) { inp.value += c; inp.focus(); } });
+      uml.appendChild(b);
+    });
+    card.appendChild(uml);
+    var box = el("div", "typebox");
+    var inp = document.createElement("input"); inp.type = "text"; inp.id = "typeInput"; inp.autocomplete = "off"; inp.setAttribute("autocapitalize", "off"); inp.setAttribute("spellcheck", "false"); inp.setAttribute("aria-label", "Antwort");
+    var ok = el("button", "sec", "Prüfen"); ok.type = "button"; ok.id = "checkBtn";
+    function doCheck() {
+      if (session.answered) { return; }
+      var val = inp.value.replace(/^\s+|\s+$/g, "");
+      if (!val) { return; }
+      inp.disabled = true; ok.disabled = true;
+      answerSentence(val);
+    }
+    ok.addEventListener("click", doCheck);
+    inp.addEventListener("keydown", function (ev) { if (ev.key === "Enter") { ev.preventDefault(); doCheck(); } });
+    box.appendChild(inp); box.appendChild(ok); card.appendChild(box);
+  }
+
+  function answerSentence(val) {
+    if (!session || session.answered) { return; }
+    var cur = session.current, v = cur.v, p = cur.p;
+    session.answered = true;
+    var ok = isCorrectForm(v, p, val);
+    var wt = ok ? -1 : wrongTypeOf(v, p, val.toLowerCase());
+    session.results.push({ kind: "s", key: v.k, p: p, ok: ok, pick: val, sent: cur.sent, fmt: cur.fmt, wt: wt });
+    mark(v.k, ok); save();
+
+    var spot = $("gapSpot");
+    if (spot) { spot.textContent = cur.sent.capGap ? cap1(val) : val; spot.className = "gap " + (ok ? "okgap" : "badgap"); }
+    var row = $("optRow");
+    if (row) {
+      var btns = row.getElementsByTagName("button");
+      for (var k = 0; k < btns.length; k++) {
+        var f = btns[k].getAttribute("data-f");
+        btns[k].disabled = true;
+        if (f === v.f[p]) { btns[k].className = "right"; }
+        else if (!ok && f === val) { btns[k].className = "wrong"; }
+      }
+    }
+    var fb = $("fbBox"); clear(fb);
+    var box = el("div", "fb " + (ok ? "ok" : "bad"));
+    var big = el("div", "big");
+    big.appendChild(document.createTextNode(ok ? "✓ Richtig: " : "✗ Richtig ist: "));
+    big.appendChild(el("mark", "seg", sentenceFilled(cur.sent, v.f[p])));
+    box.appendChild(big);
+    if (!ok && cur.fmt === "type") {
+      var yours = el("div", "small"); yours.appendChild(document.createTextNode("Deine Antwort: ")); yours.appendChild(el("s", null, val)); box.appendChild(yours);
+    }
+    var vars = msgVars(v, p, v.f[p]);
+    if (!ok && wt >= 0) { box.appendChild(msgBlock(wrongKey(wt), vars, "hint")); }
+    var kd = kindOf(v, p);
+    if (!ok || kd !== "ending") { box.appendChild(msgBlock("k_" + kd, vars, "hint")); }
+    var pd = el("div", "small", "Alle Formen von " + infPlain(v) + ":"); pd.style.marginTop = "8px"; box.appendChild(pd);
+    box.appendChild(paradigmNode(v, p));
+    fb.appendChild(box);
+    $("nextBtn").className = "main";
+    if (ok && store.settings.auto) {
+      autoTimer = setTimeout(function () { autoTimer = null; nextQuestion(); }, 1100);
+    }
+  }
+
+  function nextQuestion() {
+    if (!session || !session.answered) { return; }
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+    session.pos += 1;
+    renderPractice();
+  }
+
+  /* ---------- Fehlertext ---------- */
+  function pickWrong(v, p) {
+    var c = v.w[p].map(function (x) { return { f: x[0], t: x[1], sc: Math.random() + bonusOf(x[1]) }; });
+    c.sort(function (a, b) { return b.sc - a.sc; });
+    var top = c.slice(0, 3);
+    return pick(top);
+  }
+  function buildTextTokens(t) {
+    var parts = parseText(t), toks = [], vi = [];
+    parts.forEach(function (pt) {
+      if (pt.k) {
+        var v = byKey[pt.k], form = v.f[pt.p];
+        toks.push({ v: v, p: pt.p, cap: pt.cap, correct: pt.cap ? cap1(form) : form, shown: "", err: false, marked: false, fixVal: "", wt: -1, opts: null });
+        vi.push(toks.length - 1);
+      } else { toks.push({ s: pt.s }); }
+    });
+    var n = Math.max(2, Math.round(vi.length * 0.35));
+    if (n > vi.length) { n = vi.length; }
+    var chosen = shuffle(vi).slice(0, n);
+    toks.forEach(function (tk) { if (tk.v) { tk.shown = tk.correct; } });
+    chosen.forEach(function (idx) {
+      var tk = toks[idx], w = pickWrong(tk.v, tk.p);
+      tk.err = true; tk.wt = w.t; tk.wrong = w.f;
+      tk.shown = tk.cap ? cap1(w.f) : w.f;
+      var cands = shuffle(tk.v.w[tk.p].filter(function (x) { return x[0] !== w.f; }));
+      cands.sort(function (a, b) { return bonusOf(b[1]) - bonusOf(a[1]); });
+      var o = [{ f: tk.correct }];
+      for (var k = 0; k < cands.length && o.length < 4; k++) { o.push({ f: tk.cap ? cap1(cands[k][0]) : cands[k][0] }); }
+      tk.opts = shuffle(o);
+    });
+    return toks;
+  }
+
+  function renderTextTask(card, q) {
+    var t = textById(q.tid);
+    if (!q.tk) { q.tk = buildTextTokens(t); q.step = 1; }
+    session.current = { text: q, fmt: "text" };
+    var head = el("div", "qtask", t.t);
+    head.style.fontWeight = "700"; head.style.color = "var(--text)";
+    card.appendChild(head);
+    var tk = el("div", "tasktitle"); tk.id = "taskLine"; card.appendChild(tk);
+    var box = el("div", "txt"); box.id = "tbox"; card.appendChild(box);
+    if (lang()) {
+      var det = document.createElement("details"); det.className = "vlist";
+      det.appendChild(el("summary", null, "Verben im Text"));
+      var seen = {}, ul = el("ul", "vl");
+      parseText(t).forEach(function (pt) {
+        if (pt.k && !seen[pt.k]) {
+          seen[pt.k] = 1;
+          var v = byKey[pt.k], li = el("li");
+          li.appendChild(el("b", null, infShown(v)));
+          li.appendChild(meaningNode(v)); ul.appendChild(li);
+        }
+      });
+      det.appendChild(ul); card.appendChild(det);
+    }
+    var act = el("div", "tact"); act.id = "tact"; card.appendChild(act);
+  }
+
+  function setTaskLine(key) {
+    var tl = $("taskLine"); clear(tl);
+    tl.appendChild(el("div", "qtask", MSG.de[key]));
+    var l = lang();
+    if (l) { var tt = el("div", "qtask tr", MSG[l][key]); if (l === "ar") { tt.setAttribute("dir", "rtl"); } tl.appendChild(tt); }
+  }
+
+  function renderTextStep(q) {
+    var box = $("tbox"), act = $("tact"); clear(box); clear(act);
+    var step = q.step;
+    setTaskLine(step === 1 || step === 2 ? "t_mark" : "t_fix");
+    var locked = step !== 1;
+    q.tk.forEach(function (tk) {
+      if (!tk.v) { box.appendChild(document.createTextNode(tk.s)); return; }
+      if (step <= 2) {
+        var b = el("button", "vtok", tk.shown); b.type = "button";
+        b.setAttribute("aria-pressed", tk.marked ? "true" : "false");
+        if (tk.marked) { b.className += " marked"; }
+        if (step === 2) {
+          b.disabled = true;
+          if (tk.marked && tk.err) { b.className += " hit"; }
+          else if (tk.marked && !tk.err) { b.className += " fa"; }
+          else if (!tk.marked && tk.err) { b.className += " miss"; }
+        } else {
+          b.addEventListener("click", function () {
+            tk.marked = !tk.marked;
+            b.setAttribute("aria-pressed", tk.marked ? "true" : "false");
+            b.className = "vtok" + (tk.marked ? " marked" : "");
+          });
+        }
+        box.appendChild(b);
+      } else {
+        if (!tk.err) { box.appendChild(el("span", "plainv", tk.shown)); return; }
+        var holder = el("span", "fixwrap");
+        var fld;
+        if (store.settings.fix === "choose") {
+          fld = document.createElement("select"); fld.className = "fixsel";
+          var o0 = document.createElement("option"); o0.value = ""; o0.textContent = "…"; fld.appendChild(o0);
+          tk.opts.forEach(function (o) { var op = document.createElement("option"); op.value = o.f; op.textContent = o.f; fld.appendChild(op); });
+          fld.value = tk.fixVal || "";
+          fld.addEventListener("change", function () { tk.fixVal = fld.value; });
+        } else {
+          fld = document.createElement("input"); fld.type = "text"; fld.className = "fixin";
+          fld.setAttribute("autocapitalize", "off"); fld.setAttribute("autocomplete", "off"); fld.setAttribute("spellcheck", "false");
+          fld.style.width = Math.max(6, tk.correct.length + 2) + "ch";
+          fld.value = tk.fixVal || "";
+          fld.addEventListener("input", function () { tk.fixVal = fld.value; });
+        }
+        fld.setAttribute("aria-label", "Korrektur für " + tk.shown);
+        if (step === 4) { fld.disabled = true; fld.className += tk.okFix ? " okfix" : " badfix"; }
+        holder.appendChild(fld);
+        if (step === 4 && !tk.okFix) { holder.appendChild(el("span", "corr", " → " + tk.correct)); }
+        else if (step === 3) { var old = el("small", "was", tk.shown); holder.appendChild(old); }
+        box.appendChild(holder);
+      }
+    });
+    if (step === 1) {
+      var chk = el("button", "main", "Prüfen: Welche Formen sind falsch?"); chk.type = "button";
+      chk.addEventListener("click", function () { textCheckMarks(q); });
+      act.appendChild(chk);
+    } else if (step === 2) {
+      var go = el("button", "main", "Weiter: Korrigieren"); go.type = "button";
+      go.addEventListener("click", function () { q.step = 3; q.nofb = true; clear($("fbBox")); renderTextStep(q); });
+      act.appendChild(go);
+    } else if (step === 3) {
+      var ch2 = el("button", "main", "Prüfen: Korrektur"); ch2.type = "button";
+      ch2.addEventListener("click", function () { textCheckFix(q); });
+      act.appendChild(ch2);
+    }
+  }
+
+  function textCheckMarks(q) {
+    var n = 0, found = 0, fa = 0;
+    q.tk.forEach(function (tk) {
+      if (!tk.v) { return; }
+      if (tk.err) { n += 1; if (tk.marked) { found += 1; } }
+      else if (tk.marked) { fa += 1; }
+    });
+    q.n = n; q.found = found; q.fa = fa; q.step = 2;
+    renderTextStep(q);
+    var fb = $("fbBox"); clear(fb);
+    var box = el("div", "fb " + (found === n && fa === 0 ? "ok" : "bad"));
+    box.appendChild(el("div", "big", found + " von " + n + " falschen Formen gefunden" + (fa ? " · " + fa + " richtige Form" + (fa === 1 ? "" : "en") + " fälschlich markiert" : "")));
+    var lg = el("div", "small", "Grün: richtig markiert · Rot: war richtig · Gelb gestrichelt: übersehen");
+    box.appendChild(lg);
+    fb.appendChild(box);
+  }
+
+  function textCheckFix(q) {
+    var fixed = 0, items = [];
+    q.tk.forEach(function (tk) {
+      if (!tk.v || !tk.err) { return; }
+      var ok = tk.fixVal && tk.fixVal.replace(/^\s+|\s+$/g, "").toLowerCase() === tk.correct.toLowerCase();
+      tk.okFix = !!ok;
+      if (ok) { fixed += 1; }
+      items.push(tk);
+    });
+    q.step = 4; session.answered = true;
+    var allOk = q.found === q.n && q.fa === 0 && fixed === q.n;
+    session.results.push({ kind: "t", tid: q.tid, ok: allOk, n: q.n, found: q.found, fa: q.fa, fixed: fixed,
+      items: items.map(function (tk) { return { key: tk.v.k, p: tk.p, shown: tk.shown, correct: tk.correct, wt: tk.wt, found: tk.marked, fixOk: tk.okFix }; }) });
+    q.tk.forEach(function (tk) {
+      if (!tk.v) { return; }
+      if (tk.err) { mark(tk.v.k, !!tk.marked && tk.okFix); }
+      else if (tk.marked) { mark(tk.v.k, false); }
+    });
+    var tr = store.texts[q.tid] || { n: 0, perfect: 0 };
+    tr.n += 1; if (allOk) { tr.perfect += 1; }
+    store.texts[q.tid] = tr; save();
+    renderTextStep(q);
+    var fb = $("fbBox"); clear(fb);
+    var box = el("div", "fb " + (allOk ? "ok" : "bad"));
+    box.appendChild(el("div", "big", allOk ? "✓ Alles gefunden und richtig korrigiert" : "Ergebnis"));
+    box.appendChild(el("div", "small", "Gefunden: " + q.found + " / " + q.n + " · falsch markiert: " + q.fa + " · richtig korrigiert: " + fixed + " / " + q.n));
+    items.forEach(function (tk) {
+      var d = el("div", "fixitem");
+      var line = el("div", "w");
+      line.appendChild(el("s", null, tk.shown)); line.appendChild(document.createTextNode(" → ")); line.appendChild(el("b", null, tk.correct));
+      line.appendChild(el("small", "pl", "  (" + infShown(tk.v) + ", " + PRON[tk.p] + ")"));
+      d.appendChild(line);
+      var vars = msgVars(tk.v, tk.p, tk.correct);
+      d.appendChild(msgBlock(wrongKey(tk.wt), vars, "hint"));
+      d.appendChild(msgBlock("k_" + kindOf(tk.v, tk.p), vars, "hint"));
+      box.appendChild(d);
+    });
+    fb.appendChild(box);
+    $("nextBtn").className = "main";
+  }
+
+  /* ---------- Auswertung ---------- */
+  function renderEnd(v) {
+    var total = session.results.length, right = 0, wrong = [];
+    session.results.forEach(function (r) { if (r.ok) { right += 1; } else { wrong.push(r); } });
+    var pct = total ? Math.round(100 * right / total) : 0;
+    var p = el("div", "panel");
+    p.appendChild(el("div", "score", right + " / " + total + " (" + pct + " %)"));
+    var isText = session.results.length && session.results[0].kind === "t";
+    var msg = pct === 100 ? "Alles richtig!" : (pct >= 80 ? "Sehr gut." : "Weiter üben – die Fehlerverben kommen jetzt öfter dran.");
+    var m = el("div", "small", (isText ? "Texte ohne Fehler bearbeitet. " : "") + msg); m.style.textAlign = "center"; p.appendChild(m);
+    v.appendChild(p);
+    if (isText) {
+      var pt = el("div", "panel"); pt.appendChild(el("h2", null, "Die Texte"));
+      var ul = el("ul", "rev");
+      session.results.forEach(function (r) {
+        var li = el("li"); li.appendChild(el("div", "w", (r.ok ? "✓ " : "✗ ") + textById(r.tid).t));
+        li.appendChild(el("div", "pl", "gefunden " + r.found + "/" + r.n + " · falsch markiert " + r.fa + " · korrigiert " + r.fixed + "/" + r.n));
+        r.items.forEach(function (it) {
+          if (!it.found || !it.fixOk) {
+            var d = el("div", "pl"); d.appendChild(el("s", null, it.shown)); d.appendChild(document.createTextNode(" → " + it.correct + "  (" + infShown(byKey[it.key]) + ")"));
+            li.appendChild(d);
+          }
+        });
+        ul.appendChild(li);
+      });
+      pt.appendChild(ul); v.appendChild(pt);
+    } else if (wrong.length) {
+      var pl = el("div", "panel"); pl.appendChild(el("h2", null, "Wiederholungsliste (" + wrong.length + ")"));
+      var ul2 = el("ul", "rev");
+      wrong.forEach(function (r) {
+        var vb = byKey[r.key], li = el("li");
+        li.appendChild(el("div", "w", sentenceFilled(r.sent, vb.f[r.p])));
+        var d = el("div", "pl", infShown(vb));
+        if (meaning(vb)) { d.appendChild(meaningNode(vb)); }
+        li.appendChild(d);
+        li.appendChild(msgBlock("k_" + kindOf(vb, r.p), msgVars(vb, r.p, vb.f[r.p]), "hint"));
+        ul2.appendChild(li);
+      });
+      pl.appendChild(ul2); v.appendChild(pl);
+    }
+    var acts = el("div");
+    if (wrong.length) {
+      var rb = el("button", "main", "Fehler wiederholen (" + wrong.length + ")"); rb.type = "button";
+      rb.addEventListener("click", function () {
+        var q2;
+        if (isText) { q2 = wrong.map(function (r) { return { kind: "t", tid: r.tid }; }); }
+        else { q2 = wrong.map(function (r) { return { kind: "s", key: r.key, p: r.p, fmt: sentenceFmt() }; }); }
+        startSession(shuffle(q2), true);
+      });
+      acts.appendChild(rb);
+    }
+    var again = el("button", "sec", "Neue Runde"); again.type = "button"; again.style.marginTop = "10px"; again.style.width = "100%";
+    again.addEventListener("click", function () { session = null; renderPractice(); });
+    acts.appendChild(again); v.appendChild(acts);
+  }
+
+  /* ---------- Regeln & Verben ---------- */
+  var listFilter = "";
+  function renderList() {
+    var v = $("viewList"); clear(v);
+    var l = lang();
+    var rp = el("div", "panel");
+    rp.appendChild(el("h2", null, "Regeln auf einen Blick"));
+    RULES.forEach(function (r, idx) {
+      var det = document.createElement("details"); if (idx === 0) { det.open = true; }
+      det.appendChild(el("summary", null, r.t.de));
+      var d1 = el("div", "rule", rules(r.x.de, "de")); det.appendChild(d1);
+      if (l) {
+        var tt = el("div", "rule tr"); tt.appendChild(el("b", null, r.t[l] + ": "));
+        tt.appendChild(document.createTextNode(rules(r.x[l], l)));
+        if (l === "ar") { tt.setAttribute("dir", "rtl"); }
+        det.appendChild(tt);
+      }
+      rp.appendChild(det);
+    });
+    v.appendChild(rp);
+    var p1 = el("div", "panel"); p1.appendChild(el("h2", null, "Verben nach Lektion"));
+    lessonChips(p1, renderList);
+    var sw = el("div"); sw.style.marginTop = "8px";
+    var s = document.createElement("input"); s.type = "search"; s.placeholder = "Verb suchen …"; s.value = listFilter; s.setAttribute("aria-label", "Verb suchen"); s.style.width = "100%";
+    s.addEventListener("input", function () { listFilter = s.value; renderVerbs(box); });
+    sw.appendChild(s); p1.appendChild(sw);
+    v.appendChild(p1);
+    var box = el("div"); v.appendChild(box);
+    renderVerbs(box);
+  }
+  function renderVerbs(box) {
+    clear(box);
+    var q = listFilter.toLowerCase().replace(/^\s+|\s+$/g, "");
+    var any = false;
+    for (var lsn = 1; lsn <= LESSONS; lsn++) {
+      if (!store.settings.lessons[lsn - 1]) { continue; }
+      var vs = VERBS.filter(function (x) { return x.l === lsn && (!q || infPlain(x).toLowerCase().indexOf(q) >= 0 || meaning(x).toLowerCase().indexOf(q) >= 0); });
+      if (!vs.length) { continue; }
+      any = true;
+      var p = el("div", "panel grp");
+      p.appendChild(el("h3", null, "Lektion " + lsn + " (" + vs.length + ")"));
+      vs.forEach(function (x) {
+        var row = el("div", "vrow");
+        var h = el("div", "vh");
+        h.appendChild(el("b", null, infShown(x)));
+        var mm = meaning(x);
+        if (mm) { h.appendChild(meaningNode(x)); }
+        var tags = x.g.filter(function (g) { return g !== "reg"; }).map(function (g) { for (var k = 0; k < TAGS.length; k++) { if (TAGS[k].id === g) { return TAGS[k].label; } } return g; });
+        if (x.vc) { tags.push(x.vc); }
+        if (tags.length) { h.appendChild(el("small", "tagline", " · " + tags.join(" · "))); }
+        row.appendChild(h);
+        row.appendChild(paradigmNode(x, -1));
+        p.appendChild(row);
+      });
+      box.appendChild(p);
+    }
+    if (!any) { box.appendChild(el("div", "small", "Keine Verben gefunden.")); }
+  }
+
+  /* ---------- Fortschritt ---------- */
+  function barRow(tb, label, t, s, g, countText) {
+    var tr = el("tr");
+    tr.appendChild(el("td", "n", label));
+    var tdb = el("td"); var bb = el("div", "rowbar");
+    var a1 = el("i", "seg-s"); a1.style.width = (t ? 100 * s / t : 0) + "%";
+    var a2 = el("i", "seg-g"); a2.style.width = (t ? 100 * g / t : 0) + "%";
+    bb.appendChild(a1); bb.appendChild(a2); tdb.appendChild(bb); tr.appendChild(tdb);
+    tr.appendChild(el("td", "c", countText)); tb.appendChild(tr);
+  }
+  function renderProg() {
+    var v = $("viewProg"); clear(v);
+    var seen = 0, sure = 0, tot = VERBS.length, hard = [];
+    var perT = {}, perL = {};
+    TAGS.forEach(function (k) { perT[k.id] = { t: 0, s: 0, g: 0 }; });
+    for (var l = 1; l <= LESSONS; l++) { perL[l] = { t: 0, s: 0, g: 0 }; }
+    VERBS.forEach(function (x) {
+      var r = rec(x.k), isS = isSure(x.k), isSeen = !!(r && r.n > 0);
+      perL[x.l].t += 1;
+      x.g.forEach(function (g) { perT[g].t += 1; });
+      if (isSeen) {
+        seen += 1;
+        if (isS) { sure += 1; perL[x.l].s += 1; x.g.forEach(function (g) { perT[g].s += 1; }); }
+        else { perL[x.l].g += 1; x.g.forEach(function (g) { perT[g].g += 1; }); }
+        if (r.n - r.c > 0) { hard.push({ x: x, wrong: r.n - r.c, all: r.n }); }
+      }
+    });
+    var p = el("div", "panel"); p.appendChild(el("h2", null, "Gesamt"));
+    p.appendChild(el("div", null, sure + " von " + tot + " Verben sicher · " + seen + " schon geübt"));
+    var rb = el("div", "rowbar"); rb.style.marginTop = "8px";
+    var s1 = el("i", "seg-s"); s1.style.width = (100 * sure / tot) + "%";
+    var s2 = el("i", "seg-g"); s2.style.width = (100 * (seen - sure) / tot) + "%";
+    rb.appendChild(s1); rb.appendChild(s2); p.appendChild(rb);
+    p.appendChild(el("div", "small", "„sicher“ = zuletzt mindestens zweimal hintereinander richtig. Grün: sicher · Gelb: geübt, aber noch nicht sicher."));
+    var tdone = 0; TEXTS.forEach(function (t) { if (store.texts[t.id]) { tdone += 1; } });
+    p.appendChild(el("div", "small", "Fehlertexte bearbeitet: " + tdone + " von " + TEXTS.length));
+    v.appendChild(p);
+
+    var p2 = el("div", "panel"); p2.appendChild(el("h2", null, "Nach Thema"));
+    var tb = el("table", "prog");
+    TAGS.forEach(function (k) { var d = perT[k.id]; barRow(tb, k.label, d.t, d.s, d.g, d.s + " / " + d.t + " sicher"); });
+    p2.appendChild(tb); v.appendChild(p2);
+
+    var p2b = el("div", "panel"); p2b.appendChild(el("h2", null, "Nach Lektion"));
+    var tb2 = el("table", "prog");
+    for (var k2 = 1; k2 <= LESSONS; k2++) { var d2 = perL[k2]; barRow(tb2, "Lektion " + k2, d2.t, d2.s, d2.g, d2.s + " / " + d2.t + " sicher"); }
+    p2b.appendChild(tb2); v.appendChild(p2b);
+
+    var p3 = el("div", "panel"); p3.appendChild(el("h2", null, "Schwierigste Verben"));
+    hard.sort(function (a, b) { return b.wrong - a.wrong || b.all - a.all; });
+    if (!hard.length) { p3.appendChild(el("div", "small", "Noch keine Fehler – oder noch nichts geübt.")); }
+    else {
+      var ul = el("ul", "rev");
+      hard.slice(0, 10).forEach(function (h) {
+        var li = el("li"); li.appendChild(el("div", "w", infShown(h.x)));
+        li.appendChild(el("div", "pl", h.wrong + " von " + h.all + " falsch")); ul.appendChild(li);
+      });
+      p3.appendChild(ul);
+    }
+    v.appendChild(p3);
+    var p4 = el("div", "panel");
+    var rs = el("button", "sec", "Fortschritt zurücksetzen"); rs.type = "button";
+    rs.addEventListener("click", function () {
+      if (window.confirm("Gesamten Fortschritt löschen? Das kann nicht rückgängig gemacht werden.")) { store.verbs = {}; store.texts = {}; save(); renderProg(); }
+    });
+    p4.appendChild(rs); v.appendChild(p4);
+  }
+
+  /* ---------- Tabs & Tastatur ---------- */
+  var tab = "practice";
+  function showTab(t) {
+    tab = t;
+    $("viewPractice").className = t === "practice" ? "" : "hidden";
+    $("viewList").className = t === "list" ? "" : "hidden";
+    $("viewProg").className = t === "prog" ? "" : "hidden";
+    $("tabPractice").className = "tab" + (t === "practice" ? " on" : "");
+    $("tabList").className = "tab" + (t === "list" ? " on" : "");
+    $("tabProg").className = "tab" + (t === "prog" ? " on" : "");
+    if (t === "practice") { renderPractice(); } else if (t === "list") { renderList(); } else { renderProg(); }
+  }
+  function init() {
+    load();
+    $("tabPractice").addEventListener("click", function () { showTab("practice"); });
+    $("tabList").addEventListener("click", function () { showTab("list"); });
+    $("tabProg").addEventListener("click", function () { showTab("prog"); });
+    document.addEventListener("keydown", function (ev) {
+      if (tab !== "practice" || !session || session.pos >= session.queue.length) { return; }
+      var tag = ev.target && ev.target.tagName;
+      var fmt = session.current ? session.current.fmt : "";
+      if (tag === "INPUT" || tag === "SELECT") {
+        if (tag === "INPUT" && ev.target.id === "typeInput" && session.answered && ev.key === "Enter") { ev.preventDefault(); nextQuestion(); }
+        return;
+      }
+      if (fmt === "text") { return; }
+      if (!session.answered) {
+        var row = $("optRow");
+        if (row && ev.key >= "1" && ev.key <= "4") {
+          var b = row.getElementsByTagName("button")[parseInt(ev.key, 10) - 1];
+          if (b) { b.click(); }
+        }
+      } else if ((ev.key === "Enter" || ev.key === " ") && tag !== "BUTTON") { ev.preventDefault(); nextQuestion(); }
+    });
+    showTab("practice");
+  }
+  init();
+})();
+</script>
+</body>
+</html>
