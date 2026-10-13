@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wegbeschreibung – Dialoge mit Dropdown-Lücken</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.5;
+    color: #222;
+    background: #f3f5f8;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #1f3a5f;
+    color: #fff;
+    padding: 10px 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.25);
+  }
+  header h1 { margin: 0; font-size: 20px; }
+  #total { font-size: 15px; opacity: .9; margin-top: 2px; }
+  main { max-width: 860px; margin: 0 auto; padding: 16px; }
+  .intro {
+    background: #fff;
+    border-left: 5px solid #1e90d6;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 18px 18px;
+    margin-bottom: 26px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  }
+  .card h2 { margin: 0 0 10px; font-size: 21px; color: #1f3a5f; }
+  .card h2 .nr {
+    display: inline-block;
+    background: #1f3a5f;
+    color: #fff;
+    border-radius: 50%;
+    width: 30px; height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 16px;
+    margin-right: 8px;
+  }
+  .plan {
+    background: #eef4fb;
+    border: 1px solid #c9dcf0;
+    border-radius: 8px;
+    padding: 8px 14px 8px;
+    margin-bottom: 14px;
+    font-size: 16px;
+  }
+  .plan strong { color: #1f3a5f; }
+  .plan ol { margin: 6px 0 4px; padding-left: 22px; }
+  .line { display: flex; align-items: flex-start; margin: 10px 0; }
+  .bubble {
+    flex: 0 0 auto;
+    width: 26px; height: 22px;
+    border-radius: 12px;
+    margin: 8px 10px 0 0;
+    position: relative;
+  }
+  .bubble:after {
+    content: "";
+    position: absolute;
+    bottom: -5px; left: 4px;
+    border-style: solid;
+    border-width: 6px 6px 0 0;
+    border-color: transparent;
+  }
+  .bubble.a { background: #1e90d6; }
+  .bubble.a:after { border-top-color: #1e90d6; border-right-color: transparent; }
+  .bubble.b { background: #6cc04a; }
+  .bubble.b:after { border-top-color: #6cc04a; border-right-color: transparent; }
+  .text { line-height: 2.3; }
+  select.gap {
+    font-family: inherit;
+    font-size: 16px;
+    padding: 3px 4px;
+    margin: 0 2px;
+    border: 2px solid #f0a477;
+    border-radius: 6px;
+    background: #fde3d2;
+    color: #222;
+    max-width: 100%;
+  }
+  select.gap.ok { border-color: #2e9e4f; background: #d6f3de; }
+  select.gap.bad { border-color: #d33; background: #fbd5d5; }
+  select.gap.empty { border-color: #d33; background: #fff3cd; }
+  select.gap.sol { border-color: #2a6fb0; background: #dcebfa; }
+  .buttons { margin-top: 14px; }
+  button {
+    font-family: inherit;
+    font-size: 16px;
+    border: 0;
+    border-radius: 8px;
+    padding: 9px 16px;
+    margin: 4px 6px 4px 0;
+    cursor: pointer;
+    color: #fff;
+    background: #1f3a5f;
+  }
+  button.sec { background: #6b7b8f; }
+  button:active { opacity: .8; }
+  .result { margin-top: 8px; font-weight: 600; min-height: 1.5em; }
+  .result.good { color: #1f7a3a; }
+  .result.try { color: #b3261e; }
+  footer { text-align: center; font-size: 14px; color: #667; padding: 0 16px 30px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Wie komme ich …? – Dialoge ergänzen</h1>
+  <div id="total">Noch nichts geprüft.</div>
+</header>
+<main>
+  <div class="intro">
+    Lies zuerst den <strong>Plan</strong> in jedem Kasten. Wähle dann in jeder Lücke das passende Wort.
+    Klicke danach auf <strong>Prüfen</strong>.
+  </div>
+  <div id="app"></div>
+</main>
+<footer>Du kannst jeden Dialog beliebig oft üben („Neu starten“ mischt die Antworten neu).</footer>
+<noscript><p style="padding:16px">Bitte JavaScript aktivieren.</p></noscript>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------------
+     DIALOGE
+     Lücken: {{richtig|falsch1|falsch2|falsch3}}  (die ERSTE Antwort ist richtig,
+     die Reihenfolge im Dropdown wird automatisch gemischt)
+     Zeilen: ["A", "Text"] = Fragende Person (blau), ["B", "Text"] = Antwortende Person (grün)
+  ------------------------------------------------------------------ */
+  var DIALOGS = [
+    {
+      title: "Wie komme ich zum Zoo?",
+      plan: [
+        "Start: Hauptbahnhof – Ziel: Zoo",
+        "S2 Richtung Flughafen bis Marktplatz",
+        "Umsteigen am Marktplatz",
+        "S5 Richtung Nordstadt bis Station Zoo"
+      ],
+      lines: [
+        ["A", "Entschuldigung, wie komme ich {{zum|zur|zu|im}} Zoo?"],
+        ["B", "Das ist einfach. Sie fahren zuerst mit der {{S2|S5|S1|S8}} Richtung {{Flughafen|Marktplatz|Nordstadt|Hauptbahnhof}}. Sie fahren bis {{zum|zur|zu|im}} Marktplatz. Dort steigen Sie {{um|aus|ein|auf}}. Dann fahren Sie mit der S5 Richtung Nordstadt."],
+        ["A", "Und wo muss ich aussteigen?"],
+        ["B", "Sie fahren direkt bis {{zur|zum|zu|beim}} Station {{Zoo|Marktplatz|Flughafen|Nordstadt}}. Dort steigen Sie {{aus|um|ein|auf}}."]
+      ]
+    },
+    {
+      title: "Wie komme ich zum Krankenhaus?",
+      plan: [
+        "Start: Rathaus – Ziel: Krankenhaus",
+        "Bus 12 Richtung Bahnhof",
+        "Umsteigen am Bahnhof",
+        "Bus 7 Richtung Waldstraße bis Haltestelle Krankenhaus"
+      ],
+      lines: [
+        ["A", "Guten Tag. Wie komme ich {{zum|zur|zu|im}} Krankenhaus?"],
+        ["B", "Das ist nicht schwer. Sie {{nehmen|fahren|gehen|laufen}} zuerst den Bus 12 Richtung Bahnhof. Am Bahnhof müssen Sie {{umsteigen|abfahren|anrufen|bezahlen}}. Dann nehmen Sie den Bus {{7|12|5|21}} Richtung {{Waldstraße|Bahnhof|Rathaus|Zentrum}}."],
+        ["A", "Und wo muss ich aussteigen?"],
+        ["B", "Sie steigen {{an der|am|an die|im}} Haltestelle {{Krankenhaus|Waldstraße|Bahnhof|Rathaus}} aus."]
+      ]
+    },
+    {
+      title: "Wie komme ich zur Post? (zu Fuß)",
+      plan: [
+        "Start: Marktplatz – Ziel: Post",
+        "geradeaus bis zur Kreuzung",
+        "an der Kreuzung rechts in die Bahnhofstraße",
+        "zweite Straße links",
+        "Die Post ist neben dem Café. Es sind 5 Minuten zu Fuß."
+      ],
+      lines: [
+        ["A", "Entschuldigung, wie komme ich {{zur|zum|zu|im}} Post?"],
+        ["B", "Das ist einfach. Sie gehen hier {{geradeaus|zurück|links|rechts}} bis {{zur|zum|zu|im}} Kreuzung. Dort gehen Sie {{rechts|links|geradeaus|zurück}} in die Bahnhofstraße. Dann nehmen Sie die {{zweite|erste|dritte|vierte}} Straße {{links|rechts|geradeaus|zurück}}."],
+        ["A", "Und wo ist die Post genau?"],
+        ["B", "Die Post ist {{neben|zwischen|über|auf}} dem Café. Sie sind in fünf Minuten {{zu Fuß|mit dem Bus|mit der U-Bahn|mit dem Auto}} da."]
+      ]
+    },
+    {
+      title: "Wie komme ich zum Flughafen?",
+      plan: [
+        "Start: Hauptbahnhof – Ziel: Flughafen",
+        "S-Bahn S8, direkt (kein Umsteigen)",
+        "Abfahrt: Gleis 4 – Fahrzeit: 25 Minuten",
+        "Fahrkarte: am Automaten kaufen"
+      ],
+      lines: [
+        ["A", "Entschuldigung, wie komme ich {{zum|zur|zu|im}} Flughafen?"],
+        ["B", "Am besten fahren Sie {{mit der|mit dem|mit den|von der}} S-Bahn. Die {{S8|S2|S5|S3}} fährt {{direkt|rechts|links|zurück}} zum Flughafen. Sie müssen nicht umsteigen."],
+        ["A", "Von welchem Gleis fährt sie ab? Und wie lange dauert die Fahrt?"],
+        ["B", "Sie fährt von Gleis {{4|8|5|2}}. Die Fahrt dauert {{25|10|45|52}} Minuten. Die Fahrkarte kaufen Sie {{am|im|zum|ins}} Automaten."]
+      ]
+    },
+    {
+      title: "Wie komme ich zum Schwimmbad?",
+      plan: [
+        "Start: Theater – Ziel: Schwimmbad",
+        "Straßenbahn 6 Richtung Messe bis Brückenstraße",
+        "Umsteigen an der Brückenstraße",
+        "Bus 21 Richtung Sportpark bis Haltestelle Schwimmbad"
+      ],
+      lines: [
+        ["A", "Entschuldigung, wie komme ich {{zum|zur|zu|im}} Schwimmbad?"],
+        ["B", "Sie fahren zuerst mit der Straßenbahn {{6|21|12|3}} Richtung {{Messe|Sportpark|Theater|Brückenstraße}}. Fahren Sie bis {{zur|zum|zu|im}} Brückenstraße. Dort steigen Sie {{um|aus|ein|auf}}. Dann nehmen Sie den Bus {{21|6|12|3}} Richtung Sportpark."],
+        ["A", "Und wo muss ich aussteigen?"],
+        ["B", "Sie steigen {{an der|am|an die|im}} Haltestelle {{Schwimmbad|Sportpark|Messe|Brückenstraße}} aus."]
+      ]
+    },
+    {
+      title: "Wie komme ich zum Museum?",
+      plan: [
+        "Start: Universität – Ziel: Museum",
+        "U2 Richtung Neustadt bis Hauptmarkt",
+        "Umsteigen am Hauptmarkt",
+        "U1 Richtung Westend, drei Stationen bis Museum"
+      ],
+      lines: [
+        ["A", "Entschuldigung, wie komme ich {{zum|zur|zu|im}} Museum?"],
+        ["B", "Sie nehmen zuerst die {{U2|U1|U3|U4}} Richtung {{Neustadt|Westend|Hauptmarkt|Universität}}. Am {{Hauptmarkt|Museum|Neustadt|Westend}} steigen Sie um. Dann nehmen Sie {{die|der|den|dem}} U1 Richtung Westend."],
+        ["A", "Wie viele Stationen sind das?"],
+        ["B", "Das sind nur {{drei|zwei|fünf|zehn}} Stationen. Sie steigen an der Station {{Museum|Westend|Neustadt|Hauptmarkt}} aus."]
+      ]
+    }
+  ];
+
+  /* ------------------------------------------------------------------ */
+
+  var states = [];
+
+  function shuffle(a) {
+    var i, j, t;
+    for (i = a.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function el(tag, cls, txt) {
+    var e = document.createElement(tag);
+    if (cls) { e.className = cls; }
+    if (txt !== undefined) { e.appendChild(document.createTextNode(txt)); }
+    return e;
+  }
+
+  function fillOptions(sel) {
+    var all = sel._opts.slice(0);
+    var i, o;
+    while (sel.firstChild) { sel.removeChild(sel.firstChild); }
+    o = el("option", null, "…");
+    o.value = "";
+    sel.appendChild(o);
+    shuffle(all);
+    for (i = 0; i < all.length; i++) {
+      o = el("option", null, all[i]);
+      o.value = all[i];
+      sel.appendChild(o);
+    }
+    sel.value = "";
+    sel.className = "gap";
+  }
+
+  function makeGap(spec, nr) {
+    var parts = spec.split("|");
+    var sel = el("select", "gap");
+    sel._opts = parts;
+    sel._correct = parts[0];
+    sel.setAttribute("aria-label", "Lücke " + nr);
+    fillOptions(sel);
+    sel.onchange = function () { sel.className = "gap"; };
+    return sel;
+  }
+
+  function buildDialog(d, idx) {
+    var st = { selects: [], score: null, resultEl: null };
+    var card = el("section", "card");
+    var h = el("h2");
+    var nr = el("span", "nr", String(idx + 1));
+    var i, k, line, row, bub, txt, pieces, plan, ol, li, btns, b;
+
+    h.appendChild(nr);
+    h.appendChild(document.createTextNode(d.title));
+    card.appendChild(h);
+
+    plan = el("div", "plan");
+    plan.appendChild(el("strong", null, "Plan"));
+    ol = el("ol");
+    for (i = 0; i < d.plan.length; i++) {
+      li = el("li", null, d.plan[i]);
+      ol.appendChild(li);
+    }
+    plan.appendChild(ol);
+    card.appendChild(plan);
+
+    for (i = 0; i < d.lines.length; i++) {
+      line = d.lines[i];
+      row = el("div", "line");
+      bub = el("span", "bubble " + (line[0] === "A" ? "a" : "b"));
+      bub.setAttribute("aria-hidden", "true");
+      txt = el("div", "text");
+      pieces = line[1].split(/(\{\{[^}]+\}\})/);
+      for (k = 0; k < pieces.length; k++) {
+        if (pieces[k] === "") { continue; }
+        if (pieces[k].slice(0, 2) === "{{") {
+          var sel = makeGap(pieces[k].slice(2, -2), st.selects.length + 1);
+          st.selects.push(sel);
+          txt.appendChild(sel);
+        } else {
+          txt.appendChild(document.createTextNode(pieces[k]));
+        }
+      }
+      row.appendChild(bub);
+      row.appendChild(txt);
+      card.appendChild(row);
+    }
+
+    btns = el("div", "buttons");
+    b = el("button", null, "Prüfen");
+    b.onclick = function () { check(st); };
+    btns.appendChild(b);
+    b = el("button", "sec", "Lösung zeigen");
+    b.onclick = function () { solve(st); };
+    btns.appendChild(b);
+    b = el("button", "sec", "Neu starten");
+    b.onclick = function () { reset(st); };
+    btns.appendChild(b);
+    card.appendChild(btns);
+
+    st.resultEl = el("div", "result");
+    st.resultEl.setAttribute("role", "status");
+    card.appendChild(st.resultEl);
+
+    states.push(st);
+    return card;
+  }
+
+  function check(st) {
+    var i, v, ok = 0, empty = 0, n = st.selects.length;
+    for (i = 0; i < n; i++) {
+      v = st.selects[i].value;
+      if (v === st.selects[i]._correct) {
+        st.selects[i].className = "gap ok";
+        ok++;
+      } else if (v === "") {
+        st.selects[i].className = "gap empty";
+        empty++;
+      } else {
+        st.selects[i].className = "gap bad";
+      }
+    }
+    st.score = ok;
+    if (ok === n) {
+      st.resultEl.className = "result good";
+      st.resultEl.textContent = "Super! Alles richtig (" + ok + " von " + n + ").";
+    } else {
+      st.resultEl.className = "result try";
+      st.resultEl.textContent = ok + " von " + n + " richtig." +
+        (empty > 0 ? " Fülle alle Lücken aus." : "") +
+        " Lies den Plan noch einmal und verbessere die roten Lücken.";
+    }
+    updateTotal();
+  }
+
+  function solve(st) {
+    var i;
+    for (i = 0; i < st.selects.length; i++) {
+      st.selects[i].value = st.selects[i]._correct;
+      st.selects[i].className = "gap sol";
+    }
+    st.score = null;
+    st.resultEl.className = "result";
+    st.resultEl.textContent = "So lautet die Lösung. Probiere den Dialog danach mit „Neu starten“ noch einmal.";
+    updateTotal();
+  }
+
+  function reset(st) {
+    var i;
+    for (i = 0; i < st.selects.length; i++) { fillOptions(st.selects[i]); }
+    st.score = null;
+    st.resultEl.className = "result";
+    st.resultEl.textContent = "";
+    updateTotal();
+  }
+
+  function updateTotal() {
+    var i, checked = 0, ok = 0, max = 0;
+    for (i = 0; i < states.length; i++) {
+      if (states[i].score !== null) {
+        checked++;
+        ok += states[i].score;
+        max += states[i].selects.length;
+      }
+    }
+    document.getElementById("total").textContent = checked === 0
+      ? "Noch nichts geprüft."
+      : "Geprüft: " + checked + " von " + states.length + " Dialogen – richtig: " + ok + " von " + max;
+  }
+
+  var app = document.getElementById("app");
+  var i;
+  for (i = 0; i < DIALOGS.length; i++) {
+    app.appendChild(buildDialog(DIALOGS[i], i));
+  }
+})();
+</script>
+</body>
+</html>
