@@ -1,0 +1,2195 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Das Perfekt · Lerneinheit A1</title>
+<style>
+  :root {
+    --bg:#f4f6fa; --card:#fff; --text:#1d2433; --muted:#5b667a; --line:#d5dbe6;
+    --accent:#2b5fd9; --accent-text:#fff; --chip:#e9eef8;
+    --ok:#1f7a4d; --ok-bg:#e0f3e8; --bad:#b3303f; --bad-bg:#fbe4e7; --warn-bg:#fff4d6; --info-bg:#e6edfb;
+    --font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#12161f; --card:#1b2130; --text:#e8ecf5; --muted:#9aa5ba; --line:#30394d;
+      --accent:#6b97ff; --accent-text:#0b1226; --chip:#252d40;
+      --ok:#6fd6a2; --ok-bg:#183427; --bad:#ff8a98; --bad-bg:#42202a; --warn-bg:#3a3118; --info-bg:#1f2a44;
+    }
+  }
+  * { box-sizing:border-box; }
+  html,body { margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:var(--font); line-height:1.5; min-height:100vh; font-size:16px; }
+  [hidden] { display:none !important; }
+  .wrap { max-width:760px; margin:0 auto; padding:14px 16px 40px; }
+  h1 { font-size:1.6rem; margin:6px 0 4px; }
+  button, input, select, textarea { font-family:inherit; font-size:1rem; color:var(--text); }
+  button { cursor:pointer; }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  /* Sprachwahl */
+  .pick h1 { text-align:center; margin:22px 0 4px; }
+  .pick .sub { text-align:center; color:var(--muted); margin:0 0 4px; }
+  .pickprompt { text-align:center; color:var(--muted); font-size:.95rem; margin:20px 0 16px; }
+  .pickprompt p { margin:0 0 4px; }
+  .langlist { display:flex; flex-direction:column; gap:12px; }
+  .langchoice { width:100%; min-height:68px; padding:14px 18px; border:none; border-bottom:4px solid var(--cd); border-radius:14px; background:var(--c); color:#fff; font-size:1.35rem; font-weight:700; text-align:center; }
+  .langchoice:active { filter:brightness(.92); }
+  /* Obere Leiste */
+  .topbar { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px; }
+  .brand { font-weight:700; color:var(--muted); }
+  .pill { display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:0 14px; border-radius:999px; border:2px solid var(--line); background:var(--card); font-size:.92rem; white-space:nowrap; }
+  .subtitle { color:var(--muted); margin:0 0 12px; font-size:1.05rem; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+  .lead p { margin:0 0 8px; }
+  .mini { font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:12px 0 6px; }
+  .steps { margin:0 0 4px; padding-inline-start:1.4em; }
+  .steps li { margin:3px 0; }
+  button.main { width:100%; min-height:56px; border-radius:14px; border:none; font-size:1.1rem; font-weight:700; background:var(--accent); color:var(--accent-text); padding:8px 14px; }
+  button.main:disabled { opacity:.4; }
+  button.sec { min-height:56px; width:100%; border-radius:14px; border:2px solid var(--line); background:var(--card); font-size:1rem; padding:8px 14px; }
+  .linkbtn { background:none; border:none; color:var(--accent); font-size:.95rem; padding:6px 4px; min-height:44px; text-decoration:underline; }
+  .linkbtn.small { min-height:36px; font-size:.88rem; }
+  .startrow { margin:4px 0 12px; }
+  .progwrap { margin:6px 0 14px; }
+  .progtxt { font-size:.9rem; color:var(--muted); margin-bottom:4px; }
+  .bar { height:10px; background:var(--chip); border-radius:999px; overflow:hidden; }
+  .bar > i { display:block; height:100%; background:var(--accent); transition:width .3s; }
+  h2.sect { font-size:1.2rem; margin:16px 0 8px; }
+  /* Inhaltsverzeichnis */
+  .toc { list-style:none; margin:0 0 14px; padding:0; display:flex; flex-direction:column; gap:8px; }
+  .tocitem { width:100%; display:flex; align-items:center; gap:12px; min-height:60px; padding:8px 12px; border-radius:12px; border:2px solid var(--line); background:var(--card); text-align:start; }
+  .tocitem:hover { border-color:var(--accent); }
+  .tocitem .num { flex:none; width:34px; height:34px; border-radius:50%; background:var(--chip); display:flex; align-items:center; justify-content:center; font-weight:800; }
+  .tocitem .ttxt { flex:1; min-width:0; display:flex; flex-direction:column; }
+  .tocitem .t1 { font-weight:700; overflow-wrap:anywhere; }
+  .tocitem .t2 { font-size:.85rem; color:var(--muted); overflow-wrap:anywhere; }
+  .tocitem .stat { flex:none; font-size:.78rem; color:var(--muted); text-align:end; max-width:7.5em; }
+  .tocitem.st-done { border-color:var(--ok); }
+  .tocitem.st-done .num, .tocitem.st-seen .num { background:var(--ok-bg); color:var(--ok); }
+  .tocitem.st-some .num { background:var(--warn-bg); }
+  .skipped summary { cursor:pointer; font-weight:700; min-height:32px; }
+  .skipped ul { margin:6px 0 0; padding-inline-start:1.3em; }
+  .skipped li { margin:4px 0; }
+  /* Abschnitt */
+  .jumprow { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+  .partof { color:var(--muted); font-size:.88rem; white-space:nowrap; }
+  select.jump, select.vgroup { flex:1; min-width:0; min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); padding:6px 10px; }
+  .sechead { margin:10px 0 10px; }
+  .kicker { font-size:.8rem; text-transform:uppercase; letter-spacing:.07em; color:var(--accent); font-weight:700; }
+  .sectitle { margin:2px 0 0; font-size:1.4rem; line-height:1.25; }
+  .sectitle .tde { display:block; }
+  .sectitle .ttr { display:block; font-size:1.05rem; font-weight:500; color:var(--muted); margin-top:2px; }
+  .keyde { background:var(--chip); border-radius:10px; padding:10px 12px; margin-bottom:10px; border-inline-start:5px solid var(--accent); text-align:left; }
+  .ruletext p { margin:0 0 8px; }
+  .ruletext strong { color:var(--text); }
+  .tlabel { font-size:.8rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:14px 0 6px; }
+  .tablewrap { overflow-x:auto; background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; }
+  table { border-collapse:collapse; width:100%; min-width:360px; font-size:.95rem; }
+  th, td { padding:7px 10px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); }
+  th { background:var(--chip); font-size:.82rem; white-space:nowrap; }
+  th small { display:block; font-weight:500; color:var(--muted); }
+  td strong { color:var(--accent); }
+  td small.note { display:block; color:var(--muted); font-size:.8rem; }
+  td .tag { color:var(--muted); font-size:.85rem; }
+  tr:last-child td { border-bottom:none; }
+  .memo { background:var(--warn-bg); border-radius:12px; padding:10px 14px; margin-bottom:14px; }
+  .memolabel { font-weight:700; font-size:.88rem; margin-bottom:4px; }
+  .memode { margin-bottom:4px; text-align:left; }
+  .memotext { font-size:.95rem; }
+  /* Übungen */
+  .excard { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 14px 12px; margin:16px 0; }
+  .exhead { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
+  .exhead h3 { margin:0; font-size:1.05rem; }
+  .badge { font-size:.8rem; font-weight:700; border-radius:999px; padding:2px 10px; }
+  .badge.b-ok { background:var(--ok-bg); color:var(--ok); }
+  .badge.b-sol { background:var(--info-bg); color:var(--accent); }
+  .insde { margin:0 0 2px; font-weight:700; text-align:left; }
+  .inst { margin:0 0 8px; color:var(--muted); font-size:.95rem; }
+  .exnote { margin:0 0 8px; font-size:.92rem; background:var(--chip); border-radius:8px; padding:6px 10px; }
+  .items { list-style:none; counter-reset:it; margin:8px 0; padding:0; display:flex; flex-direction:column; gap:8px; }
+  .item { counter-increment:it; position:relative; display:flex; align-items:flex-start; gap:8px; flex-wrap:wrap; padding:8px 10px 8px 10px; border:2px solid var(--line); border-radius:12px; }
+  .item::before { content:counter(it); flex:none; width:26px; height:26px; border-radius:50%; background:var(--chip); font-size:.82rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin-top:2px; }
+  .item .imain { flex:1; min-width:0; }
+  .item .mark { font-weight:800; font-size:1.2rem; width:1.2em; text-align:center; }
+  .item.ok { border-color:var(--ok); background:var(--ok-bg); }
+  .item.ok .mark { color:var(--ok); }
+  .item.bad { border-color:var(--bad); background:var(--bad-bg); }
+  .item.bad .mark { color:var(--bad); }
+  .item.shown { border-color:var(--accent); background:var(--info-bg); }
+  .solline { flex-basis:100%; font-size:.92rem; color:var(--text); text-align:left; padding-inline-start:34px; }
+  .solline:empty { display:none; }
+  .line { font-size:1.05rem; line-height:2.3; text-align:left; }
+  input.blank { min-height:40px; border-radius:8px; border:2px solid var(--line); background:var(--card); padding:2px 8px; font-size:1.05rem; vertical-align:middle; margin:0 2px; max-width:100%; }
+  input.blank.wide { display:block; width:100%; margin:6px 0 0; }
+  input.blank.okin { border-color:var(--ok); }
+  input.blank.badin { border-color:var(--bad); }
+  .wprompt { font-size:1.02rem; text-align:left; }
+  .cprompt { font-size:1.02rem; text-align:left; margin-bottom:6px; }
+  .cword { font-size:1.25rem; font-weight:800; text-align:left; margin-bottom:6px; }
+  .ctr { font-size:.88rem; color:var(--muted); margin:-2px 0 6px; }
+  .optrow { display:flex; flex-wrap:wrap; gap:8px; }
+  button.opt { min-height:48px; border-radius:12px; border:2px solid var(--line); background:var(--card); padding:6px 16px; font-size:1.02rem; }
+  button.opt.sel { border-color:var(--accent); background:var(--chip); font-weight:700; }
+  .ordans { min-height:52px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:6px; border:2px dashed var(--line); border-radius:10px; margin-bottom:8px; }
+  .ordpool { display:flex; flex-wrap:wrap; gap:6px; }
+  .ordhint { color:var(--muted); font-size:.9rem; padding:0 4px; }
+  button.wchip { min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); padding:4px 12px; font-size:1.02rem; }
+  button.wchip.in { background:var(--chip); border-color:var(--accent); }
+  .umlauts { display:flex; gap:6px; margin:8px 0 2px; }
+  .umlauts button { min-width:48px; min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); font-size:1.1rem; }
+  .btnrow { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:10px; }
+  .btnrow .main { flex:1 1 160px; width:auto; min-height:52px; }
+  .btnrow .sec { flex:1 1 140px; width:auto; min-height:52px; }
+  .result { margin-top:8px; border-radius:10px; padding:0; font-weight:600; }
+  .result.good, .result.warn, .result.info { padding:10px 12px; }
+  .result.good { background:var(--ok-bg); color:var(--ok); }
+  .result.warn { background:var(--warn-bg); }
+  .result.info { background:var(--info-bg); }
+  .result .rulelinks { display:flex; flex-wrap:wrap; gap:4px; }
+  .freebox textarea { width:100%; border-radius:10px; border:2px solid var(--line); background:var(--card); padding:8px 10px; font-size:1.02rem; }
+  .freelabel { display:block; font-weight:700; margin-bottom:4px; }
+  .freechecks { margin:10px 0 4px; font-weight:700; }
+  .ckrow { display:flex; align-items:center; gap:8px; min-height:44px; }
+  .ckrow input { width:22px; height:22px; flex:none; }
+  /* Beobachten + Fragen */
+  .obscard { background:var(--info-bg); border:1px solid var(--line); }
+  .obstitle { margin:0 0 8px; font-size:1.05rem; }
+  .obsgroup { margin:0 0 10px; }
+  .obsgroup:last-child { margin-bottom:0; }
+  .grouplabel { font-size:.8rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:2px 0 4px; }
+  .obsline { font-size:1.12rem; line-height:1.55; padding:7px 12px; margin:5px 0; background:var(--card); border-radius:10px; border-inline-start:4px solid var(--accent); text-align:left; overflow-wrap:anywhere; }
+  .obsline strong { color:var(--accent); }
+  .dqhint { margin:0 0 6px; color:var(--muted); font-size:.95rem; }
+  .dqprog { font-size:.88rem; font-weight:700; color:var(--accent); margin-bottom:6px; }
+  .dq { padding:12px 0; border-top:1px solid var(--line); }
+  .dqq { font-weight:700; margin-bottom:8px; }
+  .dqn { display:inline-flex; width:26px; height:26px; border-radius:50%; background:var(--chip); align-items:center; justify-content:center; font-size:.82rem; margin-inline-end:4px; }
+  .dqopts { display:flex; flex-direction:column; gap:8px; }
+  .dqopts button.opt { text-align:start; width:100%; }
+  button.opt.right { border-color:var(--ok); background:var(--ok-bg); font-weight:700; }
+  button.opt.wrong { border-color:var(--bad); background:var(--bad-bg); text-decoration:line-through; opacity:.8; }
+  button.opt:disabled { cursor:default; }
+  .dqfb { margin-top:8px; font-weight:700; border-radius:10px; }
+  .dqfb:empty { display:none; }
+  .dqfb.good { color:var(--ok); }
+  .dqfb.warn { color:var(--bad); }
+  .skiprow { margin-top:6px; text-align:center; }
+  .afterdisc[hidden] { display:none; }
+  .banner { background:var(--ok-bg); color:var(--ok); font-weight:700; border-radius:12px; padding:10px 14px; margin:14px 0 6px; }
+  .ruletitle { margin:14px 0 6px; font-size:1.15rem; }
+  .navrow { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:22px; }
+  /* Verbliste */
+  .verbslead { color:var(--muted); }
+  .vtools { display:flex; gap:8px; margin:8px 0; flex-wrap:wrap; }
+  input.vsearch { flex:1 1 180px; min-width:0; min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); padding:6px 10px; }
+  .vcount { color:var(--muted); font-size:.9rem; margin:0 0 4px; }
+  .vh { font-size:1rem; margin:14px 0 6px; }
+  .vgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:6px; }
+  .vitem { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:6px 10px; text-align:left; overflow-wrap:anywhere; }
+  .vitem b { color:var(--accent); }
+  @media (max-width:420px) {
+    .tocitem .stat { display:none; }
+    .item { padding:8px; }
+    .line { line-height:2.4; }
+    th, td { padding:6px 7px; }
+    table { font-size:.9rem; }
+  }
+
+</style>
+</head>
+<body>
+<section id="picker" class="wrap pick">
+  <h1>Das Perfekt</h1>
+  <p class="sub">Deutsch A1 &middot; Lerneinheit zum Selbstlernen</p>
+  <div class="pickprompt" id="pickPrompt"></div>
+  <div class="langlist" id="langList"></div>
+</section>
+<main id="app" class="wrap" hidden></main>
+<script>
+(function () {
+  "use strict";
+  var FONT_LAT = 'system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+  var FONT_AR = '"Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", Arial, sans-serif';
+  var LANG_ORDER = ["tr", "ar", "ru", "en"];
+  var STRINGS = {
+    "en": {
+      lang: "en", dir: "ltr", font: FONT_LAT, accent: "#3E5C8A", accentDark: "#293D5C", nativeName: "English",
+      pickPrompt: "Choose your language",
+      appTitle: "German Perfekt · Learning Unit A1",
+      homeLead: "The Perfekt is the most important tense for talking about the past in spoken German. You do not start with a rule. In each of the 10 parts you first look at example sentences and discover the pattern yourself. Then a few quick questions check what you noticed. Only after that does the rule appear, followed by exercises. Allow about 120 minutes.",
+      homeLead2: "You can start anywhere: tap any part to jump straight to it. All verbs come from your vocabulary list, lessons 1–20.",
+      howTitle: "How to work",
+      how: ["Look at the example sentences. What is always the same?", "Answer the questions about what you noticed. A wrong answer is not a problem – just try again.", "Now the rule appears. It is short and simple.", "Do the exercises and tap “Check”."],
+      obsTitle: "Look at these sentences",
+      discTitle: "What did you notice?",
+      discHint: "Look at the sentences above. Tap the answer you think is right.",
+      discRight: "Right!",
+      discWrong: "Not quite. Look at the sentences again and try another answer.",
+      discProgress: "{r} of {n} questions answered correctly",
+      discAllDone: "Well done! Now you know the pattern. Here is the rule:",
+      ruleTitle: "The rule",
+      skipToRule: "Show the rule now",
+      start: "Start with Rule 1", resume: "Continue: {t}", contents: "Contents", home: "Contents",
+      ruleN: "Rule {n}", partOf: "Part {n} of {t}",
+      progressLine: "{d} of {t} parts completed",
+      stNone: "not started", stSome: "in progress", stDone: "done", stSeen: "opened",
+      skippedTitle: "Not practised here",
+      skippedIntro: "These verbs are hardly ever used in the Perfekt, so they are left out:",
+      skipped: ["Helper and modal verbs: haben, sein, werden, können, müssen, dürfen, wollen, sollen, mögen, möchte (Rule 10 explains why)", "Verbs that appear almost only in the present: heißen, dauern, bedeuten, gelten, fehlen, aussehen, wehtun, es gibt", "States with sein without an action: weg sein, da sein, geboren sein", "Rarely spoken Perfekt forms: bieten, stoßen"],
+      resetAll: "Delete my progress", resetConfirm: "Delete all saved progress?",
+      prev: "← Back", next: "Next →", jump: "Jump to…",
+      exLabel: "Exercise {n}", exampleHead: "Examples", memoLabel: "Remember",
+      check: "Check", solution: "Show solution", restart: "Start again",
+      resFmt: "{r} of {n} correct", allOk: "All correct – well done!", fixIt: "Correct the red answers and tap “Check” again.", solShown: "Solution shown.",
+      tfRight: "Right", tfWrong: "Wrong", clearOrder: "Clear", orderHint: "Tap the words in the right order.",
+      seeRule: "Review Rule {n}", answerLabel: "Answer:",
+      freeLabel: "Your text", freeChecks: "Tick everything you have done:", freeFilled: "Done – good work!",
+      insOrder: "Put the words in the right order to make a Perfekt sentence.",
+      insTf: "Right or wrong? Choose for each statement.",
+      insPart: "Write the Partizip II.",
+      insFill: "Fill in the blanks.",
+      insCls: "Regular or irregular? Choose for each form.",
+      insChoose: "Which Partizip II is correct? Choose one.",
+      insMatch: "Which word fits? Choose one.",
+      insWrite: "Write the sentence in the Perfekt.",
+      insCorrect: "Find the mistake and write the correct sentence. If the sentence is already correct, write “richtig”.",
+      insFree: "Write your own text on paper or in the box. Then check yourself with the list.",
+      insRulenum: "Which rule does it belong to? Write the number (1–10).",
+      insPresPart: "First write the present form (er/sie), then the Partizip II.",
+      verbsLead: "All verbs from your vocabulary list (lessons 1–20) that are worth practising in the Perfekt, with Partizip II. Search or choose a group.",
+      searchPh: "Search verb…", allGroups: "All groups", verbCount: "{n} verbs", noVerbs: "No verb found.", seinTag: "sein",
+      col: {inf: "Infinitive", part: "Partizip II", ex: "Example sentence", pres: "Present (er/sie)", pos1: "Position 1", pos2: "Position 2 (helper verb)", mid: "Middle field", end: "Sentence end (Partizip II)", haben: "with haben", sein: "with sein", rule: "Rule", topic: "Topic", type: "Type", group: "Group"}
+    },
+    "ru": {
+      lang: "ru", dir: "ltr", font: FONT_LAT, accent: "#5C3E7A", accentDark: "#3D2953", nativeName: "Русский",
+      pickPrompt: "Выберите язык",
+      appTitle: "Perfekt в немецком · учебный модуль A1",
+      homeLead: "Perfekt — самое важное время для рассказа о прошлом в разговорном немецком. Здесь вы не начинаете с правила. В каждой из 10 частей вы сначала смотрите на примеры и сами находите закономерность. Затем несколько быстрых вопросов проверяют, что вы заметили. И только после этого появляется правило, а за ним — упражнения. Рассчитывайте примерно на 120 минут.",
+      homeLead2: "Начать можно с любого места: нажмите на любой раздел, чтобы сразу перейти к нему. Все глаголы взяты из вашего списка слов, уроки 1–20.",
+      howTitle: "Как работать",
+      how: ["Посмотрите на примеры. Что в них всегда одинаково?", "Ответьте на вопросы о том, что вы заметили. Ошибка — не проблема, просто попробуйте ещё раз.", "Теперь появляется правило. Оно короткое и простое.", "Выполните упражнения и нажмите «Проверить»."],
+      obsTitle: "Посмотрите на эти предложения",
+      discTitle: "Что вы заметили?",
+      discHint: "Посмотрите на предложения выше. Нажмите на ответ, который кажется вам верным.",
+      discRight: "Верно!",
+      discWrong: "Не совсем. Посмотрите на предложения ещё раз и выберите другой ответ.",
+      discProgress: "Верных ответов: {r} из {n}",
+      discAllDone: "Отлично! Теперь вы знаете закономерность. Вот правило:",
+      ruleTitle: "Правило",
+      skipToRule: "Показать правило сразу",
+      start: "Начать с правила 1", resume: "Продолжить: {t}", contents: "Содержание", home: "Содержание",
+      ruleN: "Правило {n}", partOf: "Раздел {n} из {t}",
+      progressLine: "Пройдено разделов: {d} из {t}",
+      stNone: "не начато", stSome: "в процессе", stDone: "готово", stSeen: "открыто",
+      skippedTitle: "Здесь не тренируются",
+      skippedIntro: "Эти глаголы почти не употребляются в Perfekt, поэтому они не включены:",
+      skipped: ["Вспомогательные и модальные глаголы: haben, sein, werden, können, müssen, dürfen, wollen, sollen, mögen, möchte (почему — объясняет правило 10)", "Глаголы, которые встречаются почти только в настоящем времени: heißen, dauern, bedeuten, gelten, fehlen, aussehen, wehtun, es gibt", "Состояния с sein без действия: weg sein, da sein, geboren sein", "Редко употребляемые формы Perfekt: bieten, stoßen"],
+      resetAll: "Удалить мой прогресс", resetConfirm: "Удалить весь сохранённый прогресс?",
+      prev: "← Назад", next: "Далее →", jump: "Перейти к…",
+      exLabel: "Упражнение {n}", exampleHead: "Примеры", memoLabel: "Запомните",
+      check: "Проверить", solution: "Показать решение", restart: "Начать заново",
+      resFmt: "Верно: {r} из {n}", allOk: "Всё верно — отлично!", fixIt: "Исправьте красные ответы и снова нажмите «Проверить».", solShown: "Решение показано.",
+      tfRight: "Верно", tfWrong: "Неверно", clearOrder: "Очистить", orderHint: "Нажимайте на слова в правильном порядке.",
+      seeRule: "Повторить правило {n}", answerLabel: "Ответ:",
+      freeLabel: "Ваш текст", freeChecks: "Отметьте всё, что вы сделали:", freeFilled: "Готово — хорошая работа!",
+      insOrder: "Расставьте слова в правильном порядке — получится предложение в Perfekt.",
+      insTf: "Верно или неверно? Выберите для каждого утверждения.",
+      insPart: "Напишите Partizip II.",
+      insFill: "Заполните пропуски.",
+      insCls: "Правильный или неправильный? Выберите для каждой формы.",
+      insChoose: "Какое Partizip II правильное? Выберите одно.",
+      insMatch: "Какое слово подходит? Выберите одно.",
+      insWrite: "Напишите предложение в Perfekt.",
+      insCorrect: "Найдите ошибку и напишите правильное предложение. Если предложение уже правильное, напишите «richtig».",
+      insFree: "Напишите свой текст на бумаге или в поле. Затем проверьте себя по списку.",
+      insRulenum: "К какому правилу это относится? Напишите номер (1–10).",
+      insPresPart: "Сначала напишите форму настоящего времени (er/sie), затем Partizip II.",
+      verbsLead: "Все глаголы из вашего списка слов (уроки 1–20), которые стоит тренировать в Perfekt, с Partizip II. Ищите по слову или выберите группу.",
+      searchPh: "Найти глагол…", allGroups: "Все группы", verbCount: "Глаголов: {n}", noVerbs: "Глагол не найден.", seinTag: "sein",
+      col: {inf: "Инфинитив", part: "Partizip II", ex: "Пример", pres: "Настоящее время (er/sie)", pos1: "1-е место", pos2: "2-е место (вспомогательный глагол)", mid: "Середина", end: "Конец (Partizip II)", haben: "с haben", sein: "с sein", rule: "Правило", topic: "Тема", type: "Тип", group: "Группа"}
+    },
+    "ar": {
+      lang: "ar", dir: "rtl", font: FONT_AR, accent: "#8A5A2E", accentDark: "#5C3B1E", nativeName: "العربية",
+      pickPrompt: "اختر لغتك",
+      appTitle: "الـ Perfekt في الألمانية · وحدة تعلّم A1",
+      homeLead: "الـ Perfekt هو أهمّ زمن للحديث عن الماضي في الألمانية المحكية. هنا لا تبدأ بالقاعدة. ففي كل جزء من الأجزاء العشرة تنظر أولاً إلى جمل أمثلة وتكتشف النمط بنفسك. ثم تتحقّق بضعة أسئلة سريعة ممّا لاحظته. وبعد ذلك فقط تظهر القاعدة، ثم التمارين. خصّص نحو 120 دقيقة.",
+      homeLead2: "يمكنك أن تبدأ من أي مكان: اضغط على أي جزء لتنتقل إليه مباشرة. جميع الأفعال مأخوذة من قائمة مفرداتك، الدروس 1–20.",
+      howTitle: "طريقة العمل",
+      how: ["انظر إلى جمل الأمثلة. ما الذي يتكرّر دائماً؟", "أجب عن الأسئلة حول ما لاحظته. الخطأ ليس مشكلة، حاول مرة أخرى.", "الآن تظهر القاعدة. وهي قصيرة وبسيطة.", "حلّ التمارين واضغط «تحقّق»."],
+      obsTitle: "انظر إلى هذه الجمل",
+      discTitle: "ماذا لاحظت؟",
+      discHint: "انظر إلى الجمل أعلاه. اضغط على الإجابة التي تعتقد أنها صحيحة.",
+      discRight: "صحيح!",
+      discWrong: "ليس تماماً. انظر إلى الجمل مرة أخرى وجرّب إجابة أخرى.",
+      discProgress: "الإجابات الصحيحة: {r} من {n}",
+      discAllDone: "أحسنت! الآن عرفت النمط. وهذه هي القاعدة:",
+      ruleTitle: "القاعدة",
+      skipToRule: "أظهر القاعدة الآن",
+      start: "ابدأ بالقاعدة 1", resume: "تابع: {t}", contents: "المحتويات", home: "المحتويات",
+      ruleN: "القاعدة {n}", partOf: "الجزء {n} من {t}",
+      progressLine: "أُنجز {d} من {t} أجزاء",
+      stNone: "لم يبدأ", stSome: "قيد الإنجاز", stDone: "منجز", stSeen: "تم فتحه",
+      skippedTitle: "لا يُتدرَّب عليها هنا",
+      skippedIntro: "نادراً ما تُستخدم هذه الأفعال في الـ Perfekt، لذلك لم نُدرجها:",
+      skipped: ["الأفعال المساعدة والأفعال الناقصة: haben, sein, werden, können, müssen, dürfen, wollen, sollen, mögen, möchte (القاعدة 10 تشرح السبب)", "أفعال تظهر تقريباً في المضارع فقط: heißen, dauern, bedeuten, gelten, fehlen, aussehen, wehtun, es gibt", "حالات مع sein بدون حدث: weg sein, da sein, geboren sein", "صيغ Perfekt قليلة الاستعمال في الكلام: bieten, stoßen"],
+      resetAll: "احذف تقدّمي", resetConfirm: "هل تريد حذف كل التقدّم المحفوظ؟",
+      prev: "→ السابق", next: "التالي ←", jump: "انتقل إلى…",
+      exLabel: "التمرين {n}", exampleHead: "أمثلة", memoLabel: "تذكّر",
+      check: "تحقّق", solution: "أظهر الحل", restart: "ابدأ من جديد",
+      resFmt: "الصحيح: {r} من {n}", allOk: "كل الإجابات صحيحة، أحسنت!", fixIt: "صحّح الإجابات الحمراء ثم اضغط «تحقّق» مرة أخرى.", solShown: "تم إظهار الحل.",
+      tfRight: "صحيح", tfWrong: "خطأ", clearOrder: "مسح", orderHint: "اضغط على الكلمات بالترتيب الصحيح.",
+      seeRule: "راجع القاعدة {n}", answerLabel: "الإجابة:",
+      freeLabel: "نصّك", freeChecks: "ضع علامة على كل ما أنجزته:", freeFilled: "أحسنت، عمل جيّد!",
+      insOrder: "رتّب الكلمات لتكوّن جملة في الـ Perfekt.",
+      insTf: "صحيح أم خطأ؟ اختر لكل عبارة.",
+      insPart: "اكتب الـ Partizip II.",
+      insFill: "املأ الفراغات.",
+      insCls: "منتظم أم غير منتظم؟ اختر لكل صيغة.",
+      insChoose: "أي Partizip II هو الصحيح؟ اختر واحداً.",
+      insMatch: "أي كلمة تناسب؟ اختر واحدة.",
+      insWrite: "اكتب الجملة في الـ Perfekt.",
+      insCorrect: "اعثر على الخطأ واكتب الجملة الصحيحة. وإذا كانت الجملة صحيحة أصلاً فاكتب «richtig».",
+      insFree: "اكتب نصّك على الورق أو في المربع. ثم تحقّق بنفسك بواسطة القائمة.",
+      insRulenum: "إلى أي قاعدة ينتمي؟ اكتب الرقم (1–10).",
+      insPresPart: "اكتب أولاً صيغة المضارع (er/sie) ثم الـ Partizip II.",
+      verbsLead: "كل الأفعال من قائمة مفرداتك (الدروس 1–20) التي يستحق التدرّب عليها في الـ Perfekt، مع الـ Partizip II. ابحث أو اختر مجموعة.",
+      searchPh: "ابحث عن فعل…", allGroups: "كل المجموعات", verbCount: "عدد الأفعال: {n}", noVerbs: "لم يُعثر على فعل.", seinTag: "sein",
+      col: {inf: "المصدر", part: "Partizip II", ex: "جملة مثال", pres: "المضارع (er/sie)", pos1: "المرتبة 1", pos2: "المرتبة 2 (الفعل المساعد)", mid: "الوسط", end: "نهاية الجملة (Partizip II)", haben: "مع haben", sein: "مع sein", rule: "القاعدة", topic: "الموضوع", type: "النوع", group: "المجموعة"}
+    },
+    "tr": {
+      lang: "tr", dir: "ltr", font: FONT_LAT, accent: "#2E6B5E", accentDark: "#1E463C", nativeName: "Türkçe",
+      pickPrompt: "Dilinizi seçin",
+      appTitle: "Almanca Perfekt · A1 Öğrenme Ünitesi",
+      homeLead: "Perfekt, konuşma Almancasında geçmişten söz etmek için en önemli zamandır. Burada kuralla başlamıyorsunuz. 10 bölümün her birinde önce örnek cümlelere bakıp kalıbı kendiniz keşfediyorsunuz. Sonra birkaç kısa soru, ne fark ettiğinizi kontrol ediyor. Kural ancak bundan sonra gelir, ardından alıştırmalar. Yaklaşık 120 dakika ayırın.",
+      homeLead2: "İstediğiniz yerden başlayabilirsiniz: herhangi bir bölüme dokunarak doğrudan oraya geçin. Tüm fiiller kelime listenizden (Ders 1–20) alınmıştır.",
+      howTitle: "Nasıl çalışılır",
+      how: ["Örnek cümlelere bakın. Hep aynı olan ne?", "Fark ettiklerinizle ilgili soruları yanıtlayın. Yanlış cevap sorun değil, yeniden deneyin.", "Şimdi kural görünür. Kısa ve basittir.", "Alıştırmaları yapın ve «Kontrol et» düğmesine dokunun."],
+      obsTitle: "Bu cümlelere bakın",
+      discTitle: "Ne fark ettiniz?",
+      discHint: "Yukarıdaki cümlelere bakın. Doğru olduğunu düşündüğünüz cevaba dokunun.",
+      discRight: "Doğru!",
+      discWrong: "Pek değil. Cümlelere tekrar bakın ve başka bir cevap deneyin.",
+      discProgress: "{n} sorudan {r} doğru",
+      discAllDone: "Tebrikler! Artık kalıbı biliyorsunuz. İşte kural:",
+      ruleTitle: "Kural",
+      skipToRule: "Kuralı şimdi göster",
+      start: "Kural 1 ile başla", resume: "Devam et: {t}", contents: "İçindekiler", home: "İçindekiler",
+      ruleN: "Kural {n}", partOf: "Bölüm {n} / {t}",
+      progressLine: "{t} bölümden {d} tanesi tamamlandı",
+      stNone: "başlanmadı", stSome: "devam ediyor", stDone: "tamamlandı", stSeen: "açıldı",
+      skippedTitle: "Burada çalışılmayanlar",
+      skippedIntro: "Bu fiiller Perfekt'te neredeyse hiç kullanılmadığı için dışarıda bırakıldı:",
+      skipped: ["Yardımcı ve kip fiilleri: haben, sein, werden, können, müssen, dürfen, wollen, sollen, mögen, möchte (nedenini Kural 10 açıklar)", "Neredeyse yalnızca Präsens'te geçen fiiller: heißen, dauern, bedeuten, gelten, fehlen, aussehen, wehtun, es gibt", "Eylem içermeyen sein durumları: weg sein, da sein, geboren sein", "Konuşmada nadir Perfekt biçimleri: bieten, stoßen"],
+      resetAll: "İlerlememi sil", resetConfirm: "Kaydedilen tüm ilerleme silinsin mi?",
+      prev: "← Geri", next: "İleri →", jump: "Şuraya git…",
+      exLabel: "Alıştırma {n}", exampleHead: "Örnekler", memoLabel: "Aklınızda tutun",
+      check: "Kontrol et", solution: "Çözümü göster", restart: "Baştan başla",
+      resFmt: "{n} sorudan {r} doğru", allOk: "Hepsi doğru, tebrikler!", fixIt: "Kırmızı cevapları düzeltin ve tekrar «Kontrol et»'e dokunun.", solShown: "Çözüm gösterildi.",
+      tfRight: "Doğru", tfWrong: "Yanlış", clearOrder: "Temizle", orderHint: "Sözcüklere doğru sırayla dokunun.",
+      seeRule: "Kural {n}'i tekrar et", answerLabel: "Cevap:",
+      freeLabel: "Metniniz", freeChecks: "Yaptığınız her şeyi işaretleyin:", freeFilled: "Tamam, güzel çalışma!",
+      insOrder: "Sözcükleri doğru sıraya koyarak Perfekt cümlesi kurun.",
+      insTf: "Doğru mu, yanlış mı? Her ifade için seçin.",
+      insPart: "Partizip II'yi yazın.",
+      insFill: "Boşlukları doldurun.",
+      insCls: "Düzenli mi, düzensiz mi? Her biçim için seçin.",
+      insChoose: "Hangi Partizip II doğru? Birini seçin.",
+      insMatch: "Hangi sözcük uyuyor? Birini seçin.",
+      insWrite: "Cümleyi Perfekt ile yazın.",
+      insCorrect: "Hatayı bulun ve doğru cümleyi yazın. Cümle zaten doğruysa «richtig» yazın.",
+      insFree: "Metninizi kâğıda ya da kutuya yazın. Sonra listeyle kendinizi kontrol edin.",
+      insRulenum: "Hangi kurala ait? Numarayı yazın (1–10).",
+      insPresPart: "Önce Präsens biçimini (er/sie), sonra Partizip II'yi yazın.",
+      verbsLead: "Kelime listenizdeki (Ders 1–20) Perfekt'te çalışmaya değer tüm fiiller, Partizip II ile birlikte. Arayın ya da bir grup seçin.",
+      searchPh: "Fiil ara…", allGroups: "Tüm gruplar", verbCount: "{n} fiil", noVerbs: "Fiil bulunamadı.", seinTag: "sein",
+      col: {inf: "Mastar (Infinitiv)", part: "Partizip II", ex: "Örnek cümle", pres: "Präsens (er/sie)", pos1: "1. sıra", pos2: "2. sıra (yardımcı fiil)", mid: "Orta bölüm", end: "Cümle sonu (Partizip II)", haben: "haben ile", sein: "sein ile", rule: "Kural", topic: "Konu", type: "Tür", group: "Grup"}
+    }
+  };
+
+  /* ===== Inhalt: Regeln, Tabellen, Übungen ===== */
+  function T(de, en, ru, tr, ar) { return { de: de, en: en, ru: ru, tr: tr, ar: ar }; }
+  function TY(kind, p) {
+    var k = kind === "w" ? ["regelmäßig", "regular", "правильный", "düzenli", "منتظم"] : ["unregelmäßig", "irregular", "неправильный", "düzensiz", "غير منتظم"];
+    return T(k[0] + ", " + p, k[1] + ", " + p, k[2] + ", " + p, k[3] + ", " + p, k[4] + "، " + p);
+  }
+  var NOTE = {
+    akk: T("Akkusativobjekt", "accusative object", "прямое дополнение (Akkusativ)", "Akuzatif nesne", "مفعول به (Akkusativ)"),
+    ort: T("Ortsveränderung", "change of place", "перемещение", "yer değiştirme", "تغيّر المكان"),
+    wohn: T("Wohnort wechseln", "change of residence", "смена места жительства", "oturulan yeri değiştirme", "تغيير مكان السكن"),
+    dauer: T("Dauer", "duration", "длительность", "süre", "مدّة"),
+    ziel: T("Ziel", "destination", "пункт назначения", "varış noktası", "وجهة"),
+    pilot: T("Pilot", "as the pilot", "в роли пилота", "pilot olarak", "بصفته الطيّار")
+  };
+  var BEW = T("Bewegung", "movement", "перемещение", "hareket", "حركة");
+  var BEWT = T("Bewegung, trennbar", "movement, separable", "перемещение, отделяемый", "hareket, ayrılabilen", "حركة، منفصل");
+  var ZW = T("Zustandswechsel", "change of state", "изменение состояния", "durum değişikliği", "تغيّر الحالة");
+  var AUS = T("Ausnahme", "exception", "исключение", "istisna", "استثناء");
+  var PRAET = T("Präteritum (ich / er)", "simple past (ich / er)", "простое прошедшее (ich / er)", "basit geçmiş (ich / er)", "الماضي البسيط (ich / er)");
+
+  var SECTIONS = [
+    /* ---------------- Regel 1 ---------------- */
+    {
+      id: 1, rule: 1,
+      title: T("Die Perfekt-Verbklammer", "The Perfekt verb bracket", "Рамка Perfekt (Verbklammer)", "Perfekt fiil çerçevesi (Verbklammer)", "إطار الفعل في الـ Perfekt (Verbklammer)"),
+      text: T(
+        "Das Perfekt besteht aus zwei Teilen: dem konjugierten **Hilfsverb** (*haben* oder *sein*) und dem **Partizip II**. Das Hilfsverb steht auf **Position 2**, das Partizip II steht **am Satzende**. Dazwischen steht alles andere – so entsteht die **Verbklammer**.",
+        "The Perfekt has two parts: a conjugated **helper verb** (*haben* or *sein*) and the **Partizip II** (past participle).\nThe helper verb is in **position 2**. The Partizip II stands at the **end of the sentence**. Everything else stands in between. This frame is called the **Verbklammer** (verb bracket).\nIn a yes/no question the helper verb is in position 1; in a W-question it comes after the question word. The Partizip II always stays at the end.",
+        "Perfekt состоит из двух частей: спрягаемого **вспомогательного глагола** (*haben* или *sein*) и **Partizip II** (причастия прошедшего времени).\nВспомогательный глагол стоит на **втором месте**. Partizip II стоит **в конце предложения**. Всё остальное находится между ними. Такая рамка называется **Verbklammer** (глагольная рамка).\nВ вопросе без вопросительного слова вспомогательный глагол стоит на первом месте, в вопросе с вопросительным словом — после него. Partizip II всегда остаётся в конце.",
+        "Perfekt iki parçadan oluşur: çekimlenmiş **yardımcı fiil** (*haben* veya *sein*) ve **Partizip II** (geçmiş zaman ortacı).\nYardımcı fiil **2. sırada** durur. Partizip II **cümlenin sonunda** yer alır. Diğer her şey ikisinin arasındadır. Bu çerçeveye **Verbklammer** (fiil çerçevesi) denir.\nEvet/hayır sorusunda yardımcı fiil 1. sıradadır; soru sözcüklü sorularda soru sözcüğünden sonra gelir. Partizip II her zaman sonda kalır.",
+        "يتكوّن الـ Perfekt من جزأين: **فعل مساعد** مُصرَّف (*haben* أو *sein*) و**Partizip II** (التصريف الثالث للفعل).\nيقع الفعل المساعد في **المرتبة الثانية**، ويقع الـ Partizip II في **آخر الجملة**، وكل شيء آخر يقع بينهما. يُسمّى هذا الإطار **Verbklammer** (إطار الفعل).\nفي سؤال «نعم/لا» يأتي الفعل المساعد في المرتبة الأولى، وفي سؤال الاستفهام بأداة يأتي بعد أداة الاستفهام. ويبقى الـ Partizip II دائماً في آخر الجملة."
+      ),
+      tables: [{
+        head: ["pos1", "pos2", "mid", "end"],
+        rows: [
+          ["Ich", "**habe**", "gestern", "**gearbeitet.**"],
+          ["Mein Bruder", "**hat**", "das Buch", "**gelesen.**"],
+          ["Wir", "**haben**", "am Samstag Tennis", "**gespielt.**"],
+          ["Was", "**haben**", "Sie gestern", "**gemacht?**"],
+          ["**Hast**", "du", "schon Kaffee", "**getrunken?**"]
+        ]
+      }],
+      ex: [
+        { id: "u1", n: 1, kind: "order", ins: "insOrder", de: "Ordnen Sie die Wörter zu einem Satz.", items: [
+          { w: ["gestern", "ich", "gearbeitet", "habe"], a: ["Ich habe gestern gearbeitet", "Gestern habe ich gearbeitet"] },
+          { q: true, w: ["hast", "Kaffee", "du", "getrunken", "schon"], a: ["Hast du schon Kaffee getrunken", "Hast du Kaffee schon getrunken"] },
+          { w: ["wir", "Tennis", "haben", "gespielt", "am Samstag"], a: ["Wir haben am Samstag Tennis gespielt", "Am Samstag haben wir Tennis gespielt", "Wir haben Tennis am Samstag gespielt"] },
+          { q: true, w: ["Was", "Sie", "gemacht", "haben", "gestern"], a: ["Was haben Sie gestern gemacht"] },
+          { w: ["hat", "das Buch", "mein Bruder", "gelesen", "nicht"], a: ["Mein Bruder hat das Buch nicht gelesen", "Das Buch hat mein Bruder nicht gelesen"] }
+        ] },
+        { id: "u2", n: 2, kind: "choose", ins: "insTf", de: "Richtig oder falsch?", tf: true, items: [
+          { t: "Das Partizip II steht im Perfektsatz immer auf Position 2.", tr: T("", "In a Perfekt sentence the Partizip II is always in position 2.", "В предложении в Perfekt Partizip II всегда стоит на втором месте.", "Perfekt cümlesinde Partizip II her zaman 2. sıradadır.", "في جملة الـ Perfekt يقع الـ Partizip II دائماً في المرتبة الثانية."), a: 1, fix: "Richtig: Das Partizip II steht am Satzende." },
+          { t: "In der Ja/Nein-Frage steht das Hilfsverb am Satzanfang.", tr: T("", "In a yes/no question the helper verb is at the beginning of the sentence.", "В вопросе без вопросительного слова вспомогательный глагол стоит в начале предложения.", "Evet/hayır sorusunda yardımcı fiil cümlenin başındadır.", "في سؤال «نعم/لا» يقع الفعل المساعد في بداية الجملة."), a: 0 },
+          { t: "„Ich gearbeitet habe gestern.“ ist ein korrekter Satz.", tr: T("", "“Ich gearbeitet habe gestern.” is a correct sentence.", "«Ich gearbeitet habe gestern.» — правильное предложение.", "“Ich gearbeitet habe gestern.” doğru bir cümledir.", "«Ich gearbeitet habe gestern.» جملة صحيحة."), a: 1, fix: "Richtig: Ich habe gestern gearbeitet." },
+          { t: "Zwischen Hilfsverb und Partizip II können mehrere Satzglieder stehen.", tr: T("", "Several sentence parts can stand between the helper verb and the Partizip II.", "Между вспомогательным глаголом и Partizip II может стоять несколько членов предложения.", "Yardımcı fiil ile Partizip II arasında birden fazla cümle öğesi bulunabilir.", "يمكن أن يقع بين الفعل المساعد والـ Partizip II عدة عناصر من الجملة."), a: 0 }
+        ] }
+      ]
+    },
+    /* ---------------- Regel 2 ---------------- */
+    {
+      id: 2, rule: 2,
+      title: T("Schwache Verben: ge- + Stamm + -t", "Weak verbs: ge- + stem + -t", "Слабые глаголы: ge- + основа + -t", "Zayıf fiiller: ge- + kök + -t", "الأفعال الضعيفة: ge- + الجذر + -t"),
+      text: T(
+        "**ge + Verbstamm + t** – der Stamm bleibt gleich. Endet der Stamm auf **-t, -d** oder auf mehrere Konsonanten, steht davor ein **-e-**: gearbeit**et**, gewart**et**.",
+        "Regular (weak) verbs form the Partizip II like this: **ge + verb stem + t**. The stem does not change. Most weak verbs form the Perfekt with *haben*.\nCareful: if the stem ends in **-t, -d** or in several consonants (e.g. -chn, -ffn), an **-e-** comes before the -t: arbeiten → gearbeit**et**, warten → gewart**et**, antworten → geantwort**et**, kosten → gekost**et**, öffnen → geöffn**et**.",
+        "Правильные (слабые) глаголы образуют Partizip II так: **ge + основа глагола + t**. Основа не меняется. Большинство слабых глаголов образуют Perfekt с *haben*.\nВнимание: если основа оканчивается на **-t, -d** или на несколько согласных (например, -chn, -ffn), перед -t появляется **-e-**: arbeiten → gearbeit**et**, warten → gewart**et**, antworten → geantwort**et**, kosten → gekost**et**, öffnen → geöffn**et**.",
+        "Düzenli (zayıf) fiiller Partizip II'yi şöyle oluşturur: **ge + fiil kökü + t**. Kök değişmez. Zayıf fiillerin çoğu Perfekt'i *haben* ile kurar.\nDikkat: Kök **-t, -d** ile ya da birkaç ünsüzle (ör. -chn, -ffn) bitiyorsa, -t'den önce bir **-e-** gelir: arbeiten → gearbeit**et**, warten → gewart**et**, antworten → geantwort**et**, kosten → gekost**et**, öffnen → geöffn**et**.",
+        "تُشكّل الأفعال المنتظمة (الضعيفة) الـ Partizip II هكذا: **ge + جذر الفعل + t**. ولا يتغيّر الجذر. تُكوّن معظم الأفعال الضعيفة الـ Perfekt مع *haben*.\nانتبه: إذا انتهى الجذر بـ **-t** أو **-d** أو بعدة حروف ساكنة (مثل -chn و-ffn) فيُضاف **-e-** قبل الـ t: arbeiten → gearbeit**et**، warten → gewart**et**، antworten → geantwort**et**، kosten → gekost**et**، öffnen → geöffn**et**."
+      ),
+      tables: [{
+        head: ["inf", "part", "ex"],
+        rows: [
+          ["machen", "**ge**mach**t**", "Ich habe die Hausaufgaben gemacht."],
+          ["spielen", "**ge**spiel**t**", "Wir haben Fußball gespielt."],
+          ["kaufen", "**ge**kauf**t**", "Sie hat ein Brot gekauft."],
+          ["lernen", "**ge**lern**t**", "Er hat Deutsch gelernt."],
+          ["wohnen", "**ge**wohn**t**", "Ich habe in Erfurt gewohnt."],
+          ["hören", "**ge**hör**t**", "Hast du die Nachricht gehört?"],
+          ["arbeiten", "**ge**arbeit**et**", "Ich habe gestern gearbeitet."]
+        ]
+      }],
+      ex: [
+        { id: "u3", n: 3, kind: "fill", ins: "insPart", de: "Bilden Sie das Partizip II.", items: [
+          { t: "machen → ___", a: ["gemacht"] }, { t: "spielen → ___", a: ["gespielt"] }, { t: "kaufen → ___", a: ["gekauft"] },
+          { t: "lernen → ___", a: ["gelernt"] }, { t: "wohnen → ___", a: ["gewohnt"] }, { t: "hören → ___", a: ["gehört"] },
+          { t: "arbeiten → ___", a: ["gearbeitet"] }, { t: "warten → ___", a: ["gewartet"] },
+          { t: "antworten → ___", a: ["geantwortet"] }, { t: "kosten → ___", a: ["gekostet"] }
+        ] },
+        { id: "u4", n: 4, kind: "fill", ins: "insFill", de: "Setzen Sie ein – haben + Partizip II.", items: [
+          { t: "Gestern ___ ich lange ___. (arbeiten)", a: ["habe", "gearbeitet"] },
+          { t: "___ du schon das Frühstück ___? (machen)", a: ["Hast", "gemacht"] },
+          { t: "Wir ___ zwei Stunden auf den Bus ___. (warten)", a: ["haben", "gewartet"] },
+          { t: "Meine Eltern ___ früher in Berlin ___. (wohnen)", a: ["haben", "gewohnt"] },
+          { t: "Was ___ das Hemd ___? (kosten)", a: ["hat", "gekostet"] },
+          { t: "Der Lehrer ___ die Frage ___. (antworten)", a: ["hat", "geantwortet"] }
+        ] }
+      ]
+    },
+    /* ---------------- Regel 3 ---------------- */
+    {
+      id: 3, rule: 3,
+      title: T("Starke Verben: ge- + Stamm + -en", "Strong verbs: ge- + stem + -en", "Сильные глаголы: ge- + основа + -en", "Güçlü fiiller: ge- + kök + -en", "الأفعال القوية: ge- + الجذر + -en"),
+      text: T(
+        "**ge + Stamm + en** – oft mit Vokalwechsel. Diese Formen lernt man zusammen mit dem Infinitiv.",
+        "Irregular (strong) verbs form the Partizip II with **ge + stem + en**. The stem vowel often changes, sometimes consonants too. You have to learn these forms – best together with the infinitive.",
+        "Неправильные (сильные) глаголы образуют Partizip II по схеме **ge + основа + en**. Часто меняется корневая гласная, иногда и согласные. Эти формы нужно выучить — лучше всего вместе с инфинитивом.",
+        "Düzensiz (güçlü) fiiller Partizip II'yi **ge + kök + en** ile oluşturur. Kök ünlüsü çoğu zaman değişir, bazen ünsüzler de. Bu biçimleri ezberlemeniz gerekir – en iyisi mastar (Infinitiv) ile birlikte.",
+        "تُشكّل الأفعال غير المنتظمة (القوية) الـ Partizip II بصيغة **ge + الجذر + en**. وغالباً ما يتغيّر حرف العلّة في الجذر، وأحياناً الحروف الساكنة أيضاً. عليك حفظ هذه الصيغ، والأفضل حفظها مع المصدر (Infinitiv)."
+      ),
+      memo: T(
+        "Schwach → **-t** (gemacht). Stark → **-en** (gegessen). Ein starkes Partizip II endet nie auf -t.",
+        "Weak → **-t** at the end (gemacht). Strong → **-en** at the end (gegessen). A strong Partizip II always ends in **-en**, never in -t.",
+        "Слабые → **-t** в конце (gemacht). Сильные → **-en** в конце (gegessen). У сильного глагола Partizip II всегда заканчивается на **-en**, никогда на -t.",
+        "Zayıf → sonda **-t** (gemacht). Güçlü → sonda **-en** (gegessen). Güçlü bir fiilin Partizip II'si her zaman **-en** ile biter, asla -t ile değil.",
+        "ضعيف ← **-t** في النهاية (gemacht). قوي ← **-en** في النهاية (gegessen). الـ Partizip II للفعل القوي ينتهي دائماً بـ **-en** وليس بـ t أبداً."
+      ),
+      tables: [{
+        head: ["inf", "part", "ex"],
+        rows: [
+          ["trinken", "**ge**trunk**en**", "Ich habe einen Tee getrunken."],
+          ["schreiben", "**ge**schrieb**en**", "Sie hat eine E-Mail geschrieben."],
+          ["sprechen", "**ge**sproch**en**", "Wir haben Deutsch gesprochen."],
+          ["essen", "**ge**gess**en**", "Er hat Pizza gegessen."],
+          ["lesen", "**ge**les**en**", "Ich habe das Buch gelesen."],
+          ["sehen", "**ge**seh**en**", "Wir haben einen Film gesehen."],
+          ["finden", "**ge**fund**en**", "Ich habe meinen Schlüssel gefunden."],
+          ["schlafen", "**ge**schlaf**en**", "Hast du gut geschlafen?"],
+          ["nehmen", "**ge**nomm**en**", "Ich habe den Bus genommen."],
+          ["geben", "**ge**geb**en**", "Er hat mir das Buch gegeben."],
+          ["helfen", "**ge**holf**en**", "Sie hat mir geholfen."],
+          ["tun", "**ge**tan", "Das habe ich nicht gern getan."]
+        ]
+      }],
+      ex: [
+        { id: "u5", n: 5, kind: "choose", ins: "insCls", de: "Regelmäßig oder unregelmäßig? Sortieren Sie die Partizipien.", cats: [T("regelmäßig (-t)", "regular (-t)", "правильный (-t)", "düzenli (-t)", "منتظم (-t)"), T("unregelmäßig (-en)", "irregular (-en)", "неправильный (-en)", "düzensiz (-en)", "غير منتظم (-en)")], items: [
+          { t: "gemacht", a: 0 }, { t: "getrunken", a: 1 }, { t: "gelernt", a: 0 }, { t: "geschrieben", a: 1 }, { t: "gespielt", a: 0 },
+          { t: "gesprochen", a: 1 }, { t: "gekauft", a: 0 }, { t: "gefunden", a: 1 }, { t: "gewohnt", a: 0 }, { t: "gegeben", a: 1 }
+        ] },
+        { id: "u6", n: 6, kind: "fill", ins: "insPart", de: "Setzen Sie das Partizip II ein.", items: [
+          { t: "Ich habe heute Morgen zwei Tassen Kaffee ___. (trinken)", a: ["getrunken"] },
+          { t: "Hast du die Hausaufgaben ___? (schreiben)", a: ["geschrieben"] },
+          { t: "Wir haben am Wochenende viel ___. (schlafen)", a: ["geschlafen"] },
+          { t: "Meine Freundin hat mir bei der Prüfung ___. (helfen)", a: ["geholfen"] },
+          { t: "Haben Sie schon ___? (essen)", a: ["gegessen"] },
+          { t: "Er hat den Schlüssel nicht ___. (finden)", a: ["gefunden"] },
+          { t: "Ich habe gestern einen Krimi ___. (lesen)", a: ["gelesen"] },
+          { t: "Was hast du in der Pause ___? (sehen)", a: ["gesehen"] }
+        ] }
+      ]
+    },
+    /* ---------------- Regel 4 ---------------- */
+    {
+      id: 4, rule: 4,
+      title: T("Vokalwechsel im Präsens → stark im Perfekt", "Vowel change in the present → strong in the Perfekt", "Смена гласной в настоящем времени → сильный глагол в Perfekt", "Präsens'te ünlü değişimi → Perfekt'te güçlü", "تغيّر حرف العلّة في المضارع يعني فعلاً قوياً في الـ Perfekt"),
+      text: T(
+        "Vokalwechsel im Präsens (**e → i/ie, a → ä, au → äu**) = starkes Verb = Partizip II auf **-en**. Schwache Verben wechseln den Vokal nie.",
+        "A verb that changes its stem vowel in the present tense in the 2nd and 3rd person singular (**e → i/ie, a → ä, au → äu**) is a strong verb. It also has a **strong Partizip II ending in -en** in the Perfekt. Weak verbs never change the vowel in the present (ich mache – du machst – er macht).",
+        "Глагол, у которого в настоящем времени во 2-м и 3-м лице единственного числа меняется корневая гласная (**e → i/ie, a → ä, au → äu**), является сильным. В Perfekt у него тоже **сильное Partizip II на -en**. Слабые глаголы никогда не меняют гласную в настоящем времени (ich mache – du machst – er macht).",
+        "Şimdiki zamanda (Präsens) tekil 2. ve 3. kişide kök ünlüsünü değiştiren (**e → i/ie, a → ä, au → äu**) bir fiil güçlü bir fiildir. Perfekt'te de **-en ile biten güçlü bir Partizip II** alır. Zayıf fiiller Präsens'te ünlüyü asla değiştirmez (ich mache – du machst – er macht).",
+        "الفعل الذي يغيّر حرف العلّة في جذره في المضارع (Präsens) مع المفرد المخاطب والمفرد الغائب (من **e** إلى **i/ie**، ومن **a** إلى **ä**، ومن **au** إلى **äu**) هو فعل قوي. ويكون له في الـ Perfekt أيضاً **Partizip II قوي ينتهي بـ -en**. أما الأفعال الضعيفة فلا تغيّر حرف العلّة في المضارع أبداً (ich mache – du machst – er macht)."
+      ),
+      memo: T(
+        "Hören Sie bei *er/sie* einen Vokalwechsel? Dann endet das Partizip II auf **-en**.",
+        "If you hear a vowel change for *er/sie* in the present, you know: the Partizip II ends in **-en**.",
+        "Если у *er/sie* в настоящем времени слышна смена гласной, то Partizip II оканчивается на **-en**.",
+        "Präsens'te *er/sie* için ünlü değişimi duyuyorsanız, Partizip II **-en** ile biter.",
+        "إذا سمعت تغيّراً في حرف العلّة مع *er/sie* في المضارع فاعلم أن الـ Partizip II ينتهي بـ **-en**."
+      ),
+      tables: [{
+        head: ["inf", "pres", "part", "ex"],
+        rows: [
+          ["sprechen", "er spr**i**cht", "gesprochen", "Sie hat mit Freunden gesprochen."],
+          ["essen", "er **i**sst", "gegessen", "Er hat Pizza gegessen."],
+          ["lesen", "er l**ie**st", "gelesen", "Ich habe eine Zeitung gelesen."],
+          ["sehen", "er s**ie**ht", "gesehen", "Wir haben einen Film gesehen."],
+          ["nehmen", "er n**imm**t", "genommen", "Sie hat die Suppe genommen."],
+          ["geben", "er g**i**bt", "gegeben", "Er hat mir Geld gegeben."],
+          ["helfen", "er h**i**lft", "geholfen", "Du hast mir geholfen."],
+          ["treffen", "er tr**i**fft", "getroffen", "Ich habe Leute getroffen."],
+          ["schlafen", "er schl**ä**ft", "geschlafen", "Das Baby hat gut geschlafen."],
+          ["empfehlen", "er empf**ie**hlt", "empfohlen", "Sie hat mir das Restaurant empfohlen."],
+          ["vergessen", "er verg**i**sst", "vergessen", "Ich habe das vergessen."]
+        ]
+      }],
+      ex: [
+        { id: "u7", n: 7, kind: "fill", ins: "insPresPart", de: "Regelmäßig oder unregelmäßig? Prüfen Sie das Präsens. Schreiben Sie zuerst die Form für er/sie im Präsens, dann das Partizip II.", items: [
+          { t: "sprechen → er/sie ___ → ___", a: ["spricht", "gesprochen"] },
+          { t: "machen → er/sie ___ → ___", a: ["macht", "gemacht"] },
+          { t: "lesen → er/sie ___ → ___", a: ["liest", "gelesen"] },
+          { t: "kaufen → er/sie ___ → ___", a: ["kauft", "gekauft"] },
+          { t: "essen → er/sie ___ → ___", a: ["isst", "gegessen"] },
+          { t: "nehmen → er/sie ___ → ___", a: ["nimmt", "genommen"] },
+          { t: "spielen → er/sie ___ → ___", a: ["spielt", "gespielt"] },
+          { t: "helfen → er/sie ___ → ___", a: ["hilft", "geholfen"] }
+        ] },
+        { id: "u8", n: 8, kind: "fill", ins: "insFill", de: "Ergänzen Sie das Perfekt.", items: [
+          { t: "Er isst Brot. → Er ___ Brot ___.", a: ["hat", "gegessen"] },
+          { t: "Sie liest ein Buch. → Sie ___ ein Buch ___.", a: ["hat", "gelesen"] },
+          { t: "Du gibst mir die Hand. → Du ___ mir die Hand ___.", a: ["hast", "gegeben"] },
+          { t: "Ich spreche mit dem Lehrer. → Ich ___ mit dem Lehrer ___.", a: ["habe", "gesprochen"] },
+          { t: "Wir sehen den Film. → Wir ___ den Film ___.", a: ["haben", "gesehen"] },
+          { t: "Sie trifft Freunde. → Sie ___ Freunde ___.", a: ["hat", "getroffen"] }
+        ] }
+      ]
+    },
+    /* ---------------- Regel 5 ---------------- */
+    {
+      id: 5, rule: 5,
+      title: T("Trennbare Verben: -ge- in der Mitte", "Separable verbs: -ge- in the middle", "Отделяемые глаголы: -ge- посередине", "Ayrılabilen fiiller: -ge- ortada", "الأفعال المنفصلة: -ge- في الوسط"),
+      text: T(
+        "**Vorsilbe + ge + Stamm + t/en**: eingekauft, abgeholt, angerufen.",
+        "In separable verbs, **ge** stands between the prefix and the verb stem: **prefix + ge + stem + t/en**. Whether the verb is weak or strong decides the ending (-t or -en), as always. The prefix is stressed (*ábholen*).",
+        "У отделяемых глаголов **ge** стоит между приставкой и основой: **приставка + ge + основа + t/en**. Окончание (-t или -en) зависит, как всегда, от того, слабый глагол или сильный. Ударение падает на приставку (*ábholen*).",
+        "Ayrılabilen fiillerde **ge**, önek ile fiil kökü arasında yer alır: **önek + ge + kök + t/en**. Sonun -t mi -en mi olacağını her zamanki gibi fiilin zayıf ya da güçlü olması belirler. Vurgu önektedir (*ábholen*).",
+        "في الأفعال المنفصلة يقع **ge** بين البادئة وجذر الفعل: **البادئة + ge + الجذر + t/en**. أما النهاية (-t أو -en) فتتحدّد كالمعتاد بكون الفعل ضعيفاً أو قوياً. والنبر على البادئة (*ábholen*)."
+      ),
+      memo: T(
+        "Im Perfekt bleibt das trennbare Verb zusammen: *Ich habe eingekauft.* (Präsens: *Ich kaufe ein.*)",
+        "In a Perfekt main clause the verb stays together: *Ich habe eingekauft.* (In the present it is split: *Ich kaufe ein.*)",
+        "В главном предложении в Perfekt глагол остаётся целым: *Ich habe eingekauft.* (В настоящем времени он разделяется: *Ich kaufe ein.*)",
+        "Perfekt ana cümlesinde fiil birlikte kalır: *Ich habe eingekauft.* (Präsens'te ayrılır: *Ich kaufe ein.*)",
+        "في جملة Perfekt الرئيسية يبقى الفعل متّصلاً: *Ich habe eingekauft.* (وفي المضارع ينفصل: *Ich kaufe ein.*)"
+      ),
+      tables: [{
+        head: ["inf", "part", "ex"],
+        rows: [
+          ["ein|kaufen", "ein**ge**kauft", "Ich habe heute eingekauft."],
+          ["ab|holen", "ab**ge**holt", "Er hat die Kinder abgeholt."],
+          ["auf|räumen", "auf**ge**räumt", "Wir haben die Wohnung aufgeräumt."],
+          ["auf|machen", "auf**ge**macht", "Sie hat das Fenster aufgemacht."],
+          ["an|rufen", "an**ge**rufen", "Ich habe dich angerufen."],
+          ["mit|bringen", "mit**ge**bracht", "Er hat Kuchen mitgebracht."],
+          ["ein|laden", "ein**ge**laden", "Wir haben Freunde eingeladen."],
+          ["mit|nehmen", "mit**ge**nommen", "Sie hat den Schirm mitgenommen."],
+          ["fern|sehen", "fern**ge**sehen", "Ich habe gestern ferngesehen."],
+          ["an|melden", "an**ge**meldet", "Er hat sich im Kurs angemeldet."]
+        ]
+      }],
+      ex: [
+        { id: "u9", n: 9, kind: "fill", ins: "insPart", de: "Bilden Sie das Partizip II.", items: [
+          { t: "ab|holen → ___", a: ["abgeholt"] }, { t: "ein|kaufen → ___", a: ["eingekauft"] }, { t: "auf|machen → ___", a: ["aufgemacht"] },
+          { t: "zu|machen → ___", a: ["zugemacht"] }, { t: "an|rufen → ___", a: ["angerufen"] }, { t: "mit|bringen → ___", a: ["mitgebracht"] },
+          { t: "ein|laden → ___", a: ["eingeladen"] }, { t: "auf|räumen → ___", a: ["aufgeräumt"] }, { t: "vor|bereiten → ___", a: ["vorbereitet"] },
+          { t: "aus|ziehen → ___", a: ["ausgezogen"] }
+        ] },
+        { id: "u10", n: 10, kind: "write", ins: "insWrite", de: "Schreiben Sie Sätze im Perfekt.",
+          note: T("Beispiel: ich / heute / ein|kaufen → Ich habe heute eingekauft.", "Example: ich / heute / ein|kaufen → Ich habe heute eingekauft.", "Пример: ich / heute / ein|kaufen → Ich habe heute eingekauft.", "Örnek: ich / heute / ein|kaufen → Ich habe heute eingekauft.", "مثال: ich / heute / ein|kaufen → Ich habe heute eingekauft."),
+          items: [
+            { t: "wir / das Fenster / auf|machen", a: ["Wir haben das Fenster aufgemacht"] },
+            { t: "er / seine Freundin / an|rufen", a: ["Er hat seine Freundin angerufen"] },
+            { t: "sie / gestern / die Wohnung / auf|räumen", a: ["Sie hat gestern die Wohnung aufgeräumt", "Gestern hat sie die Wohnung aufgeräumt"] },
+            { t: "ich / meine Oma / vom Bahnhof / ab|holen", a: ["Ich habe meine Oma vom Bahnhof abgeholt", "Ich habe vom Bahnhof meine Oma abgeholt"] },
+            { t: "du / Kuchen / mit|bringen?", a: ["Hast du Kuchen mitgebracht"] },
+            { t: "die Kinder / lange / fern|sehen", a: ["Die Kinder haben lange ferngesehen"] }
+          ] }
+      ]
+    },
+    /* ---------------- Regel 6 ---------------- */
+    {
+      id: 6, rule: 6,
+      title: T("Untrennbare Verben und -ieren: kein ge-", "Inseparable verbs and -ieren: no ge-", "Неотделяемые глаголы и глаголы на -ieren: без ge-", "Ayrılamayan fiiller ve -ieren: ge- yok", "الأفعال غير المنفصلة والأفعال المنتهية بـ -ieren: بدون ge-"),
+      text: T(
+        "Untrennbare Vorsilben (**be-, emp-, ent-, er-, ge-, ver-, zer-**) und **-ieren**: **kein ge-** – besucht, bestellt, studiert.",
+        "Verbs with the inseparable prefixes **be-, emp-, ent-, er-, ge-, ver-, zer-** and all verbs ending in **-ieren** form the Partizip II **without ge-**. The ending shows the type again: weak → **-t**, strong → **-en**. These verbs are not stressed on the first syllable (*besúchen*, *studíeren*).",
+        "Глаголы с неотделяемыми приставками **be-, emp-, ent-, er-, ge-, ver-, zer-** и все глаголы на **-ieren** образуют Partizip II **без ge-**. Окончание снова показывает тип: слабый → **-t**, сильный → **-en**. Ударение у этих глаголов не на первом слоге (*besúchen*, *studíeren*).",
+        "**be-, emp-, ent-, er-, ge-, ver-, zer-** gibi ayrılamayan öneklere sahip fiiller ve **-ieren** ile biten tüm fiiller Partizip II'yi **ge- olmadan** kurar. Sondaki ek yine türü gösterir: zayıf → **-t**, güçlü → **-en**. Bu fiillerde vurgu ilk hecede değildir (*besúchen*, *studíeren*).",
+        "الأفعال ذات البوادئ غير المنفصلة **be- وemp- وent- وer- وge- وver- وzer-** وكل الأفعال المنتهية بـ **-ieren** تُكوّن الـ Partizip II **بدون ge-**. وتدلّ النهاية على النوع أيضاً: ضعيف ← **-t**، قوي ← **-en**. ولا يقع النبر في هذه الأفعال على المقطع الأول (*besúchen*، *studíeren*)."
+      ),
+      memo: T(
+        "Nicht verwechseln: *abholen* → abgeholt (mit ge-), aber *besuchen* → besucht (ohne ge-).",
+        "Don't mix them up: *ab|holen* → **abge**holt (separable, with ge-), but *besuchen* → besucht (inseparable, without ge-). *Bekommen* and *vergessen* look the same in the Partizip II as in the infinitive.",
+        "Не путайте: *ab|holen* → **abge**holt (отделяемый, с ge-), но *besuchen* → besucht (неотделяемый, без ge-). У *bekommen* и *vergessen* Partizip II выглядит так же, как инфинитив.",
+        "Karıştırmayın: *ab|holen* → **abge**holt (ayrılabilen, ge- ile), ama *besuchen* → besucht (ayrılamayan, ge- olmadan). *Bekommen* ve *vergessen* fiillerinin Partizip II'si mastarla aynı görünür.",
+        "لا تخلط بينها: *ab|holen* ← **abge**holt (منفصل، مع ge-)، لكن *besuchen* ← besucht (غير منفصل، بدون ge-). والـ Partizip II للفعلين *bekommen* و*vergessen* يشبه المصدر."
+      ),
+      tables: [{
+        head: ["type", "inf", "part", "ex"],
+        rows: [
+          [TY("w", "be-"), "besuchen", "besucht", "Ich habe meine Oma besucht."],
+          [TY("w", "be-"), "bestellen", "bestellt", "Wir haben eine Pizza bestellt."],
+          [TY("w", "er-"), "erzählen", "erzählt", "Er hat eine Geschichte erzählt."],
+          [TY("w", "ver-"), "verdienen", "verdient", "Sie hat gut verdient."],
+          [TY("s", "ver-"), "verstehen", "verstanden", "Ich habe das nicht verstanden."],
+          [TY("s", "be-"), "beginnen", "begonnen", "Der Kurs hat um 9 Uhr begonnen."],
+          [TY("s", "emp-"), "empfehlen", "empfohlen", "Sie hat mir das Café empfohlen."],
+          [TY("s", "be-"), "bekommen", "bekommen", "Ich habe eine E-Mail bekommen."],
+          [T("-ieren", "-ieren", "-ieren", "-ieren", "-ieren"), "studieren", "studiert", "Er hat in Jena studiert."],
+          [T("-ieren", "-ieren", "-ieren", "-ieren", "-ieren"), "telefonieren", "telefoniert", "Wir haben lange telefoniert."],
+          [T("-ieren", "-ieren", "-ieren", "-ieren", "-ieren"), "reparieren", "repariert", "Der Mechaniker hat das Auto repariert."]
+        ]
+      }],
+      ex: [
+        { id: "u11", n: 11, kind: "fill", ins: "insPart", de: "Mit oder ohne ge-? Bilden Sie das Partizip II.", items: [
+          { t: "besuchen → ___", a: ["besucht"] }, { t: "kaufen → ___", a: ["gekauft"] }, { t: "studieren → ___", a: ["studiert"] },
+          { t: "ab|holen → ___", a: ["abgeholt"] }, { t: "verstehen → ___", a: ["verstanden"] }, { t: "bestellen → ___", a: ["bestellt"] },
+          { t: "an|rufen → ___", a: ["angerufen"] }, { t: "fotografieren → ___", a: ["fotografiert"] }, { t: "bezahlen → ___", a: ["bezahlt"] },
+          { t: "spielen → ___", a: ["gespielt"] }
+        ] },
+        { id: "u12", n: 12, kind: "fill", ins: "insPart", de: "Ergänzen Sie das Partizip II.", items: [
+          { t: "Ich habe in der Pause meine Freundin ___. (an|rufen)", a: ["angerufen"] },
+          { t: "Wir haben im Restaurant zwei Salate ___. (bestellen)", a: ["bestellt"] },
+          { t: "Hast du die Rechnung schon ___? (bezahlen)", a: ["bezahlt"] },
+          { t: "Er hat zwei Jahre Medizin ___. (studieren)", a: ["studiert"] },
+          { t: "Ich habe die Aufgabe nicht ___. (verstehen)", a: ["verstanden"] },
+          { t: "Die Lehrerin hat den Text ___. (erklären)", a: ["erklärt"] },
+          { t: "Gestern habe ich dich im Café ___. (sehen)", a: ["gesehen"] },
+          { t: "Wann hat der Film ___? (beginnen)", a: ["begonnen"] }
+        ] }
+      ]
+    },
+    /* ---------------- Regel 7 ---------------- */
+    {
+      id: 7, rule: 7,
+      title: T("Gemischte Verben: Vokalwechsel + -t", "Mixed verbs: vowel change + -t", "Смешанные глаголы: смена гласной + -t", "Karışık fiiller: ünlü değişimi + -t", "الأفعال المختلطة: تغيّر حرف العلّة + -t"),
+      text: T(
+        "Vokalwechsel **und** Endung **-t**: bringen – gebracht, denken – gedacht, kennen – gekannt, wissen – gewusst.",
+        "A small group of verbs mixes both patterns: the **stem vowel changes** (like strong verbs), but the Partizip II ends in **-t** (like weak verbs). You have to learn these verbs by heart.",
+        "Небольшая группа глаголов смешивает обе модели: **корневая гласная меняется** (как у сильных глаголов), но Partizip II оканчивается на **-t** (как у слабых). Эти глаголы нужно выучить наизусть.",
+        "Küçük bir fiil grubu iki kalıbı karıştırır: **kök ünlüsü değişir** (güçlü fiiller gibi), ama Partizip II **-t** ile biter (zayıf fiiller gibi). Bu fiilleri ezberlemeniz gerekir.",
+        "مجموعة صغيرة من الأفعال تجمع بين النمطين: **يتغيّر حرف العلّة في الجذر** (مثل الأفعال القوية)، لكن الـ Partizip II ينتهي بـ **-t** (مثل الأفعال الضعيفة). عليك حفظ هذه الأفعال عن ظهر قلب."
+      ),
+      memo: T(
+        "*kennenlernen* ist ein normales regelmäßiges Verb: kennengelernt.",
+        "*kennen|lernen*, however, is a completely normal regular verb: Ich habe ihn auf der Party **kennengelernt**.",
+        "А вот *kennen|lernen* — совершенно обычный правильный глагол: Ich habe ihn auf der Party **kennengelernt**.",
+        "*kennen|lernen* ise tamamen normal bir düzenli fiildir: Ich habe ihn auf der Party **kennengelernt**.",
+        "أما *kennen|lernen* فهو فعل منتظم عادي تماماً: Ich habe ihn auf der Party **kennengelernt**."
+      ),
+      tables: [{
+        head: ["inf", "part", "ex"],
+        rows: [
+          ["bringen", "gebracht", "Ich habe Kuchen gebracht."],
+          ["mit|bringen", "mitgebracht", "Er hat Blumen mitgebracht."],
+          ["denken", "gedacht", "Ich habe an dich gedacht."],
+          ["kennen", "gekannt", "Ich habe ihn nicht gekannt."],
+          ["wissen", "gewusst", "Das habe ich nicht gewusst."]
+        ]
+      }],
+      ex: [
+        { id: "u13", n: 13, kind: "choose", shuf: true, ins: "insChoose", de: "Welches Partizip II ist richtig? Kreuzen Sie an.", items: [
+          { t: "bringen →", o: ["gebringt", "gebracht", "gebrungen"], a: 1 },
+          { t: "denken →", o: ["gedenkt", "gedacht", "gedunken"], a: 1 },
+          { t: "wissen →", o: ["gewisst", "gewusst", "gewissen"], a: 1 },
+          { t: "kennen →", o: ["gekennt", "gekannt", "gekonnen"], a: 1 },
+          { t: "mit|bringen →", o: ["mitgebracht", "gemitbracht", "mitbracht"], a: 0 }
+        ] },
+        { id: "u14", n: 14, kind: "fill", ins: "insFill", de: "Ergänzen Sie das Perfekt.", items: [
+          { t: "Ich ___ gestern an meine Familie ___. (denken)", a: ["habe", "gedacht"] },
+          { t: "Wer ___ den Kuchen ___? (mit|bringen)", a: ["hat", "mitgebracht"] },
+          { t: "Das ___ ich nicht ___. (wissen)", a: ["habe", "gewusst"] },
+          { t: "Wir ___ uns auf dem Sprachkurs ___. (kennen|lernen)", a: ["haben", "kennengelernt"] },
+          { t: "___ du den Lehrer schon vorher ___? (kennen)", a: ["Hast", "gekannt"] }
+        ] }
+      ]
+    },
+    /* ---------------- Regel 8 ---------------- */
+    {
+      id: 8, rule: 8,
+      title: T("Bewegung und Zustandswechsel: sein", "Movement and change of state: sein", "Перемещение и изменение состояния: sein", "Hareket ve durum değişikliği: sein", "الحركة وتغيّر الحالة: sein"),
+      text: T(
+        "Bewegung (von A nach B) und Zustandswechsel → **sein**: ich bin gefahren, er ist aufgestanden. Auch: bleiben, passieren, sein.",
+        "Verbs of **change of place** (someone moves from A to B) and verbs of **change of state** (something becomes different) form the Perfekt with **sein**. Also: *bleiben*, *passieren* and *sein* itself.",
+        "Глаголы **перемещения** (кто-то перемещается из пункта A в пункт B) и глаголы **изменения состояния** (что-то становится иным) образуют Perfekt с **sein**. Кроме того: *bleiben*, *passieren* и сам глагол *sein*.",
+        "**Yer değiştirme** fiilleri (biri A'dan B'ye hareket eder) ve **durum değişikliği** fiilleri (bir şey farklı hale gelir) Perfekt'i **sein** ile kurar. Ayrıca: *bleiben*, *passieren* ve *sein* fiilinin kendisi.",
+        "الأفعال التي تدلّ على **تغيّر المكان** (شخص ينتقل من A إلى B) والأفعال التي تدلّ على **تغيّر الحالة** (شيء يصبح مختلفاً) تُكوّن الـ Perfekt مع **sein**. وكذلك: *bleiben* و*passieren* والفعل *sein* نفسه."
+      ),
+      memo: T(
+        "Fast alle Verben mit *sein* sind stark. Ausnahmen: gewandert, passiert.",
+        "Almost all verbs with *sein* are **strong** (ist gefahren) – but not all: *wandern* → ist gewandert, *passieren* → ist passiert.",
+        "Почти все глаголы с *sein* — **сильные** (ist gefahren), но не все: *wandern* → ist gewandert, *passieren* → ist passiert.",
+        "*sein* alan fiillerin hemen hepsi **güçlüdür** (ist gefahren) – ama hepsi değil: *wandern* → ist gewandert, *passieren* → ist passiert.",
+        "تقريباً كل الأفعال التي تأخذ *sein* **قوية** (ist gefahren)، لكن ليست كلها: *wandern* → ist gewandert، *passieren* → ist passiert."
+      ),
+      tables: [{
+        head: ["group", "inf", "perf", "ex"],
+        rows: [
+          [BEW, "gehen", "ist gegangen", "Ich bin zur Arbeit gegangen."],
+          [BEW, "fahren", "ist gefahren", "Wir sind mit dem Bus gefahren."],
+          [BEW, "laufen", "ist gelaufen", "Er ist zum Bahnhof gelaufen."],
+          [BEW, "fliegen", "ist geflogen", "Sie ist nach Berlin geflogen."],
+          [BEW, "schwimmen", "ist geschwommen", "Wir sind im See geschwommen."],
+          [BEW, "kommen", "ist gekommen", "Er ist zu spät gekommen."],
+          [BEW, "wandern", "ist gewandert", "Wir sind im Thüringer Wald gewandert."],
+          [BEWT, "an|kommen", "ist angekommen", "Der Zug ist pünktlich angekommen."],
+          [BEWT, "aus|steigen", "ist ausgestiegen", "Ich bin am Hauptbahnhof ausgestiegen."],
+          [BEWT, "um|ziehen", "ist umgezogen", "Sie ist nach Erfurt umgezogen."],
+          [ZW, "auf|stehen", "ist aufgestanden", "Ich bin um 6 Uhr aufgestanden."],
+          [AUS, "bleiben", "ist geblieben", "Wir sind zu Hause geblieben."],
+          [AUS, "passieren", "ist passiert", "Was ist passiert?"]
+        ]
+      }],
+      ex: [
+        { id: "u15", n: 15, kind: "fill", ins: "insFill", de: "Setzen Sie sein in der richtigen Form ein und ergänzen Sie das Partizip II.", items: [
+          { t: "Ich ___ gestern nach Leipzig ___. (fahren)", a: ["bin", "gefahren"] },
+          { t: "Wir ___ am Sonntag lange im See ___. (schwimmen)", a: ["sind", "geschwommen"] },
+          { t: "Der Zug ___ um 8 Uhr ___. (an|kommen)", a: ["ist", "angekommen"] },
+          { t: "Du ___ heute sehr früh ___. (auf|stehen)", a: ["bist", "aufgestanden"] },
+          { t: "Meine Freunde ___ im Sommer in den Bergen ___. (wandern)", a: ["sind", "gewandert"] },
+          { t: "Er ___ nach Berlin ___. (um|ziehen)", a: ["ist", "umgezogen"] },
+          { t: "Sie ___ zwei Wochen in Spanien ___. (bleiben)", a: ["ist", "geblieben"] },
+          { t: "Was ___ denn ___? (passieren)", a: ["ist", "passiert"] }
+        ] },
+        { id: "u16", n: 16, kind: "choose", shuf: true, ins: "insMatch", de: "Was passt? Verbinden Sie.", items: [
+          { t: "Ich bin um 7 Uhr …", o: ["geflogen", "aufgestanden", "geblieben", "gelaufen"], a: 1 },
+          { t: "Sie ist nach Hamburg …", o: ["geflogen", "aufgestanden", "geblieben", "gelaufen"], a: 0 },
+          { t: "Wir sind zum Markt …", o: ["geflogen", "aufgestanden", "geblieben", "gelaufen"], a: 3 },
+          { t: "Er ist im Bett …", o: ["geflogen", "aufgestanden", "geblieben", "gelaufen"], a: 2 }
+        ] }
+      ]
+    },
+    /* ---------------- Regel 9 ---------------- */
+    {
+      id: 9, rule: 9,
+      title: T("haben oder sein? Die Entscheidung", "haben or sein? Deciding", "haben или sein? Как выбрать", "haben mi sein mi? Karar verme", "haben أم sein؟ كيف تقرّر"),
+      text: T(
+        "1. Akkusativobjekt → **haben**. 2. Ortsveränderung oder Zustandswechsel → **sein**. 3. Sonst → **haben**.",
+        "Ask yourself in this order:\n1. Is there an **accusative object**? → **haben** (*Ich habe einen Film gesehen.*)\n2. Is there a **change of place** (from A to B) or a **change of state**? → **sein** (*Ich bin nach Hause gegangen.*)\n3. Neither (duration, activity, weather, feeling)? → **haben** (*Ich habe gearbeitet. Es hat geregnet.*)\nSome verbs take **both** helper verbs depending on the meaning:",
+        "Задавайте себе вопросы в таком порядке:\n1. Есть ли **прямое дополнение (Akkusativ)**? → **haben** (*Ich habe einen Film gesehen.*)\n2. Есть ли **перемещение** (из A в B) или **изменение состояния**? → **sein** (*Ich bin nach Hause gegangen.*)\n3. Ни то ни другое (длительность, деятельность, погода, чувство)? → **haben** (*Ich habe gearbeitet. Es hat geregnet.*)\nНекоторые глаголы употребляются с **обоими** вспомогательными глаголами в зависимости от значения:",
+        "Kendinize şu sırayla sorun:\n1. **Akuzatif nesne** var mı? → **haben** (*Ich habe einen Film gesehen.*)\n2. **Yer değiştirme** (A'dan B'ye) ya da **durum değişikliği** var mı? → **sein** (*Ich bin nach Hause gegangen.*)\n3. İkisi de yok mu (süre, etkinlik, hava durumu, duygu)? → **haben** (*Ich habe gearbeitet. Es hat geregnet.*)\nBazı fiiller anlamına göre **her iki** yardımcı fiille de kullanılır:",
+        "اسأل نفسك بهذا الترتيب:\n1. هل يوجد **مفعول به (Akkusativ)**؟ ← **haben** (*Ich habe einen Film gesehen.*)\n2. هل يوجد **تغيّر مكان** (من A إلى B) أو **تغيّر حالة**؟ ← **sein** (*Ich bin nach Hause gegangen.*)\n3. لا هذا ولا ذاك (مدّة، نشاط، طقس، شعور)؟ ← **haben** (*Ich habe gearbeitet. Es hat geregnet.*)\nبعض الأفعال تأخذ **الفعلين المساعدين كليهما** بحسب المعنى:"
+      ),
+      memo: T(
+        "Immer *haben*: schlafen, wohnen, arbeiten, lernen, spielen, warten, regnen, schneien. Im Unterricht: *Ich habe gesessen / gestanden / gelegen.*",
+        "Always *haben*: schlafen, wohnen, arbeiten, lernen, spielen, warten, regnen, schneien. With *sitzen, stehen, liegen* people in northern and eastern Germany use *haben* (*Ich habe gesessen.*), in the south and in Austria/Switzerland *sein* (*Ich bin gesessen.*). In class: use **haben**.",
+        "Всегда *haben*: schlafen, wohnen, arbeiten, lernen, spielen, warten, regnen, schneien. С *sitzen, stehen, liegen* на севере и востоке Германии используют *haben* (*Ich habe gesessen.*), на юге и в Австрии/Швейцарии — *sein* (*Ich bin gesessen.*). На занятиях: **haben**.",
+        "Her zaman *haben*: schlafen, wohnen, arbeiten, lernen, spielen, warten, regnen, schneien. *sitzen, stehen, liegen* ile Almanya'nın kuzeyinde ve doğusunda *haben* (*Ich habe gesessen.*), güneyde ve Avusturya/İsviçre'de *sein* (*Ich bin gesessen.*) kullanılır. Derste: **haben**.",
+        "دائماً *haben*: schlafen, wohnen, arbeiten, lernen, spielen, warten, regnen, schneien. مع *sitzen, stehen, liegen* يستخدم الناس في شمال ألمانيا وشرقها *haben* (*Ich habe gesessen.*)، وفي الجنوب وفي النمسا/سويسرا *sein* (*Ich bin gesessen.*). في الدورة: استخدم **haben**."
+      ),
+      tables: [{
+        head: ["inf", "haben", "sein"],
+        rows: [
+          ["fahren", { s: "Ich habe das Auto gefahren.", n: NOTE.akk }, { s: "Ich bin nach Berlin gefahren.", n: NOTE.ort }],
+          ["ziehen", { s: "Er hat den Koffer gezogen.", n: NOTE.akk }, { s: "Er ist nach Erfurt gezogen.", n: NOTE.wohn }],
+          ["schwimmen", { s: "Wir haben eine Stunde geschwommen.", n: NOTE.dauer }, { s: "Wir sind ans Ufer geschwommen.", n: NOTE.ziel }],
+          ["fliegen", { s: "Er hat das Flugzeug geflogen.", n: NOTE.pilot }, { s: "Er ist nach Rom geflogen.", n: NOTE.ziel }]
+        ]
+      }],
+      ex: [
+        { id: "u17", n: 17, kind: "fill", ins: "insFill", de: "haben oder sein? Setzen Sie die richtige Form ein.", items: [
+          { t: "Ich ___ gestern zehn Stunden ___. (schlafen)", a: ["habe", "geschlafen"] },
+          { t: "Wir ___ nach Wien ___. (fliegen)", a: ["sind", "geflogen"] },
+          { t: "Er ___ lange in Jena ___. (wohnen)", a: ["hat", "gewohnt"] },
+          { t: "Sie ___ den Bus ___. (nehmen)", a: ["hat", "genommen"] },
+          { t: "___ du schon im Meer ___? (schwimmen)", a: ["Hast|Bist", "geschwommen"] },
+          { t: "Es ___ den ganzen Tag ___. (regnen)", a: ["hat", "geregnet"] },
+          { t: "Wir ___ vor einem Jahr nach Erfurt ___. (um|ziehen)", a: ["sind", "umgezogen"] },
+          { t: "Meine Eltern ___ drei Tage bei uns ___. (bleiben)", a: ["sind", "geblieben"] }
+        ] },
+        { id: "u18", n: 18, kind: "write", ins: "insCorrect", de: "Finden Sie den Fehler und korrigieren Sie. (Wenn der Satz richtig ist: schreiben Sie „richtig“.)", items: [
+          { t: "Ich bin ein Buch gelesen.", a: ["Ich habe ein Buch gelesen"] },
+          { t: "Wir haben nach Hamburg gefahren.", a: ["Wir sind nach Hamburg gefahren"] },
+          { t: "Er hat um 7 Uhr aufgestanden.", a: ["Er ist um 7 Uhr aufgestanden"] },
+          { t: "Sie ist Deutsch gelernt.", a: ["Sie hat Deutsch gelernt"] },
+          { t: "Habt ihr gut geschlafen?", a: ["richtig", "Habt ihr gut geschlafen"] }
+        ] }
+      ]
+    },
+    /* ---------------- Regel 10 ---------------- */
+    {
+      id: 10, rule: 10,
+      title: T("Perfekt oder Präteritum? Ausnahmen", "Perfekt or Präteritum? Exceptions", "Perfekt или Präteritum? Исключения", "Perfekt mi Präteritum mu? İstisnalar", "Perfekt أم Präteritum؟ الاستثناءات"),
+      text: T(
+        "Im Gespräch benutzt man das **Perfekt**. Ausnahme: **war, hatte, es gab, konnte, musste, wollte, durfte, sollte** (Präteritum).",
+        "In spoken German you talk about the past almost always in the **Perfekt**. There is one exception for a few very common verbs: they are mostly used in the **Präteritum** (simple past), because the Perfekt sounds too long or unusual.",
+        "В разговорной речи о прошлом почти всегда говорят в **Perfekt**. Исключение — несколько очень частотных глаголов: их обычно ставят в **Präteritum** (простое прошедшее), потому что Perfekt звучит слишком длинно или непривычно.",
+        "Konuşma dilinde geçmişten neredeyse her zaman **Perfekt** ile söz edilir. Çok sık kullanılan birkaç fiilde bir istisna vardır: bunlar çoğunlukla **Präteritum** (basit geçmiş zaman) ile kullanılır, çünkü Perfekt fazla uzun ya da alışılmadık kalır.",
+        "في الألمانية المحكية يُتحدَّث عن الماضي دائماً تقريباً بالـ **Perfekt**. وهناك استثناء لبضعة أفعال شائعة جداً: فهي تُستخدم غالباً في الـ **Präteritum** (الماضي البسيط)، لأن الـ Perfekt معها يبدو طويلاً أو غير مألوف."
+      ),
+      memo: T(
+        "Mit allen anderen Verben aus der Liste: **Perfekt** – *Ich war gestern in der Stadt und habe eingekauft.*",
+        "With all **other** verbs from this list (e.g. gehen, essen, kaufen, arbeiten) you use the **Perfekt** in conversation and in a message to friends. Both can appear in the same sentence: *Ich war gestern in der Stadt und habe eingekauft.* The Präteritum of the other verbs (*ging, aß, kaufte*) matters mostly when reading and comes later.",
+        "Со всеми **остальными** глаголами из этого списка (например, gehen, essen, kaufen, arbeiten) в разговоре и в сообщении друзьям используется **Perfekt**. Оба времени могут стоять в одном предложении: *Ich war gestern in der Stadt und habe eingekauft.* Präteritum остальных глаголов (*ging, aß, kaufte*) важен в основном при чтении и изучается позже.",
+        "Bu listedeki **diğer tüm** fiillerle (ör. gehen, essen, kaufen, arbeiten) konuşmada ve arkadaşlara yazılan mesajlarda **Perfekt** kullanılır. İkisi aynı cümlede yer alabilir: *Ich war gestern in der Stadt und habe eingekauft.* Diğer fiillerin Präteritum'u (*ging, aß, kaufte*) daha çok okurken önemlidir ve daha sonra öğrenilir.",
+        "مع **جميع** الأفعال الأخرى في هذه القائمة (مثل gehen, essen, kaufen, arbeiten) تستخدم الـ **Perfekt** في الحديث وفي الرسائل إلى الأصدقاء. ويمكن أن يجتمع الزمنان في جملة واحدة: *Ich war gestern in der Stadt und habe eingekauft.* أما الـ Präteritum لباقي الأفعال (*ging, aß, kaufte*) فيهمّ في القراءة غالباً ويأتي لاحقاً."
+      ),
+      tables: [{
+        head: ["inf", PRAET, "ex"],
+        rows: [
+          ["sein", "war", "Ich war gestern krank."],
+          ["haben", "hatte", "Wir hatten keine Zeit."],
+          ["es gibt", "es gab", "Gestern gab es Suppe."],
+          ["können", "konnte", "Ich konnte nicht kommen."],
+          ["müssen", "musste", "Er musste arbeiten."],
+          ["wollen", "wollte", "Sie wollte nach Hause."],
+          ["dürfen", "durfte", "Wir durften nicht rauchen."],
+          ["sollen", "sollte", "Du solltest den Arzt anrufen."]
+        ]
+      }],
+      ex: [
+        { id: "u19", n: 19, kind: "fill", ins: "insFill", de: "Perfekt oder Präteritum? Setzen Sie die richtige Form ein.", items: [
+          { t: "Gestern ___ ich zu Hause und ___ Fußball ___. (sein / sehen)", a: ["war", "habe", "gesehen"] },
+          { t: "Am Samstag ___ wir keine Zeit, wir ___ arbeiten. (haben / müssen)", a: ["hatten", "mussten"] },
+          { t: "Ich ___ leider nicht zur Party ___. (kommen)", a: ["bin", "gekommen"] },
+          { t: "Gestern ___ es Pizza in der Kantine. (geben)", a: ["gab"] },
+          { t: "Er ___ gern ins Kino gehen, aber er ___ nicht. (wollen / dürfen)", a: ["wollte", "durfte"] },
+          { t: "Wir ___ am Wochenende in der Stadt und ___ Eis ___. (sein / essen)", a: ["waren", "haben", "gegessen"] }
+        ] },
+        { id: "u20", n: 20, kind: "free", ins: "insFree", de: "Schreiben Sie den Text im Perfekt oder Präteritum.",
+          note: T("Erzählen Sie Ihr letztes Wochenende. Schreiben Sie mindestens 6 Sätze.", "Tell about your last weekend. Write at least 6 sentences.", "Расскажите о своих последних выходных. Напишите не менее 6 предложений.", "Geçen hafta sonunuzu anlatın. En az 6 cümle yazın.", "احكِ عن عطلة نهاية الأسبوع الماضية. اكتب 6 جمل على الأقل."),
+          checks: [
+            T("mindestens 6 Sätze", "at least 6 sentences", "не менее 6 предложений", "en az 6 cümle", "6 جمل على الأقل"),
+            T("zwei Verben mit haben im Perfekt", "two verbs with haben in the Perfekt", "два глагола с haben в Perfekt", "Perfekt'te haben ile iki fiil", "فعلان مع haben في الـ Perfekt"),
+            T("zwei Verben mit sein im Perfekt", "two verbs with sein in the Perfekt", "два глагола с sein в Perfekt", "Perfekt'te sein ile iki fiil", "فعلان مع sein في الـ Perfekt"),
+            T("ein Verb im Präteritum (war, hatte oder ein Modalverb)", "one verb in the Präteritum (war, hatte or a modal verb)", "один глагол в Präteritum (war, hatte или модальный глагол)", "Präteritum'da bir fiil (war, hatte ya da bir kip fiili)", "فعل واحد في الـ Präteritum (war أو hatte أو فعل ناقص)"),
+            T("ein trennbares Verb", "one separable verb", "один отделяемый глагол", "bir ayrılabilen fiil", "فعل منفصل واحد")
+          ] }
+      ]
+    },
+    /* ---------------- Abschluss ---------------- */
+    {
+      id: 11, rule: 0, final: true,
+      title: T("Abschlussübung: Alle Regeln zusammen", "Final practice: all rules together", "Итоговое упражнение: все правила вместе", "Son alıştırma: tüm kurallar bir arada", "التمرين الختامي: كل القواعد معاً"),
+      text: T(
+        "Alle Regeln zusammen: Hilfsverb auf Position 2, Partizip II am Satzende.",
+        "Now use everything together. Rules 1–10 are mixed here. If you get stuck, jump back to the rule: the link next to a wrong answer takes you there.",
+        "Теперь используйте всё вместе. Здесь смешаны правила 1–10. Если вы застряли, вернитесь к правилу: ссылка рядом с неверным ответом приведёт вас туда.",
+        "Şimdi her şeyi birlikte kullanın. Burada Kural 1–10 karışık olarak yer alır. Takılırsanız kurala geri dönün: yanlış cevabın yanındaki bağlantı sizi oraya götürür.",
+        "استخدم الآن كل ما تعلّمته معاً. القواعد 1–10 ممزوجة هنا. وإذا تعثّرت فعُد إلى القاعدة: الرابط المجاور للإجابة الخاطئة يأخذك إليها."
+      ),
+      ex: [
+        { id: "u21", n: 21, kind: "write", ins: "insWrite", de: "Annas Samstag – schreiben Sie den Text im Perfekt.", rule: 8,
+          note: T("Beginnen Sie so: Am Samstag ist Anna um 8 Uhr aufgestanden. …", "Start like this: Am Samstag ist Anna um 8 Uhr aufgestanden. …", "Начните так: Am Samstag ist Anna um 8 Uhr aufgestanden. …", "Şöyle başlayın: Am Samstag ist Anna um 8 Uhr aufgestanden. …", "ابدأ هكذا: Am Samstag ist Anna um 8 Uhr aufgestanden. …"),
+          items: [
+            { t: "Am Samstag steht Anna um 8 Uhr auf.", a: ["Am Samstag ist Anna um 8 Uhr aufgestanden"], r: 8 },
+            { t: "Sie frühstückt, liest die Zeitung und ruft ihre Freundin an.", a: ["Sie hat gefrühstückt, die Zeitung gelesen und ihre Freundin angerufen", "Sie hat gefrühstückt, hat die Zeitung gelesen und hat ihre Freundin angerufen"], r: 5 },
+            { t: "Dann fährt sie mit dem Bus in die Stadt.", a: ["Dann ist sie mit dem Bus in die Stadt gefahren"], r: 8 },
+            { t: "Dort kauft sie ein und trifft Freunde.", a: ["Dort hat sie eingekauft und Freunde getroffen", "Dort hat sie eingekauft und hat Freunde getroffen"], r: 5 },
+            { t: "Sie essen zusammen Pizza und trinken Cola.", a: ["Sie haben zusammen Pizza gegessen und Cola getrunken", "Sie haben zusammen Pizza gegessen und haben Cola getrunken"], r: 4 },
+            { t: "Am Abend kommt Anna nach Hause und schläft früh.", a: ["Am Abend ist Anna nach Hause gekommen und hat früh geschlafen"], r: 8 }
+          ] },
+        { id: "u22", n: 22, kind: "write", ins: "insCorrect", de: "Fehlertext – finden und korrigieren Sie die Fehler.",
+          note: T("Jeder Satz enthält einen Fehler.", "Each sentence contains one mistake.", "В каждом предложении одна ошибка.", "Her cümlede bir hata vardır.", "في كل جملة خطأ واحد."),
+          items: [
+            { t: "Gestern habe ich früh aufgestanden.", a: ["Gestern bin ich früh aufgestanden", "Ich bin gestern früh aufgestanden"], r: 8 },
+            { t: "Ich habe zur Arbeit gefahren.", a: ["Ich bin zur Arbeit gefahren"], r: 8 },
+            { t: "Dort habe ich acht Stunden gearbeit.", a: ["Dort habe ich acht Stunden gearbeitet"], r: 2 },
+            { t: "Am Nachmittag habe ich einen Kaffee getrinkt.", a: ["Am Nachmittag habe ich einen Kaffee getrunken"], r: 3 },
+            { t: "Danach bin ich Brot eingekauft.", a: ["Danach habe ich Brot eingekauft"], r: 9 },
+            { t: "Dann habe ich nach Hause gegangen.", a: ["Dann bin ich nach Hause gegangen"], r: 8 }
+          ] },
+        { id: "u23", n: 23, kind: "fill", ins: "insRulenum", de: "Selbstcheck – Wie gut kennen Sie die Regeln? Ordnen Sie jedem Beispiel die passende Regel (1–10) zu.", items: [
+          { t: "er hat gelernt → Regel ___", a: ["2"], r: 2 },
+          { t: "wir sind geflogen → Regel ___", a: ["8|3"], r: 8 },
+          { t: "du hast besucht → Regel ___", a: ["6"], r: 6 },
+          { t: "sie hat mitgebracht → Regel ___", a: ["5|7"], r: 5 },
+          { t: "ich habe gegessen (er isst) → Regel ___", a: ["4"], r: 4 },
+          { t: "Ich war müde. → Regel ___", a: ["10"], r: 10 },
+          { t: "Hast du das gewusst? → Regel ___", a: ["7"], r: 7 },
+          { t: "Ich habe gestern gearbeitet. (Satzbau) → Regel ___", a: ["1"], r: 1 }
+        ] }
+      ]
+    },
+    /* ---------------- Verbliste ---------------- */
+    {
+      id: 12, rule: 0, ref: true,
+      title: T("Verbliste mit Partizip II und Hilfsverb", "Verb list with Partizip II and helper verb", "Список глаголов с Partizip II и вспомогательным глаголом", "Partizip II ve yardımcı fiille fiil listesi", "قائمة الأفعال مع Partizip II والفعل المساعد"),
+      text: T("", "", "", "", "")
+    }
+  ];
+
+  /* Verbgruppen für die Referenzseite (Hilfsverb haben, außer Gruppe 8) */
+  var VERBGROUPS = [
+    { id: "w", title: T("Regelmäßige Verben (ge- … -t)", "Regular verbs (ge- … -t)", "Правильные глаголы (ge- … -t)", "Düzenli fiiller (ge- … -t)", "الأفعال المنتظمة (ge- … -t)"),
+      v: "lernen – gelernt · wohnen – gewohnt · tanzen – getanzt · hören – gehört · spielen – gespielt · leben – gelebt · duschen – geduscht · kochen – gekocht · kaufen – gekauft · putzen – geputzt · grillen – gegrillt · boxen – geboxt · glauben – geglaubt · fragen – gefragt · suchen – gesucht · machen – gemacht · feiern – gefeiert · schmecken – geschmeckt · rauchen – geraucht · baden – gebadet · mieten – gemietet · reden – geredet · nähen – genäht · drucken – gedruckt · schicken – geschickt · lachen – gelacht · husten – gehustet · zahlen – gezahlt · zeigen – gezeigt · wünschen – gewünscht · schenken – geschenkt · lieben – geliebt · hängen – gehängt · heiraten – geheiratet · speichern – gespeichert · regnen – geregnet · schneien – geschneit · parken – geparkt · tanken – getankt · frühstücken – gefrühstückt · prüfen – geprüft · wählen – gewählt · bluten – geblutet · passen – gepasst · schaffen – geschafft · schmücken – geschmückt · arbeiten – gearbeitet · warten – gewartet · antworten – geantwortet · kosten – gekostet · öffnen – geöffnet" },
+    { id: "s", title: T("Unregelmäßige Verben (ge- … -en), Hilfsverb haben", "Irregular verbs (ge- … -en), helper verb haben", "Неправильные глаголы (ge- … -en), вспомогательный глагол haben", "Düzensiz fiiller (ge- … -en), yardımcı fiil haben", "الأفعال غير المنتظمة (ge- … -en)، الفعل المساعد haben"),
+      v: "trinken – getrunken · schreiben – geschrieben · sprechen – gesprochen · essen – gegessen · lesen – gelesen · sehen – gesehen · finden – gefunden · schlafen – geschlafen · nehmen – genommen · geben – gegeben · helfen – geholfen · treffen – getroffen · schließen – geschlossen · rufen – gerufen · tun – getan · ziehen – gezogen · tragen – getragen · backen – gebacken · gießen – gegossen · scheinen – geschienen · stehen – gestanden · sitzen – gesessen · liegen – gelegen" },
+    { id: "m", title: T("Gemischte Verben (Vokalwechsel + -t)", "Mixed verbs (vowel change + -t)", "Смешанные глаголы (смена гласной + -t)", "Karışık fiiller (ünlü değişimi + -t)", "الأفعال المختلطة (تغيّر حرف العلّة + -t)"),
+      v: "bringen – gebracht · denken – gedacht · kennen – gekannt · wissen – gewusst · mit|bringen – mitgebracht" },
+    { id: "t", title: T("Trennbare Verben (-ge- in der Mitte)", "Separable verbs (-ge- in the middle)", "Отделяемые глаголы (-ge- посередине)", "Ayrılabilen fiiller (-ge- ortada)", "الأفعال المنفصلة (-ge- في الوسط)"),
+      v: "ein|kaufen – eingekauft · ab|holen – abgeholt · auf|machen – aufgemacht · zu|machen – zugemacht · an|machen – angemacht · aus|machen – ausgemacht · auf|räumen – aufgeräumt · vor|bereiten – vorbereitet · auf|hören – aufgehört · an|melden – angemeldet · ab|melden – abgemeldet · aus|füllen – ausgefüllt · aus|packen – ausgepackt · ab|stellen – abgestellt · mit|machen – mitgemacht · um|tauschen – umgetauscht · auf|bauen – aufgebaut · kennen|lernen – kennengelernt · an|rufen – angerufen · an|fangen – angefangen · an|ziehen – angezogen · aus|ziehen – ausgezogen · ein|laden – eingeladen · mit|nehmen – mitgenommen · ab|geben – abgegeben · fern|sehen – ferngesehen · ab|lesen – abgelesen · aus|atmen – ausgeatmet · ein|atmen – eingeatmet · an|bieten – angeboten · zurück|geben – zurückgegeben · zurück|nehmen – zurückgenommen" },
+    { id: "u", title: T("Untrennbare Verben (ohne ge-)", "Inseparable verbs (without ge-)", "Неотделяемые глаголы (без ge-)", "Ayrılamayan fiiller (ge- olmadan)", "الأفعال غير المنفصلة (بدون ge-)"),
+      v: "besuchen – besucht · bestellen – bestellt · bezahlen – bezahlt · erzählen – erzählt · erklären – erklärt · verdienen – verdient · vereinbaren – vereinbart · verlängern – verlängert · benutzen – benutzt · beantragen – beantragt · betreuen – betreut · informieren – informiert · wiederholen – wiederholt · besichtigen – besichtigt · übernachten – übernachtet · gratulieren – gratuliert · verstehen – verstanden · vergessen – vergessen · bekommen – bekommen · beginnen – begonnen · empfehlen – empfohlen · gefallen – gefallen · unterschreiben – unterschrieben · überweisen – überwiesen" },
+    { id: "i", title: T("Verben auf -ieren (ohne ge-)", "Verbs ending in -ieren (without ge-)", "Глаголы на -ieren (без ge-)", "-ieren ile biten fiiller (ge- olmadan)", "الأفعال المنتهية بـ -ieren (بدون ge-)"),
+      v: "studieren – studiert · reparieren – repariert · telefonieren – telefoniert · trainieren – trainiert · fotografieren – fotografiert · korrigieren – korrigiert · kontrollieren – kontrolliert · probieren – probiert · an|probieren – anprobiert · organisieren – organisiert · reagieren – reagiert · präsentieren – präsentiert · transportieren – transportiert · recherchieren – recherchiert · funktionieren – funktioniert · buchstabieren – buchstabiert" },
+    { id: "z", title: T("Verben mit sein", "Verbs with sein", "Глаголы с sein", "sein ile kurulan fiiller", "الأفعال مع sein"),
+      v: "gehen – ist gegangen · fahren – ist gefahren · laufen – ist gelaufen · fliegen – ist geflogen · schwimmen – ist geschwommen · kommen – ist gekommen · wandern – ist gewandert · bleiben – ist geblieben · passieren – ist passiert · sein – ist gewesen · an|kommen – ist angekommen · ab|fahren – ist abgefahren · aus|steigen – ist ausgestiegen · um|steigen – ist umgestiegen · um|ziehen – ist umgezogen · auf|stehen – ist aufgestanden · mit|kommen – ist mitgekommen · zurück|kommen – ist zurückgekommen · wieder|kommen – ist wiedergekommen · zurück|gehen – ist zurückgegangen · hoch|gehen – ist hochgegangen · ziehen (nach Berlin) – ist gezogen" }
+  ];
+  /* ===== Entdeckungsphase + Regeln in einfacher Sprache ===== */
+  var O_FIRST = T("auf Position 1", "in first position", "на первом месте", "1. sırada", "في المرتبة الأولى");
+  var O_SECOND = T("auf Position 2", "in second position", "на втором месте", "2. sırada", "في المرتبة الثانية");
+  var O_END = T("ganz am Ende", "at the very end", "в самом конце", "en sonda", "في النهاية تماماً");
+  var O_BEGIN = T("am Anfang", "at the beginning", "в начале", "en başta", "في البداية");
+  var O_AFTER = T("direkt nach dem ersten Teil", "right after the first part", "сразу после первой части", "birinci parçanın hemen arkasında", "مباشرة بعد الجزء الأول");
+  var O_YES = T("Ja", "Yes", "Да", "Evet", "نعم");
+  var O_NO = T("Nein", "No", "Нет", "Hayır", "لا");
+  var GA = T("Gruppe A", "Group A", "Группа A", "A grubu", "المجموعة A");
+  var GB = T("Gruppe B", "Group B", "Группа B", "B grubu", "المجموعة B");
+  function DQ(q, o, a) { return { q: q, o: o, a: a }; }
+
+  var PLAIN = {
+    /* ---------- Regel 1 ---------- */
+    1: {
+      observe: { groups: [{ lines: ["Ich **habe** gestern **gearbeitet**.", "Mein Bruder **hat** das Buch **gelesen**.", "Wir **haben** am Samstag Tennis **gespielt**.", "**Hast** du schon Kaffee **getrunken**?", "Was **haben** Sie gestern **gemacht**?"] }] },
+      disc: [
+        DQ(T("Wie viele Teile hat das Verb in diesen Sätzen?", "How many parts does the verb have in these sentences?", "Из скольких частей состоит глагол в этих предложениях?", "Bu cümlelerde fiil kaç parçadan oluşuyor?", "من كم جزءاً يتكوّن الفعل في هذه الجمل؟"), ["1", "2", "3"], 1),
+        DQ(T("Welches Wort steht in den Sätzen mit Ich / Mein Bruder / Wir auf Position 2?", "Which word is in second place in the sentences with Ich / Mein Bruder / Wir?", "Какое слово стоит на втором месте в предложениях с Ich / Mein Bruder / Wir?", "Ich / Mein Bruder / Wir ile başlayan cümlelerde 2. sırada hangi sözcük var?", "أي كلمة تقع في المرتبة الثانية في الجمل التي تبدأ بـ Ich / Mein Bruder / Wir؟"), ["habe / hat / haben", "gearbeitet / gelesen / gespielt", "gestern / das Buch / am Samstag"], 0),
+        DQ(T("Wo steht der zweite Teil des Verbs (gearbeitet, gelesen, gespielt, getrunken, gemacht)?", "Where does the second part of the verb stand (gearbeitet, gelesen, gespielt, getrunken, gemacht)?", "Где стоит вторая часть глагола (gearbeitet, gelesen, gespielt, getrunken, gemacht)?", "Fiilin ikinci parçası (gearbeitet, gelesen, gespielt, getrunken, gemacht) nerede durur?", "أين يقع الجزء الثاني من الفعل (gearbeitet, gelesen, gespielt, getrunken, gemacht)؟"), [O_BEGIN, O_AFTER, O_END], 2),
+        DQ(T("Wo steht „Hast“ in der Frage „Hast du schon Kaffee getrunken?“", "Where is “Hast” in the question “Hast du schon Kaffee getrunken?”", "Где стоит «Hast» в вопросе «Hast du schon Kaffee getrunken?»", "“Hast du schon Kaffee getrunken?” sorusunda “Hast” nerede?", "أين تقع «Hast» في السؤال «Hast du schon Kaffee getrunken»؟"), [O_FIRST, O_SECOND, O_END], 0)
+      ],
+      title: T("Die Perfekt-Verbklammer", "The two parts of the Perfekt (verb bracket)", "Две части Perfekt (глагольная рамка)", "Perfekt'in iki parçası (fiil çerçevesi)", "جزآ الـ Perfekt (إطار الفعل)"),
+      text: T(
+        "Das Perfekt hat **zwei Teile**: *haben* (oder *sein*) auf Position 2 – und das **Partizip II** ganz am Ende. Alles andere steht dazwischen.",
+        "Now you have seen it yourself. In the Perfekt, the verb is split into **two parts**.\n**Part 1** is *haben* (or *sein*). It changes with the person (ich habe, du hast, er hat …) and in a normal sentence it always stands in **second place**.\n**Part 2** is a special form of the main verb, for example *gearbeitet*, *gelesen*, *gespielt*. We call it the **Partizip II**. It always stands **at the very end**.\nEverything else (gestern, das Buch, am Samstag …) stands in between. Think of a bracket: *Ich **habe** gestern **gearbeitet**.*\nIn a yes/no question, *haben* comes first: *Hast du Kaffee getrunken?* In a question with a question word, it comes right after that word: *Was haben Sie gemacht?* The end stays the same.",
+        "Теперь вы увидели это сами. В Perfekt глагол состоит из **двух частей**.\n**Часть 1** — *haben* (или *sein*). Она меняется по лицам (ich habe, du hast, er hat …) и в обычном предложении всегда стоит **на втором месте**.\n**Часть 2** — особая форма основного глагола, например *gearbeitet*, *gelesen*, *gespielt*. Она называется **Partizip II** и всегда стоит **в самом конце**.\nВсё остальное (gestern, das Buch, am Samstag …) находится между ними. Представьте скобку: *Ich **habe** gestern **gearbeitet**.*\nВ вопросе без вопросительного слова на первом месте стоит *haben*: *Hast du Kaffee getrunken?* В вопросе с вопросительным словом — сразу после него: *Was haben Sie gemacht?* Конец остаётся тем же.",
+        "Şimdi bunu kendiniz gördünüz. Perfekt'te fiil **iki parçaya** ayrılır.\n**1. parça** *haben* (ya da *sein*) olur. Kişiye göre değişir (ich habe, du hast, er hat …) ve normal bir cümlede her zaman **ikinci sırada** durur.\n**2. parça** ana fiilin özel bir biçimidir, örneğin *gearbeitet*, *gelesen*, *gespielt*. Buna **Partizip II** denir ve her zaman **en sonda** yer alır.\nDiğer her şey (gestern, das Buch, am Samstag …) ikisinin arasında durur. Bir parantez gibi düşünün: *Ich **habe** gestern **gearbeitet**.*\nEvet/hayır sorusunda önce *haben* gelir: *Hast du Kaffee getrunken?* Soru sözcüklü sorularda soru sözcüğünün hemen arkasından gelir: *Was haben Sie gemacht?* Son kısım aynı kalır.",
+        "والآن رأيتَ ذلك بنفسك. في الـ Perfekt ينقسم الفعل إلى **جزأين**.\n**الجزء 1** هو *haben* (أو *sein*). وهو يتغيّر بحسب الشخص (ich habe, du hast, er hat …) ويقع دائماً في **المرتبة الثانية** في الجملة العادية.\n**الجزء 2** صيغة خاصة من الفعل الأساسي، مثل *gearbeitet* و*gelesen* و*gespielt*. ويُسمّى **Partizip II** ويقع دائماً **في آخر الجملة تماماً**.\nوكل شيء آخر (gestern, das Buch, am Samstag …) يقع بينهما. تخيّل قوساً: *Ich **habe** gestern **gearbeitet**.*\nفي سؤال «نعم/لا» يأتي *haben* أولاً: *Hast du Kaffee getrunken?* وفي السؤال بأداة استفهام يأتي بعدها مباشرة: *Was haben Sie gemacht?* ويبقى الجزء الأخير في مكانه."
+      )
+    },
+    /* ---------- Regel 2 ---------- */
+    2: {
+      observe: { groups: [
+        { lines: ["machen → **ge**mach**t**", "spielen → **ge**spiel**t**", "kaufen → **ge**kauf**t**", "lernen → **ge**lern**t**", "wohnen → **ge**wohn**t**"] },
+        { lines: ["arbeiten → **ge**arbeit**et**", "warten → **ge**wart**et**", "antworten → **ge**antwort**et**"] }
+      ] },
+      disc: [
+        DQ(T("Womit beginnen alle Wörter rechts (gemacht, gespielt, gekauft …)?", "What do all the words on the right start with (gemacht, gespielt, gekauft …)?", "С чего начинаются все слова справа (gemacht, gespielt, gekauft …)?", "Sağdaki tüm sözcükler neyle başlıyor (gemacht, gespielt, gekauft …)?", "بماذا تبدأ كل الكلمات على اليمين (gemacht, gespielt, gekauft …)؟"), ["ge-", "be-", "ver-"], 0),
+        DQ(T("Womit enden die Wörter in der ersten Gruppe?", "What do the words in the first group end with?", "Чем оканчиваются слова в первой группе?", "İlk gruptaki sözcükler neyle bitiyor?", "بماذا تنتهي الكلمات في المجموعة الأولى؟"), ["-t", "-en", "-ge"], 0),
+        DQ(T("Was passiert mit dem Rest des Wortes (mach, spiel, kauf …)?", "What happens to the rest of the word (mach, spiel, kauf …)?", "Что происходит с остальной частью слова (mach, spiel, kauf …)?", "Kelimenin geri kalanına (mach, spiel, kauf …) ne oluyor?", "ماذا يحدث لبقية الكلمة (mach, spiel, kauf …)؟"), [T("Er bleibt gleich.", "It stays the same.", "Она остаётся прежней.", "Aynı kalır.", "تبقى كما هي."), T("Er ändert sich.", "It changes.", "Она меняется.", "Değişir.", "تتغيّر."), T("Er verschwindet.", "It disappears.", "Она исчезает.", "Kaybolur.", "تختفي.")], 0),
+        DQ(T("Was ist in der zweiten Gruppe (arbeiten, warten, antworten) anders?", "What is different in the second group (arbeiten, warten, antworten)?", "Что отличается во второй группе (arbeiten, warten, antworten)?", "İkinci grupta (arbeiten, warten, antworten) ne farklı?", "ما المختلف في المجموعة الثانية (arbeiten, warten, antworten)؟"), [T("Vor dem -t steht noch ein -e-.", "There is an extra -e- before the -t.", "Перед -t стоит ещё -e-.", "-t'den önce fazladan bir -e- var.", "يوجد -e- إضافي قبل الـ t."), T("Es gibt kein ge-.", "There is no ge-.", "Нет ge-.", "ge- yok.", "لا يوجد ge-."), T("Es endet auf -en.", "It ends in -en.", "Оно оканчивается на -en.", "-en ile bitiyor.", "تنتهي بـ -en.")], 0)
+      ],
+      title: T("Regelmäßige Verben: ge- + Verb + -t", "Regular verbs: ge- + verb + -t", "Правильные глаголы: ge- + глагол + -t", "Düzenli fiiller: ge- + fiil + -t", "الأفعال المنتظمة: ge- + الفعل + -t"),
+      text: T(
+        "Regelmäßige Verben: **ge + Verb ohne -en + t** (gemacht). Bei arbeiten und warten: **-et** (gearbeitet).",
+        "Most verbs are **regular**. For these verbs the second part is easy to build:\n**ge + the verb without -en + t**\nmachen → ge**mach**t, spielen → ge**spiel**t, kaufen → ge**kauf**t.\nThe middle part never changes. These verbs almost always use *haben*: *Ich habe Fußball gespielt.*\nOne small trick: if the verb stem ends in **t** or **d** (arbeiten, warten, antworten), or in letters that are hard to say before one more t (kosten, öffnen), you add an **e** before the final t: ge**arbeit**et, ge**wart**et, ge**antwort**et, ge**kost**et, ge**öffn**et.",
+        "Большинство глаголов — **правильные**. У них вторая часть образуется просто:\n**ge + глагол без -en + t**\nmachen → ge**mach**t, spielen → ge**spiel**t, kaufen → ge**kauf**t.\nСередина слова никогда не меняется. Эти глаголы почти всегда используют *haben*: *Ich habe Fußball gespielt.*\nНебольшая хитрость: если основа глагола оканчивается на **t** или **d** (arbeiten, warten, antworten) или на сочетание согласных, которое трудно произнести перед ещё одним t (kosten, öffnen), добавляется **e** перед t: ge**arbeit**et, ge**wart**et, ge**antwort**et, ge**kost**et, ge**öffn**et.",
+        "Fiillerin çoğu **düzenlidir**. Bunlarda ikinci parça kolayca kurulur:\n**ge + fiil (sondaki -en olmadan) + t**\nmachen → ge**mach**t, spielen → ge**spiel**t, kaufen → ge**kauf**t.\nKelimenin ortası hiç değişmez. Bu fiiller neredeyse her zaman *haben* ile kullanılır: *Ich habe Fußball gespielt.*\nKüçük bir ipucu: fiil kökü **t** ya da **d** ile (arbeiten, warten, antworten) ya da bir t'den önce söylemesi zor ünsüz kümeleriyle (kosten, öffnen) bitiyorsa, son t'den önce bir **e** eklenir: ge**arbeit**et, ge**wart**et, ge**antwort**et, ge**kost**et, ge**öffn**et.",
+        "معظم الأفعال **منتظمة**. وفي هذه الأفعال يسهل تكوين الجزء الثاني:\n**ge + الفعل بدون -en + t**\nmachen → ge**mach**t، spielen → ge**spiel**t، kaufen → ge**kauf**t.\nلا يتغيّر وسط الكلمة أبداً. وهذه الأفعال تأخذ *haben* دائماً تقريباً: *Ich habe Fußball gespielt.*\nحيلة صغيرة: إذا انتهى جذر الفعل بحرف **t** أو **d** (arbeiten, warten, antworten) أو بمجموعة حروف يصعب نطقها قبل t أخرى (kosten, öffnen)، فنضيف **e** قبل الـ t: ge**arbeit**et، ge**wart**et، ge**antwort**et، ge**kost**et، ge**öffn**et."
+      )
+    },
+    /* ---------- Regel 3 ---------- */
+    3: {
+      observe: { groups: [{ lines: ["trinken → **ge**trunk**en**", "schreiben → **ge**schrieb**en**", "sprechen → **ge**sproch**en**", "essen → **ge**gess**en**", "lesen → **ge**les**en**", "finden → **ge**fund**en**", "nehmen → **ge**nomm**en**", "geben → **ge**geb**en**"] }] },
+      disc: [
+        DQ(T("Womit enden die Wörter rechts?", "What do the words on the right end with?", "Чем оканчиваются слова справа?", "Sağdaki sözcükler neyle bitiyor?", "بماذا تنتهي الكلمات على اليمين؟"), ["-en", "-t", "-e"], 0),
+        DQ(T("Was passiert bei trinken → getrunken, sprechen → gesprochen und nehmen → genommen in der Mitte?", "What happens in the middle of trinken → getrunken, sprechen → gesprochen and nehmen → genommen?", "Что происходит в середине слов trinken → getrunken, sprechen → gesprochen и nehmen → genommen?", "trinken → getrunken, sprechen → gesprochen ve nehmen → genommen kelimelerinin ortasında ne oluyor?", "ماذا يحدث في وسط trinken → getrunken وsprechen → gesprochen وnehmen → genommen؟"), [T("Der Vokal wird oft ein anderer (i → u, e → o).", "The vowel often becomes a different one (i → u, e → o).", "Гласная часто становится другой (i → u, e → o).", "Ünlü çoğu zaman başka bir ünlüye dönüşür (i → u, e → o).", "غالباً يصبح حرف العلّة حرفاً آخر (i → u، e → o)."), T("Nichts. Alles bleibt gleich.", "Nothing. Everything stays the same.", "Ничего. Всё остаётся прежним.", "Hiçbir şey. Her şey aynı kalır.", "لا شيء. كل شيء يبقى كما هو."), T("Das Wort wird kürzer.", "The word gets shorter.", "Слово становится короче.", "Kelime kısalır.", "تصبح الكلمة أقصر.")], 0),
+        DQ(T("Welches Wort gehört zu dieser Gruppe (wie gegessen, gelesen)?", "Which word belongs to this group (like gegessen, gelesen)?", "Какое слово относится к этой группе (как gegessen, gelesen)?", "Hangi sözcük bu gruba ait (gegessen, gelesen gibi)?", "أي كلمة تنتمي إلى هذه المجموعة (مثل gegessen وgelesen)؟"), ["gesehen", "gesucht", "gekocht"], 0),
+        DQ(T("Kann man die Form (z. B. getrunken) einfach aus trinken bauen?", "Can you simply build the form (e.g. getrunken) from trinken?", "Можно ли просто построить эту форму (например, getrunken) из trinken?", "Bu biçimi (ör. getrunken) trinken'den kolayca kurabilir misiniz?", "هل يمكن تكوين الصيغة (مثل getrunken) ببساطة من trinken؟"), [T("Nein, man muss sie lernen.", "No, you have to learn it.", "Нет, её нужно выучить.", "Hayır, öğrenmek gerekir.", "لا، يجب حفظها."), T("Ja, immer genau wie bei machen.", "Yes, always exactly like machen.", "Да, всегда точно так же, как machen.", "Evet, her zaman tıpkı machen gibi.", "نعم، دائماً تماماً مثل machen.")], 0)
+      ],
+      title: T("Unregelmäßige Verben: ge- + Verb + -en", "Irregular verbs: ge- + verb + -en", "Неправильные глаголы: ge- + глагол + -en", "Düzensiz fiiller: ge- + fiil + -en", "الأفعال غير المنتظمة: ge- + الفعل + -en"),
+      text: T(
+        "Unregelmäßige Verben: **ge + Verb + en**, oft mit anderem Vokal (getrunken). Man muss sie lernen.",
+        "Some verbs are **irregular**. For these, the second part ends in **-en**:\n**ge + (changed) verb + en**\ntrinken → ge**trunk**en, schreiben → ge**schrieb**en, essen → ge**gess**en.\nThe middle part often changes (trinken → getrunken). You can't guess it – you have to learn each form together with the verb, like a word.\nHelpful: if the form ends in **-t**, the verb is regular. If it ends in **-en**, it is irregular.",
+        "Некоторые глаголы — **неправильные**. У них вторая часть оканчивается на **-en**:\n**ge + (изменённый) глагол + en**\ntrinken → ge**trunk**en, schreiben → ge**schrieb**en, essen → ge**gess**en.\nСередина слова часто меняется (trinken → getrunken). Угадать это нельзя — каждую форму нужно учить вместе с глаголом, как отдельное слово.\nПодсказка: если форма оканчивается на **-t**, глагол правильный. Если на **-en** — неправильный.",
+        "Bazı fiiller **düzensizdir**. Bunlarda ikinci parça **-en** ile biter:\n**ge + (değişmiş) fiil + en**\ntrinken → ge**trunk**en, schreiben → ge**schrieb**en, essen → ge**gess**en.\nKelimenin ortası çoğu zaman değişir (trinken → getrunken). Bunu tahmin edemezsiniz; her biçimi fiille birlikte, bir sözcük gibi öğrenmelisiniz.\nİpucu: biçim **-t** ile bitiyorsa fiil düzenlidir. **-en** ile bitiyorsa düzensizdir.",
+        "بعض الأفعال **غير منتظمة**. وفي هذه الأفعال ينتهي الجزء الثاني بـ **-en**:\n**ge + الفعل (بعد تغيّره) + en**\ntrinken → ge**trunk**en، schreiben → ge**schrieb**en، essen → ge**gess**en.\nغالباً ما يتغيّر وسط الكلمة (trinken → getrunken). ولا يمكن تخمين ذلك؛ عليك أن تحفظ كل صيغة مع الفعل مثل كلمة مستقلة.\nنصيحة: إذا انتهت الصيغة بـ **-t** فالفعل منتظم. وإذا انتهت بـ **-en** فهو غير منتظم."
+      ),
+      memo: T(
+        "Endet es auf **-t**: regelmäßig. Auf **-en**: unregelmäßig.",
+        "Remember: ends in **-t** → regular verb. Ends in **-en** → irregular verb. (gemacht – gegessen)",
+        "Запомните: оканчивается на **-t** → правильный глагол. На **-en** → неправильный. (gemacht – gegessen)",
+        "Aklınızda tutun: **-t** ile bitiyorsa → düzenli fiil. **-en** ile bitiyorsa → düzensiz fiil. (gemacht – gegessen)",
+        "تذكّر: ينتهي بـ **-t** ← فعل منتظم. ينتهي بـ **-en** ← فعل غير منتظم. (gemacht – gegessen)"
+      )
+    },
+    /* ---------- Regel 4 ---------- */
+    4: {
+      observe: { groups: [
+        { label: GA, lines: ["sprechen – er spr**i**cht – gesprochen", "essen – er **i**sst – gegessen", "lesen – er l**ie**st – gelesen", "sehen – er s**ie**ht – gesehen", "geben – er g**i**bt – gegeben"] },
+        { label: GB, lines: ["machen – er macht – gemacht", "spielen – er spielt – gespielt", "kaufen – er kauft – gekauft", "lernen – er lernt – gelernt"] }
+      ] },
+      disc: [
+        DQ(T("Was passiert in Gruppe A im Präsens bei er/sie (sprechen → er spricht)?", "What happens in group A in the present tense with er/sie (sprechen → er spricht)?", "Что происходит в группе A в настоящем времени с er/sie (sprechen → er spricht)?", "A grubunda şimdiki zamanda er/sie ile ne oluyor (sprechen → er spricht)?", "ماذا يحدث في المجموعة A في المضارع مع er/sie (sprechen → er spricht)؟"), [T("Der Vokal ändert sich (e → i).", "The vowel changes (e → i).", "Гласная меняется (e → i).", "Ünlü değişir (e → i).", "يتغيّر حرف العلّة (e ← i)."), T("Nichts ändert sich.", "Nothing changes.", "Ничего не меняется.", "Hiçbir şey değişmez.", "لا شيء يتغيّر."), T("Das Wort wird länger.", "The word gets longer.", "Слово становится длиннее.", "Kelime uzar.", "تصبح الكلمة أطول.")], 0),
+        DQ(T("Und in Gruppe B (machen → er macht)?", "And in group B (machen → er macht)?", "А в группе B (machen → er macht)?", "Peki B grubunda (machen → er macht)?", "وماذا في المجموعة B (machen → er macht)؟"), [T("Der Vokal ändert sich.", "The vowel changes.", "Гласная меняется.", "Ünlü değişir.", "يتغيّر حرف العلّة."), T("Der Vokal bleibt gleich.", "The vowel stays the same.", "Гласная остаётся той же.", "Ünlü aynı kalır.", "يبقى حرف العلّة كما هو.")], 1),
+        DQ(T("Wie endet das Partizip in Gruppe A?", "How does the participle end in group A?", "Как оканчивается причастие в группе A?", "A grubunda Partizip nasıl bitiyor?", "كيف ينتهي الـ Partizip في المجموعة A؟"), ["-en", "-t"], 0),
+        DQ(T("Wie endet das Partizip in Gruppe B?", "How does the participle end in group B?", "Как оканчивается причастие в группе B?", "B grubunda Partizip nasıl bitiyor?", "كيف ينتهي الـ Partizip في المجموعة B؟"), ["-t", "-en"], 0),
+        DQ(T("Das Verb fahren: er fährt (a → ä). Welches Partizip passt?", "The verb fahren: er fährt (a → ä). Which participle fits?", "Глагол fahren: er fährt (a → ä). Какое причастие подходит?", "fahren fiili: er fährt (a → ä). Hangi Partizip uyar?", "الفعل fahren: er fährt (من a إلى ä). أي Partizip يناسبه؟"), ["gefahren", "gefahrt"], 0)
+      ],
+      title: T("Der Vokal ändert sich im Präsens → Partizip auf -en", "The vowel changes in the present → participle ends in -en", "Гласная меняется в настоящем времени → причастие на -en", "Präsens'te ünlü değişiyor → Partizip -en ile biter", "يتغيّر حرف العلّة في المضارع ← ينتهي الـ Partizip بـ -en"),
+      text: T(
+        "Der Vokal ändert sich bei er/sie (er spricht)? Dann endet das Partizip auf **-en** (gesprochen).",
+        "How can you know if a verb is irregular? Listen to the **present tense** with er/sie!\nIf the vowel changes (sprechen → er spr**i**cht, lesen → er l**ie**st, essen → er **i**sst, fahren → er f**ä**hrt), the verb is irregular. Then the second part in the Perfekt ends in **-en**: gesprochen, gelesen, gegessen, gefahren.\nIf the vowel stays the same (machen → er macht), the verb is regular → **-t**: gemacht.\nSo the present tense tells you the Perfekt form.",
+        "Как понять, что глагол неправильный? Послушайте **настоящее время** с er/sie!\nЕсли гласная меняется (sprechen → er spr**i**cht, lesen → er l**ie**st, essen → er **i**sst, fahren → er f**ä**hrt), глагол неправильный. Тогда вторая часть в Perfekt оканчивается на **-en**: gesprochen, gelesen, gegessen, gefahren.\nЕсли гласная остаётся прежней (machen → er macht), глагол правильный → **-t**: gemacht.\nТо есть настоящее время подсказывает форму для Perfekt.",
+        "Bir fiilin düzensiz olduğunu nasıl anlarsınız? er/sie ile **şimdiki zamana** (Präsens) dikkat edin!\nÜnlü değişiyorsa (sprechen → er spr**i**cht, lesen → er l**ie**st, essen → er **i**sst, fahren → er f**ä**hrt) fiil düzensizdir. O zaman Perfekt'te ikinci parça **-en** ile biter: gesprochen, gelesen, gegessen, gefahren.\nÜnlü aynı kalıyorsa (machen → er macht) fiil düzenlidir → **-t**: gemacht.\nYani şimdiki zaman size Perfekt biçimini söyler.",
+        "كيف تعرف أن الفعل غير منتظم؟ انتبه إلى **المضارع** مع er/sie!\nإذا تغيّر حرف العلّة (sprechen → er spr**i**cht، lesen → er l**ie**st، essen → er **i**sst، fahren → er f**ä**hrt) فالفعل غير منتظم. عندئذٍ ينتهي الجزء الثاني في الـ Perfekt بـ **-en**: gesprochen، gelesen، gegessen، gefahren.\nوإذا بقي حرف العلّة كما هو (machen → er macht) فالفعل منتظم ← **-t**: gemacht.\nأي أن المضارع يخبرك بصيغة الـ Perfekt."
+      ),
+      memo: T(
+        "Tipp: Sagen Sie zuerst die *er*-Form im Präsens. Ändert sich der Vokal? Dann **-en**.",
+        "Tip: Before you write the Perfekt of a new verb, say the present form with *er*. Does the vowel change? Then use **-en**.",
+        "Совет: прежде чем образовать Perfekt нового глагола, скажите форму с *er* в настоящем времени. Гласная меняется? Тогда **-en**.",
+        "İpucu: Yeni bir fiilin Perfekt'ini kurmadan önce şimdiki zamanda *er* biçimini söyleyin. Ünlü değişiyor mu? O zaman **-en**.",
+        "نصيحة: قبل أن تكوّن الـ Perfekt لفعل جديد، قل صيغة *er* في المضارع. هل يتغيّر حرف العلّة؟ إذن استخدم **-en**."
+      )
+    },
+    /* ---------- Regel 5 ---------- */
+    5: {
+      observe: { groups: [
+        { label: T("Präsens", "Present", "Настоящее время", "Şimdiki zaman (Präsens)", "المضارع"), lines: ["Ich **kaufe** heute **ein**.", "Er **holt** die Kinder **ab**.", "Ich **rufe** dich **an**."] },
+        { label: T("Perfekt", "Perfekt", "Perfekt", "Perfekt", "Perfekt"), lines: ["Ich habe heute **eingekauft**.", "Er hat die Kinder **abgeholt**.", "Ich habe dich **angerufen**."] },
+        { label: T("Die Formen", "The forms", "Формы", "Biçimler", "الصيغ"), lines: ["ein|kaufen → ein**ge**kauft", "ab|holen → ab**ge**holt", "an|rufen → an**ge**rufen", "auf|machen → auf**ge**macht", "mit|bringen → mit**ge**bracht"] }
+      ] },
+      disc: [
+        DQ(T("Wo steht ge- in eingekauft, abgeholt, angerufen, aufgemacht?", "Where is ge- in eingekauft, abgeholt, angerufen, aufgemacht?", "Где стоит ge- в eingekauft, abgeholt, angerufen, aufgemacht?", "eingekauft, abgeholt, angerufen, aufgemacht sözcüklerinde ge- nerede?", "أين يقع ge- في eingekauft وabgeholt وangerufen وaufgemacht؟"), [O_BEGIN, T("In der Mitte, nach ein-, ab-, an-, auf-.", "In the middle, after ein-, ab-, an-, auf-.", "В середине, после ein-, ab-, an-, auf-.", "Ortada, ein-, ab-, an-, auf- öneklerinden sonra.", "في الوسط، بعد ein- وab- وan- وauf-."), O_END], 1),
+        DQ(T("Was passiert mit ein, ab, an im Perfekt (im Vergleich zum Präsens)?", "What happens to ein, ab, an in the Perfekt (compared with the present)?", "Что происходит с ein, ab, an в Perfekt (по сравнению с настоящим временем)?", "ein, ab, an sözcüklerine Perfekt'te (şimdiki zamana kıyasla) ne oluyor?", "ماذا يحدث لـ ein وab وan في الـ Perfekt (مقارنةً بالمضارع)؟"), [T("Sie bleiben beim Verb: ein-ge-kauft.", "They stay with the verb: ein-ge-kauft.", "Они остаются при глаголе: ein-ge-kauft.", "Fiille birlikte kalır: ein-ge-kauft.", "تبقى مع الفعل: ein-ge-kauft."), T("Sie stehen allein am Satzende.", "They stand alone at the end of the sentence.", "Они стоят одни в конце предложения.", "Tek başlarına cümlenin sonunda durur.", "تقف وحدها في آخر الجملة."), T("Sie verschwinden.", "They disappear.", "Они исчезают.", "Kaybolur.", "تختفي.")], 0),
+        DQ(T("Wovon hängt es ab, ob am Ende -t oder -en steht (abgeholt – angerufen)?", "What decides whether the end is -t or -en (abgeholt – angerufen)?", "От чего зависит, -t или -en в конце (abgeholt – angerufen)?", "Sonun -t mi -en mi olacağını ne belirler (abgeholt – angerufen)?", "ما الذي يحدد ما إذا كانت النهاية -t أو -en (abgeholt – angerufen)؟"), [T("Vom Verb nach dem kleinen Wort: holen ist regelmäßig, rufen unregelmäßig.", "The verb after the small word: holen is regular, rufen is irregular.", "Глагол после маленького слова: holen — правильный, rufen — неправильный.", "Küçük sözcükten sonraki fiil: holen düzenli, rufen düzensiz.", "الفعل الذي بعد الكلمة الصغيرة: holen منتظم وrufen غير منتظم."), T("Vom kleinen Wort ab-/an-.", "The small word ab-/an-.", "Маленькое слово ab-/an-.", "Küçük sözcük ab-/an-.", "الكلمة الصغيرة ab-/an-."), T("Vom Satz.", "The sentence.", "Предложение.", "Cümle.", "الجملة.")], 0)
+      ],
+      title: T("Trennbare Verben: ge- in der Mitte", "Separable verbs: ge- in the middle", "Отделяемые глаголы: ge- посередине", "Ayrılabilen fiiller: ge- ortada", "الأفعال المنفصلة: ge- في الوسط"),
+      text: T(
+        "Trennbare Verben: **ge steht in der Mitte**: ein**ge**kauft, ab**ge**holt.",
+        "Some verbs have a small word at the beginning that can jump to the end of the sentence: *ein|kaufen – Ich kaufe heute **ein**.* These are **separable verbs**.\nIn the Perfekt, the small word does not jump. It stays with the verb, and **ge** goes **between** the small word and the verb:\nein + ge + kauft → **eingekauft**, ab + ge + holt → **abgeholt**, an + ge + rufen → **angerufen**.\nThe ending depends on the main verb as before: regular → -t (abgeholt), irregular → -en (angerufen).\nIn the sentence, the whole verb stands at the end: *Ich habe heute eingekauft.*",
+        "У некоторых глаголов в начале есть маленькое слово, которое может «убежать» в конец предложения: *ein|kaufen – Ich kaufe heute **ein**.* Это **отделяемые глаголы**.\nВ Perfekt маленькое слово никуда не убегает. Оно остаётся при глаголе, а **ge** вставляется **между** маленьким словом и глаголом:\nein + ge + kauft → **eingekauft**, ab + ge + holt → **abgeholt**, an + ge + rufen → **angerufen**.\nОкончание зависит от основного глагола, как и раньше: правильный → -t (abgeholt), неправильный → -en (angerufen).\nВ предложении весь глагол стоит в конце: *Ich habe heute eingekauft.*",
+        "Bazı fiillerin başında, cümlenin sonuna «atlayabilen» küçük bir sözcük vardır: *ein|kaufen – Ich kaufe heute **ein**.* Bunlara **ayrılabilen fiiller** denir.\nPerfekt'te küçük sözcük atlamaz. Fiille birlikte kalır ve **ge**, küçük sözcükle fiil **arasına** girer:\nein + ge + kauft → **eingekauft**, ab + ge + holt → **abgeholt**, an + ge + rufen → **angerufen**.\nSon ek daha önceki gibi ana fiile bağlıdır: düzenli → -t (abgeholt), düzensiz → -en (angerufen).\nCümlede fiilin tamamı sonda durur: *Ich habe heute eingekauft.*",
+        "بعض الأفعال في بدايتها كلمة صغيرة يمكنها أن «تقفز» إلى آخر الجملة: *ein|kaufen – Ich kaufe heute **ein**.* وتُسمّى **أفعالاً منفصلة**.\nفي الـ Perfekt لا تقفز الكلمة الصغيرة. بل تبقى مع الفعل، ويدخل **ge** **بين** الكلمة الصغيرة والفعل:\nein + ge + kauft → **eingekauft**، ab + ge + holt → **abgeholt**، an + ge + rufen → **angerufen**.\nوالنهاية تتبع الفعل الأساسي كما سبق: منتظم ← -t (abgeholt)، غير منتظم ← -en (angerufen).\nوفي الجملة يقع الفعل كله في الآخر: *Ich habe heute eingekauft.*"
+      )
+    },
+    /* ---------- Regel 6 ---------- */
+    6: {
+      observe: { groups: [
+        { label: GA, lines: ["besuchen → besucht", "bestellen → bestellt", "bezahlen → bezahlt", "erzählen → erzählt", "verstehen → verstanden", "bekommen → bekommen", "beginnen → begonnen"] },
+        { label: GB, lines: ["studieren → studiert", "telefonieren → telefoniert", "reparieren → repariert", "fotografieren → fotografiert"] },
+        { label: T("Zum Vergleich", "For comparison", "Для сравнения", "Karşılaştırma için", "للمقارنة"), lines: ["kaufen → gekauft", "machen → gemacht"] }
+      ] },
+      disc: [
+        DQ(T("Beginnen die Wörter rechts in Gruppe A und B mit ge-?", "Do the words on the right in groups A and B start with ge-?", "Начинаются ли слова справа в группах A и B с ge-?", "A ve B gruplarında sağdaki sözcükler ge- ile başlıyor mu?", "هل تبدأ الكلمات على اليمين في المجموعتين A وB بـ ge-؟"), [O_YES, O_NO], 1),
+        DQ(T("Womit beginnen die Verben in Gruppe A (besuchen, bestellen, verstehen, erzählen …)?", "What do the verbs in group A start with (besuchen, bestellen, verstehen, erzählen …)?", "С чего начинаются глаголы в группе A (besuchen, bestellen, verstehen, erzählen …)?", "A grubundaki fiiller (besuchen, bestellen, verstehen, erzählen …) neyle başlıyor?", "بماذا تبدأ الأفعال في المجموعة A (besuchen, bestellen, verstehen, erzählen …)؟"), ["be-, er-, ver-, …", "ein-, ab-, an-, …", "ge-, ge-, ge-"], 0),
+        DQ(T("Womit enden die Verben in Gruppe B?", "What do the verbs in group B end with?", "Чем оканчиваются глаголы в группе B?", "B grubundaki fiiller neyle bitiyor?", "بماذا تنتهي الأفعال في المجموعة B؟"), ["-ieren", "-eren", "-ungen"], 0),
+        DQ(T("Wie sagt man: Ich habe meine Oma …", "How do you say: Ich habe meine Oma …", "Как сказать: Ich habe meine Oma …", "Nasıl denir: Ich habe meine Oma …", "كيف تقول: Ich habe meine Oma …"), ["besucht", "gebesucht", "besuchen"], 0)
+      ],
+      title: T("Verben mit be-, er-, ver- … und auf -ieren: kein ge-", "Verbs with be-, er-, ver- … and -ieren: no ge-", "Глаголы с be-, er-, ver- … и на -ieren: без ge-", "be-, er-, ver- … ile başlayan ve -ieren ile biten fiiller: ge- yok", "الأفعال ذات be- وer- وver- … والمنتهية بـ -ieren: بدون ge-"),
+      text: T(
+        "Verben mit **be-, er-, ver-, emp-, ent-, zer-** und auf **-ieren**: **kein ge-** (besucht, studiert).",
+        "Some verbs start with a small piece that **cannot** jump away: **be-, er-, ver-, emp-, ent-, zer-** (besuchen, erzählen, verstehen, empfehlen). These verbs do **not** get ge-.\nbesuchen → **besucht** (not “gebesucht”), verstehen → **verstanden**.\nThe same is true for all verbs ending in **-ieren** (studieren, telefonieren, reparieren): studieren → **studiert**.\nThe ending still follows the same rule: regular → -t (besucht), irregular → -en (verstanden, begonnen).\nTip: these verbs are not stressed on the first syllable: be**su**chen, stu**die**ren.",
+        "Некоторые глаголы начинаются с маленького кусочка, который **не может** отделяться: **be-, er-, ver-, emp-, ent-, zer-** (besuchen, erzählen, verstehen, empfehlen). Эти глаголы **не** получают ge-.\nbesuchen → **besucht** (не «gebesucht»), verstehen → **verstanden**.\nТо же самое для всех глаголов на **-ieren** (studieren, telefonieren, reparieren): studieren → **studiert**.\nОкончание по-прежнему подчиняется тому же правилу: правильный → -t (besucht), неправильный → -en (verstanden, begonnen).\nПодсказка: у этих глаголов ударение не на первом слоге: be**su**chen, stu**die**ren.",
+        "Bazı fiiller, ayrılamayan küçük bir parçayla başlar: **be-, er-, ver-, emp-, ent-, zer-** (besuchen, erzählen, verstehen, empfehlen). Bu fiiller **ge-** almaz.\nbesuchen → **besucht** («gebesucht» değil), verstehen → **verstanden**.\n**-ieren** ile biten tüm fiiller için de aynısı geçerlidir (studieren, telefonieren, reparieren): studieren → **studiert**.\nSon ek yine aynı kuralı izler: düzenli → -t (besucht), düzensiz → -en (verstanden, begonnen).\nİpucu: bu fiillerde vurgu ilk hecede değildir: be**su**chen, stu**die**ren.",
+        "بعض الأفعال تبدأ بجزء صغير **لا يمكن** فصله: **be- وer- وver- وemp- وent- وzer-** (besuchen, erzählen, verstehen, empfehlen). وهذه الأفعال **لا** تأخذ ge-.\nbesuchen → **besucht** (وليس «gebesucht»)، verstehen → **verstanden**.\nوالأمر نفسه مع كل الأفعال المنتهية بـ **-ieren** (studieren, telefonieren, reparieren): studieren → **studiert**.\nوتبقى النهاية تتبع القاعدة نفسها: منتظم ← -t (besucht)، غير منتظم ← -en (verstanden, begonnen).\nنصيحة: لا يقع النبر في هذه الأفعال على المقطع الأول: be**su**chen، stu**die**ren."
+      )
+    },
+    /* ---------- Regel 7 ---------- */
+    7: {
+      observe: { groups: [{ lines: ["bringen → ge**br**a**cht**", "denken → ge**d**a**cht**", "kennen → ge**k**a**nnt**", "wissen → ge**w**u**sst**", "mit|bringen → mitge**bracht**"] }] },
+      disc: [
+        DQ(T("Womit enden diese Partizipien?", "What do these participles end with?", "Чем оканчиваются эти причастия?", "Bu Partizip'ler neyle bitiyor?", "بماذا تنتهي هذه الـ Partizip؟"), ["-t", "-en"], 0),
+        DQ(T("Was passiert mit dem Vokal (bringen → gebracht, kennen → gekannt)?", "What happens to the vowel (bringen → gebracht, kennen → gekannt)?", "Что происходит с гласной (bringen → gebracht, kennen → gekannt)?", "Ünlüye ne oluyor (bringen → gebracht, kennen → gekannt)?", "ماذا يحدث لحرف العلّة (bringen → gebracht، kennen → gekannt)؟"), [T("Er ändert sich (i → a, e → a).", "It changes (i → a, e → a).", "Она меняется (i → a, e → a).", "Değişir (i → a, e → a).", "يتغيّر (i ← a، e ← a)."), T("Er bleibt gleich.", "It stays the same.", "Она остаётся прежней.", "Aynı kalır.", "يبقى كما هو.")], 0),
+        DQ(T("Was ist das Besondere an diesen Verben?", "What is special about these verbs?", "Что особенного в этих глаголах?", "Bu fiillerin özelliği nedir?", "ما الخاص في هذه الأفعال؟"), [T("Das Ende ist wie bei regelmäßigen Verben (-t), aber der Vokal ändert sich wie bei unregelmäßigen.", "The ending is like regular verbs (-t), but the vowel changes like irregular verbs.", "Окончание как у правильных глаголов (-t), но гласная меняется как у неправильных.", "Son ek düzenli fiiller gibi (-t), ama ünlü düzensiz fiiller gibi değişir.", "النهاية مثل الأفعال المنتظمة (-t)، لكن حرف العلّة يتغيّر مثل الأفعال غير المنتظمة."), T("Alles ist wie bei regelmäßigen Verben.", "Everything is like regular verbs.", "Всё как у правильных глаголов.", "Her şey düzenli fiiller gibidir.", "كل شيء مثل الأفعال المنتظمة."), T("Alles ist wie bei unregelmäßigen Verben.", "Everything is like irregular verbs.", "Всё как у неправильных глаголов.", "Her şey düzensiz fiiller gibidir.", "كل شيء مثل الأفعال غير المنتظمة.")], 0)
+      ],
+      title: T("Besondere Verben: anderer Vokal + -t", "Special verbs: different vowel + -t", "Особые глаголы: другая гласная + -t", "Özel fiiller: farklı ünlü + -t", "أفعال خاصة: حرف علّة مختلف + -t"),
+      text: T(
+        "Einige Verben ändern den Vokal **und** enden auf **-t**: gebracht, gedacht, gekannt, gewusst.",
+        "A few common verbs mix both patterns: the **vowel changes** like irregular verbs, but the ending is **-t** like regular verbs.\nbringen → gebr**a**cht, denken → ged**a**cht, kennen → gek**a**nnt, wissen → gew**u**sst.\nThere are only a few, so learn them by heart. And careful: kennenlernen is regular: kennengelernt.",
+        "Несколько частотных глаголов смешивают оба образца: **гласная меняется**, как у неправильных глаголов, но окончание **-t**, как у правильных.\nbringen → gebr**a**cht, denken → ged**a**cht, kennen → gek**a**nnt, wissen → gew**u**sst.\nТаких глаголов мало, поэтому выучите их наизусть. И осторожно: kennenlernen — правильный глагол: kennengelernt.",
+        "Sık kullanılan birkaç fiil iki kalıbı karıştırır: **ünlü değişir**, tıpkı düzensiz fiillerde olduğu gibi; ama son ek **-t**'dir, tıpkı düzenli fiillerde olduğu gibi.\nbringen → gebr**a**cht, denken → ged**a**cht, kennen → gek**a**nnt, wissen → gew**u**sst.\nBunlardan çok az var, bu yüzden ezberleyin. Dikkat: kennenlernen düzenli bir fiildir: kennengelernt.",
+        "بضعة أفعال شائعة تجمع بين النمطين: **يتغيّر حرف العلّة** كما في الأفعال غير المنتظمة، لكن النهاية **-t** كما في الأفعال المنتظمة.\nbringen → gebr**a**cht، denken → ged**a**cht، kennen → gek**a**nnt، wissen → gew**u**sst.\nعددها قليل، لذلك احفظها عن ظهر قلب. وانتبه: kennenlernen فعل منتظم: kennengelernt."
+      )
+    },
+    /* ---------- Regel 8 ---------- */
+    8: {
+      observe: { groups: [
+        { label: GA, lines: ["Ich **bin** zur Arbeit **gegangen**.", "Wir **sind** mit dem Bus **gefahren**.", "Sie **ist** nach Berlin **geflogen**.", "Er **ist** zu spät **gekommen**.", "Ich **bin** um 6 Uhr **aufgestanden**.", "Wir **sind** zu Hause **geblieben**."] },
+        { label: GB, lines: ["Ich **habe** Pizza **gegessen**.", "Er **hat** Deutsch **gelernt**.", "Wir **haben** Tennis **gespielt**."] }
+      ] },
+      disc: [
+        DQ(T("Welches Hilfsverb steht in Gruppe A?", "Which helper verb is in group A?", "Какой вспомогательный глагол стоит в группе A?", "A grubunda hangi yardımcı fiil var?", "أي فعل مساعد يقع في المجموعة A؟"), ["bin / ist / sind (sein)", "habe / hat / haben"], 0),
+        DQ(T("Was haben gehen, fahren, fliegen und kommen gemeinsam?", "What do gehen, fahren, fliegen and kommen have in common?", "Что общего у gehen, fahren, fliegen и kommen?", "gehen, fahren, fliegen ve kommen fiillerinin ortak noktası nedir?", "ما القاسم المشترك بين gehen وfahren وfliegen وkommen؟"), [T("Jemand bewegt sich von einem Ort zu einem anderen.", "Someone moves from one place to another.", "Кто-то перемещается из одного места в другое.", "Biri bir yerden başka bir yere hareket eder.", "شخص ينتقل من مكان إلى آخر."), T("Jemand isst oder trinkt etwas.", "Someone eats or drinks something.", "Кто-то что-то ест или пьёт.", "Biri bir şey yer ya da içer.", "شخص يأكل أو يشرب شيئاً."), T("Jemand spricht.", "Someone speaks.", "Кто-то говорит.", "Biri konuşur.", "شخص يتكلّم.")], 0),
+        DQ(T("Was passiert bei „Ich bin um 6 Uhr aufgestanden“?", "What happens in “Ich bin um 6 Uhr aufgestanden”?", "Что происходит в «Ich bin um 6 Uhr aufgestanden»?", "“Ich bin um 6 Uhr aufgestanden” cümlesinde ne oluyor?", "ماذا يحدث في «Ich bin um 6 Uhr aufgestanden»؟"), [T("Ich wechsle von „liegen“ zu „stehen“. Etwas wird anders.", "I change from lying to standing. Something becomes different.", "Я перехожу из лежачего положения в стоячее. Что-то становится иным.", "Yatmaktan ayakta durmaya geçerim. Bir şey farklı hale gelir.", "أنتقل من الاستلقاء إلى الوقوف. يصبح شيء ما مختلفاً."), T("Ich fahre in eine andere Stadt.", "I travel to another city.", "Я еду в другой город.", "Başka bir şehre giderim.", "أسافر إلى مدينة أخرى."), T("Nichts verändert sich.", "Nothing changes.", "Ничего не меняется.", "Hiçbir şey değişmez.", "لا شيء يتغيّر.")], 0),
+        DQ(T("Welches Hilfsverb steht in Gruppe B (essen, lernen, spielen)?", "Which helper verb is in group B (essen, lernen, spielen)?", "Какой вспомогательный глагол стоит в группе B (essen, lernen, spielen)?", "B grubunda (essen, lernen, spielen) hangi yardımcı fiil var?", "أي فعل مساعد يقع في المجموعة B (essen, lernen, spielen)؟"), ["habe / hat / haben", "bin / ist / sind (sein)"], 0)
+      ],
+      title: T("Bewegung und Veränderung: sein", "Movement and change: sein", "Перемещение и изменение: sein", "Hareket ve değişim: sein", "الحركة والتغيّر: sein"),
+      text: T(
+        "Bewegung zu einem anderen Ort und Zustandswechsel → **sein** (Ich bin gegangen). Auch: bleiben, passieren, sein.",
+        "Most verbs use *haben*. But **two groups** of verbs use *sein* instead:\n**1. Movement from one place to another:** gehen, fahren, fliegen, laufen, kommen, schwimmen (to a place) … *Ich bin nach Hause gegangen.*\n**2. Change of state** – something becomes different: aufstehen (from lying to standing), umziehen (new home) … *Ich bin um 6 Uhr aufgestanden.*\nAlso with *sein*: **bleiben** (to stay), **passieren** (to happen) and **sein** itself.\nWith *sein*, the helper verb is bin / bist / ist / sind / seid, and the second part is nearly always irregular (gegangen, gefahren).",
+        "Большинство глаголов используют *haben*. Но **две группы** глаголов используют *sein*:\n**1. Перемещение из одного места в другое:** gehen, fahren, fliegen, laufen, kommen, schwimmen (в какое-то место) … *Ich bin nach Hause gegangen.*\n**2. Изменение состояния** — что-то становится иным: aufstehen (из лежачего положения в стоячее), umziehen (новый дом) … *Ich bin um 6 Uhr aufgestanden.*\nС *sein* также: **bleiben** (оставаться), **passieren** (случаться) и сам глагол **sein**.\nС *sein* вспомогательный глагол — bin / bist / ist / sind / seid, а вторая часть почти всегда неправильная (gegangen, gefahren).",
+        "Fiillerin çoğu *haben* kullanır. Ama **iki grup** fiil bunun yerine *sein* kullanır:\n**1. Bir yerden başka bir yere hareket:** gehen, fahren, fliegen, laufen, kommen, schwimmen (bir yere doğru) … *Ich bin nach Hause gegangen.*\n**2. Durum değişikliği** – bir şey farklı hale gelir: aufstehen (yatmaktan ayağa kalkmak), umziehen (yeni ev) … *Ich bin um 6 Uhr aufgestanden.*\n*sein* ile ayrıca: **bleiben** (kalmak), **passieren** (olmak, meydana gelmek) ve **sein** fiilinin kendisi.\n*sein* ile yardımcı fiil bin / bist / ist / sind / seid olur ve ikinci parça neredeyse her zaman düzensizdir (gegangen, gefahren).",
+        "معظم الأفعال تستخدم *haben*. لكن **مجموعتين** من الأفعال تستخدمان *sein* بدلاً منه:\n**1. الانتقال من مكان إلى آخر:** gehen, fahren, fliegen, laufen, kommen, schwimmen (إلى مكان ما) … *Ich bin nach Hause gegangen.*\n**2. تغيّر الحالة** – شيء يصبح مختلفاً: aufstehen (من الاستلقاء إلى الوقوف)، umziehen (بيت جديد) … *Ich bin um 6 Uhr aufgestanden.*\nومع *sein* أيضاً: **bleiben** (بقي)، **passieren** (حدث) والفعل **sein** نفسه.\nمع *sein* يكون الفعل المساعد bin / bist / ist / sind / seid، ويكون الجزء الثاني غير منتظم تقريباً دائماً (gegangen, gefahren)."
+      ),
+      memo: T(
+        "Fast alle Verben mit *sein* sind unregelmäßig. Ausnahmen: gewandert, passiert.",
+        "Almost all verbs with *sein* are irregular (ist gefahren). Exceptions: wandern → ist gewandert, passieren → ist passiert.",
+        "Почти все глаголы с *sein* неправильные (ist gefahren). Исключения: wandern → ist gewandert, passieren → ist passiert.",
+        "*sein* alan fiillerin hemen hepsi düzensizdir (ist gefahren). İstisnalar: wandern → ist gewandert, passieren → ist passiert.",
+        "تقريباً كل الأفعال التي تأخذ *sein* غير منتظمة (ist gefahren). الاستثناءات: wandern → ist gewandert، passieren → ist passiert."
+      )
+    },
+    /* ---------- Regel 9 ---------- */
+    9: {
+      observe: { groups: [
+        { label: T("mit haben", "with haben", "с haben", "haben ile", "مع haben"), lines: ["Ich **habe** das Auto **gefahren**.", "Er **hat** den Koffer **gezogen**.", "Wir **haben** eine Stunde **geschwommen**."] },
+        { label: T("mit sein", "with sein", "с sein", "sein ile", "مع sein"), lines: ["Ich **bin** nach Berlin **gefahren**.", "Er **ist** nach Erfurt **gezogen**.", "Wir **sind** ans Ufer **geschwommen**."] }
+      ] },
+      disc: [
+        DQ(T("In den Sätzen mit haben gibt es eine Sache, die man fährt oder zieht (das Auto, den Koffer). Welches Hilfsverb steht dort?", "In the sentences with haben there is a thing that someone drives or pulls (das Auto, den Koffer). Which helper verb is used there?", "В предложениях с haben есть предмет, который водят или тянут (das Auto, den Koffer). Какой вспомогательный глагол там стоит?", "haben'li cümlelerde sürülen ya da çekilen bir şey var (das Auto, den Koffer). Orada hangi yardımcı fiil kullanılıyor?", "في الجمل مع haben يوجد شيء يقوده أو يسحبه أحدٌ (das Auto, den Koffer). أي فعل مساعد يُستخدم هناك؟"), ["haben", "sein"], 0),
+        DQ(T("Was steht in den Sätzen mit sein nach dem Verb?", "What stands after the verb in the sentences with sein?", "Что стоит после глагола в предложениях с sein?", "sein'li cümlelerde fiilden sonra ne geliyor?", "ماذا يأتي بعد الفعل في الجمل مع sein؟"), [T("Ein Ziel: Berlin, Erfurt, ans Ufer.", "A destination: Berlin, Erfurt, the shore.", "Пункт назначения: Berlin, Erfurt, ans Ufer.", "Bir varış noktası: Berlin, Erfurt, ans Ufer.", "وجهة: Berlin وErfurt وans Ufer."), T("Eine Sache, die man fährt oder zieht.", "A thing that someone drives or pulls.", "Предмет, который водят или тянут.", "Sürülen ya da çekilen bir şey.", "شيء يقوده أو يسحبه أحدٌ."), T("Nichts.", "Nothing.", "Ничего.", "Hiçbir şey.", "لا شيء.")], 0),
+        DQ(T("Das Verb fahren steht in beiden Gruppen. Was zeigt das?", "The verb fahren is in both groups. What does that show?", "Глагол fahren есть в обеих группах. Что это показывает?", "fahren fiili iki grupta da var. Bu neyi gösterir?", "الفعل fahren موجود في المجموعتين. ماذا يدل ذلك؟"), [T("Das Hilfsverb hängt von der Bedeutung ab, nicht nur vom Verb.", "The helper verb depends on the meaning, not only on the verb.", "Вспомогательный глагол зависит от значения, а не только от глагола.", "Yardımcı fiil yalnızca fiile değil, anlama da bağlıdır.", "الفعل المساعد يتوقف على المعنى وليس على الفعل وحده."), T("Man darf frei wählen.", "You can choose freely.", "Можно выбирать свободно.", "Serbestçe seçebilirsiniz.", "يمكنك الاختيار بحرّية."), T("Ein Satz ist falsch.", "One sentence is wrong.", "Одно предложение неверно.", "Bir cümle yanlış.", "إحدى الجمل خاطئة.")], 0),
+        DQ(T("Welches Hilfsverb passt: Ich … gestern zehn Stunden geschlafen. (kein Ort, keine Sache)", "Which helper verb fits: Ich … gestern zehn Stunden geschlafen. (no place, no thing)", "Какой вспомогательный глагол подходит: Ich … gestern zehn Stunden geschlafen. (ни места, ни предмета)", "Hangi yardımcı fiil uyar: Ich … gestern zehn Stunden geschlafen. (yer yok, nesne yok)", "أي فعل مساعد يناسب: Ich … gestern zehn Stunden geschlafen. (لا مكان ولا شيء)"), ["habe", "bin"], 0)
+      ],
+      title: T("haben oder sein? Die Entscheidung", "haben or sein? How to decide", "haben или sein? Как выбрать", "haben mi sein mi? Nasıl karar verilir", "haben أم sein؟ كيف تقرّر"),
+      text: T(
+        "1. Es gibt ein Objekt → **haben**. 2. Ortswechsel oder Zustandswechsel → **sein**. 3. Sonst → **haben**.",
+        "Often you are not sure: *haben* or *sein*? Ask yourself three questions, one after the other:\n1. Is there a **thing** that someone does something with (an object: das Auto, den Film, Pizza)? → **haben**.\n2. Does someone **go to another place**, or does something **become different**? → **sein**.\n3. None of these (sleeping, working, living, rain)? → **haben**.\nSome verbs can have both, depending on the meaning: *Ich habe das Auto gefahren* (I drove the car) – *Ich bin nach Berlin gefahren* (I went to Berlin).",
+        "Часто вы не уверены: *haben* или *sein*? Задайте себе три вопроса по порядку:\n1. Есть ли **предмет**, с которым что-то делают (дополнение: das Auto, den Film, Pizza)? → **haben**.\n2. Кто-то **перемещается в другое место** или что-то **становится иным**? → **sein**.\n3. Ничего из этого (спать, работать, жить, дождь)? → **haben**.\nНекоторые глаголы могут быть с обоими, в зависимости от значения: *Ich habe das Auto gefahren* (я вёл машину) – *Ich bin nach Berlin gefahren* (я поехал в Берлин).",
+        "Çoğu zaman emin olamazsınız: *haben* mi, *sein* mi? Kendinize sırayla üç soru sorun:\n1. Biriyle bir şey yapılan bir **nesne** var mı (das Auto, den Film, Pizza)? → **haben**.\n2. Biri **başka bir yere gidiyor** mu ya da bir şey **farklı hale mi geliyor**? → **sein**.\n3. Bunların hiçbiri yok mu (uyumak, çalışmak, yaşamak, yağmur)? → **haben**.\nBazı fiiller anlama göre ikisiyle de kullanılabilir: *Ich habe das Auto gefahren* (arabayı sürdüm) – *Ich bin nach Berlin gefahren* (Berlin'e gittim).",
+        "كثيراً ما لا تكون متأكداً: *haben* أم *sein*؟ اسأل نفسك ثلاثة أسئلة بالترتيب:\n1. هل يوجد **شيء** يفعل به أحدٌ شيئاً (مفعول به: das Auto, den Film, Pizza)؟ ← **haben**.\n2. هل **ينتقل** أحدٌ **إلى مكان آخر** أو **يصبح** شيء **مختلفاً**؟ ← **sein**.\n3. لا شيء من ذلك (النوم، العمل، السكن، المطر)؟ ← **haben**.\nبعض الأفعال تأخذ الاثنين بحسب المعنى: *Ich habe das Auto gefahren* (قدتُ السيارة) – *Ich bin nach Berlin gefahren* (سافرتُ إلى برلين)."
+      )
+    },
+    /* ---------- Regel 10 ---------- */
+    10: {
+      observe: { groups: [
+        { label: GA, lines: ["Ich **war** gestern krank.", "Wir **hatten** keine Zeit.", "Gestern **gab** es Suppe.", "Ich **konnte** nicht kommen.", "Er **musste** arbeiten."] },
+        { label: GB, lines: ["Ich habe gestern eingekauft.", "Wir sind nach Berlin gefahren.", "Sie hat ein Brot gekauft."] }
+      ] },
+      disc: [
+        DQ(T("Haben die Sätze in Gruppe A zwei Verbteile (haben/sein + Partizip II)?", "Do the sentences in group A have two verb parts (haben/sein + Partizip II)?", "Есть ли в предложениях группы A две части глагола (haben/sein + Partizip II)?", "A grubundaki cümlelerde iki fiil parçası var mı (haben/sein + Partizip II)?", "هل في جمل المجموعة A جزآن للفعل (haben/sein + Partizip II)؟"), [O_YES, O_NO], 1),
+        DQ(T("Welche Verben kommen in Gruppe A vor?", "Which verbs appear in group A?", "Какие глаголы встречаются в группе A?", "A grubunda hangi fiiller geçiyor?", "أي أفعال تظهر في المجموعة A؟"), ["sein, haben, es gibt, können, müssen", "gehen, essen, kaufen", "lernen, wohnen, arbeiten"], 0),
+        DQ(T("Was benutzt man im Gespräch für die meisten anderen Verben (gehen, essen, kaufen …)?", "What do you use in conversation for most other verbs (gehen, essen, kaufen …)?", "Что используют в разговоре для большинства остальных глаголов (gehen, essen, kaufen …)?", "Konuşmada diğer fiillerin çoğu için (gehen, essen, kaufen …) ne kullanılır?", "ماذا نستخدم في الحديث مع معظم الأفعال الأخرى (gehen, essen, kaufen …)؟"), [T("Das Perfekt (wie in Gruppe B).", "The Perfekt (like in group B).", "Perfekt (как в группе B).", "Perfekt (B grubundaki gibi).", "الـ Perfekt (كما في المجموعة B)."), T("Die kurze Form aus Gruppe A.", "The short form from group A.", "Короткую форму из группы A.", "A grubundaki kısa biçim.", "الصيغة القصيرة من المجموعة A.")], 0),
+        DQ(T("Wie sagt man natürlich: „Ich war gestern krank“?", "How do you naturally say: “I was ill yesterday”?", "Как естественно сказать: «Вчера я болел(а)»?", "Doğal olarak nasıl denir: “Dün hastaydım”?", "كيف تقول بشكل طبيعي: «كنتُ مريضاً أمس»؟"), ["Ich war gestern krank.", "Ich bin gestern krank gewesen.", "Ich habe gestern krank."], 0)
+      ],
+      title: T("Perfekt oder Präteritum? Ausnahmen", "Perfekt or Präteritum? Exceptions", "Perfekt или Präteritum? Исключения", "Perfekt mi Präteritum mu? İstisnalar", "Perfekt أم Präteritum؟ الاستثناءات"),
+      text: T(
+        "Im Gespräch: **Perfekt**. Aber: **war, hatte, es gab, konnte, musste, wollte, durfte, sollte**.",
+        "When we talk about the past, we use the Perfekt almost always. But for a few very common verbs we use a short one-word form instead, because the Perfekt sounds too long:\n*sein* → **war**, *haben* → **hatte**, *es gibt* → **es gab**, *können* → **konnte**, *müssen* → **musste**, *wollen* → **wollte**, *dürfen* → **durfte**, *sollen* → **sollte**.\nThis form is called Präteritum. For now you need it only for these verbs. For all other verbs, use the Perfekt: *Ich war gestern in der Stadt und habe eingekauft.*",
+        "Рассказывая о прошлом, мы почти всегда используем Perfekt. Но у нескольких очень частотных глаголов вместо этого употребляется короткая форма из одного слова, потому что Perfekt звучало бы слишком длинно:\n*sein* → **war**, *haben* → **hatte**, *es gibt* → **es gab**, *können* → **konnte**, *müssen* → **musste**, *wollen* → **wollte**, *dürfen* → **durfte**, *sollen* → **sollte**.\nЭта форма называется Präteritum. Пока она нужна только для этих глаголов. Для всех остальных используйте Perfekt: *Ich war gestern in der Stadt und habe eingekauft.*",
+        "Geçmişten söz ederken neredeyse her zaman Perfekt kullanırız. Ama çok sık kullanılan birkaç fiilde bunun yerine tek sözcüklük kısa bir biçim kullanılır, çünkü Perfekt fazla uzun kalırdı:\n*sein* → **war**, *haben* → **hatte**, *es gibt* → **es gab**, *können* → **konnte**, *müssen* → **musste**, *wollen* → **wollte**, *dürfen* → **durfte**, *sollen* → **sollte**.\nBu biçime Präteritum denir. Şimdilik yalnızca bu fiiller için gereklidir. Diğer tüm fiiller için Perfekt kullanın: *Ich war gestern in der Stadt und habe eingekauft.*",
+        "عندما نتحدث عن الماضي نستخدم الـ Perfekt دائماً تقريباً. لكن مع بضعة أفعال شائعة جداً نستخدم بدلاً منه صيغة قصيرة من كلمة واحدة، لأن الـ Perfekt سيبدو طويلاً:\n*sein* → **war**، *haben* → **hatte**، *es gibt* → **es gab**، *können* → **konnte**، *müssen* → **musste**، *wollen* → **wollte**، *dürfen* → **durfte**، *sollen* → **sollte**.\nتُسمّى هذه الصيغة Präteritum. ونحتاجها الآن لهذه الأفعال فقط. ومع كل الأفعال الأخرى استخدم الـ Perfekt: *Ich war gestern in der Stadt und habe eingekauft.*"
+      )
+    }
+  };
+  (function mergePlain() {
+    for (var i = 0; i < SECTIONS.length; i++) {
+      var p = PLAIN[SECTIONS[i].id];
+      if (!p) continue;
+      SECTIONS[i].text = p.text;
+      if (p.memo) SECTIONS[i].memo = p.memo;
+      if (p.title) SECTIONS[i].title = p.title;
+      SECTIONS[i].observe = p.observe;
+      SECTIONS[i].disc = p.disc;
+    }
+  })();
+
+  /* ===== App-Logik ===== */
+  var STORE_KEY = "perfekt-a1-lerneinheit-v1";
+  var STR = null, lang = null, cur = "home";
+  var exState = {};
+  var discState = {};
+  var lastInput = null;
+  var suppressHash = false;
+  var root = document.documentElement;
+  var COLDE = {inf: "Infinitiv", part: "Partizip II", ex: "Beispielsatz", pres: "Präsens (er/sie)", pos1: "Position 1", pos2: "Position 2 (Hilfsverb)", mid: "Mittelfeld", end: "Satzende (Partizip II)", haben: "mit haben", sein: "mit sein", rule: "Regel", topic: "Thema", type: "Typ", group: "Gruppe", perf: "Perfekt"};
+
+  /* ---------- Helfer ---------- */
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined && text !== null) e.textContent = text;
+    return e;
+  }
+  function lsGet(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { window.localStorage.setItem(k, v); } catch (e) {} }
+  function lsDel(k) { try { window.localStorage.removeItem(k); } catch (e) {} }
+  function fmt(str, vals) {
+    return String(str).replace(/\{(\w+)\}/g, function (m, k) { return (vals && (k in vals)) ? vals[k] : m; });
+  }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function setLangAttrs(node, code) { node.lang = code; node.dir = (code === "ar") ? "rtl" : "ltr"; return node; }
+  function deNode(tag, cls, text) { return setLangAttrs(el(tag, cls, text), "de"); }
+  function tgNode(tag, cls, text) { return setLangAttrs(el(tag, cls, text), lang); }
+  function tl(o) {
+    if (!o) return "";
+    var v = o[lang];
+    return v ? v : (o.en || o.de || "");
+  }
+  function hasLang(c) { return Object.prototype.hasOwnProperty.call(STRINGS, c); }
+
+  function mdInto(node, str) {
+    var parts = String(str).split(/(\*\*[^*]+\*\*|\*[^*]+\*)/);
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      if (!p) continue;
+      if (p.length > 4 && p.slice(0, 2) === "**" && p.slice(-2) === "**") node.appendChild(el("strong", "", p.slice(2, -2)));
+      else if (p.length > 2 && p.charAt(0) === "*" && p.charAt(p.length - 1) === "*") node.appendChild(el("em", "", p.slice(1, -1)));
+      else node.appendChild(document.createTextNode(p));
+    }
+    return node;
+  }
+  /* Absätze und nummerierte Schritte */
+  function richText(container, str, isDe) {
+    var lines = String(str).split("\n"), ol = null;
+    for (var i = 0; i < lines.length; i++) {
+      var ln = lines[i];
+      if (!ln) continue;
+      var m = /^(\d+)\.\s+([\s\S]*)$/.exec(ln);
+      if (m) {
+        if (!ol) { ol = el("ol", "steps"); container.appendChild(ol); }
+        var li = el("li"); mdInto(li, m[2]); ol.appendChild(li);
+      } else {
+        ol = null;
+        var p = el("p"); mdInto(p, ln); container.appendChild(p);
+      }
+    }
+    return container;
+  }
+
+  /* Antworten prüfen */
+  function norm(s) {
+    s = String(s).toLowerCase();
+    s = s.replace(/ß/g, "ss").replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue");
+    s = s.replace(/[.,!?;:"„“”'’‚‘…]/g, " ");
+    s = s.replace(/\s+/g, " ").replace(/^ /, "").replace(/ $/, "");
+    return s;
+  }
+  function blankOk(user, ans) {
+    var alts = String(ans).split("|"), u = norm(user);
+    if (!u) return false;
+    for (var i = 0; i < alts.length; i++) if (norm(alts[i]) === u) return true;
+    return false;
+  }
+  function writeOk(user, answers) {
+    var u = norm(user);
+    if (!u) return false;
+    for (var i = 0; i < answers.length; i++) if (norm(answers[i]) === u) return true;
+    return false;
+  }
+  function dispPunct(ans, isQ) {
+    if (ans.indexOf(" ") < 0) return ans;
+    return ans + (isQ ? "?" : ".");
+  }
+
+  /* ---------- Fortschritt ---------- */
+  var prog = loadProg();
+  function loadProg() {
+    var o = {ex: {}, seen: {}, last: null, lang: null};
+    var raw = lsGet(STORE_KEY);
+    if (raw) {
+      try {
+        var p = JSON.parse(raw);
+        if (p && typeof p === "object") { o.ex = p.ex || {}; o.seen = p.seen || {}; o.last = p.last || null; o.lang = p.lang || null; }
+      } catch (e) {}
+    }
+    return o;
+  }
+  function saveProg() { lsSet(STORE_KEY, JSON.stringify(prog)); }
+  function secById(id) {
+    for (var i = 0; i < SECTIONS.length; i++) if (String(SECTIONS[i].id) === String(id)) return SECTIONS[i];
+    return null;
+  }
+  function secStatus(sec) {
+    if (sec.ref) return prog.seen[sec.id] ? "seen" : "none";
+    var n = sec.ex.length, d = 0;
+    if (sec.disc) { n++; if (prog.ex["d" + sec.id]) d++; }
+    for (var i = 0; i < n - (sec.disc ? 1 : 0); i++) if (prog.ex[sec.ex[i].id]) d++;
+    if (d === n) return "done";
+    return d > 0 ? "some" : "none";
+  }
+  function doneCount() {
+    var c = 0;
+    for (var i = 0; i < SECTIONS.length; i++) { var s = secStatus(SECTIONS[i]); if (s === "done" || s === "seen") c++; }
+    return c;
+  }
+  function statusText(s) { return s === "done" ? STR.stDone : s === "some" ? STR.stSome : s === "seen" ? STR.stSeen : STR.stNone; }
+  function statusIcon(s) { return s === "done" ? "✓" : s === "seen" ? "✓" : s === "some" ? "◐" : "○"; }
+  function nextOpen() {
+    var start = 0, i;
+    if (prog.last) { for (i = 0; i < SECTIONS.length; i++) if (String(SECTIONS[i].id) === String(prog.last)) start = i; }
+    for (i = 0; i < SECTIONS.length; i++) {
+      var s = SECTIONS[(start + i) % SECTIONS.length];
+      var st = secStatus(s);
+      if (st === "none" || st === "some") return s;
+    }
+    return null;
+  }
+  function secLabel(sec) {
+    if (sec.rule) return fmt(STR.ruleN, {n: sec.rule});
+    return "";
+  }
+
+  /* ---------- Routing ---------- */
+  function go(t) {
+    var h = "#" + lang + "/" + t;
+    if (window.location.hash !== h) { suppressHash = true; window.location.hash = h; }
+    cur = String(t);
+    if (cur !== "home") { prog.last = cur; saveProg(); }
+    render();
+  }
+  function route() {
+    var h = window.location.hash || "";
+    var m = /^#(tr|ar|ru|en)(?:\/(home|\d+))?$/.exec(h);
+    if (!m) { if (lang) { showPicker(true); } return; }
+    if (lang !== m[1]) applyLanguage(m[1]);
+    var t = m[2] || "home";
+    if (t !== "home" && !secById(t)) t = "home";
+    cur = t;
+    if (cur !== "home") { prog.last = cur; saveProg(); }
+    render();
+  }
+  window.addEventListener("hashchange", function () {
+    if (suppressHash) { suppressHash = false; return; }
+    route();
+  });
+
+  function applyLanguage(code) {
+    lang = code; STR = STRINGS[code];
+    root.lang = STR.lang; root.dir = STR.dir;
+    root.style.setProperty("--font", STR.font);
+    document.title = STR.appTitle;
+    prog.lang = code; saveProg();
+    $("picker").hidden = true; $("app").hidden = false;
+  }
+  function chooseLanguage(code) {
+    applyLanguage(code);
+    var start = (prog.last && secById(prog.last)) ? "home" : "home";
+    go(start);
+  }
+  function showPicker(fromRoute) {
+    lang = null; STR = null;
+    root.lang = "de"; root.dir = "ltr"; root.style.removeProperty("--font");
+    document.title = "Das Perfekt · Lerneinheit A1";
+    $("picker").hidden = false; $("app").hidden = true;
+    if (!fromRoute) {
+      try { window.history.replaceState(null, "", window.location.pathname + window.location.search); } catch (e) {}
+    }
+    window.scrollTo(0, 0);
+  }
+  function buildPicker() {
+    var prompt = $("pickPrompt"), list = $("langList");
+    for (var i = 0; i < LANG_ORDER.length; i++) {
+      (function (code) {
+        var s = STRINGS[code];
+        var pe = el("p", "", s.pickPrompt);
+        pe.lang = s.lang; pe.dir = s.dir; pe.style.fontFamily = s.font;
+        prompt.appendChild(pe);
+        var b = el("button", "langchoice", s.nativeName);
+        b.type = "button"; b.lang = s.lang; b.dir = s.dir; b.style.fontFamily = s.font;
+        b.style.setProperty("--c", s.accent); b.style.setProperty("--cd", s.accentDark);
+        b.addEventListener("click", function () { chooseLanguage(code); });
+        list.appendChild(b);
+      })(LANG_ORDER[i]);
+    }
+  }
+
+  /* ---------- Gemeinsame Teile ---------- */
+  function topbar(showHome) {
+    var bar = el("div", "topbar");
+    var left = el("div", "tl");
+    if (showHome) {
+      var hb = el("button", "pill", "☰ " + STR.home);
+      hb.type = "button"; setLangAttrs(hb, lang);
+      hb.addEventListener("click", function () { go("home"); });
+      left.appendChild(hb);
+    } else {
+      var t = deNode("span", "brand", "Das Perfekt · A1");
+      left.appendChild(t);
+    }
+    bar.appendChild(left);
+    var lb = el("button", "pill", "🌐 " + STR.nativeName);
+    lb.type = "button"; setLangAttrs(lb, lang);
+    lb.addEventListener("click", function () { showPicker(false); });
+    bar.appendChild(lb);
+    return bar;
+  }
+  function progressBar() {
+    var d = doneCount(), t = SECTIONS.length;
+    var wrap = el("div", "progwrap");
+    var txt = tgNode("div", "progtxt", fmt(STR.progressLine, {d: d, t: t}));
+    var bar = el("div", "bar"); var i = el("i"); i.style.width = Math.round(100 * d / t) + "%"; bar.appendChild(i);
+    wrap.appendChild(txt); wrap.appendChild(bar);
+    return wrap;
+  }
+  function bilingualTitle(h, sec) {
+    var de = deNode("span", "tde", sec.title.de);
+    h.appendChild(de);
+    if (lang !== "de" && tl(sec.title) && tl(sec.title) !== sec.title.de) {
+      h.appendChild(tgNode("span", "ttr", tl(sec.title)));
+    }
+    return h;
+  }
+
+  /* ---------- Startseite ---------- */
+  function renderHome(app) {
+    app.appendChild(topbar(false));
+    var h1 = deNode("h1", "", "Das Perfekt");
+    app.appendChild(h1);
+    var sub = tgNode("p", "subtitle", STR.appTitle);
+    app.appendChild(sub);
+    var lead = el("div", "card lead");
+    setLangAttrs(lead, lang);
+    var p1 = el("p", "", STR.homeLead), p2 = el("p", "", STR.homeLead2);
+    lead.appendChild(p1); lead.appendChild(p2);
+    var ht = el("h2", "mini", STR.howTitle); lead.appendChild(ht);
+    var ol = el("ol", "steps");
+    for (var i = 0; i < STR.how.length; i++) ol.appendChild(el("li", "", STR.how[i]));
+    lead.appendChild(ol);
+    app.appendChild(lead);
+
+    var nx = nextOpen();
+    var row = el("div", "startrow");
+    var startBtn = el("button", "main");
+    startBtn.type = "button"; setLangAttrs(startBtn, lang);
+    var anyDone = false;
+    for (i = 0; i < SECTIONS.length; i++) if (secStatus(SECTIONS[i]) !== "none") anyDone = true;
+    if (anyDone && nx) {
+      startBtn.textContent = fmt(STR.resume, {t: (nx.rule ? fmt(STR.ruleN, {n: nx.rule}) + " · " : "") + nx.title.de});
+      startBtn.addEventListener("click", function () { go(nx.id); });
+    } else {
+      startBtn.textContent = STR.start;
+      startBtn.addEventListener("click", function () { go(1); });
+    }
+    row.appendChild(startBtn);
+    app.appendChild(row);
+    app.appendChild(progressBar());
+
+    var h2 = el("h2", "sect", STR.contents); setLangAttrs(h2, lang);
+    app.appendChild(h2);
+    var list = el("ol", "toc");
+    for (i = 0; i < SECTIONS.length; i++) (function (sec) {
+      var li = el("li");
+      var b = el("button", "tocitem"); b.type = "button";
+      var s = secStatus(sec);
+      b.className += " st-" + s;
+      var num = el("span", "num", sec.rule ? String(sec.rule) : (sec.ref ? "A" : "★"));
+      num.setAttribute("aria-hidden", "true");
+      var txt = el("span", "ttxt");
+      var l1 = deNode("span", "t1", sec.title.de);
+      txt.appendChild(l1);
+      if (tl(sec.title) !== sec.title.de) txt.appendChild(tgNode("span", "t2", tl(sec.title)));
+      var st = tgNode("span", "stat", statusIcon(s) + " " + statusText(s));
+      b.appendChild(num); b.appendChild(txt); b.appendChild(st);
+      b.addEventListener("click", function () { go(sec.id); });
+      li.appendChild(b); list.appendChild(li);
+    })(SECTIONS[i]);
+    app.appendChild(list);
+
+    var det = el("details", "card skipped");
+    setLangAttrs(det, lang);
+    det.appendChild(el("summary", "", STR.skippedTitle));
+    det.appendChild(el("p", "", STR.skippedIntro));
+    var ul = el("ul");
+    for (i = 0; i < STR.skipped.length; i++) ul.appendChild(el("li", "", STR.skipped[i]));
+    det.appendChild(ul);
+    app.appendChild(det);
+
+    var rb = el("button", "linkbtn", STR.resetAll);
+    rb.type = "button"; setLangAttrs(rb, lang);
+    rb.addEventListener("click", function () {
+      if (window.confirm(STR.resetConfirm)) { prog = {ex: {}, seen: {}, last: null, lang: lang}; exState = {}; discState = {}; saveProg(); render(); }
+    });
+    app.appendChild(rb);
+  }
+
+  /* ---------- Beobachten + Entdeckungsfragen ---------- */
+  function fixedOrder(opts) {
+    var i, allNum = true;
+    for (i = 0; i < opts.length; i++) {
+      if (typeof opts[i] !== "string" || !/^\d+$/.test(opts[i])) allNum = false;
+      if (opts[i] === O_FIRST || opts[i] === O_SECOND || opts[i] === O_END || opts[i] === O_BEGIN || opts[i] === O_AFTER || opts[i] === O_YES || opts[i] === O_NO) return true;
+    }
+    return allNum;
+  }
+  function getDisc(sec) {
+    var st = discState[sec.id];
+    if (!st) {
+      st = discState[sec.id] = {perm: [], solved: [], wrong: []};
+      for (var i = 0; i < sec.disc.length; i++) {
+        var idxs = [], k;
+        for (k = 0; k < sec.disc[i].o.length; k++) idxs.push(k);
+        st.perm.push(fixedOrder(sec.disc[i].o) ? idxs : shuffle(idxs));
+        st.solved.push(false); st.wrong.push({});
+      }
+    }
+    return st;
+  }
+  /* Arabisch: lateinische Wortgruppen als eigene LTR-Einheit, damit Klammern/Bindestriche nicht springen */
+  function bidiInto(node, text) {
+    if (lang !== "ar") { node.appendChild(document.createTextNode(text)); return node; }
+    var re = /[A-Za-zÄÖÜäöüß\-→…](?:[A-Za-zÄÖÜäöüß\-\/→…, ]*[A-Za-zÄÖÜäöüß\-→…])?/g, last = 0, m;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > last) node.appendChild(document.createTextNode(text.slice(last, m.index)));
+      var b = el("bdi", "", m[0]); b.dir = "ltr"; node.appendChild(b);
+      last = m.index + m[0].length;
+    }
+    if (last < text.length) node.appendChild(document.createTextNode(text.slice(last)));
+    return node;
+  }
+  function optLabel(btn, o) {
+    if (typeof o === "string") { setLangAttrs(btn, "de"); btn.textContent = o; }
+    else { setLangAttrs(btn, lang); bidiInto(btn, tl(o)); }
+  }
+  function renderDisc(app, sec) {
+    var st = getDisc(sec), i, g, l;
+    var done = !!prog.ex["d" + sec.id];
+    var obs = el("div", "card obscard");
+    obs.appendChild(tgNode("h3", "obstitle", "👀 " + STR.obsTitle));
+    for (g = 0; g < sec.observe.groups.length; g++) {
+      var grp = sec.observe.groups[g];
+      var gb = el("div", "obsgroup");
+      if (grp.label) gb.appendChild(tgNode("div", "grouplabel", tl(grp.label)));
+      for (l = 0; l < grp.lines.length; l++) { var ln = deNode("div", "obsline"); mdInto(ln, grp.lines[l]); gb.appendChild(ln); }
+      obs.appendChild(gb);
+    }
+    app.appendChild(obs);
+
+    var dq = el("div", "card dqcard");
+    dq.appendChild(tgNode("h3", "obstitle", "🤔 " + STR.discTitle));
+    var hint = tgNode("p", "dqhint", STR.discHint);
+    dq.appendChild(hint);
+    var progLine = tgNode("div", "dqprog", "");
+    dq.appendChild(progLine);
+    var skipRow = el("div", "skiprow");
+    var skip = el("button", "linkbtn", STR.skipToRule); skip.type = "button"; setLangAttrs(skip, lang);
+    skipRow.appendChild(skip);
+
+    var box = el("div", "afterdisc");
+    box.hidden = !done;
+    var banner = tgNode("div", "banner", STR.discAllDone);
+    var rt = tgNode("h3", "ruletitle", "📘 " + STR.ruleTitle);
+    box.appendChild(banner); box.appendChild(rt);
+
+    var qrecs = [];
+    function solvedCount() { var c = 0; for (var k = 0; k < st.solved.length; k++) if (st.solved[k]) c++; return c; }
+    function paintProg() {
+      progLine.textContent = fmt(STR.discProgress, {r: done ? sec.disc.length : solvedCount(), n: sec.disc.length});
+    }
+    function paintQ(qi) {
+      var rec = qrecs[qi], q = sec.disc[qi], solved = st.solved[qi] || done;
+      for (var k = 0; k < rec.btns.length; k++) {
+        var oi = rec.order[k], b = rec.btns[k];
+        var cls = "opt";
+        if (solved && oi === q.a) cls += " right";
+        else if (!solved && st.wrong[qi][oi]) cls += " wrong";
+        b.className = cls;
+        b.disabled = !!(solved || st.wrong[qi][oi]);
+        if (solved && oi !== q.a) b.disabled = true;
+      }
+      var anyWrong = false; for (var w in st.wrong[qi]) if (st.wrong[qi][w]) anyWrong = true;
+      rec.fb.className = "dqfb" + (solved ? " good" : (anyWrong ? " warn" : ""));
+      rec.fb.textContent = (st.solved[qi]) ? "✓ " + STR.discRight : (!solved && anyWrong ? STR.discWrong : "");
+    }
+    function reveal(skipped) {
+      done = true;
+      if (!prog.ex["d" + sec.id]) { prog.ex["d" + sec.id] = skipped ? "sol" : "ok"; saveProg(); }
+      box.hidden = false;
+      banner.hidden = !!skipped;
+      hint.hidden = true; skipRow.hidden = true; paintProg();
+      for (var k = 0; k < qrecs.length; k++) paintQ(k);
+      try { if (box.scrollIntoView) box.scrollIntoView({behavior: "smooth", block: "start"}); } catch (e) {}
+    }
+    for (i = 0; i < sec.disc.length; i++) (function (qi) {
+      var q = sec.disc[qi];
+      var blk = el("div", "dq");
+      var qt = tgNode("div", "dqq", "");
+      qt.appendChild(el("span", "dqn", String(qi + 1)));
+      qt.appendChild(document.createTextNode(" ")); bidiInto(qt, tl(q.q));
+      blk.appendChild(qt);
+      var row = el("div", "dqopts");
+      var rec = {btns: [], order: st.perm[qi], fb: el("div", "dqfb")};
+      rec.fb.setAttribute("role", "status");
+      for (var k = 0; k < rec.order.length; k++) (function (oi) {
+        var b = el("button", "opt"); b.type = "button";
+        optLabel(b, q.o[oi]);
+        b.addEventListener("click", function () {
+          if (st.solved[qi] || done) return;
+          if (oi === q.a) {
+            st.solved[qi] = true; paintQ(qi); paintProg();
+            if (solvedCount() === sec.disc.length) reveal(false);
+          } else { st.wrong[qi][oi] = true; paintQ(qi); }
+        });
+        rec.btns.push(b); row.appendChild(b);
+      })(rec.order[k]);
+      blk.appendChild(row); blk.appendChild(rec.fb);
+      dq.appendChild(blk);
+      qrecs.push(rec);
+    })(i);
+    skip.addEventListener("click", function () { reveal(true); });
+    dq.appendChild(skipRow);
+    app.appendChild(dq);
+    for (i = 0; i < qrecs.length; i++) paintQ(i);
+    paintProg();
+    if (done) { hint.hidden = true; skipRow.hidden = true; banner.hidden = prog.ex["d" + sec.id] === "sol"; }
+    app.appendChild(box);
+    return {box: box};
+  }
+
+  /* ---------- Abschnitt ---------- */
+  function renderTable(spec) {
+    var wrap = el("div", "tablewrap"); wrap.dir = "ltr";
+    var table = el("table"); table.dir = "ltr"; table.lang = "de";
+    var thead = el("thead"), tr = el("tr");
+    for (var c = 0; c < spec.head.length; c++) {
+      var th = el("th"), hd = spec.head[c];
+      if (typeof hd === "string") {
+        th.appendChild(document.createTextNode(COLDE[hd] || hd));
+        var tr2 = (STR.col && STR.col[hd]) || "";
+        if (tr2 && tr2 !== (COLDE[hd] || "")) th.appendChild(setLangAttrs(el("small", "", tr2), lang));
+      } else {
+        th.appendChild(document.createTextNode(hd.de));
+        if (tl(hd) !== hd.de) th.appendChild(setLangAttrs(el("small", "", tl(hd)), lang));
+      }
+      tr.appendChild(th);
+    }
+    thead.appendChild(tr); table.appendChild(thead);
+    var tb = el("tbody");
+    for (var r = 0; r < spec.rows.length; r++) {
+      var row = spec.rows[r], trr = el("tr");
+      for (c = 0; c < row.length; c++) {
+        var td = el("td"), v = row[c];
+        if (typeof v === "string") mdInto(td, v);
+        else if (v && v.s !== undefined) {
+          mdInto(td, v.s);
+          if (v.n) td.appendChild(setLangAttrs(el("small", "note", tl(v.n)), lang));
+        } else if (v) {
+          td.appendChild(setLangAttrs(el("span", "tag", tl(v)), lang));
+        }
+        trr.appendChild(td);
+      }
+      tb.appendChild(trr);
+    }
+    table.appendChild(tb); wrap.appendChild(table);
+    return wrap;
+  }
+
+  function renderSection(app, sec) {
+    app.appendChild(topbar(true));
+    var idx = 0, i;
+    for (i = 0; i < SECTIONS.length; i++) if (SECTIONS[i] === sec) idx = i;
+    /* Sprungliste */
+    var jr = el("div", "jumprow");
+    var info = tgNode("span", "partof", fmt(STR.partOf, {n: idx + 1, t: SECTIONS.length}));
+    var sel = el("select", "jump"); setLangAttrs(sel, lang);
+    sel.setAttribute("aria-label", STR.jump);
+    var o0 = el("option", "", STR.jump); o0.value = ""; sel.appendChild(o0);
+    var oh = el("option", "", "☰ " + STR.contents); oh.value = "home"; sel.appendChild(oh);
+    for (i = 0; i < SECTIONS.length; i++) {
+      var s = SECTIONS[i];
+      var lab = statusIcon(secStatus(s)) + " " + (s.rule ? s.rule + ". " : (s.ref ? "A. " : "★ ")) + s.title.de;
+      var op = el("option", "", lab); op.value = String(s.id);
+      if (s === sec) op.selected = true;
+      sel.appendChild(op);
+    }
+    sel.addEventListener("change", function () { if (sel.value) go(sel.value); });
+    jr.appendChild(info); jr.appendChild(sel);
+    app.appendChild(jr);
+
+    var hwrap = el("header", "sechead");
+    var lab2 = secLabel(sec);
+    if (lab2) hwrap.appendChild(tgNode("div", "kicker", lab2));
+    var h2 = el("h2", "sectitle"); bilingualTitle(h2, sec);
+    hwrap.appendChild(h2);
+    app.appendChild(hwrap);
+
+    if (sec.ref) { renderVerbs(app, sec); prog.seen[sec.id] = 1; saveProg(); }
+    else {
+      var holder = app, after = null;
+      if (sec.disc) {
+        after = renderDisc(app, sec);
+        holder = after.box;
+      }
+      var card = el("div", "card rulecard"); card.id = "rule-top";
+      if (sec.text.de) { var kd = deNode("div", "keyde"); mdInto(kd, sec.text.de); card.appendChild(kd); }
+      var body = tgNode("div", "ruletext"); richText(body, tl(sec.text)); card.appendChild(body);
+      holder.appendChild(card);
+      if (sec.tables) for (i = 0; i < sec.tables.length; i++) {
+        holder.appendChild(tgNode("div", "tlabel", STR.exampleHead));
+        holder.appendChild(renderTable(sec.tables[i]));
+      }
+      if (sec.memo) {
+        var mm = el("div", "memo");
+        mm.appendChild(tgNode("div", "memolabel", "💡 " + STR.memoLabel));
+        if (sec.memo.de) { var md = deNode("div", "memode"); mdInto(md, sec.memo.de); mm.appendChild(md); }
+        var mt = tgNode("div", "memotext"); mdInto(mt, tl(sec.memo)); mm.appendChild(mt);
+        holder.appendChild(mm);
+      }
+      for (i = 0; i < sec.ex.length; i++) holder.appendChild(buildExercise(sec, sec.ex[i]));
+    }
+
+    var nav = el("div", "navrow");
+    var pb = el("button", "sec"); pb.type = "button"; setLangAttrs(pb, lang);
+    var nb = el("button", "main"); nb.type = "button"; setLangAttrs(nb, lang);
+    if (idx > 0) {
+      pb.textContent = STR.prev; pb.addEventListener("click", function () { go(SECTIONS[idx - 1].id); });
+    } else { pb.textContent = STR.home; pb.addEventListener("click", function () { go("home"); }); }
+    if (idx < SECTIONS.length - 1) {
+      nb.textContent = STR.next; nb.addEventListener("click", function () { go(SECTIONS[idx + 1].id); });
+    } else { nb.textContent = STR.home; nb.addEventListener("click", function () { go("home"); }); }
+    nav.appendChild(pb); nav.appendChild(nb);
+    app.appendChild(nav);
+  }
+
+  /* ---------- Verbliste ---------- */
+  function parseVerbs(g) {
+    var out = [], parts = g.v.split(" · ");
+    for (var i = 0; i < parts.length; i++) {
+      var kv = parts[i].split(" – ");
+      var part = kv[1], aux = "haben";
+      if (/^ist /.test(part)) { aux = "sein"; }
+      out.push({inf: kv[0], part: part, aux: aux});
+    }
+    return out;
+  }
+  function renderVerbs(app, sec) {
+    var lead = tgNode("p", "verbslead", STR.verbsLead);
+    app.appendChild(lead);
+    var tools = el("div", "vtools");
+    var q = el("input", "vsearch"); q.type = "search"; q.placeholder = STR.searchPh; setLangAttrs(q, lang);
+    q.setAttribute("autocomplete", "off"); q.spellcheck = false;
+    var sel = el("select", "vgroup"); setLangAttrs(sel, lang);
+    var o0 = el("option", "", STR.allGroups); o0.value = ""; sel.appendChild(o0);
+    for (var i = 0; i < VERBGROUPS.length; i++) { var o = el("option", "", tl(VERBGROUPS[i].title)); o.value = VERBGROUPS[i].id; sel.appendChild(o); }
+    tools.appendChild(q); tools.appendChild(sel);
+    app.appendChild(tools);
+    var count = tgNode("p", "vcount", "");
+    app.appendChild(count);
+    var out = el("div", "vout"); app.appendChild(out);
+    var parsed = [];
+    for (i = 0; i < VERBGROUPS.length; i++) parsed.push(parseVerbs(VERBGROUPS[i]));
+    function draw() {
+      out.innerHTML = "";
+      var query = norm(q.value).replace(/\|/g, ""), gsel = sel.value, total = 0;
+      for (var g = 0; g < VERBGROUPS.length; g++) {
+        if (gsel && VERBGROUPS[g].id !== gsel) continue;
+        var rows = [];
+        for (var k = 0; k < parsed[g].length; k++) {
+          var v = parsed[g][k];
+          var hay = norm(v.inf.replace(/\|/g, "") + " " + v.part);
+          if (!query || hay.indexOf(query) >= 0) rows.push(v);
+        }
+        if (!rows.length) continue;
+        total += rows.length;
+        var h = tgNode("h3", "vh", tl(VERBGROUPS[g].title)); out.appendChild(h);
+        var grid = el("div", "vgrid");
+        for (k = 0; k < rows.length; k++) {
+          var item = deNode("div", "vitem");
+          item.appendChild(el("b", "", rows[k].inf));
+          item.appendChild(document.createTextNode(" – " + rows[k].part));
+          grid.appendChild(item);
+        }
+        out.appendChild(grid);
+      }
+      count.textContent = total ? fmt(STR.verbCount, {n: total}) : STR.noVerbs;
+    }
+    q.addEventListener("input", draw);
+    sel.addEventListener("change", draw);
+    draw();
+  }
+
+  /* ---------- Übungen ---------- */
+  function newState(ex) {
+    var st = {vals: [], perm: [], res: [], shown: false, checked: false};
+    if (ex.kind === "free") {
+      st.vals = {text: "", checks: []};
+      for (var c = 0; c < ex.checks.length; c++) st.vals.checks.push(false);
+      return st;
+    }
+    for (var i = 0; i < ex.items.length; i++) {
+      var it = ex.items ? ex.items[i] : null;
+      if (ex.kind === "fill") { var bl = []; var n = it.t.split("___").length - 1; for (var b = 0; b < n; b++) bl.push(""); st.vals.push(bl); }
+      else if (ex.kind === "write") st.vals.push("");
+      else if (ex.kind === "choose") {
+        st.vals.push(-1);
+        var idx = [], cnt = it.o ? it.o.length : 0, k;
+        for (k = 0; k < cnt; k++) idx.push(k);
+        st.perm.push(ex.shuf ? shuffle(idx) : idx);
+      } else if (ex.kind === "order") {
+        st.vals.push([]);
+        var w = []; for (k = 0; k < it.w.length; k++) w.push(k);
+        var sh = shuffle(w);
+        /* nicht zufällig schon die Lösung */
+        st.perm.push(sh);
+      }
+    }
+    return st;
+  }
+
+  function umlautBar(card) {
+    var bar = el("div", "umlauts"); bar.dir = "ltr";
+    var chars = ["ä", "ö", "ü", "ß"];
+    for (var i = 0; i < chars.length; i++) (function (ch) {
+      var b = el("button", "", ch); b.type = "button"; b.lang = "de";
+      b.addEventListener("mousedown", function (e) { e.preventDefault(); });
+      b.addEventListener("click", function () {
+        var inp = lastInput;
+        if (!inp || !card.contains(inp)) return;
+        var s = inp.selectionStart, e2 = inp.selectionEnd;
+        if (typeof s !== "number") { inp.value += ch; } else {
+          inp.value = inp.value.slice(0, s) + ch + inp.value.slice(e2);
+          try { inp.selectionStart = inp.selectionEnd = s + 1; } catch (er) {}
+        }
+        var ev = document.createEvent("Event"); ev.initEvent("input", true, true); inp.dispatchEvent(ev);
+        inp.focus();
+      });
+      bar.appendChild(b);
+    })(chars[i]);
+    return bar;
+  }
+
+  function buildExercise(sec, ex) {
+    var st = exState[ex.id];
+    if (!st) st = exState[ex.id] = newState(ex);
+    var card = el("section", "excard"); card.id = "ex-" + ex.id;
+    var head = el("div", "exhead");
+    head.appendChild(tgNode("h3", "", fmt(STR.exLabel, {n: ex.n})));
+    var badge = tgNode("span", "badge", "");
+    head.appendChild(badge);
+    card.appendChild(head);
+    card.appendChild(deNode("p", "insde", ex.de));
+    card.appendChild(tgNode("p", "inst", STR[ex.ins]));
+    if (ex.note) card.appendChild(tgNode("p", "exnote", tl(ex.note)));
+
+    function setBadge() {
+      var s = prog.ex[ex.id];
+      badge.className = "badge" + (s ? " b-" + s : "");
+      badge.textContent = s === "ok" ? "✓ " + STR.stDone : s === "sol" ? "• " + STR.solShown : "";
+    }
+    setBadge();
+
+    var list = el("ol", "items"); card.appendChild(list);
+    var recs = [];
+    var res = tgNode("div", "result", ""); res.setAttribute("role", "status"); res.setAttribute("aria-live", "polite");
+    var hasInputs = (ex.kind === "fill" || ex.kind === "write");
+
+    function clearMark(i) {
+      var r = recs[i];
+      r.li.className = "item"; r.mark.textContent = "";
+      if (r.sol) r.sol.textContent = "";
+    }
+    function setMark(i, ok) {
+      var r = recs[i];
+      r.li.className = "item " + (ok ? "ok" : "bad");
+      r.mark.textContent = ok ? "✓" : "✗";
+    }
+
+    if (ex.kind === "free") {
+      var box = el("div", "freebox");
+      var ta = el("textarea", "freeta"); ta.rows = 7; ta.lang = "de"; ta.dir = "ltr"; ta.spellcheck = false;
+      ta.placeholder = STR.freeLabel; ta.value = st.vals.text;
+      ta.addEventListener("input", function () { st.vals.text = ta.value; });
+      box.appendChild(tgNode("label", "freelabel", STR.freeLabel));
+      box.appendChild(ta);
+      box.appendChild(tgNode("p", "freechecks", STR.freeChecks));
+      var cks = [];
+      for (var c = 0; c < ex.checks.length; c++) (function (c) {
+        var lab = el("label", "ckrow"); setLangAttrs(lab, lang);
+        var cb = el("input"); cb.type = "checkbox"; cb.checked = !!st.vals.checks[c];
+        cb.addEventListener("change", function () { st.vals.checks[c] = cb.checked; });
+        lab.appendChild(cb); lab.appendChild(document.createTextNode(" " + tl(ex.checks[c])));
+        box.appendChild(lab); cks.push(cb);
+      })(c);
+      card.appendChild(box);
+    } else {
+      for (var i = 0; i < ex.items.length; i++) (function (i) {
+        var it = ex.items[i];
+        var li = el("li", "item");
+        var rec = {li: li, mark: el("span", "mark"), sol: el("div", "solline"), inputs: []};
+        rec.mark.setAttribute("aria-hidden", "true");
+        rec.sol.lang = "de"; rec.sol.dir = "ltr";
+        recs.push(rec);
+        var main = el("div", "imain");
+        if (ex.kind === "fill") {
+          var parts = it.t.split("___");
+          var row = deNode("div", "line");
+          for (var b = 0; b < parts.length; b++) {
+            row.appendChild(document.createTextNode(parts[b]));
+            if (b < parts.length - 1) (function (b) {
+              var inp = el("input", "blank"); inp.type = "text";
+              inp.setAttribute("autocomplete", "off"); inp.setAttribute("autocapitalize", "none"); inp.setAttribute("autocorrect", "off");
+              inp.spellcheck = false; inp.lang = "de"; inp.dir = "ltr";
+              var ans = it.a[b].split("|")[0];
+              inp.style.width = Math.max(5, ans.length + 3) + "ch";
+              inp.value = st.vals[i][b] || "";
+              inp.addEventListener("input", function () { st.vals[i][b] = inp.value; clearMark(i); inp.className = "blank"; });
+              inp.addEventListener("focus", function () { lastInput = inp; });
+              rec.inputs.push(inp);
+              row.appendChild(inp);
+            })(b);
+          }
+          main.appendChild(row);
+          rec.ev = function () {
+            for (var b2 = 0; b2 < it.a.length; b2++) if (!blankOk(st.vals[i][b2] || "", it.a[b2])) return false;
+            return true;
+          };
+          rec.showSol = function () {
+            for (var b2 = 0; b2 < it.a.length; b2++) { var v = it.a[b2].split("|")[0]; st.vals[i][b2] = v; rec.inputs[b2].value = v; }
+          };
+        } else if (ex.kind === "write") {
+          main.appendChild(deNode("div", "wprompt", it.t));
+          var inp2 = el("input", "blank wide"); inp2.type = "text";
+          inp2.setAttribute("autocomplete", "off"); inp2.setAttribute("autocapitalize", "sentences"); inp2.setAttribute("autocorrect", "off");
+          inp2.spellcheck = false; inp2.lang = "de"; inp2.dir = "ltr";
+          inp2.value = st.vals[i] || "";
+          inp2.addEventListener("input", function () { st.vals[i] = inp2.value; clearMark(i); });
+          inp2.addEventListener("focus", function () { lastInput = inp2; });
+          rec.inputs.push(inp2); main.appendChild(inp2);
+          rec.ev = function () { return writeOk(st.vals[i] || "", it.a); };
+          rec.showSol = function () { var v = dispPunct(it.a[0], /\?\s*$/.test(it.t) || !!it.q); st.vals[i] = v; inp2.value = v; };
+        } else if (ex.kind === "choose") {
+          var opts, optIsDe;
+          if (it.o) { opts = it.o; optIsDe = true; }
+          else if (ex.tf) { opts = [STR.tfRight, STR.tfWrong]; optIsDe = false; }
+          else { opts = []; for (var q = 0; q < ex.cats.length; q++) opts.push(tl(ex.cats[q])); optIsDe = false; }
+          main.appendChild(deNode("div", ex.cats ? "cword" : "cprompt", it.t));
+          if (it.tr && tl(it.tr)) main.appendChild(tgNode("div", "ctr", tl(it.tr)));
+          var orow = el("div", "optrow"); var btns = [];
+          var perm = st.perm[i];
+          if (!perm || perm.length !== opts.length) { perm = []; for (var z = 0; z < opts.length; z++) perm.push(z); }
+          for (var pi = 0; pi < perm.length; pi++) (function (oi) {
+            var bt = el("button", "opt", opts[oi]); bt.type = "button";
+            if (optIsDe) { bt.lang = "de"; bt.dir = "ltr"; } else setLangAttrs(bt, lang);
+            bt.addEventListener("click", function () { st.vals[i] = oi; paint(); clearMark(i); });
+            btns.push({b: bt, oi: oi}); orow.appendChild(bt);
+          })(perm[pi]);
+          var paint = function () {
+            for (var k = 0; k < btns.length; k++) btns[k].b.className = "opt" + (st.vals[i] === btns[k].oi ? " sel" : "");
+          };
+          paint();
+          main.appendChild(orow);
+          rec.ev = function () { return st.vals[i] === it.a; };
+          rec.showSol = function () { st.vals[i] = it.a; paint(); };
+        } else if (ex.kind === "order") {
+          var ans = el("div", "ordans"); ans.lang = "de"; ans.dir = "ltr";
+          var pool = el("div", "ordpool"); pool.lang = "de"; pool.dir = "ltr";
+          var draw = function () {
+            ans.innerHTML = ""; pool.innerHTML = "";
+            var used = st.vals[i], k;
+            for (k = 0; k < used.length; k++) (function (pos) {
+              var c = el("button", "wchip in", it.w[used[pos]]); c.type = "button";
+              c.addEventListener("click", function () { st.vals[i].splice(pos, 1); clearMark(i); draw(); });
+              ans.appendChild(c);
+            })(k);
+            if (!used.length) ans.appendChild(tgNode("span", "ordhint", STR.orderHint));
+            var perm2 = st.perm[i];
+            for (k = 0; k < perm2.length; k++) if (used.indexOf(perm2[k]) < 0) (function (wi) {
+              var c2 = el("button", "wchip", it.w[wi]); c2.type = "button";
+              c2.addEventListener("click", function () { st.vals[i].push(wi); clearMark(i); draw(); });
+              pool.appendChild(c2);
+            })(perm2[k]);
+          };
+          draw();
+          main.appendChild(ans); main.appendChild(pool);
+          var clr = el("button", "linkbtn small", STR.clearOrder); clr.type = "button"; setLangAttrs(clr, lang);
+          clr.addEventListener("click", function () { st.vals[i] = []; clearMark(i); draw(); });
+          main.appendChild(clr);
+          rec.ev = function () {
+            var words = [], k;
+            for (k = 0; k < st.vals[i].length; k++) words.push(it.w[st.vals[i][k]]);
+            return writeOk(words.join(" "), it.a);
+          };
+          rec.showSol = function () {
+            var toks = norm(it.a[0]).split(" "), pos = 0, order = [], usedIdx = [], guard = 0;
+            while (pos < toks.length && guard++ < 50) {
+              var found = -1;
+              for (var w = 0; w < it.w.length && found < 0; w++) {
+                if (usedIdx.indexOf(w) >= 0) continue;
+                var ct = norm(it.w[w]).split(" ");
+                if (toks.slice(pos, pos + ct.length).join(" ") === ct.join(" ")) { found = w; pos += ct.length; }
+              }
+              if (found < 0) break;
+              usedIdx.push(found); order.push(found);
+            }
+            if (pos >= toks.length) { st.vals[i] = order; draw(); }
+          };
+        }
+        li.appendChild(main);
+        li.appendChild(rec.mark);
+        if (ex.kind === "choose" && it.fix) rec.fix = it.fix;
+        li.appendChild(rec.sol);
+        list.appendChild(li);
+      })(i);
+      if (hasInputs) {
+        card.appendChild(umlautBar(card));
+        card.addEventListener("keydown", function (e) {
+          if (e.key !== "Enter" || !e.target || e.target.tagName !== "INPUT") return;
+          var all = card.querySelectorAll("input.blank"), k;
+          for (k = 0; k < all.length; k++) if (all[k] === e.target) break;
+          e.preventDefault();
+          if (k < all.length - 1) all[k + 1].focus(); else checkBtn.click();
+        });
+      }
+    }
+
+    /* Knöpfe */
+    var btnRow = el("div", "btnrow");
+    var checkBtn = el("button", "main chk", STR.check); checkBtn.type = "button"; setLangAttrs(checkBtn, lang);
+    var solBtn = el("button", "sec", STR.solution); solBtn.type = "button"; setLangAttrs(solBtn, lang);
+    var rstBtn = el("button", "linkbtn", STR.restart); rstBtn.type = "button"; setLangAttrs(rstBtn, lang);
+    btnRow.appendChild(checkBtn);
+    if (ex.kind !== "free") btnRow.appendChild(solBtn);
+    btnRow.appendChild(rstBtn);
+    card.appendChild(btnRow);
+    card.appendChild(res);
+
+    function ruleLinks(wrongRules) {
+      var box = el("div", "rulelinks"); var any = false;
+      for (var k = 0; k < wrongRules.length; k++) (function (r) {
+        if (!r) return;
+        var target = null;
+        for (var s = 0; s < SECTIONS.length; s++) if (SECTIONS[s].rule === r) target = SECTIONS[s];
+        if (!target || target === sec) return;
+        var a = el("button", "linkbtn", fmt(STR.seeRule, {n: r})); a.type = "button"; setLangAttrs(a, lang);
+        a.addEventListener("click", function () { go(target.id); });
+        box.appendChild(a); any = true;
+      })(wrongRules[k]);
+      return any ? box : null;
+    }
+    function setRes(text, cls, extra) {
+      res.className = "result " + cls;
+      res.textContent = text;
+      if (extra) res.appendChild(extra);
+    }
+
+    checkBtn.addEventListener("click", function () {
+      if (ex.kind === "free") {
+        var n = ex.checks.length, r = 0;
+        for (var c = 0; c < n; c++) if (st.vals.checks[c]) r++;
+        st.checked = true;
+        if (r === n) { prog.ex[ex.id] = "ok"; saveProg(); setBadge(); setRes(STR.freeFilled, "good"); }
+        else setRes(fmt(STR.resFmt, {r: r, n: n}), "warn");
+        return;
+      }
+      var right = 0, wrongRules = [];
+      for (var i2 = 0; i2 < recs.length; i2++) {
+        var ok = recs[i2].ev();
+        setMark(i2, ok);
+        if (ok) { right++; recs[i2].sol.textContent = ""; }
+        else {
+          var it2 = ex.items[i2];
+          var rr = it2.r || ex.rule || sec.rule;
+          if (wrongRules.indexOf(rr) < 0) wrongRules.push(rr);
+          if (recs[i2].fix) recs[i2].sol.textContent = recs[i2].fix;
+        }
+        if (recs[i2].inputs.length && !ok) { for (var q2 = 0; q2 < recs[i2].inputs.length; q2++) recs[i2].inputs[q2].className = recs[i2].inputs[q2].className.replace(/ ?(okin|badin)/g, "") + " badin"; }
+        if (recs[i2].inputs.length && ok) { for (var q3 = 0; q3 < recs[i2].inputs.length; q3++) recs[i2].inputs[q3].className = recs[i2].inputs[q3].className.replace(/ ?(okin|badin)/g, "") + " okin"; }
+      }
+      st.checked = true;
+      var n2 = recs.length;
+      if (right === n2) {
+        if (prog.ex[ex.id] !== "ok") { prog.ex[ex.id] = "ok"; saveProg(); }
+        setBadge();
+        setRes(fmt(STR.resFmt, {r: right, n: n2}) + " · " + STR.allOk, "good");
+      } else {
+        setRes(fmt(STR.resFmt, {r: right, n: n2}) + " · " + STR.fixIt, "warn", ruleLinks(wrongRules));
+      }
+    });
+    solBtn.addEventListener("click", function () {
+      for (var i3 = 0; i3 < recs.length; i3++) {
+        recs[i3].showSol();
+        recs[i3].li.className = "item shown";
+        recs[i3].mark.textContent = "";
+        for (var q4 = 0; q4 < recs[i3].inputs.length; q4++) recs[i3].inputs[q4].className = recs[i3].inputs[q4].className.replace(/ ?(okin|badin)/g, "");
+        if (recs[i3].fix) recs[i3].sol.textContent = recs[i3].fix; else recs[i3].sol.textContent = "";
+        if (ex.kind === "order" || ex.kind === "write" || ex.kind === "fill") { /* Lösung steht in den Feldern */ }
+        if (ex.kind === "order") {
+          var itx = ex.items[i3], a0 = itx.a[0];
+          var words = [];
+          for (var k3 = 0; k3 < st.vals[i3].length; k3++) words.push(itx.w[st.vals[i3][k3]]);
+          if (norm(words.join(" ")) !== norm(a0)) recs[i3].sol.textContent = STR.answerLabel + " " + dispPunct(a0, !!itx.q);
+        }
+      }
+      st.shown = true;
+      if (!prog.ex[ex.id]) { prog.ex[ex.id] = "sol"; saveProg(); }
+      setBadge();
+      setRes(STR.solShown, "info");
+    });
+    rstBtn.addEventListener("click", function () {
+      delete exState[ex.id];
+      var fresh = buildExercise(sec, ex);
+      card.parentNode.replaceChild(fresh, card);
+    });
+    return card;
+  }
+
+  /* ---------- Rendering ---------- */
+  function render() {
+    var app = $("app");
+    app.innerHTML = "";
+    if (!STR) return;
+    if (cur === "home") renderHome(app);
+    else { var sec = secById(cur); if (sec) renderSection(app, sec); else renderHome(app); }
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- Start ---------- */
+  buildPicker();
+  
+  (function init() {
+    var h = window.location.hash || "";
+    if (/^#(tr|ar|ru|en)(\/(home|\d+))?$/.test(h)) route();
+    else showPicker(true);
+  })();
+
+})();
+</script>
+</body>
+</html>
