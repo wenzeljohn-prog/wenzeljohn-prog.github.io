@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sprachbausteine B2 anspruchsvoll – Teil 1 und Teil 2</title>
+<style>
+:root{
+  --bg:#f5f6f8; --card:#ffffff; --ink:#1d2330; --muted:#5b6475; --line:#d9dde5;
+  --accent:#2457c5; --accent-soft:#e6edfb;
+  --ok:#17803d; --ok-soft:#e1f4e7; --bad:#b3261e; --bad-soft:#fbe6e4; --warn-soft:#fff4d6;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#14171d; --card:#1e232c; --ink:#e8ebf1; --muted:#9aa3b5; --line:#343b49;
+    --accent:#7aa2ff; --accent-soft:#25324f;
+    --ok:#5fd18a; --ok-soft:#173424; --bad:#ff8b82; --bad-soft:#3e1d1b; --warn-soft:#3b3317;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:17px;line-height:1.55}
+.wrap{max-width:860px;margin:0 auto;padding:16px 16px 48px}
+h1{font-size:1.35rem;margin:4px 0 2px}
+.sub{color:var(--muted);margin:0 0 14px;font-size:.95rem}
+.tabs,.sets{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.tab,.setbtn{font:inherit;cursor:pointer;border:2px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:10px;padding:9px 14px;text-align:left}
+.tab{font-weight:600}
+.tab.active,.setbtn.active{border-color:var(--accent);background:var(--accent-soft)}
+.setbtn small{display:block;color:var(--muted);font-size:.78rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+.info{background:var(--accent-soft);border-color:transparent;font-size:.95rem}
+.info strong{display:block;margin-bottom:2px}
+.heading{font-weight:700;font-size:1.05rem;margin:0 0 10px}
+.textbox{font-size:1.04rem;line-height:2.05}
+.gap{display:inline-block;min-width:4.6em;padding:0 8px;margin:0 2px;border:0;border-bottom:2px dashed var(--accent);
+  background:var(--accent-soft);color:var(--ink);border-radius:6px 6px 0 0;font:inherit;line-height:1.6;
+  text-align:center;vertical-align:baseline}
+.gap.filled{border-bottom-style:solid}
+.gap.active{outline:3px solid var(--accent);outline-offset:1px}
+.gap.ok{background:var(--ok-soft);border-bottom-color:var(--ok);color:var(--ok);font-weight:600}
+.gap.bad{background:var(--bad-soft);border-bottom-color:var(--bad);color:var(--bad);font-weight:600}
+button.gap{cursor:pointer}
+.rows{display:block}
+.row{padding:12px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.rowhead{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.num{flex:0 0 auto;width:2em;height:2em;border-radius:50%;background:var(--accent);color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+.opts{display:flex;flex-wrap:wrap;gap:8px;flex:1 1 280px}
+.opt{font:inherit;cursor:pointer;border:2px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:10px;padding:8px 14px;min-width:6.5em;text-align:left}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft);color:var(--ok);font-weight:600}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad);text-decoration:line-through}
+.opt:disabled{cursor:default}
+.why{margin:8px 0 0 calc(2em + 10px);font-size:.93rem;color:var(--muted)}
+.why b{color:var(--ink)}
+.work{position:relative}
+.bank{position:sticky;bottom:0;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:10px;margin-bottom:14px;box-shadow:0 -4px 14px rgba(0,0,0,.12);max-height:42vh;overflow-y:auto}
+.bank h3{margin:0 0 6px;font-size:.88rem;color:var(--muted);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:.95rem;cursor:pointer;border:2px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:999px;padding:4px 12px}
+.chip i{font-style:normal;color:var(--muted);margin-right:6px;font-size:.82rem}
+.chip.used{opacity:.4;background:var(--bg)}
+.chip:disabled{cursor:default}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 14px}
+.btn{font:inherit;font-weight:600;cursor:pointer;border:2px solid var(--accent);background:var(--accent);color:#fff;
+  border-radius:10px;padding:10px 18px}
+.btn.sec{background:var(--card);color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:default}
+.result{border-radius:12px;padding:14px 16px;margin-bottom:14px;font-weight:600;background:var(--warn-soft)}
+.result.good{background:var(--ok-soft);color:var(--ok)}
+.result.low{background:var(--bad-soft);color:var(--bad)}
+.result small{display:block;font-weight:400;color:var(--ink);margin-top:2px}
+.expl{padding:10px 0;border-top:1px solid var(--line);font-size:.95rem}
+.expl:first-of-type{border-top:0}
+.expl .tag{font-weight:700}
+.expl .tag.ok{color:var(--ok)} .expl .tag.bad{color:var(--bad)}
+.leftover{font-size:.93rem;color:var(--muted);margin-top:10px}
+footer{color:var(--muted);font-size:.82rem;margin-top:22px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Sprachbausteine B2 – anspruchsvoll</h1>
+  <p class="sub">Aufbautraining im Stil von telc Deutsch-Test für den Beruf B2 · Teil 1 und Teil 2 · gehobenes Niveau</p>
+  <div class="tabs" id="tabs"></div>
+  <div class="sets" id="sets"></div>
+  <div id="main"></div>
+  <footer>Eigene Übungstexte im Stil der Sprachbausteine; keine Originalaufgaben des Prüfungsanbieters.</footer>
+</div>
+
+<script>
+(function () {
+"use strict";
+
+/* ===================== DATEN: TEIL 1 (Multiple Choice) ===================== */
+var T1 = [
+{
+  id: "h1-1", title: "Leere Innenstädte", topic: "Stadt & Gesellschaft",
+  heading: "Wenn die Innenstadt ausblutet",
+  text:
+"Kaum eine Kleinstadt in Deutschland kommt heute noch ohne leerstehende Ladenlokale aus. [[1]] sich viele Bürgermeister inzwischen mit dem Problem befassen, fehlt es häufig an wirksamen Konzepten. Dabei sind die Ursachen längst bekannt: Der Onlinehandel hat die Kaufgewohnheiten grundlegend verändert, [[2]] viele Menschen ihre Einkäufe heute am Bildschirm erledigen. Hinzu kommen hohe Mieten, die manchen Einzelhändler zur Aufgabe zwingen.\n\n" +
+"Wer glaubt, man könne den Trend [[3]] einzelne Förderprogramme umkehren, irrt. Entscheidend ist vielmehr, die Innenstadt als Lebensraum zu begreifen, [[4]] man sich nicht nur zum Einkaufen aufhält. Städte, die ihre Zentren frühzeitig für Wohnen, Kultur und Gastronomie geöffnet haben, [[5]] heute deutlich besser da.\n\n" +
+"Ein Beispiel liefert eine Stadt in Westfalen, [[6]] ehemaliges Kaufhaus zu einem Bürgerhaus mit Bibliothek und Werkstätten umgebaut wurde. [[7]] des anfänglichen Widerstands wird das Projekt inzwischen von einer breiten Mehrheit getragen. Die Verantwortlichen räumen allerdings ein, die Umgestaltung [[8]] ohne das Engagement vieler Freiwilliger nicht gelungen. Es bleibt zu hoffen, dass sich andere Kommunen davon [[9]] lassen, statt weiter darauf zu hoffen, [[10]] sich die Entwicklung von selbst zum Besseren wendet.",
+  items: [
+    { c: "Obwohl", w: ["Sofern", "Indem"], why: "Konzessivsatz (Gegensatz zur Erwartung): Obwohl sich viele Bürgermeister mit dem Problem befassen, fehlt es an Konzepten. „Sofern“ (Bedingung) und „indem“ (Art und Weise) passen nicht." },
+    { c: "sodass", w: ["sofern", "obwohl"], why: "Konsekutivsatz: Die Folge der veränderten Kaufgewohnheiten ist, dass viele Menschen online einkaufen. „sofern“ (Bedingung) und „obwohl“ (Gegensatz) ergeben keinen Sinn." },
+    { c: "durch", w: ["mit", "für"], why: "durch + Akkusativ nennt das Mittel: den Trend durch einzelne Förderprogramme umkehren. „mit“ verlangt den Dativ (mit einzelnen …), „für“ passt inhaltlich nicht." },
+    { c: "in dem", w: ["in denen", "indem"], why: "Relativsatz mit Präposition: Bezugswort „Lebensraum“ (maskulin Singular), Ort → Dativ: in dem man sich aufhält. „in denen“ wäre Plural, „indem“ ist eine Konjunktion." },
+    { c: "stehen", w: ["gehen", "kommen"], why: "Feste Wendung: gut/besser dastehen (= sich in einer günstigen Lage befinden). Nach dem Nebensatz steht das Verb am Anfang des Hauptsatzes." },
+    { c: "deren", w: ["dessen", "der"], why: "Genitiv-Relativpronomen, Bezugswort „Stadt“ (feminin): deren ehemaliges Kaufhaus. „dessen“ wäre maskulin oder neutral." },
+    { c: "Ungeachtet", w: ["Infolge", "Dank"], why: "„ungeachtet“ + Genitiv = trotz: Obwohl es anfangs Widerstand gab, wird das Projekt heute getragen. „Infolge“ und „Dank“ nennen einen Grund bzw. eine positive Ursache." },
+    { c: "sei", w: ["habe", "werde"], why: "Indirekte Rede (Konjunktiv I, Perfekt): „gelingen“ bildet das Perfekt mit „sein“ → sei … gelungen. „habe“ und „werde“ passen nicht zu „gelungen“." },
+    { c: "ermutigen", w: ["ermutigt", "zu ermutigen"], why: "sich etwas lassen + Infinitiv ohne „zu“: sich davon ermutigen lassen." },
+    { c: "dass", w: ["ob", "wenn"], why: "darauf hoffen, dass …: Das Pronominaladverb „darauf“ verlangt einen dass-Satz. „ob“ und „wenn“ passen nicht zu „hoffen“." }
+  ]
+},
+{
+  id: "h1-2", title: "Mehrsprachigkeit", topic: "Bildung & Sprache",
+  heading: "Wenn Kinder mehrsprachig aufwachsen",
+  text:
+"Lange Zeit [[1]] Mehrsprachigkeit in Kindergärten und Schulen als Hindernis, das man möglichst früh beheben müsse. Inzwischen deuten viele Studien darauf [[2]], dass Kinder, die mit mehr als einer Sprache aufwachsen, in bestimmten Bereichen Vorteile haben können. Ob ein Kind beide Sprachen gleich gut beherrscht, hängt [[3]] ab, wie intensiv und vielfältig der Kontakt mit ihnen ist.\n\n" +
+"Eltern sollten deshalb nicht den Fehler begehen, die Herkunftssprache [[4]] des Deutschen aufzugeben. Wäre sie früher stärker gefördert [[5]], hätten heute vermutlich viele Jugendliche bessere Sprachkenntnisse. Lehrkräfte wiederum sollten auf die unterschiedlichen Voraussetzungen der Kinder Rücksicht [[6]]. Es gibt Familien, [[7]] die Kinder bereits mit drei Sprachen aufwachsen; für sie gilt das erst recht.\n\n" +
+"Die [[8]] Befürchtung, Mehrsprachigkeit führe zu Sprachverwirrung, hat sich nicht bestätigt. [[9]] Mehrsprachigkeit viele Vorteile bietet, ersetzt sie keine gezielte Sprachförderung. Bis zur Einschulung [[10]] viele Kinder bereits einen beachtlichen Wortschatz erworben haben.",
+  items: [
+    { c: "galt", w: ["wurde", "hieß"], why: "gelten als: Mehrsprachigkeit galt als Hindernis (= wurde so angesehen). „wurde … als“ bräuchte ein Partizip wie „betrachtet“ am Satzende." },
+    { c: "hin", w: ["an", "auf"], why: "auf etwas hindeuten (trennbares Verb, Präfix am Ende): Studien deuten darauf hin, dass … Die Verbindungen „darauf … an“ und „darauf … auf“ gibt es nicht." },
+    { c: "davon", w: ["dafür", "darum"], why: "abhängen von → Pronominaladverb „davon“: Es hängt davon ab, wie …" },
+    { c: "zugunsten", w: ["infolge", "mittels"], why: "zugunsten + Genitiv = für etwas, zulasten von etwas anderem: die Herkunftssprache zugunsten des Deutschen aufgeben. „infolge“ (Grund) und „mittels“ (Mittel) passen nicht." },
+    { c: "worden", w: ["werden", "geworden"], why: "Konjunktiv II der Vergangenheit im Passiv: Wäre sie gefördert worden, … Das Partizip von „werden“ als Hilfsverb im Passiv heißt „worden“ (nicht „geworden“)." },
+    { c: "nehmen", w: ["geben", "tragen"], why: "Funktionsverbgefüge: auf jemanden/etwas Rücksicht nehmen." },
+    { c: "in denen", w: ["deren", "welchen"], why: "Relativsatz mit Präposition: Bezugswort „Familien“ (Plural, Dativ): in denen die Kinder … aufwachsen. „deren“ scheitert am Artikel „die Kinder“; „welchen“ ist hier nicht möglich." },
+    { c: "lange gehegte", w: ["lange hegende", "langes gehegt"], why: "Partizip II als Attribut, Nominativ Femininum nach „die“: die lange gehegte Befürchtung (passivische Bedeutung: Die Befürchtung wurde gehegt)." },
+    { c: "Wenngleich", w: ["Sobald", "Zumal"], why: "Konzessivsatz: Wenngleich (= obwohl) Mehrsprachigkeit Vorteile bietet, … „Sobald“ (zeitlich) und „Zumal“ (zusätzlicher Grund) passen nicht." },
+    { c: "werden", w: ["wurden", "würden"], why: "Futur II für eine Vermutung: Bis zur Einschulung werden viele Kinder einen Wortschatz erworben haben (= vermutlich haben sie …)." }
+  ]
+},
+{
+  id: "h1-3", title: "Lebensmittel retten", topic: "Umwelt & Konsum",
+  heading: "Retten statt wegwerfen",
+  text:
+"[[1]] wird geschätzt, dass in Deutschland rund ein Drittel aller Lebensmittel nicht gegessen wird. Initiativen wie „Foodsharing“ versuchen, [[2]] diese Verschwendung vorzugehen, [[3]] Freiwillige überschüssige Ware bei Händlern abholen und kostenlos weitergeben.\n\n" +
+"Dabei hilft es, das Mindesthaltbarkeitsdatum richtig zu verstehen: Es sagt nichts darüber [[4]], ob ein Produkt tatsächlich verdorben ist. Viele Verbraucher misstrauen dennoch [[5]] Lebensmitteln, deren Datum abgelaufen ist. Händler stehen der Weitergabe zwiespältig gegenüber, [[6]] sie unter Umständen für den Zustand der Ware haften könnten. Tatsächlich [[7]] sich die meisten Produkte noch problemlos verwerten.\n\n" +
+"Einige Nachbarländer haben bereits Regelungen in [[8]] gesetzt, die Supermärkte zur Weitergabe unverkaufter Ware verpflichten. Eine solche Pflicht ist [[9]] ein Allheilmittel noch bloße Symbolpolitik. Wer selbst etwas tun möchte, kann schon beim Einkaufen [[10]] achten, nur das zu kaufen, was er wirklich braucht.",
+  items: [
+    { c: "Es", w: ["Das", "Man"], why: "Unpersönliches Passiv mit dass-Satz: Es wird geschätzt, dass … „Das wird geschätzt, dass“ und „Man wird geschätzt“ sind falsch." },
+    { c: "gegen", w: ["mit", "um"], why: "gegen etwas vorgehen (trennbar: vor|zu|gehen): gegen diese Verschwendung vorzugehen." },
+    { c: "indem", w: ["obwohl", "bevor"], why: "Instrumentalsatz (Mittel): Initiativen gehen so vor, indem Freiwillige Ware abholen (= dadurch, dass …). „obwohl“ und „bevor“ passen nicht." },
+    { c: "aus", w: ["an", "ab"], why: "etwas über etwas aussagen (trennbares Verb, Präfix am Satzende): Das Datum sagt nichts darüber aus, ob …" },
+    { c: "solchen", w: ["solche", "solcher"], why: "misstrauen + Dativ; Dativ Plural: solchen Lebensmitteln." },
+    { c: "zumal", w: ["sodass", "damit"], why: "„zumal“ nennt einen zusätzlichen, verstärkenden Grund (= vor allem weil). „sodass“ (Folge) und „damit“ (Zweck) passen nicht." },
+    { c: "lassen", w: ["werden", "sind"], why: "Passiversatzform: Die Produkte lassen sich verwerten (= können verwertet werden)." },
+    { c: "Kraft", w: ["Anspruch", "Betracht"], why: "Nomen-Verb-Verbindung: eine Regelung in Kraft setzen (= gültig machen)." },
+    { c: "weder", w: ["kein", "nicht"], why: "Doppelkonjunktion „weder … noch“: Sie ist weder ein Allheilmittel noch bloße Symbolpolitik." },
+    { c: "darauf", w: ["davon", "dafür"], why: "achten auf → Pronominaladverb „darauf“: darauf achten, nur das zu kaufen, was …" }
+  ]
+}
+];
+
+/* ===================== DATEN: TEIL 2 (Wortbank) ===================== */
+var T2 = [
+{
+  id: "h2-1", title: "Der Wolf kehrt zurück", topic: "Natur & Gesellschaft",
+  heading: "Die Rückkehr des Wolfes",
+  text:
+"Seit gut zwanzig Jahren leben in Deutschland wieder Wölfe, nachdem sie hierzulande lange Zeit als ausgerottet galten. [[1]] der strengen Schutzbestimmungen hat sich der Bestand in manchen Regionen rasch erholt. Gerade in ländlichen Gebieten stößt die Rückkehr des Raubtiers jedoch [[2]] Skepsis. Weidetierhalter befürchten Übergriffe, [[3]] viele Herden nachts kaum geschützt sind.\n\n" +
+"Der Staat unterstützt die Halter [[4]] Zuschüssen zu Schutzzäunen und Herdenschutzhunden. Dennoch lassen sich Übergriffe nie ganz ausschließen, ganz gleich, [[5]] hoch die Zäune sind. Naturschützer verweisen [[6]], dass Nutztierrisse nur einen kleinen Teil der Verluste in der Landwirtschaft ausmachen. Wölfe meiden Menschen in der Regel, [[7]] Wildschweine immer dreister in Siedlungen vordringen.\n\n" +
+"Wissenschaftler können [[8]] von Kotproben nachweisen, wie viele Tiere in einem Revier leben. Wie viele Wölfe es in Deutschland geben darf – [[9]] werden sich Politik und Gesellschaft noch lange streiten. Ein Zusammenleben mit dem Wolf wird nur gelingen, [[10]] beide Seiten Kompromisse eingehen.",
+  gaps: [
+    { w: "dank", why: "„dank“ + Genitiv nennt eine positive Ursache: Dank der strengen Schutzbestimmungen hat sich der Bestand erholt. „durch“ passt nicht zum Genitiv, „trotz“ ergäbe einen falschen Gegensatz." },
+    { w: "auf", why: "auf Skepsis stoßen (feste Verbindung)." },
+    { w: "zumal", why: "„zumal“ nennt einen zusätzlichen, verstärkenden Grund: Befürchtungen, zumal viele Herden nachts kaum geschützt sind." },
+    { w: "mit", why: "unterstützen mit + Dativ: mit Zuschüssen. „durch“ würde den Akkusativ verlangen (durch Zuschüsse)." },
+    { w: "wie", why: "Einräumung: ganz gleich, wie + Adjektiv (… wie hoch die Zäune sind)." },
+    { w: "darauf", why: "verweisen auf → Pronominaladverb „darauf“, das auf den dass-Satz zeigt." },
+    { w: "wohingegen", why: "Gegensatz zweier Aussagen im Nebensatz mit Verb am Ende: Wölfe meiden Menschen, wohingegen Wildschweine in Siedlungen vordringen." },
+    { w: "anhand", why: "anhand von + Dativ = mithilfe von: anhand von Kotproben nachweisen." },
+    { w: "darüber", why: "sich über etwas streiten → „darüber“ steht auf Position 1, danach folgt das Verb (werden)." },
+    { w: "sofern", why: "Bedingung im Nebensatz: nur gelingen, sofern beide Seiten Kompromisse eingehen." }
+  ],
+  extra: ["obwohl", "durch", "trotz", "seitens", "bevor"]
+},
+{
+  id: "h2-2", title: "Reklamation", topic: "Verbraucher & Reisen",
+  heading: "Beschwerdebrief an einen Reiseveranstalter",
+  text:
+"Sehr geehrte Damen und Herren,\n\n" +
+"hiermit möchte ich mich [[1]] die Qualität der von Ihnen vermittelten Unterkunft beschweren. Sie entsprach [[2]] der Beschreibung im Katalog noch den dort gezeigten Fotos. Statt des zugesicherten Meerblicks hatten wir Aussicht auf eine Baustelle, [[3]] von morgens an für Lärm sorgte.\n\n" +
+"Obwohl wir die Mängel sofort meldeten, wurde uns erst nach drei Tagen ein anderes Zimmer angeboten, [[4]] anderen Gästen, die später angereist waren, schon am ersten Abend eines zugewiesen wurde. Ich bitte Sie daher, den Reisepreis [[5]] 40 Prozent zu mindern. Dies halte ich [[6]] der erheblichen Beeinträchtigung für angemessen. Sollten Sie dazu nicht bereit sein, behalte ich mir rechtliche Schritte [[7]].\n\n" +
+"Bitte teilen Sie mir bis zum 15. November schriftlich mit, [[8]] Sie meinem Anliegen entsprechen werden oder nicht. Ich bin überzeugt, [[9]] Sie ein Interesse daran haben, den Fall einvernehmlich zu lösen. Fotos und Buchungsbestätigung füge ich bei, [[10]] Sie sich selbst ein Bild machen können.\n\n" +
+"Mit freundlichen Grüßen\nSimone Hartmann",
+  gaps: [
+    { w: "über", why: "sich beschweren über + Akkusativ." },
+    { w: "weder", why: "Doppelkonjunktion „weder … noch“: entsprach weder der Beschreibung noch den Fotos." },
+    { w: "die", why: "Relativpronomen: Bezugswort „Baustelle“ (feminin), Subjekt im Relativsatz → die." },
+    { w: "während", why: "Gegensatz: Uns bot man erst nach drei Tagen ein Zimmer an, während anderen Gästen sofort eines zugewiesen wurde (Nebensatz, Verb am Ende)." },
+    { w: "um", why: "mindern um + Betrag oder Prozentsatz: um 40 Prozent." },
+    { w: "angesichts", why: "„angesichts“ + Genitiv = in Anbetracht von (Begründung). „ungeachtet“ (Gegensatz) und „seitens“ passen nicht." },
+    { w: "vor", why: "sich etwas vorbehalten (trennbares Verb, Präfix am Satzende): behalte ich mir rechtliche Schritte vor." },
+    { w: "ob", why: "Indirekter Ja/Nein-Fragesatz; „… oder nicht“ bestätigt es: mitteilen, ob Sie … entsprechen werden oder nicht." },
+    { w: "dass", why: "Inhaltssatz nach „überzeugt sein“: Ich bin überzeugt, dass …" },
+    { w: "damit", why: "Finalsatz (Zweck) mit Subjektwechsel (ich – Sie): … damit Sie sich ein Bild machen können. „um … zu“ wäre hier nicht möglich." }
+  ],
+  extra: ["ungeachtet", "seitens", "zwischen", "bevor", "anstelle"]
+},
+{
+  id: "h2-3", title: "Zeitumstellung", topic: "Gesellschaft & Politik",
+  heading: "Kommentar: Streit um die Zeitumstellung",
+  text:
+"Zweimal im Jahr wird in Europa an den Uhren gedreht, und zweimal im Jahr erhitzen [[1]] darüber die Gemüter. Befürworter der Sommerzeit argumentieren, [[2]] längere Abende mehr Freizeit im Hellen ermöglichen. Gegner halten dem [[3]], die Umstellung schade der Gesundheit. Eine Energieersparnis [[4]] sich bislang kaum belegen.\n\n" +
+"Umfragen [[5]] wünscht sich eine Mehrheit ein Ende der Umstellung. Dass es dazu bislang nicht gekommen ist, liegt [[6]], dass sich die Mitgliedstaaten nicht auf eine gemeinsame Zeit einigen können. Sollte die Sommerzeit dauerhaft gelten, wären die Morgen im Winter [[7]] dunkel, dass viele Kinder im Dunkeln zur Schule gehen müssten. Wie sich eine dauerhafte Umstellung auf die Gesundheit auswirkt, können selbst Fachleute kaum vorhersagen, [[8]] denn verlässlich belegen.\n\n" +
+"Die Staaten könnten das Problem lösen, [[9]] sie sich auf eine gemeinsame Regelung verständigen. [[10]], ob am Ende die Winter- oder die Sommerzeit gilt: Wichtig ist, dass überhaupt Klarheit herrscht.",
+  gaps: [
+    { w: "sich", why: "Reflexivpronomen: Die Gemüter erhitzen sich; bei Inversion steht es direkt nach dem Verb." },
+    { w: "dass", why: "argumentieren, dass …: Inhaltssatz nach einem Verb des Sagens." },
+    { w: "entgegen", why: "jemandem etwas entgegenhalten (trennbares Verb, Präfix am Ende): Gegner halten dem entgegen, …" },
+    { w: "lässt", why: "Passiversatzform: Eine Energieersparnis lässt sich belegen (= kann belegt werden)." },
+    { w: "zufolge", why: "„zufolge“ steht nach dem Nomen und verlangt den Dativ: Umfragen zufolge (= laut Umfragen)." },
+    { w: "daran", why: "liegen an → Pronominaladverb „daran“: Das liegt daran, dass …" },
+    { w: "so", why: "Konsekutive Satzverbindung: so dunkel, dass … (Folge)." },
+    { w: "geschweige", why: "„geschweige denn“ = und erst recht nicht: kaum vorhersagen, geschweige denn belegen." },
+    { w: "indem", why: "Mittel/Art und Weise: lösen, indem sie sich verständigen (= dadurch, dass …)." },
+    { w: "egal", why: "Einräumung: Egal, ob … (= gleichgültig, ob …)." }
+  ],
+  extra: ["obwohl", "bevor", "trotzdem", "gegenüber", "weshalb"]
+}
+];
+
+/* ===================== HILFSFUNKTIONEN ===================== */
+var LETTERS = "abcdefghijklmno";
+var mode = 1, cur1 = 0, cur2 = 0, st1 = {}, st2 = {};
+
+function el(tag, cls, txt) {
+  var e = document.createElement(tag);
+  if (cls) { e.className = cls; }
+  if (txt !== undefined) { e.textContent = txt; }
+  return e;
+}
+function clear(node) { while (node.firstChild) { node.removeChild(node.firstChild); } }
+function shuffle(arr) {
+  var a = arr.slice(), i, j, t;
+  for (i = a.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function loadBest() {
+  try { return JSON.parse(window.localStorage.getItem("sbB2bestAnspruchsvoll") || "{}"); } catch (e) { return {}; }
+}
+function saveBest(id, score) {
+  try {
+    var b = loadBest();
+    if (b[id] === undefined || score > b[id]) {
+      b[id] = score;
+      window.localStorage.setItem("sbB2bestAnspruchsvoll", JSON.stringify(b));
+    }
+  } catch (e) { /* Speichern nicht möglich – kein Problem */ }
+}
+function addText(parent, str) {
+  var parts = str.split("\n"), i;
+  for (i = 0; i < parts.length; i++) {
+    if (i > 0) { parent.appendChild(document.createElement("br")); }
+    if (parts[i]) { parent.appendChild(document.createTextNode(parts[i])); }
+  }
+}
+function buildText(container, text, makeGap) {
+  var re = /\[\[(\d+)\]\]/g, last = 0, m;
+  while ((m = re.exec(text)) !== null) {
+    addText(container, text.substring(last, m.index));
+    container.appendChild(makeGap(parseInt(m[1], 10) - 1));
+    last = re.lastIndex;
+  }
+  addText(container, text.substring(last));
+}
+function verdict(score) {
+  if (score >= 9) { return { cls: "good", msg: "Sehr gut!" }; }
+  if (score >= 7) { return { cls: "good", msg: "Gut – schau dir die Fehler noch einmal an." }; }
+  if (score >= 5) { return { cls: "", msg: "Ausbaufähig – lies die Erklärungen und versuche es noch einmal." }; }
+  return { cls: "low", msg: "Noch viel Luft nach oben – nutze die Erklärungen und wiederhole die Übung." };
+}
+function resultBox(score, total) {
+  var v = verdict(score);
+  var box = el("div", "result " + v.cls);
+  box.setAttribute("role", "status");
+  box.appendChild(document.createTextNode(score + " von " + total + " Lücken richtig"));
+  box.appendChild(el("small", "", v.msg));
+  return box;
+}
+
+/* ===================== KOPF: TABS UND ÜBUNGSAUSWAHL ===================== */
+function renderTabs() {
+  var tabs = document.getElementById("tabs"), sets = document.getElementById("sets"), best = loadBest();
+  clear(tabs); clear(sets);
+  var defs = [[1, "Teil 1 · Multiple Choice"], [2, "Teil 2 · Wortbank"]];
+  defs.forEach(function (d) {
+    var b = el("button", "tab" + (mode === d[0] ? " active" : ""), d[1]);
+    b.type = "button";
+    b.addEventListener("click", function () { mode = d[0]; renderAll(); });
+    tabs.appendChild(b);
+  });
+  var list = mode === 1 ? T1 : T2, cur = mode === 1 ? cur1 : cur2;
+  list.forEach(function (s, i) {
+    var b = el("button", "setbtn" + (i === cur ? " active" : ""));
+    b.type = "button";
+    b.appendChild(document.createTextNode("Übung " + (i + 1) + ": " + s.title));
+    var sm = el("small", "", s.topic + (best[s.id] !== undefined ? " · Bestwert " + best[s.id] + "/10" : ""));
+    b.appendChild(sm);
+    b.addEventListener("click", function () {
+      if (mode === 1) { cur1 = i; } else { cur2 = i; }
+      renderAll();
+    });
+    sets.appendChild(b);
+  });
+}
+
+/* ===================== TEIL 1 ===================== */
+function init1(i) {
+  var set = T1[i], s = { ans: [], checked: false, opts: [] };
+  set.items.forEach(function (it) {
+    var o = [{ t: it.c, ok: true }];
+    it.w.forEach(function (w) { o.push({ t: w, ok: false }); });
+    s.opts.push(shuffle(o));
+    s.ans.push(-1);
+  });
+  st1[i] = s;
+}
+
+function render1() {
+  if (!st1[cur1]) { init1(cur1); }
+  var set = T1[cur1], s = st1[cur1], main = document.getElementById("main");
+  clear(main);
+
+  var info = el("div", "card info");
+  info.appendChild(el("strong", "", "Aufgabe – Teil 1"));
+  info.appendChild(document.createTextNode("Lies den Text und wähle für jede Lücke (1–10) die passende Lösung a, b oder c. Pro Lücke ist genau eine Lösung richtig."));
+  main.appendChild(info);
+
+  var gapEls = [], rowEls = [], optBtns = [], whyEls = [];
+
+  var tcard = el("div", "card");
+  tcard.appendChild(el("p", "heading", set.heading));
+  var tbox = el("div", "textbox");
+  buildText(tbox, set.text, function (k) {
+    var g = el("button", "gap");
+    g.type = "button";
+    g.addEventListener("click", function () {
+      var r = rowEls[k];
+      if (r && r.scrollIntoView) { r.scrollIntoView({ behavior: "smooth", block: "center" }); }
+    });
+    gapEls[k] = g;
+    return g;
+  });
+  tcard.appendChild(tbox);
+  main.appendChild(tcard);
+
+  var rcard = el("div", "card");
+  var rows = el("div", "rows");
+  set.items.forEach(function (it, k) {
+    var row = el("div", "row");
+    var head = el("div", "rowhead");
+    head.appendChild(el("span", "num", String(k + 1)));
+    var opts = el("div", "opts");
+    optBtns[k] = [];
+    s.opts[k].forEach(function (o, j) {
+      var b = el("button", "opt", LETTERS.charAt(j) + ") " + o.t);
+      b.type = "button";
+      b.addEventListener("click", function () {
+        if (s.checked) { return; }
+        s.ans[k] = j;
+        refresh();
+      });
+      optBtns[k].push(b);
+      opts.appendChild(b);
+    });
+    head.appendChild(opts);
+    row.appendChild(head);
+    var why = el("div", "why");
+    why.style.display = "none";
+    row.appendChild(why);
+    whyEls[k] = why;
+    rowEls[k] = row;
+    rows.appendChild(row);
+  });
+  rcard.appendChild(rows);
+  main.appendChild(rcard);
+
+  var resultHolder = el("div");
+  var controls = el("div", "controls");
+  var bCheck = el("button", "btn", "Prüfen");
+  var bRetry = el("button", "btn sec", "Falsche zurücksetzen");
+  var bReset = el("button", "btn sec", "Neu starten");
+  [bCheck, bRetry, bReset].forEach(function (b) { b.type = "button"; controls.appendChild(b); });
+  main.appendChild(controls);
+  main.appendChild(resultHolder);
+
+  function refresh() {
+    set.items.forEach(function (it, k) {
+      var a = s.ans[k], g = gapEls[k], ok = a >= 0 && s.opts[k][a].ok, label;
+      label = "(" + (k + 1) + ") " + (a >= 0 ? s.opts[k][a].t : "\u2003\u2003");
+      if (s.checked) { label += ok ? " \u2713" : (a >= 0 ? " \u2717" : " \u2717"); }
+      g.textContent = label;
+      g.className = "gap" + (a >= 0 ? " filled" : "") + (s.checked ? (ok ? " ok" : " bad") : "");
+      optBtns[k].forEach(function (b, j) {
+        var cls = "opt";
+        if (s.checked) {
+          if (s.opts[k][j].ok) { cls += " right"; }
+          else if (j === a) { cls += " wrong"; }
+        } else if (j === a) { cls += " sel"; }
+        b.className = cls;
+        b.disabled = s.checked;
+      });
+    });
+    bCheck.disabled = s.checked;
+    bRetry.disabled = !s.checked;
+  }
+
+  bCheck.addEventListener("click", function () {
+    var score = 0, empty = 0;
+    s.checked = true;
+    set.items.forEach(function (it, k) {
+      var a = s.ans[k], ok = a >= 0 && s.opts[k][a].ok, w = whyEls[k];
+      if (ok) { score++; }
+      if (a < 0) { empty++; }
+      clear(w);
+      w.appendChild(el("b", "", ok ? "\u2713 Richtig. " : (a < 0 ? "\u2717 Nicht beantwortet. " : "\u2717 Falsch. ")));
+      w.appendChild(document.createTextNode(it.why));
+      w.style.display = "block";
+    });
+    refresh();
+    clear(resultHolder);
+    var box = resultBox(score, set.items.length);
+    if (empty > 0) { box.appendChild(el("small", "", empty + " Lücke(n) waren noch leer.")); }
+    resultHolder.appendChild(box);
+    saveBest(set.id, score);
+    renderTabs();
+    if (box.scrollIntoView) { box.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
+  });
+  bRetry.addEventListener("click", function () {
+    set.items.forEach(function (it, k) {
+      var a = s.ans[k];
+      if (!(a >= 0 && s.opts[k][a].ok)) { s.ans[k] = -1; }
+      whyEls[k].style.display = "none";
+    });
+    s.checked = false;
+    clear(resultHolder);
+    refresh();
+  });
+  bReset.addEventListener("click", function () { init1(cur1); render1(); window.scrollTo(0, 0); });
+
+  refresh();
+  if (s.checked) { bCheck.click(); }
+}
+
+/* ===================== TEIL 2 ===================== */
+function init2(i) {
+  var set = T2[i], words = [], s = { bank: [], fill: [], active: 0, checked: false };
+  set.gaps.forEach(function (g) { words.push(g.w); });
+  set.extra.forEach(function (w) { words.push(w); });
+  s.bank = shuffle(words);
+  set.gaps.forEach(function () { s.fill.push(-1); });
+  st2[i] = s;
+}
+
+function render2() {
+  if (!st2[cur2]) { init2(cur2); }
+  var set = T2[cur2], s = st2[cur2], main = document.getElementById("main");
+  clear(main);
+
+  var info = el("div", "card info");
+  info.appendChild(el("strong", "", "Aufgabe – Teil 2"));
+  info.appendChild(document.createTextNode("Wähle für jede Lücke (1–10) das passende Wort aus der Wortbank. Jedes Wort passt nur einmal; fünf Wörter bleiben übrig. Tippe eine Lücke an, dann ein Wort. Tippe eine gefüllte Lücke an, um sie zu leeren."));
+  main.appendChild(info);
+
+  var work = el("div", "work");
+  var gapEls = [];
+  var tcard = el("div", "card");
+  tcard.appendChild(el("p", "heading", set.heading));
+  var tbox = el("div", "textbox");
+  buildText(tbox, set.text, function (k) {
+    var g = el("button", "gap");
+    g.type = "button";
+    g.addEventListener("click", function () {
+      if (s.checked) { return; }
+      s.fill[k] = -1;
+      s.active = k;
+      refresh();
+    });
+    gapEls[k] = g;
+    return g;
+  });
+  tcard.appendChild(tbox);
+  work.appendChild(tcard);
+
+  var bank = el("div", "bank");
+  bank.appendChild(el("h3", "", "Wortbank"));
+  var chips = el("div", "chips"), chipEls = [];
+  s.bank.forEach(function (w, idx) {
+    var c = el("button", "chip");
+    c.type = "button";
+    c.appendChild(el("i", "", LETTERS.charAt(idx)));
+    c.appendChild(document.createTextNode(w));
+    c.addEventListener("click", function () { place(idx); });
+    chipEls.push(c);
+    chips.appendChild(c);
+  });
+  bank.appendChild(chips);
+  work.appendChild(bank);
+  main.appendChild(work);
+
+  var controls = el("div", "controls");
+  var bCheck = el("button", "btn", "Prüfen");
+  var bRetry = el("button", "btn sec", "Falsche zurücksetzen");
+  var bReset = el("button", "btn sec", "Neu starten");
+  [bCheck, bRetry, bReset].forEach(function (b) { b.type = "button"; controls.appendChild(b); });
+  main.appendChild(controls);
+  var resultHolder = el("div");
+  main.appendChild(resultHolder);
+  var explHolder = el("div");
+  main.appendChild(explHolder);
+
+  function nextEmpty(from) {
+    var n = s.fill.length, i, k;
+    for (i = 1; i <= n; i++) {
+      k = (from + i) % n;
+      if (s.fill[k] < 0) { return k; }
+    }
+    return -1;
+  }
+  function place(idx) {
+    if (s.checked) { return; }
+    var i, target;
+    for (i = 0; i < s.fill.length; i++) { if (s.fill[i] === idx) { s.fill[i] = -1; } }
+    target = s.active;
+    if (target < 0 || s.fill[target] >= 0) { target = nextEmpty(-1); }
+    if (target < 0) { refresh(); return; }
+    s.fill[target] = idx;
+    s.active = nextEmpty(target);
+    refresh();
+  }
+  function isOk(k) { return s.fill[k] >= 0 && s.bank[s.fill[k]] === set.gaps[k].w; }
+
+  function refresh() {
+    var used = {};
+    set.gaps.forEach(function (g, k) {
+      var f = s.fill[k], label = "(" + (k + 1) + ") ";
+      if (f >= 0) { used[f] = true; label += s.bank[f]; } else { label += "\u2003\u2003"; }
+      if (s.checked) { label += isOk(k) ? " \u2713" : " \u2717"; }
+      gapEls[k].textContent = label;
+      gapEls[k].className = "gap" + (f >= 0 ? " filled" : "") +
+        (!s.checked && s.active === k ? " active" : "") +
+        (s.checked ? (isOk(k) ? " ok" : " bad") : "");
+    });
+    chipEls.forEach(function (c, idx) {
+      c.className = "chip" + (used[idx] ? " used" : "");
+      c.disabled = s.checked;
+    });
+    bCheck.disabled = s.checked;
+    bRetry.disabled = !s.checked;
+  }
+
+  bCheck.addEventListener("click", function () {
+    var score = 0, empty = 0, leftover = [];
+    s.checked = true;
+    clear(explHolder);
+    var card = el("div", "card");
+    card.appendChild(el("p", "heading", "Lösungen und Erklärungen"));
+    set.gaps.forEach(function (g, k) {
+      var ok = isOk(k), f = s.fill[k], d = el("div", "expl"), t;
+      if (ok) { score++; }
+      if (f < 0) { empty++; }
+      t = el("span", "tag " + (ok ? "ok" : "bad"), (ok ? "\u2713 " : "\u2717 ") + "(" + (k + 1) + ") " + g.w);
+      d.appendChild(t);
+      if (!ok) {
+        d.appendChild(document.createTextNode(f >= 0 ? " – deine Antwort: „" + s.bank[f] + "“. " : " – nicht beantwortet. "));
+      } else {
+        d.appendChild(document.createTextNode(". "));
+      }
+      d.appendChild(document.createTextNode(g.why));
+      card.appendChild(d);
+    });
+    s.bank.forEach(function (w) {
+      var isAnswer = false;
+      set.gaps.forEach(function (g) { if (g.w === w) { isAnswer = true; } });
+      if (!isAnswer) { leftover.push(w); }
+    });
+    card.appendChild(el("p", "leftover", "Passen in keine Lücke: " + leftover.join(", ") + "."));
+    explHolder.appendChild(card);
+    refresh();
+    clear(resultHolder);
+    var box = resultBox(score, set.gaps.length);
+    if (empty > 0) { box.appendChild(el("small", "", empty + " Lücke(n) waren noch leer.")); }
+    resultHolder.appendChild(box);
+    saveBest(set.id, score);
+    renderTabs();
+    if (box.scrollIntoView) { box.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
+  });
+  bRetry.addEventListener("click", function () {
+    set.gaps.forEach(function (g, k) { if (!isOk(k)) { s.fill[k] = -1; } });
+    s.checked = false;
+    s.active = nextEmpty(-1);
+    clear(resultHolder); clear(explHolder);
+    refresh();
+  });
+  bReset.addEventListener("click", function () { init2(cur2); render2(); window.scrollTo(0, 0); });
+
+  refresh();
+  if (s.checked) { bCheck.click(); }
+}
+
+function renderAll() {
+  renderTabs();
+  if (mode === 1) { render1(); } else { render2(); }
+}
+renderAll();
+
+})();
+</script>
+</body>
+</html>
