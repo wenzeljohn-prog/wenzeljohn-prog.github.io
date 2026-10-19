@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PerfektTrainerA1L11</title>
+<style>
+  :root {
+    --bg:#f4f6fa; --card:#fff; --text:#1d2433; --muted:#5b667a; --line:#d5dbe6;
+    --accent:#2b5fd9; --accent-text:#fff; --chip:#e9eef8;
+    --ok:#1f7a4d; --ok-bg:#e0f3e8; --bad:#b3303f; --bad-bg:#fbe4e7; --warn-bg:#fff4d6; --info-bg:#e6edfb;
+    --font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#12161f; --card:#1b2130; --text:#e8ecf5; --muted:#9aa5ba; --line:#30394d;
+      --accent:#6b97ff; --accent-text:#0b1226; --chip:#252d40;
+      --ok:#6fd6a2; --ok-bg:#183427; --bad:#ff8a98; --bad-bg:#42202a; --warn-bg:#3a3118; --info-bg:#1f2a44;
+    }
+  }
+  * { box-sizing:border-box; }
+  html,body { margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:var(--font); line-height:1.5; min-height:100vh; font-size:16px; }
+  [hidden] { display:none !important; }
+  .wrap { max-width:760px; margin:0 auto; padding:14px 16px 40px; }
+  h1 { font-size:1.45rem; margin:6px 0 4px; line-height:1.25; }
+  button, input, select { font-family:inherit; font-size:1rem; color:var(--text); }
+  button { cursor:pointer; }
+  button:focus-visible, input:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  .pick h1 { text-align:center; margin:22px 0 4px; font-size:1.6rem; }
+  .pick .sub { text-align:center; color:var(--muted); margin:0 0 4px; }
+  .pickprompt { text-align:center; color:var(--muted); font-size:.95rem; margin:20px 0 16px; }
+  .pickprompt p { margin:0 0 4px; }
+  .langlist { display:flex; flex-direction:column; gap:12px; }
+  .langchoice { width:100%; min-height:68px; padding:14px 18px; border:none; border-bottom:4px solid var(--cd); border-radius:14px; background:var(--c); color:#fff; font-size:1.35rem; font-weight:700; text-align:center; }
+  .langchoice:active { filter:brightness(.92); }
+  .hdr { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:6px; }
+  .pill { display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:0 14px; border-radius:999px; border:2px solid var(--line); background:var(--card); font-size:.92rem; white-space:nowrap; flex:none; }
+  .intro { color:var(--muted); margin:2px 0 10px; font-size:.95rem; }
+  .poolrow { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:0 0 10px; }
+  .poollabel { font-size:.85rem; color:var(--muted); margin-inline-end:2px; }
+  .chip { min-height:40px; padding:0 14px; border-radius:999px; border:2px solid var(--line); background:var(--card); font-size:.92rem; }
+  .chip.on { border-color:var(--accent); background:var(--chip); font-weight:700; }
+  .poolcount { font-size:.85rem; color:var(--muted); margin-inline-start:auto; }
+  .tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin:0 0 14px; }
+  .tab { min-height:52px; padding:4px 4px; border-radius:12px; border:2px solid var(--line); background:var(--card); font-size:.85rem; line-height:1.2; font-weight:600; overflow-wrap:anywhere; }
+  .tab.on { border-color:var(--accent); background:var(--accent); color:var(--accent-text); }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 14px 16px; }
+  .small { font-size:.88rem; color:var(--muted); margin:0 0 8px; }
+  .center { text-align:center; }
+  .badge { display:inline-block; background:var(--warn-bg); border-radius:999px; padding:2px 12px; font-size:.82rem; font-weight:700; margin:0 0 6px; }
+  .dirrow { display:flex; gap:6px; margin-bottom:10px; }
+  .dirrow .chip { flex:1; min-height:44px; border-radius:12px; }
+  .flashcard { position:relative; min-height:210px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:28px 16px 18px; border-radius:16px; border:2px solid var(--line); background:var(--card); text-align:center; cursor:pointer; margin-bottom:12px; }
+  .flashcard.back { background:var(--info-bg); border-color:var(--accent); }
+  .ctag { position:absolute; top:8px; inset-inline-start:12px; font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+  .cword { font-size:1.55rem; font-weight:700; line-height:1.35; overflow-wrap:anywhere; }
+  .cinf { font-size:.95rem; color:var(--muted); }
+  .cmean { font-size:1.02rem; }
+  .twocols { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  button.main { width:100%; min-height:56px; border-radius:14px; border:none; font-size:1.05rem; font-weight:700; background:var(--accent); color:var(--accent-text); padding:8px 14px; }
+  button.main.ok { background:var(--ok); color:#fff; }
+  button.main:disabled { opacity:.4; }
+  button.sec { min-height:56px; width:100%; border-radius:14px; border:2px solid var(--line); background:var(--card); font-size:1rem; padding:8px 14px; }
+  .linkbtn { background:none; border:none; color:var(--accent); font-size:.95rem; padding:6px 4px; min-height:44px; text-decoration:underline; }
+  .task { font-weight:700; margin:0 0 10px; }
+  .presline { background:var(--chip); border-radius:10px; padding:8px 12px; margin-bottom:12px; font-size:1.02rem; text-align:left; }
+  .presline .lab { font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); display:block; }
+  .gline { font-size:1.2rem; line-height:2.5; text-align:left; margin-bottom:6px; }
+  .gline .w { margin:0 2px; }
+  input.blank { min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); padding:2px 8px; font-size:1.1rem; vertical-align:middle; margin:0 2px; text-align:center; }
+  input.blank.ok { border-color:var(--ok); background:var(--ok-bg); }
+  input.blank.bad { border-color:var(--bad); background:var(--bad-bg); }
+  .infhint { color:var(--muted); font-size:.95rem; }
+  .umlauts { display:flex; gap:6px; margin:8px 0 2px; }
+  .umlauts button { min-width:48px; min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); font-size:1.1rem; }
+  .fb { margin-top:10px; border-radius:10px; padding:10px 12px; font-weight:600; text-align:left; }
+  .fb:empty { display:none; }
+  .fb.good { background:var(--ok-bg); color:var(--ok); }
+  .fb.warn { background:var(--bad-bg); }
+  .fb.info { background:var(--warn-bg); }
+  .fb .sol { display:block; font-weight:700; margin-top:2px; }
+  .mean { font-size:.95rem; color:var(--muted); margin:6px 0 0; }
+  .btnrow { margin-top:12px; }
+  .tapq { font-weight:700; margin:0 0 6px; }
+  .tapchips { display:flex; gap:8px; margin:0 0 12px; flex-wrap:wrap; }
+  .fchip { border-radius:10px; border:2px solid var(--line); padding:6px 14px; font-size:1.1rem; font-weight:700; background:var(--card); }
+  .fchip.cur { border-color:var(--accent); background:var(--chip); }
+  .fchip.done { border-color:var(--ok); background:var(--ok-bg); color:var(--ok); }
+  .tsent { display:flex; flex-wrap:wrap; align-items:center; row-gap:6px; font-size:1.2rem; margin-bottom:6px; text-align:left; }
+  .tsent .tw { padding:6px 2px; }
+  .tsent .tw.ins { color:var(--ok); font-weight:800; }
+  .tsent .punct { padding:6px 0; }
+  button.gap { position:relative; width:22px; min-height:44px; padding:0; border:none; background:transparent; }
+  button.gap::before { content:""; position:absolute; inset:6px 8px; border-radius:3px; background:var(--line); transition:background .15s; }
+  button.gap:hover::before, button.gap:focus-visible::before { background:var(--accent); }
+  button.gap.bad::before { background:var(--bad); }
+  .done-panel h2 { margin:6px 0 4px; font-size:1.25rem; }
+  .score { font-size:1.1rem; margin:0 0 10px; }
+  .revlist { list-style:none; margin:0 0 12px; padding:0; display:flex; flex-direction:column; gap:6px; }
+  .revlist li { background:var(--bad-bg); border-radius:10px; padding:8px 12px; text-align:left; }
+  .revlist .sub2 { display:block; color:var(--muted); font-size:.9rem; }
+  .btns2 { display:grid; gap:10px; }
+  .progsum { margin:0 0 6px; font-weight:700; }
+  .bar { height:10px; background:var(--chip); border-radius:999px; overflow:hidden; margin-bottom:12px; }
+  .bar > i { display:block; height:100%; background:var(--ok); transition:width .3s; }
+  .boxh { font-size:.95rem; margin:14px 0 6px; }
+  .vlist { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:6px; }
+  .vi { background:var(--card); border:1px solid var(--line); border-inline-start:6px solid var(--line); border-radius:10px; padding:6px 10px; text-align:left; overflow-wrap:anywhere; }
+  .vi b { color:var(--accent); }
+  .vi.b0 { border-inline-start-color:var(--bad); }
+  .vi.b1 { border-inline-start-color:#d99a1a; }
+  .vi.b2 { border-inline-start-color:var(--ok); }
+  .resetrow { margin-top:16px; }
+  @media (max-width:420px) {
+    .cword { font-size:1.4rem; }
+    .gline { font-size:1.1rem; }
+  }
+
+</style>
+</head>
+<body>
+<section id="picker" class="wrap pick">
+  <h1>Perfekt-Trainer</h1>
+  <p class="sub">Deutsch A1 &middot; Lektion 1–11</p>
+  <div class="pickprompt" id="pickPrompt"></div>
+  <div class="langlist" id="langList"></div>
+</section>
+<main id="app" class="wrap" hidden></main>
+<script>
+(function () {
+  "use strict";
+  var FONT_LAT = 'system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+  var FONT_AR = '"Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", Arial, sans-serif';
+  var LANG_ORDER = ["tr", "ar", "ru", "uk", "en"];
+  var STRINGS = {
+    en: {
+      lang: "en", dir: "ltr", font: FONT_LAT, accent: "#3E5C8A", accentDark: "#293D5C", nativeName: "English",
+      pickPrompt: "Choose your language",
+      appTitle: "Perfekt trainer · A1 · lessons 1–11",
+      intro: "Practise the Perfekt with 44 verbs from lessons 1–11 (all with haben). Verbs you do not know come back more often.",
+      tabCards: "Flashcards", tabGaps: "Fill the gaps", tabTap: "Place the words", tabProg: "Progress",
+      poolLabel: "Verbs", fAll: "All", fW: "Regular", fS: "Irregular", fM: "Mixed", poolCount: "{n} verbs",
+      dirPF: "Present → Perfekt", dirFP: "Perfekt → Present",
+      flipHint: "Tap to turn over", tagPres: "Present", tagPerf: "Perfekt", learning: "Still learning", know: "Got it",
+      cardCounter: "Card {n} of {t}", reviewBadge: "Review: your difficult verbs",
+      gapsTask: "Write the correct form of haben and the Partizip II.", gapsHintLabel: "Present:",
+      check: "Check", nextBtn: "Next", okMsg: "Correct!", badMsg: "Not quite. Correct:",
+      tapTask: "The two verb forms are missing. Tap the place in the sentence where each one belongs.",
+      tapQ: "Where does “{w}” belong?", tapDone: "Well done!", tapWrong: "Not here.",
+      hintAuxS: "The helper verb haben stands in position 2: right after the first part of the sentence.",
+      hintAuxQ: "In a yes/no question the helper verb haben comes first.",
+      hintPart: "The Partizip II stands at the end of the sentence.",
+      finTitle: "Finished!", score: "{r} of {n} correct", wrongHead: "Practise these again", reviewBtn: "Practise these verbs", againBtn: "New round",
+      progIntro: "Verbs you get wrong appear more often. Every correct answer moves a verb further down the list.",
+      boxNew: "Not practised yet", box0: "Practise a lot", box1: "Almost there", box2: "Safe",
+      progCount: "{k} of {n} verbs safe", resetProg: "Delete my progress", resetConfirm: "Delete all saved progress?",
+      empty: "No verbs in this selection."
+    },
+    ru: {
+      lang: "ru", dir: "ltr", font: FONT_LAT, accent: "#5C3E7A", accentDark: "#3D2953", nativeName: "Русский",
+      pickPrompt: "Выберите язык",
+      appTitle: "Тренажёр Perfekt · A1 · уроки 1–11",
+      intro: "Тренируйте Perfekt на 44 глаголах из уроков 1–11 (все с haben). Глаголы, которые вы не знаете, повторяются чаще.",
+      tabCards: "Карточки", tabGaps: "Пропуски", tabTap: "Место слов", tabProg: "Прогресс",
+      poolLabel: "Глаголы", fAll: "Все", fW: "Правильные", fS: "Неправильные", fM: "Смешанные", poolCount: "Глаголов: {n}",
+      dirPF: "Präsens → Perfekt", dirFP: "Perfekt → Präsens",
+      flipHint: "Нажмите, чтобы перевернуть", tagPres: "Präsens", tagPerf: "Perfekt", learning: "Ещё учу", know: "Знаю",
+      cardCounter: "Карточка {n} из {t}", reviewBadge: "Повторение: трудные глаголы",
+      gapsTask: "Впишите правильную форму haben и Partizip II.", gapsHintLabel: "Präsens:",
+      check: "Проверить", nextBtn: "Далее", okMsg: "Верно!", badMsg: "Не совсем. Правильно:",
+      tapTask: "В предложении нет двух глагольных форм. Нажмите на место, куда каждая из них должна встать.",
+      tapQ: "Куда должно встать «{w}»?", tapDone: "Отлично!", tapWrong: "Не здесь.",
+      hintAuxS: "Вспомогательный глагол haben стоит на втором месте: сразу после первой части предложения.",
+      hintAuxQ: "В вопросе без вопросительного слова вспомогательный глагол haben стоит первым.",
+      hintPart: "Partizip II стоит в конце предложения.",
+      finTitle: "Готово!", score: "Верно: {r} из {n}", wrongHead: "Повторите ещё раз", reviewBtn: "Повторить эти глаголы", againBtn: "Новый раунд",
+      progIntro: "Глаголы, в которых вы ошибаетесь, встречаются чаще. Каждый верный ответ перемещает глагол дальше по списку.",
+      boxNew: "Ещё не тренировались", box0: "Много тренировать", box1: "Почти получается", box2: "Уверенно",
+      progCount: "Уверенно: {k} из {n} глаголов", resetProg: "Удалить мой прогресс", resetConfirm: "Удалить весь сохранённый прогресс?",
+      empty: "В этой выборке нет глаголов."
+    },
+    uk: {
+      lang: "uk", dir: "ltr", font: FONT_LAT, accent: "#8A6D00", accentDark: "#5C4A00", nativeName: "Українська",
+      pickPrompt: "Оберіть мову",
+      appTitle: "Тренажер Perfekt · A1 · уроки 1–11",
+      intro: "Тренуйте Perfekt на 44 дієсловах з уроків 1–11 (усі з haben). Дієслова, яких ви не знаєте, повторюються частіше.",
+      tabCards: "Картки", tabGaps: "Пропуски", tabTap: "Місце слів", tabProg: "Прогрес",
+      poolLabel: "Дієслова", fAll: "Усі", fW: "Правильні", fS: "Неправильні", fM: "Змішані", poolCount: "Дієслів: {n}",
+      dirPF: "Präsens → Perfekt", dirFP: "Perfekt → Präsens",
+      flipHint: "Натисніть, щоб перевернути", tagPres: "Präsens", tagPerf: "Perfekt", learning: "Ще вчу", know: "Знаю",
+      cardCounter: "Картка {n} з {t}", reviewBadge: "Повторення: важкі дієслова",
+      gapsTask: "Впишіть правильну форму haben і Partizip II.", gapsHintLabel: "Präsens:",
+      check: "Перевірити", nextBtn: "Далі", okMsg: "Правильно!", badMsg: "Не зовсім. Правильно:",
+      tapTask: "У реченні бракує двох дієслівних форм. Натисніть на місце, куди кожна з них має стати.",
+      tapQ: "Куди має стати «{w}»?", tapDone: "Чудово!", tapWrong: "Не тут.",
+      hintAuxS: "Допоміжне дієслово haben стоїть на другому місці: одразу після першої частини речення.",
+      hintAuxQ: "У питанні без питального слова допоміжне дієслово haben стоїть першим.",
+      hintPart: "Partizip II стоїть у кінці речення.",
+      finTitle: "Готово!", score: "Правильно: {r} з {n}", wrongHead: "Повторіть ще раз", reviewBtn: "Повторити ці дієслова", againBtn: "Новий раунд",
+      progIntro: "Дієслова, у яких ви помиляєтеся, трапляються частіше. Кожна правильна відповідь пересуває дієслово далі за списком.",
+      boxNew: "Ще не тренувалися", box0: "Багато тренувати", box1: "Майже виходить", box2: "Впевнено",
+      progCount: "Впевнено: {k} з {n} дієслів", resetProg: "Видалити мій прогрес", resetConfirm: "Видалити весь збережений прогрес?",
+      empty: "У цій вибірці немає дієслів."
+    },
+    tr: {
+      lang: "tr", dir: "ltr", font: FONT_LAT, accent: "#2E6B5E", accentDark: "#1E463C", nativeName: "Türkçe",
+      pickPrompt: "Dilinizi seçin",
+      appTitle: "Perfekt alıştırması · A1 · Ders 1–11",
+      intro: "Perfekt'i 1–11. derslerdeki 44 fiille çalışın (hepsi haben ile). Bilmediğiniz fiiller daha sık geri gelir.",
+      tabCards: "Kartlar", tabGaps: "Boşluklar", tabTap: "Sözcük yeri", tabProg: "İlerleme",
+      poolLabel: "Fiiller", fAll: "Hepsi", fW: "Düzenli", fS: "Düzensiz", fM: "Karışık", poolCount: "{n} fiil",
+      dirPF: "Präsens → Perfekt", dirFP: "Perfekt → Präsens",
+      flipHint: "Çevirmek için dokunun", tagPres: "Präsens", tagPerf: "Perfekt", learning: "Hâlâ öğreniyorum", know: "Biliyorum",
+      cardCounter: "Kart {n} / {t}", reviewBadge: "Tekrar: zor fiillerin",
+      gapsTask: "haben'in doğru biçimini ve Partizip II'yi yazın.", gapsHintLabel: "Präsens:",
+      check: "Kontrol et", nextBtn: "İleri", okMsg: "Doğru!", badMsg: "Pek değil. Doğrusu:",
+      tapTask: "Cümlede iki fiil biçimi eksik. Her birinin ait olduğu yere dokunun.",
+      tapQ: "“{w}” nereye ait?", tapDone: "Tebrikler!", tapWrong: "Burası değil.",
+      hintAuxS: "Yardımcı fiil haben 2. sırada durur: cümlenin ilk parçasının hemen arkasında.",
+      hintAuxQ: "Evet/hayır sorusunda yardımcı fiil haben en başta durur.",
+      hintPart: "Partizip II cümlenin sonunda durur.",
+      finTitle: "Bitti!", score: "{n} sorudan {r} doğru", wrongHead: "Bunları tekrar çalışın", reviewBtn: "Bu fiilleri çalış", againBtn: "Yeni tur",
+      progIntro: "Yanlış yaptığınız fiiller daha sık gelir. Her doğru cevap bir fiili listede bir adım ileri taşır.",
+      boxNew: "Henüz çalışılmadı", box0: "Çok çalışılmalı", box1: "Neredeyse tamam", box2: "Sağlam",
+      progCount: "{n} fiilden {k} tanesi sağlam", resetProg: "İlerlememi sil", resetConfirm: "Kaydedilen tüm ilerleme silinsin mi?",
+      empty: "Bu seçimde fiil yok."
+    },
+    ar: {
+      lang: "ar", dir: "rtl", font: FONT_AR, accent: "#8A5A2E", accentDark: "#5C3B1E", nativeName: "العربية",
+      pickPrompt: "اختر لغتك",
+      appTitle: "مدرّب الـ Perfekt · A1 · الدروس 1–11",
+      intro: "تدرّب على الـ Perfekt مع 44 فعلاً من الدروس 1–11 (كلها مع haben). الأفعال التي لا تعرفها تعود أكثر.",
+      tabCards: "بطاقات", tabGaps: "فراغات", tabTap: "مكان الكلمات", tabProg: "التقدّم",
+      poolLabel: "الأفعال", fAll: "الكل", fW: "منتظمة", fS: "غير منتظمة", fM: "مختلطة", poolCount: "عدد الأفعال: {n}",
+      dirPF: "Präsens ← Perfekt", dirFP: "Perfekt ← Präsens",
+      flipHint: "اضغط للقلب", tagPres: "Präsens", tagPerf: "Perfekt", learning: "ما زلت أتعلّم", know: "عرفتها",
+      cardCounter: "البطاقة {n} من {t}", reviewBadge: "مراجعة: أفعالك الصعبة",
+      gapsTask: "اكتب الصيغة الصحيحة من haben والـ Partizip II.", gapsHintLabel: "Präsens:",
+      check: "تحقّق", nextBtn: "التالي", okMsg: "صحيح!", badMsg: "ليس تماماً. الصحيح:",
+      tapTask: "ينقص الجملة شكلان للفعل. اضغط على المكان الذي ينتمي إليه كل منهما.",
+      tapQ: "أين تقع «{w}»؟", tapDone: "أحسنت!", tapWrong: "ليس هنا.",
+      hintAuxS: "الفعل المساعد haben يقع في المرتبة الثانية: بعد الجزء الأول من الجملة مباشرة.",
+      hintAuxQ: "في سؤال «نعم/لا» يأتي الفعل المساعد haben أولاً.",
+      hintPart: "الـ Partizip II يقع في آخر الجملة.",
+      finTitle: "انتهينا!", score: "الصحيح: {r} من {n}", wrongHead: "تدرّب على هذه مرة أخرى", reviewBtn: "تدرّب على هذه الأفعال", againBtn: "جولة جديدة",
+      progIntro: "الأفعال التي تخطئ فيها تظهر أكثر. وكل إجابة صحيحة تنقل الفعل خطوة أبعد في القائمة.",
+      boxNew: "لم يُتدرَّب عليها بعد", box0: "تحتاج تدريباً كثيراً", box1: "تقريباً", box2: "ثابتة",
+      progCount: "ثابتة: {k} من {n} فعلاً", resetProg: "احذف تقدّمي", resetConfirm: "هل تريد حذف كل التقدّم المحفوظ؟",
+      empty: "لا توجد أفعال في هذا الاختيار."
+    }
+  };
+
+  /* ===== Verben (L1–11, haben, ohne Präfix, ohne -ieren) ===== */
+  /* Felder: i=Infinitiv, p=Partizip II, g=Gruppe (w regelmäßig, s unregelmäßig, m gemischt), o=Satzrest,
+     sc=Stamm für du/er (Vokalwechsel), ee=e-Erweiterung, fx={s,a}: feste 3. Person (Subjekt, Kongruenz),
+     m=Bedeutung en|ru|uk|tr|ar */
+  var VERBS = [
+    {i:"arbeiten", p:"gearbeitet", g:"w", o:"viel", ee:1, m:"to work|работать|працювати|çalışmak|يعمل"},
+    {i:"lernen", p:"gelernt", g:"w", o:"Deutsch", m:"to learn|учить, изучать|вчити, вивчати|öğrenmek|يتعلّم"},
+    {i:"wohnen", p:"gewohnt", g:"w", o:"in Erfurt", m:"to live (reside)|жить (проживать)|жити (проживати)|oturmak|يسكن"},
+    {i:"tanzen", p:"getanzt", g:"w", o:"auf der Party", m:"to dance|танцевать|танцювати|dans etmek|يرقص"},
+    {i:"hören", p:"gehört", g:"w", o:"Musik", m:"to hear / to listen|слышать, слушать|чути, слухати|duymak / dinlemek|يسمع / يستمع"},
+    {i:"spielen", p:"gespielt", g:"w", o:"Fußball", m:"to play|играть|грати|oynamak|يلعب"},
+    {i:"kosten", p:"gekostet", g:"w", o:"20 Euro", ee:1, fx:{s:"das Hemd", a:"er"}, m:"to cost|стоить|коштувати|(fiyatı) … olmak|يُكلّف"},
+    {i:"leben", p:"gelebt", g:"w", o:"in Deutschland", m:"to live (be alive)|жить|жити|yaşamak|يعيش"},
+    {i:"duschen", p:"geduscht", g:"w", o:"kalt", m:"to take a shower|принимать душ|приймати душ|duş almak|يستحمّ (بالدُّش)"},
+    {i:"frühstücken", p:"gefrühstückt", g:"w", o:"um 8 Uhr", m:"to have breakfast|завтракать|снідати|kahvaltı yapmak|يتناول الفطور"},
+    {i:"kochen", p:"gekocht", g:"w", o:"Suppe", m:"to cook|готовить (еду)|готувати (їжу)|yemek pişirmek|يطبخ"},
+    {i:"kaufen", p:"gekauft", g:"w", o:"Fisch", m:"to buy|покупать|купувати|satın almak|يشتري"},
+    {i:"putzen", p:"geputzt", g:"w", o:"das Bad", m:"to clean|убирать, чистить|прибирати, чистити|temizlemek|ينظّف"},
+    {i:"grillen", p:"gegrillt", g:"w", o:"Fleisch", m:"to grill|жарить на гриле|смажити на грилі|ızgara yapmak|يشوي"},
+    {i:"boxen", p:"geboxt", g:"w", o:"oft", m:"to box|заниматься боксом|займатися боксом|boks yapmak|يمارس الملاكمة"},
+    {i:"glauben", p:"geglaubt", g:"w", o:"ihm", m:"to believe|верить|вірити|inanmak|يصدّق / يعتقد"},
+    {i:"fragen", p:"gefragt", g:"w", o:"den Lehrer", m:"to ask|спрашивать|питати|sormak|يسأل"},
+    {i:"suchen", p:"gesucht", g:"w", o:"den Schlüssel", m:"to look for|искать|шукати|aramak|يبحث عن"},
+    {i:"antworten", p:"geantwortet", g:"w", o:"sofort", ee:1, m:"to answer|отвечать|відповідати|cevap vermek|يجيب"},
+    {i:"feiern", p:"gefeiert", g:"w", o:"Geburtstag", m:"to celebrate|праздновать|святкувати|kutlamak|يحتفل"},
+    {i:"schmecken", p:"geschmeckt", g:"w", o:"gut", fx:{s:"die Suppe", a:"er"}, m:"to taste (good)|быть вкусным|бути смачним|tadı … olmak|طعمه"},
+    {i:"rauchen", p:"geraucht", g:"w", o:"nicht", m:"to smoke|курить|курити|sigara içmek|يدخّن"},
+    {i:"baden", p:"gebadet", g:"w", o:"im See", ee:1, m:"to bathe / to swim|купаться|купатися|yıkanmak / yüzmek|يستحمّ / يسبح"},
+    {i:"hängen", p:"gehängt", g:"w", o:"das Bild", m:"to hang (up)|вешать|вішати|asmak|يعلّق"},
+    {i:"mieten", p:"gemietet", g:"w", o:"ein Zimmer", ee:1, m:"to rent|снимать (арендовать)|винаймати|kiralamak|يستأجر"},
+    {i:"reden", p:"geredet", g:"w", o:"lange", ee:1, m:"to talk|разговаривать|розмовляти|konuşmak|يتحدّث"},
+    {i:"machen", p:"gemacht", g:"w", o:"Hausaufgaben", m:"to do / to make|делать|робити|yapmak|يفعل / يصنع"},
+    {i:"sprechen", p:"gesprochen", g:"s", o:"Deutsch", sc:"sprich", m:"to speak|говорить|говорити|konuşmak|يتكلّم"},
+    {i:"schreiben", p:"geschrieben", g:"s", o:"eine E-Mail", m:"to write|писать|писати|yazmak|يكتب"},
+    {i:"trinken", p:"getrunken", g:"s", o:"Tee", m:"to drink|пить|пити|içmek|يشرب"},
+    {i:"helfen", p:"geholfen", g:"s", o:"ihm", sc:"hilf", m:"to help|помогать|допомагати|yardım etmek|يساعد"},
+    {i:"stehen", p:"gestanden", g:"s", o:"im Bus", m:"to stand|стоять|стояти|ayakta durmak|يقف"},
+    {i:"schlafen", p:"geschlafen", g:"s", o:"gut", sc:"schläf", m:"to sleep|спать|спати|uyumak|ينام"},
+    {i:"essen", p:"gegessen", g:"s", o:"Pizza", sc:"iss", m:"to eat|есть|їсти|yemek yemek|يأكل"},
+    {i:"lesen", p:"gelesen", g:"s", o:"ein Buch", sc:"lies", m:"to read|читать|читати|okumak|يقرأ"},
+    {i:"finden", p:"gefunden", g:"s", o:"den Schlüssel", ee:1, m:"to find|находить|знаходити|bulmak|يجد"},
+    {i:"schließen", p:"geschlossen", g:"s", o:"das Fenster", m:"to close|закрывать|зачиняти|kapatmak|يُغلق"},
+    {i:"backen", p:"gebacken", g:"s", o:"Brot", sc:"bäck", m:"to bake|печь|пекти|pişirmek (fırında)|يخبز"},
+    {i:"gießen", p:"gegossen", g:"s", o:"die Blumen", m:"to water (plants)|поливать|поливати|sulamak|يسقي"},
+    {i:"sehen", p:"gesehen", g:"s", o:"einen Film", sc:"sieh", m:"to see / to watch|видеть, смотреть|бачити, дивитися|görmek / izlemek|يرى / يشاهد"},
+    {i:"nehmen", p:"genommen", g:"s", o:"den Bus", sc:"nimm", m:"to take|брать|брати|almak|يأخذ"},
+    {i:"treffen", p:"getroffen", g:"s", o:"Freunde", sc:"triff", m:"to meet|встречать, встречаться|зустрічати, зустрічатися|buluşmak|يلتقي"},
+    {i:"denken", p:"gedacht", g:"m", o:"oft", m:"to think|думать|думати|düşünmek|يفكّر"},
+    {i:"kennen", p:"gekannt", g:"m", o:"ihn", m:"to know (a person)|знать (кого-то)|знати (когось)|tanımak|يعرف (شخصاً)"}
+  ];
+  var LANG_KEYS = ["en", "ru", "uk", "tr", "ar"];
+  (function () {
+    for (var i = 0; i < VERBS.length; i++) {
+      var parts = VERBS[i].m.split("|"), o = {};
+      for (var k = 0; k < LANG_KEYS.length; k++) o[LANG_KEYS[k]] = parts[k];
+      VERBS[i].mean = o;
+      VERBS[i].id = VERBS[i].i;
+    }
+  })();
+
+  /* ===== Personen und Konjugation ===== */
+  var PERSONS = [
+    {k: "ich", t: "ich", n: 0}, {k: "du", t: "du", n: 1}, {k: "er", t: "er", n: 2}, {k: "sie1", t: "sie", n: 2},
+    {k: "wir", t: "wir", n: 3}, {k: "ihr", t: "ihr", n: 4}, {k: "sie2", t: "sie", n: 3}, {k: "Sie", t: "Sie", n: 3}
+  ];
+  var AUXFORM = ["habe", "hast", "hat", "haben", "habt"];
+  function presForm(v, n) {
+    var inf = v.i;
+    if (n === 3) return inf;
+    var stem = inf.replace(/e?n$/, "");
+    if ((n === 1 || n === 2) && v.sc) stem = v.sc;
+    if (n === 0) return stem + "e";
+    var t = /[tdn]$/.test(stem) && (v.ee || /[td]$/.test(stem)) && !v.sc ? "e" : "";
+    if (v.ee && !v.sc) t = "e";
+    if (n === 1) return (/[sßxz]$/.test(stem) ? stem + "t" : stem + t + "st");
+    if (n === 2 || n === 4) return stem + t + "t";
+    return inf;
+  }
+  function personOk(v, p) { return !v.fx || p === null; }
+
+  var PROG_KEY = "perfekt-trainer-a1l11-v1-progress", SEL_KEY = "perfekt-trainer-a1l11-v1-filter", LANG_KEY = "perfekt-trainer-a1l11-v1-lang";
+  var BOX_WEIGHTS = [3, 2, 1];
+  var FLASH_N = 20, GAPS_N = 10, TAP_N = 10;
+  var STR = null, lang = null;
+  var root = document.documentElement;
+  var state = {tab: "cards", dir: "pf", filter: "all", flash: null, gaps: null, tap: null};
+  var lastInput = null;
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined && text !== null) e.textContent = text;
+    return e;
+  }
+  function fmt(str, vals) { return String(str).replace(/\{(\w+)\}/g, function (m, k) { return (vals && (k in vals)) ? vals[k] : m; }); }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function setLangAttrs(node, code) { node.lang = code; node.dir = (code === "ar") ? "rtl" : "ltr"; return node; }
+  function deNode(tag, cls, text) { return setLangAttrs(el(tag, cls, text), "de"); }
+  function tgNode(tag, cls, text) { return setLangAttrs(el(tag, cls, text), lang); }
+  function lsGet(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { window.localStorage.setItem(k, v); } catch (e) {} }
+  function lsDel(k) { try { window.localStorage.removeItem(k); } catch (e) {} }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function norm(s) {
+    return String(s).toLowerCase().replace(/ß/g, "ss").replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue")
+      .replace(/[.,!?;:"„“”'’]/g, "").replace(/\s+/g, " ").trim();
+  }
+
+  /* ---------- Fortschritt (Leitner, 3 Boxen) ---------- */
+  function loadProgress() {
+    var raw = lsGet(PROG_KEY);
+    if (!raw) return {};
+    try { var p = JSON.parse(raw); return (p && typeof p === "object") ? p : {}; } catch (e) { return {}; }
+  }
+  function saveProgress(p) { lsSet(PROG_KEY, JSON.stringify(p)); }
+  function recordResult(id, ok) {
+    var p = loadProgress();
+    if (!p[id]) p[id] = {c: 0, w: 0};
+    if (ok) { p[id].c += 1; if (typeof p[id].b === "number") p[id].b = Math.min(p[id].b + 1, 2); }
+    else { p[id].w += 1; p[id].b = 0; }
+    saveProgress(p);
+  }
+  function boxOf(p, id) {
+    var r = p[id];
+    if (!r) return "new";
+    if (typeof r.b === "number") return r.b;
+    return r.c > 0 ? 2 : "new";
+  }
+  function itemWeight(v, p) {
+    var r = p[v.id];
+    if (!r || typeof r.b !== "number") return 1;
+    return BOX_WEIGHTS[r.b] !== undefined ? BOX_WEIGHTS[r.b] : 1;
+  }
+  function weightedSample(pool, n) {
+    var p = loadProgress(), keyed = [], i;
+    for (i = 0; i < pool.length; i++) keyed.push({e: pool[i], k: Math.pow(Math.random(), 1 / itemWeight(pool[i], p))});
+    keyed.sort(function (a, b) { return b.k - a.k; });
+    var out = [];
+    for (i = 0; i < keyed.length && out.length < n; i++) out.push(keyed[i].e);
+    return out;
+  }
+  function getPool() {
+    var out = [];
+    for (var i = 0; i < VERBS.length; i++) if (state.filter === "all" || VERBS[i].g === state.filter) out.push(VERBS[i]);
+    return out;
+  }
+
+  /* ---------- Sätze ---------- */
+  function makeItem(v, pat) {
+    var it = {v: v, pat: pat || 0, adv: Math.random() < 0.5 ? "Gestern" : "Heute"};
+    if (v.fx) { it.pn = 2; it.subj = v.fx.s; }
+    else { var p = PERSONS[Math.floor(Math.random() * PERSONS.length)]; it.pn = p.n; it.subj = p.t; }
+    it.pres = presForm(v, it.pn);
+    it.aux = AUXFORM[it.pn];
+    return it;
+  }
+  function randPat() { var r = Math.random(); return r < 0.5 ? 0 : (r < 0.75 ? 1 : 2); }
+  function presString(it) { return cap(it.subj) + " " + it.pres + " " + it.v.o + "."; }
+  /* Satzgerüst ohne Hilfsverb und Partizip */
+  function frame(it) {
+    var subj = it.subj.split(" "), rest = it.v.o.split(" "), tokens, auxGap, auxText, punct = ".";
+    if (it.pat === 0) {
+      subj[0] = cap(subj[0]);
+      tokens = subj.concat(rest); auxGap = subj.length; auxText = it.aux;
+    } else if (it.pat === 1) {
+      tokens = [it.adv].concat(subj, rest); auxGap = 1; auxText = it.aux;
+    } else {
+      tokens = subj.concat(rest); auxGap = 0; auxText = cap(it.aux); punct = "?";
+    }
+    return {tokens: tokens, auxGap: auxGap, auxText: auxText, part: it.v.p, punct: punct};
+  }
+  function perfString(it) {
+    var f = frame(it), out = f.tokens.slice();
+    out.splice(f.auxGap, 0, f.auxText);
+    out.push(f.part);
+    return out.join(" ") + f.punct;
+  }
+  function meaningOf(v) { return v.mean[lang] || v.mean.en; }
+
+  /* ---------- Sprache ---------- */
+  function applyLanguage(code) {
+    lang = code; STR = STRINGS[code];
+    root.lang = STR.lang; root.dir = STR.dir;
+    root.style.setProperty("--font", STR.font);
+    document.title = "PerfektTrainerA1L11";
+    lsSet(LANG_KEY, code);
+    $("picker").hidden = true; $("app").hidden = false;
+  }
+  function showPicker() {
+    lang = null; STR = null;
+    root.lang = "de"; root.dir = "ltr"; root.style.removeProperty("--font");
+    $("picker").hidden = false; $("app").hidden = true;
+    window.scrollTo(0, 0);
+  }
+  function buildPicker() {
+    var prompt = $("pickPrompt"), list = $("langList");
+    for (var i = 0; i < LANG_ORDER.length; i++) (function (code) {
+      var s = STRINGS[code];
+      var pe = el("p", "", s.pickPrompt);
+      pe.lang = s.lang; pe.dir = s.dir; pe.style.fontFamily = s.font;
+      prompt.appendChild(pe);
+      var b = el("button", "langchoice", s.nativeName);
+      b.type = "button"; b.lang = s.lang; b.dir = s.dir; b.style.fontFamily = s.font;
+      b.style.setProperty("--c", s.accent); b.style.setProperty("--cd", s.accentDark);
+      b.addEventListener("click", function () { applyLanguage(code); render(); });
+      list.appendChild(b);
+    })(LANG_ORDER[i]);
+  }
+
+  /* ---------- Modi starten ---------- */
+  function buildDeck(n, reviewVerbs, patFn) {
+    var verbs = reviewVerbs ? shuffle(reviewVerbs) : weightedSample(getPool(), n), deck = [];
+    for (var i = 0; i < verbs.length; i++) deck.push(makeItem(verbs[i], patFn ? patFn() : 0));
+    return deck;
+  }
+  function initMode(mode, reviewVerbs) {
+    if (mode === "cards") state.flash = {deck: buildDeck(FLASH_N, reviewVerbs), idx: 0, flipped: false, finished: false, review: !!reviewVerbs, wrong: []};
+    if (mode === "gaps") state.gaps = {deck: buildDeck(GAPS_N, reviewVerbs, randPat), idx: 0, score: 0, finished: false, review: !!reviewVerbs, wrong: [], checked: false};
+    if (mode === "tap") state.tap = {deck: buildDeck(TAP_N, reviewVerbs, randPat), idx: 0, score: 0, finished: false, review: !!reviewVerbs, wrong: [], ts: {step: 0, err: false, bad: -1, msg: ""}};
+  }
+  function ensureMode(mode) {
+    var key = mode === "cards" ? "flash" : mode;
+    if (mode !== "prog" && !state[key]) initMode(mode);
+  }
+  function resetModes() { state.flash = null; state.gaps = null; state.tap = null; }
+
+  /* ---------- Rahmen ---------- */
+  function render() {
+    var app = $("app");
+    app.innerHTML = "";
+    if (!STR) return;
+    var hdr = el("div", "hdr");
+    var h1 = tgNode("h1", "", STR.appTitle);
+    hdr.appendChild(h1);
+    var lb = el("button", "pill", "🌐 " + STR.nativeName); lb.type = "button"; setLangAttrs(lb, lang);
+    lb.addEventListener("click", showPicker);
+    hdr.appendChild(lb);
+    app.appendChild(hdr);
+    app.appendChild(tgNode("p", "intro", STR.intro));
+    /* Auswahl der Verbgruppe */
+    var pr = tgNode("div", "poolrow", "");
+    pr.appendChild(tgNode("span", "poollabel", STR.poolLabel + ":"));
+    var opts = [["all", STR.fAll], ["w", STR.fW], ["s", STR.fS], ["m", STR.fM]];
+    for (var i = 0; i < opts.length; i++) (function (k, label) {
+      var b = el("button", "chip" + (state.filter === k ? " on" : ""), label); b.type = "button";
+      b.addEventListener("click", function () { state.filter = k; lsSet(SEL_KEY, k); resetModes(); render(); });
+      pr.appendChild(b);
+    })(opts[i][0], opts[i][1]);
+    pr.appendChild(tgNode("span", "poolcount", fmt(STR.poolCount, {n: getPool().length})));
+    app.appendChild(pr);
+    /* Tabs */
+    var tabs = el("nav", "tabs"), tl = [["cards", STR.tabCards], ["gaps", STR.tabGaps], ["tap", STR.tabTap], ["prog", STR.tabProg]];
+    for (var t = 0; t < tl.length; t++) (function (k, label) {
+      var b = el("button", "tab" + (state.tab === k ? " on" : ""), label); b.type = "button"; setLangAttrs(b, lang);
+      b.addEventListener("click", function () { state.tab = k; render(); });
+      tabs.appendChild(b);
+    })(tl[t][0], tl[t][1]);
+    app.appendChild(tabs);
+    if (!getPool().length) { app.appendChild(tgNode("p", "small", STR.empty)); return; }
+    ensureMode(state.tab);
+    if (state.tab === "cards") renderFlash(app);
+    else if (state.tab === "gaps") renderGaps(app);
+    else if (state.tab === "tap") renderTap(app);
+    else renderProg(app);
+  }
+
+  /* ---------- Abschluss-Panel ---------- */
+  function renderFinished(app, mode, scoreText, wrongItems) {
+    var panel = el("div", "panel done-panel");
+    panel.appendChild(tgNode("h2", "", STR.finTitle));
+    if (scoreText) panel.appendChild(tgNode("p", "score", scoreText));
+    if (wrongItems.length) {
+      panel.appendChild(tgNode("p", "boxh", STR.wrongHead));
+      var ul = el("ul", "revlist");
+      for (var i = 0; i < wrongItems.length; i++) {
+        var li = el("li", "");
+        li.appendChild(deNode("span", "", perfString(wrongItems[i])));
+        li.appendChild(tgNode("span", "sub2", wrongItems[i].v.i + " – " + wrongItems[i].v.p + " · " + meaningOf(wrongItems[i].v)));
+        ul.appendChild(li);
+      }
+      panel.appendChild(ul);
+    }
+    var btns = el("div", "btns2");
+    if (wrongItems.length) {
+      var rb = el("button", "sec", STR.reviewBtn); rb.type = "button"; setLangAttrs(rb, lang);
+      rb.addEventListener("click", function () {
+        var vs = []; for (var k = 0; k < wrongItems.length; k++) vs.push(wrongItems[k].v);
+        initMode(mode, vs); render();
+      });
+      btns.appendChild(rb);
+    }
+    var ag = el("button", "main", STR.againBtn); ag.type = "button"; setLangAttrs(ag, lang);
+    ag.addEventListener("click", function () { initMode(mode); render(); });
+    btns.appendChild(ag);
+    panel.appendChild(btns);
+    app.appendChild(panel);
+  }
+
+  /* ---------- Karteikarten ---------- */
+  function renderFlash(app) {
+    var f = state.flash;
+    if (f.finished || f.idx >= f.deck.length) {
+      renderFinished(app, "cards", "", f.wrong);
+      return;
+    }
+    var it = f.deck[f.idx];
+    var panel = el("div", "panel");
+    var dr = el("div", "dirrow");
+    var dirs = [["pf", STR.dirPF], ["fp", STR.dirFP]];
+    for (var i = 0; i < dirs.length; i++) (function (k, label) {
+      var b = el("button", "chip" + (state.dir === k ? " on" : ""), label); b.type = "button"; setLangAttrs(b, lang);
+      b.addEventListener("click", function () { state.dir = k; f.flipped = false; render(); });
+      dr.appendChild(b);
+    })(dirs[i][0], dirs[i][1]);
+    panel.appendChild(dr);
+    if (f.review) panel.appendChild(tgNode("span", "badge", STR.reviewBadge));
+    panel.appendChild(tgNode("p", "small center", fmt(STR.cardCounter, {n: f.idx + 1, t: f.deck.length})));
+    var showBack = f.flipped, frontIsPres = state.dir === "pf";
+    var isPres = frontIsPres ? !showBack : showBack;
+    var card = el("div", "flashcard" + (showBack ? " back" : ""));
+    card.setAttribute("role", "button"); card.tabIndex = 0;
+    card.appendChild(tgNode("span", "ctag", isPres ? STR.tagPres : STR.tagPerf));
+    card.appendChild(deNode("div", "cword", isPres ? presString(it) : perfString(it)));
+    if (showBack) {
+      card.appendChild(deNode("div", "cinf", it.v.i + " – " + it.v.p));
+      card.appendChild(tgNode("div", "cmean", meaningOf(it.v)));
+    } else {
+      card.appendChild(tgNode("div", "cinf", STR.flipHint));
+    }
+    function flip() { f.flipped = !f.flipped; render(); }
+    card.addEventListener("click", flip);
+    card.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); flip(); } });
+    panel.appendChild(card);
+    var actions = el("div", "twocols");
+    var learn = el("button", "sec", STR.learning), know = el("button", "main ok", STR.know);
+    learn.type = "button"; know.type = "button"; setLangAttrs(learn, lang); setLangAttrs(know, lang);
+    function advance(ok) {
+      recordResult(it.v.id, ok);
+      if (!ok) f.wrong.push(it);
+      f.idx += 1; f.flipped = false;
+      if (f.idx >= f.deck.length) f.finished = true;
+      render();
+    }
+    learn.addEventListener("click", function () { advance(false); });
+    know.addEventListener("click", function () { advance(true); });
+    actions.appendChild(learn); actions.appendChild(know);
+    panel.appendChild(actions);
+    app.appendChild(panel);
+  }
+
+  /* ---------- Lückenaufgabe ---------- */
+  function umlautBar() {
+    var bar = el("div", "umlauts"); bar.dir = "ltr"; var chars = ["ä", "ö", "ü", "ß"];
+    for (var i = 0; i < chars.length; i++) (function (ch) {
+      var b = el("button", "", ch); b.type = "button";
+      b.addEventListener("mousedown", function (e) { e.preventDefault(); });
+      b.addEventListener("click", function () {
+        var inp = lastInput && document.body.contains(lastInput) ? lastInput : null;
+        if (!inp) return;
+        var s = inp.selectionStart, e2 = inp.selectionEnd;
+        if (typeof s !== "number") { inp.value += ch; } else { inp.value = inp.value.slice(0, s) + ch + inp.value.slice(e2); inp.selectionStart = inp.selectionEnd = s + 1; }
+        inp.focus();
+        try { inp.dispatchEvent(new Event("input", {bubbles: true})); } catch (err) {}
+      });
+      bar.appendChild(b);
+    })(chars[i]);
+    return bar;
+  }
+  function renderGaps(app) {
+    var g = state.gaps;
+    if (g.finished || g.idx >= g.deck.length) {
+      renderFinished(app, "gaps", fmt(STR.score, {r: g.score, n: g.deck.length}), g.wrong);
+      return;
+    }
+    var it = g.deck[g.idx], f = frame(it);
+    var panel = el("div", "panel");
+    if (g.review) panel.appendChild(tgNode("span", "badge", STR.reviewBadge));
+    panel.appendChild(tgNode("p", "small center", fmt(STR.cardCounter, {n: g.idx + 1, t: g.deck.length})));
+    panel.appendChild(tgNode("p", "task", STR.gapsTask));
+    var pl = deNode("div", "presline", "");
+    pl.appendChild(tgNode("span", "lab", STR.gapsHintLabel));
+    pl.appendChild(document.createTextNode(presString(it)));
+    panel.appendChild(pl);
+    var line = deNode("div", "gline", "");
+    var inputs = [];
+    function mkInput(ph, size) {
+      var inp = el("input", "blank"); inp.type = "text"; inp.size = size;
+      inp.setAttribute("autocomplete", "off"); inp.setAttribute("autocapitalize", "off"); inp.setAttribute("autocorrect", "off"); inp.setAttribute("spellcheck", "false");
+      inp.setAttribute("aria-label", ph);
+      inp.addEventListener("focus", function () { lastInput = inp; });
+      inp.addEventListener("input", function () { if (!g.checked) inp.className = "blank"; });
+      inp.addEventListener("keydown", function (ev) { if (ev.key === "Enter") { ev.preventDefault(); act(); } });
+      inputs.push(inp);
+      return inp;
+    }
+    var auxIn = mkInput("haben", 6), partIn = mkInput("Partizip II", 12);
+    for (var i = 0; i <= f.tokens.length; i++) {
+      if (i === f.auxGap) line.appendChild(auxIn);
+      if (i < f.tokens.length) line.appendChild(el("span", "w", f.tokens[i]));
+    }
+    line.appendChild(partIn);
+    line.appendChild(document.createTextNode(f.punct + " "));
+    line.appendChild(el("span", "infhint", "(" + it.v.i + ")"));
+    panel.appendChild(line);
+    panel.appendChild(tgNode("p", "mean", it.v.i + " = " + meaningOf(it.v)));
+    panel.appendChild(umlautBar());
+    var fb = tgNode("div", "fb", "");
+    fb.setAttribute("role", "status");
+    panel.appendChild(fb);
+    var row = el("div", "btnrow");
+    var btn = el("button", "main", STR.check); btn.type = "button"; setLangAttrs(btn, lang);
+    row.appendChild(btn); panel.appendChild(row);
+    g.checked = false;
+    function act() {
+      if (g.checked) { g.idx += 1; if (g.idx >= g.deck.length) g.finished = true; render(); return; }
+      var ok1 = norm(auxIn.value) === norm(f.auxText), ok2 = norm(partIn.value) === norm(f.part);
+      g.checked = true;
+      auxIn.className = "blank " + (ok1 ? "ok" : "bad"); partIn.className = "blank " + (ok2 ? "ok" : "bad");
+      auxIn.readOnly = true; partIn.readOnly = true;
+      var ok = ok1 && ok2;
+      recordResult(it.v.id, ok);
+      if (ok) { g.score += 1; fb.className = "fb good"; fb.textContent = "✓ " + STR.okMsg; }
+      else {
+        g.wrong.push(it);
+        fb.className = "fb warn"; fb.textContent = STR.badMsg;
+        var sol = deNode("span", "sol", perfString(it)); fb.appendChild(sol);
+      }
+      btn.textContent = STR.nextBtn; btn.focus();
+    }
+    btn.addEventListener("click", act);
+    app.appendChild(panel);
+  }
+
+  /* ---------- Antipp-Übung: Stelle im Satz ---------- */
+  function renderTap(app) {
+    var t = state.tap;
+    if (t.finished || t.idx >= t.deck.length) {
+      renderFinished(app, "tap", fmt(STR.score, {r: t.score, n: t.deck.length}), t.wrong);
+      return;
+    }
+    var it = t.deck[t.idx], f = frame(it), ts = t.ts;
+    var panel = el("div", "panel");
+    if (t.review) panel.appendChild(tgNode("span", "badge", STR.reviewBadge));
+    panel.appendChild(tgNode("p", "small center", fmt(STR.cardCounter, {n: t.idx + 1, t: t.deck.length})));
+    panel.appendChild(tgNode("p", "task", STR.tapTask));
+    /* Chips: vorgegebene Formen */
+    var chips = deNode("div", "tapchips", "");
+    var c1 = el("span", "fchip " + (ts.step === 0 ? "cur" : "done"), f.auxText);
+    var c2 = el("span", "fchip " + (ts.step === 0 ? "" : (ts.step === 1 ? "cur" : "done")), f.part);
+    chips.appendChild(c1); chips.appendChild(c2);
+    panel.appendChild(chips);
+    /* Satz mit Lücken */
+    var seq = [], k;
+    for (k = 0; k < f.tokens.length; k++) seq.push({w: f.tokens[k], ins: false});
+    if (ts.step >= 1) seq.splice(f.auxGap, 0, {w: f.auxText, ins: true});
+    if (ts.step >= 2) seq.push({w: f.part, ins: true});
+    var correctGap = ts.step === 0 ? f.auxGap : seq.length;
+    var sent = deNode("div", "tsent", "");
+    function gapBtn(pos) {
+      var b = el("button", "gap" + (ts.bad === pos ? " bad" : "")); b.type = "button";
+      b.setAttribute("aria-label", String(pos + 1));
+      b.addEventListener("click", function () { onTap(pos); });
+      return b;
+    }
+    for (k = 0; k <= seq.length; k++) {
+      if (ts.step < 2) sent.appendChild(gapBtn(k));
+      if (k < seq.length) sent.appendChild(el("span", "tw" + (seq[k].ins ? " ins" : ""), (ts.step < 2 ? "" : (k > 0 ? " " : "")) + seq[k].w));
+    }
+    sent.appendChild(el("span", "punct", f.punct));
+    if (ts.step < 2) {
+      panel.appendChild(tgNode("p", "tapq", fmt(STR.tapQ, {w: ts.step === 0 ? f.auxText : f.part})));
+    }
+    panel.appendChild(sent);
+    panel.appendChild(tgNode("p", "mean", it.v.i + " = " + meaningOf(it.v)));
+    var fb = tgNode("div", "fb", "");
+    fb.setAttribute("role", "status");
+    if (ts.msg) { fb.className = "fb info"; fb.textContent = ts.msg; }
+    if (ts.step === 2) { fb.className = "fb good"; fb.textContent = "✓ " + STR.tapDone; }
+    panel.appendChild(fb);
+    if (ts.step === 2) {
+      var row = el("div", "btnrow");
+      var nb = el("button", "main", STR.nextBtn); nb.type = "button"; setLangAttrs(nb, lang);
+      nb.addEventListener("click", function () {
+        t.idx += 1; t.ts = {step: 0, err: false, bad: -1, msg: ""};
+        if (t.idx >= t.deck.length) t.finished = true;
+        render();
+      });
+      row.appendChild(nb); panel.appendChild(row);
+    }
+    app.appendChild(panel);
+    function onTap(pos) {
+      if (ts.step > 1) return;
+      if (pos === correctGap) {
+        ts.step += 1; ts.bad = -1; ts.msg = "";
+        if (ts.step === 2) {
+          var ok = !ts.err;
+          recordResult(it.v.id, ok);
+          if (ok) t.score += 1; else t.wrong.push(it);
+        }
+      } else {
+        ts.err = true; ts.bad = pos;
+        ts.msg = STR.tapWrong + " " + (ts.step === 1 ? STR.hintPart : (it.pat === 2 ? STR.hintAuxQ : STR.hintAuxS));
+      }
+      render();
+    }
+  }
+
+  /* ---------- Fortschritt ---------- */
+  function renderProg(app) {
+    var p = loadProgress(), pool = getPool(), cats = {"new": [], 0: [], 1: [], 2: []}, i;
+    for (i = 0; i < pool.length; i++) cats[boxOf(p, pool[i].id)].push(pool[i]);
+    var panel = el("div", "panel");
+    panel.appendChild(tgNode("p", "small", STR.progIntro));
+    panel.appendChild(tgNode("p", "progsum", fmt(STR.progCount, {k: cats[2].length, n: pool.length})));
+    var bar = el("div", "bar"), bi = el("i"); bi.style.width = Math.round(100 * cats[2].length / pool.length) + "%"; bar.appendChild(bi);
+    panel.appendChild(bar);
+    var order = [[0, STR.box0], [1, STR.box1], [2, STR.box2], ["new", STR.boxNew]];
+    for (i = 0; i < order.length; i++) {
+      var list = cats[order[i][0]];
+      if (!list.length) continue;
+      panel.appendChild(tgNode("p", "boxh", order[i][1] + " (" + list.length + ")"));
+      var grid = el("div", "vlist");
+      for (var j = 0; j < list.length; j++) {
+        var cell = deNode("div", "vi b" + order[i][0], "");
+        cell.appendChild(el("b", "", list[j].i)); cell.appendChild(document.createTextNode(" – " + list[j].p));
+        grid.appendChild(cell);
+      }
+      panel.appendChild(grid);
+    }
+    var rr = el("div", "resetrow");
+    var rb = el("button", "linkbtn", STR.resetProg); rb.type = "button"; setLangAttrs(rb, lang);
+    rb.addEventListener("click", function () {
+      if (window.confirm(STR.resetConfirm)) { lsDel(PROG_KEY); resetModes(); render(); }
+    });
+    rr.appendChild(rb); panel.appendChild(rr);
+    app.appendChild(panel);
+  }
+
+  /* ---------- Start ---------- */
+  buildPicker();
+  
+  (function init() {
+    var f = lsGet(SEL_KEY);
+    if (f === "all" || f === "w" || f === "s" || f === "m") state.filter = f;
+    var h = (window.location.hash || "").replace("#", "");
+    var saved = lsGet(LANG_KEY);
+    if (STRINGS[h]) { applyLanguage(h); render(); }
+    else if (saved && STRINGS[saved]) { applyLanguage(saved); render(); }
+    else showPicker();
+  })();
+
+})();
+</script>
+</body>
+</html>
