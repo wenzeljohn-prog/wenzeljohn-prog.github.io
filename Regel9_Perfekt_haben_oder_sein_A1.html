@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Perfekt: haben oder sein? · Regel 9 · A1</title>
+<style>
+  :root {
+    --bg:#f4f6fa; --card:#fff; --text:#1d2433; --muted:#5b667a; --line:#d5dbe6;
+    --accent:#2b5fd9; --accent-text:#fff; --chip:#e9eef8;
+    --ok:#1f7a4d; --ok-bg:#e0f3e8; --bad:#b3303f; --bad-bg:#fbe4e7; --warn-bg:#fff4d6; --info-bg:#e6edfb;
+    --font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#12161f; --card:#1b2130; --text:#e8ecf5; --muted:#9aa5ba; --line:#30394d;
+      --accent:#6b97ff; --accent-text:#0b1226; --chip:#252d40;
+      --ok:#6fd6a2; --ok-bg:#183427; --bad:#ff8a98; --bad-bg:#42202a; --warn-bg:#3a3118; --info-bg:#1f2a44;
+    }
+  }
+  * { box-sizing:border-box; }
+  html,body { margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:var(--font); line-height:1.5; min-height:100vh; font-size:16px; }
+  [hidden] { display:none !important; }
+  .wrap { max-width:760px; margin:0 auto; padding:14px 16px 40px; }
+  h1 { font-size:1.6rem; margin:6px 0 4px; }
+  button, input, select, textarea { font-family:inherit; font-size:1rem; color:var(--text); }
+  button { cursor:pointer; }
+  button:focus-visible, input:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  .pick h1 { text-align:center; margin:22px 0 4px; }
+  .pick .sub { text-align:center; color:var(--muted); margin:0 0 4px; }
+  .pickprompt { text-align:center; color:var(--muted); font-size:.95rem; margin:20px 0 16px; }
+  .pickprompt p { margin:0 0 4px; }
+  .langlist { display:flex; flex-direction:column; gap:12px; }
+  .langchoice { width:100%; min-height:68px; padding:14px 18px; border:none; border-bottom:4px solid var(--cd); border-radius:14px; background:var(--c); color:#fff; font-size:1.35rem; font-weight:700; text-align:center; }
+  .langchoice:active { filter:brightness(.92); }
+  .topbar { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:10px; }
+  .brand { font-weight:700; color:var(--muted); }
+  .pill { display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:0 14px; border-radius:999px; border:2px solid var(--line); background:var(--card); font-size:.92rem; white-space:nowrap; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+  button.main { width:100%; min-height:56px; border-radius:14px; border:none; font-size:1.1rem; font-weight:700; background:var(--accent); color:var(--accent-text); padding:8px 14px; }
+  button.sec { min-height:56px; width:100%; border-radius:14px; border:2px solid var(--line); background:var(--card); font-size:1rem; padding:8px 14px; }
+  .linkbtn { background:none; border:none; color:var(--accent); font-size:.95rem; padding:6px 4px; min-height:44px; text-decoration:underline; }
+  .sechead { margin:10px 0 10px; }
+  .kicker { font-size:.8rem; text-transform:uppercase; letter-spacing:.07em; color:var(--accent); font-weight:700; }
+  .sectitle { margin:2px 0 0; font-size:1.4rem; line-height:1.25; }
+  .sectitle .tde { display:block; }
+  .sectitle .ttr { display:block; font-size:1.05rem; font-weight:500; color:var(--muted); margin-top:2px; }
+  .keyde { background:var(--chip); border-radius:10px; padding:10px 12px; margin-bottom:10px; border-inline-start:5px solid var(--accent); text-align:left; }
+  .ruletext p { margin:0 0 8px; }
+  .steps { margin:0 0 4px; padding-inline-start:1.4em; }
+  .steps li { margin:3px 0; }
+  .tlabel { font-size:.8rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:14px 0 6px; }
+  .tablewrap { overflow-x:auto; background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:12px; }
+  table { border-collapse:collapse; width:100%; min-width:360px; font-size:.95rem; }
+  th, td { padding:7px 10px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); }
+  th { background:var(--chip); font-size:.82rem; white-space:nowrap; }
+  th small { display:block; font-weight:500; color:var(--muted); }
+  td strong { color:var(--accent); }
+  td small.note { display:block; color:var(--muted); font-size:.8rem; }
+  tr:last-child td { border-bottom:none; }
+  .memo { background:var(--warn-bg); border-radius:12px; padding:10px 14px; margin-bottom:14px; }
+  .memolabel { font-weight:700; font-size:.88rem; margin-bottom:4px; }
+  .memode { margin-bottom:4px; text-align:left; }
+  .memotext { font-size:.95rem; }
+  .excard { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 14px 12px; margin:16px 0; }
+  .exhead { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
+  .exhead h3 { margin:0; font-size:1.05rem; }
+  .badge { font-size:.8rem; font-weight:700; border-radius:999px; padding:2px 10px; }
+  .badge.b-ok { background:var(--ok-bg); color:var(--ok); }
+  .badge.b-sol { background:var(--info-bg); color:var(--accent); }
+  .insde { margin:0 0 2px; font-weight:700; text-align:left; }
+  .inst { margin:0 0 8px; color:var(--muted); font-size:.95rem; }
+  .items { list-style:none; counter-reset:it; margin:8px 0; padding:0; display:flex; flex-direction:column; gap:8px; }
+  .item { counter-increment:it; display:flex; align-items:flex-start; gap:8px; flex-wrap:wrap; padding:8px 10px; border:2px solid var(--line); border-radius:12px; }
+  .item::before { content:counter(it); flex:none; width:26px; height:26px; border-radius:50%; background:var(--chip); font-size:.82rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin-top:2px; }
+  .item .imain { flex:1; min-width:0; }
+  .item .mark { font-weight:800; font-size:1.2rem; width:1.2em; text-align:center; }
+  .item.ok { border-color:var(--ok); background:var(--ok-bg); }
+  .item.ok .mark { color:var(--ok); }
+  .item.bad { border-color:var(--bad); background:var(--bad-bg); }
+  .item.bad .mark { color:var(--bad); }
+  .item.shown { border-color:var(--accent); background:var(--info-bg); }
+  .line { font-size:1.05rem; line-height:2.3; text-align:left; }
+  input.blank { min-height:40px; border-radius:8px; border:2px solid var(--line); background:var(--card); padding:2px 8px; font-size:1.05rem; vertical-align:middle; margin:0 2px; max-width:100%; }
+  input.blank.wide { display:block; width:100%; margin:6px 0 0; }
+  input.blank.okin { border-color:var(--ok); }
+  input.blank.badin { border-color:var(--bad); }
+  .wprompt { font-size:1.02rem; text-align:left; }
+  .umlauts { display:flex; gap:6px; margin:8px 0 2px; }
+  .umlauts button { min-width:48px; min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); font-size:1.1rem; }
+  .btnrow { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:10px; }
+  .btnrow .main { flex:1 1 160px; width:auto; min-height:52px; }
+  .btnrow .sec { flex:1 1 140px; width:auto; min-height:52px; }
+  .result { margin-top:8px; border-radius:10px; font-weight:600; }
+  .result.good, .result.warn, .result.info { padding:10px 12px; }
+  .result.good { background:var(--ok-bg); color:var(--ok); }
+  .result.warn { background:var(--warn-bg); }
+  .result.info { background:var(--info-bg); }
+  @media (max-width:420px) { .item { padding:8px; } .line { line-height:2.4; } th, td { padding:6px 7px; } table { font-size:.9rem; } }
+</style>
+</head>
+<body>
+<section id="picker" class="wrap pick">
+  <h1>Perfekt: haben oder sein?</h1>
+  <p class="sub">Deutsch A1 &middot; Regel 9</p>
+  <div class="pickprompt" id="pickPrompt"></div>
+  <div class="langlist" id="langList"></div>
+</section>
+<main id="app" class="wrap" hidden></main>
+<script>
+(function () {
+  "use strict";
+  var FONT_LAT = 'system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+  var FONT_AR = '"Segoe UI", Tahoma, "Geeza Pro", "Noto Naskh Arabic", Arial, sans-serif';
+  var LANG_ORDER = ["tr", "ar", "ru", "en"];
+  var STRINGS = {
+    en: { lang:"en", dir:"ltr", font:FONT_LAT, accent:"#3E5C8A", accentDark:"#293D5C", nativeName:"English", pickPrompt:"Choose your language",
+      appTitle:"Perfekt: haben or sein? · Rule 9 · A1", ruleN:"Rule {n}", memoLabel:"Remember", exampleHead:"Examples", exLabel:"Exercise {n}",
+      check:"Check", solution:"Show solution", restart:"Start again", resFmt:"{r} of {n} correct", allOk:"All correct – well done!",
+      fixIt:"Correct the red answers and tap “Check” again.", solShown:"Solution shown.", stDone:"done",
+      insFill:"Fill in the blanks.", insCorrect:"Find the mistake and write the correct sentence. If the sentence is already correct, write “richtig”.",
+      col:{inf:"Infinitive", perf:"Perfect", ex:"Example sentence"} },
+    ru: { lang:"ru", dir:"ltr", font:FONT_LAT, accent:"#5C3E7A", accentDark:"#3D2953", nativeName:"Русский", pickPrompt:"Выберите язык",
+      appTitle:"Perfekt: haben или sein? · Правило 9 · A1", ruleN:"Правило {n}", memoLabel:"Запомните", exampleHead:"Примеры", exLabel:"Упражнение {n}",
+      check:"Проверить", solution:"Показать решение", restart:"Начать заново", resFmt:"Верно: {r} из {n}", allOk:"Всё верно — отлично!",
+      fixIt:"Исправьте красные ответы и снова нажмите «Проверить».", solShown:"Решение показано.", stDone:"готово",
+      insFill:"Заполните пропуски.", insCorrect:"Найдите ошибку и напишите правильное предложение. Если предложение уже правильное, напишите «richtig».",
+      col:{inf:"Инфинитив", perf:"Perfekt", ex:"Пример"} },
+    ar: { lang:"ar", dir:"rtl", font:FONT_AR, accent:"#8A5A2E", accentDark:"#5C3B1E", nativeName:"العربية", pickPrompt:"اختر لغتك",
+      appTitle:"الـ Perfekt: haben أم sein؟ · القاعدة 9 · A1", ruleN:"القاعدة {n}", memoLabel:"تذكّر", exampleHead:"أمثلة", exLabel:"التمرين {n}",
+      check:"تحقّق", solution:"أظهر الحل", restart:"ابدأ من جديد", resFmt:"الصحيح: {r} من {n}", allOk:"كل الإجابات صحيحة، أحسنت!",
+      fixIt:"صحّح الإجابات الحمراء ثم اضغط «تحقّق» مرة أخرى.", solShown:"تم إظهار الحل.", stDone:"منجز",
+      insFill:"املأ الفراغات.", insCorrect:"اعثر على الخطأ واكتب الجملة الصحيحة. وإذا كانت الجملة صحيحة أصلاً فاكتب «richtig».",
+      col:{inf:"المصدر", perf:"Perfekt", ex:"جملة مثال"} },
+    tr: { lang:"tr", dir:"ltr", font:FONT_LAT, accent:"#2E6B5E", accentDark:"#1E463C", nativeName:"Türkçe", pickPrompt:"Dilinizi seçin",
+      appTitle:"Perfekt: haben mi sein mi? · Kural 9 · A1", ruleN:"Kural {n}", memoLabel:"Aklınızda tutun", exampleHead:"Örnekler", exLabel:"Alıştırma {n}",
+      check:"Kontrol et", solution:"Çözümü göster", restart:"Baştan başla", resFmt:"{n} sorudan {r} doğru", allOk:"Hepsi doğru, tebrikler!",
+      fixIt:"Kırmızı cevapları düzeltin ve tekrar «Kontrol et»'e dokunun.", solShown:"Çözüm gösterildi.", stDone:"tamamlandı",
+      insFill:"Boşlukları doldurun.", insCorrect:"Hatayı bulun ve doğru cümleyi yazın. Cümle zaten doğruysa «richtig» yazın.",
+      col:{inf:"Mastar (Infinitiv)", perf:"Perfekt", ex:"Örnek cümle"} }
+  };
+
+  function T(de, en, ru, tr, ar) { return { de:de, en:en, ru:ru, tr:tr, ar:ar }; }
+  var SEC = {
+    rule: 9,
+    title: T("haben oder sein? Bewegung oder keine Bewegung", "haben or sein? Movement or no movement", "haben или sein? Перемещение или нет", "haben mi sein mi? Hareket var mı yok mu", "haben أم sein؟ حركة أم لا"),
+    text: T(
+      "**Bewegung von A nach B → sein.** Keine Bewegung → **haben**. Ausnahmen: **bleiben, passieren, sein** → sein.",
+      "Ask yourself one question: **Does someone move from one place (A) to another place (B)?**\n1. Yes, movement from A to B → **sein** (*Ich bin nach Hause gegangen.*)\n2. No movement (duration, activity, weather, feeling) → **haben** (*Ich habe gearbeitet. Es hat geregnet.*)\n3. Exceptions: **bleiben**, **passieren** and **sein** take **sein**, although there is no movement (*Ich bin zu Hause geblieben.*)",
+      "Задайте себе один вопрос: **Перемещается ли кто-то из одного места (A) в другое (B)?**\n1. Да, перемещение из A в B → **sein** (*Ich bin nach Hause gegangen.*)\n2. Нет перемещения (длительность, деятельность, погода, чувство) → **haben** (*Ich habe gearbeitet. Es hat geregnet.*)\n3. Исключения: **bleiben**, **passieren** и **sein** употребляются с **sein**, хотя перемещения нет (*Ich bin zu Hause geblieben.*)",
+      "Kendinize tek bir soru sorun: **Biri bir yerden (A) başka bir yere (B) hareket ediyor mu?**\n1. Evet, A'dan B'ye hareket → **sein** (*Ich bin nach Hause gegangen.*)\n2. Hareket yok (süre, etkinlik, hava durumu, duygu) → **haben** (*Ich habe gearbeitet. Es hat geregnet.*)\n3. İstisnalar: **bleiben**, **passieren** ve **sein**, hareket olmamasına rağmen **sein** ile kullanılır (*Ich bin zu Hause geblieben.*)",
+      "اسأل نفسك سؤالاً واحداً: **هل ينتقل شخص من مكان (A) إلى مكان آخر (B)؟**\n1. نعم، حركة من A إلى B ← **sein** (*Ich bin nach Hause gegangen.*)\n2. لا حركة (مدّة، نشاط، طقس، شعور) ← **haben** (*Ich habe gearbeitet. Es hat geregnet.*)\n3. الاستثناءات: **bleiben** و**passieren** و**sein** تأخذ **sein** مع أنه لا توجد حركة (*Ich bin zu Hause geblieben.*)"
+    ),
+    memo: T(
+      "Immer *haben* (keine Bewegung): schlafen, wohnen, arbeiten, lernen, spielen, warten, regnen, schneien. Auch mit *haben*: sitzen, stehen, liegen (*Ich habe gesessen / gestanden / gelegen.*). Immer *sein* (Ausnahmen): bleiben, passieren, sein.",
+      "Always *haben* (no movement): schlafen, wohnen, arbeiten, lernen, spielen, warten, regnen, schneien. Also with *haben*: sitzen, stehen, liegen (*Ich habe gesessen / gestanden / gelegen.*). Always *sein* (exceptions): bleiben, passieren, sein.",
+      "Всегда *haben* (нет перемещения): schlafen, wohnen, arbeiten, lernen, spielen, warten, regnen, schneien. Также с *haben*: sitzen, stehen, liegen (*Ich habe gesessen / gestanden / gelegen.*). Всегда *sein* (исключения): bleiben, passieren, sein.",
+      "Her zaman *haben* (hareket yok): schlafen, wohnen, arbeiten, lernen, spielen, warten, regnen, schneien. *haben* ile ayrıca: sitzen, stehen, liegen (*Ich habe gesessen / gestanden / gelegen.*). Her zaman *sein* (istisnalar): bleiben, passieren, sein.",
+      "دائماً *haben* (لا حركة): schlafen, wohnen, arbeiten, lernen, spielen, warten, regnen, schneien. وكذلك مع *haben*: sitzen, stehen, liegen (*Ich habe gesessen / gestanden / gelegen.*). دائماً *sein* (استثناءات): bleiben, passieren, sein."
+    ),
+    tables: [
+      { label: T("Bewegung von A nach B → sein", "Movement from A to B → sein", "Перемещение из A в B → sein", "A'dan B'ye hareket → sein", "حركة من A إلى B ← sein"),
+        rows: [
+          ["gehen", "ist gegangen", "Ich bin zur Arbeit gegangen."],
+          ["fahren", "ist gefahren", "Wir sind mit dem Bus gefahren."],
+          ["laufen", "ist gelaufen", "Er ist zum Bahnhof gelaufen."],
+          ["fliegen", "ist geflogen", "Sie ist nach Berlin geflogen."],
+          ["kommen", "ist gekommen", "Er ist zu spät gekommen."],
+          ["schwimmen", "ist geschwommen", "Wir sind ans Ufer geschwommen."],
+          ["an|kommen", "ist angekommen", "Der Zug ist pünktlich angekommen."],
+          ["um|ziehen", "ist umgezogen", "Sie ist nach Erfurt umgezogen."]
+        ] },
+      { label: T("Keine Bewegung → haben", "No movement → haben", "Нет перемещения → haben", "Hareket yok → haben", "لا حركة ← haben"),
+        rows: [
+          ["schlafen", "hat geschlafen", "Ich habe zehn Stunden geschlafen."],
+          ["wohnen", "hat gewohnt", "Er hat lange in Jena gewohnt."],
+          ["arbeiten", "hat gearbeitet", "Wir haben gestern gearbeitet."],
+          ["warten", "hat gewartet", "Sie hat eine Stunde gewartet."],
+          ["regnen", "hat geregnet", "Es hat den ganzen Tag geregnet."],
+          ["schwimmen", "hat geschwommen", "Wir haben eine Stunde geschwommen."]
+        ] },
+      { label: T("Ausnahmen → sein (trotz keiner Bewegung)", "Exceptions → sein (although no movement)", "Исключения → sein (хотя перемещения нет)", "İstisnalar → sein (hareket olmamasına rağmen)", "الاستثناءات ← sein (رغم عدم وجود حركة)"),
+        rows: [
+          ["bleiben", "ist geblieben", "Wir sind zu Hause geblieben."],
+          ["passieren", "ist passiert", "Was ist passiert?"],
+          ["sein", "ist gewesen", "Ich bin schon in Spanien gewesen."]
+        ] }
+    ],
+    ex: [
+      { id:"u17", n:1, kind:"fill", ins:"insFill", de:"haben oder sein? Setzen Sie die richtige Form ein.", items:[
+        { t:"Ich ___ gestern zehn Stunden ___. (schlafen)", a:["habe","geschlafen"] },
+        { t:"Wir ___ nach Wien ___. (fliegen)", a:["sind","geflogen"] },
+        { t:"Er ___ lange in Jena ___. (wohnen)", a:["hat","gewohnt"] },
+        { t:"Sie ___ mit dem Bus nach Hause ___. (fahren)", a:["ist","gefahren"] },
+        { t:"Es ___ den ganzen Tag ___. (regnen)", a:["hat","geregnet"] },
+        { t:"Wir ___ vor einem Jahr nach Erfurt ___. (um|ziehen)", a:["sind","umgezogen"] },
+        { t:"Meine Eltern ___ drei Tage bei uns ___. (bleiben)", a:["sind","geblieben"] },
+        { t:"Was ___ denn ___? (passieren)", a:["ist","passiert"] }
+      ] },
+      { id:"u18", n:2, kind:"write", ins:"insCorrect", de:"Finden Sie den Fehler und korrigieren Sie. (Wenn der Satz richtig ist: schreiben Sie „richtig“.)", items:[
+        { t:"Wir haben nach Hamburg gefahren.", a:["Wir sind nach Hamburg gefahren"] },
+        { t:"Er hat zur Schule gelaufen.", a:["Er ist zur Schule gelaufen"] },
+        { t:"Ich habe gestern zu Hause geblieben.", a:["Ich bin gestern zu Hause geblieben","Gestern bin ich zu Hause geblieben"] },
+        { t:"Sie ist Deutsch gelernt.", a:["Sie hat Deutsch gelernt"] },
+        { t:"Was hat passiert?", a:["Was ist passiert"] },
+        { t:"Habt ihr gut geschlafen?", a:["richtig","Habt ihr gut geschlafen"] }
+      ] }
+    ]
+  };
+
+  var STORE_KEY = "perfekt-regel9-haben-sein-v2";
+  var STR = null, lang = null, lastInput = null, exState = {};
+  var root = document.documentElement;
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined && text !== null) e.textContent = text; return e; }
+  function lsGet(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { window.localStorage.setItem(k, v); } catch (e) {} }
+  function fmt(s, v) { return String(s).replace(/\{(\w+)\}/g, function (m, k) { return (v && (k in v)) ? v[k] : m; }); }
+  function setLangAttrs(n, c) { n.lang = c; n.dir = (c === "ar") ? "rtl" : "ltr"; return n; }
+  function deNode(t, c, x) { return setLangAttrs(el(t, c, x), "de"); }
+  function tgNode(t, c, x) { return setLangAttrs(el(t, c, x), lang); }
+  function tl(o) { if (!o) return ""; return o[lang] || o.en || o.de || ""; }
+
+  function mdInto(node, str) {
+    var parts = String(str).split(/(\*\*[^*]+\*\*|\*[^*]+\*)/);
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i]; if (!p) continue;
+      if (p.length > 4 && p.slice(0, 2) === "**" && p.slice(-2) === "**") node.appendChild(el("strong", "", p.slice(2, -2)));
+      else if (p.length > 2 && p.charAt(0) === "*" && p.charAt(p.length - 1) === "*") node.appendChild(el("em", "", p.slice(1, -1)));
+      else node.appendChild(document.createTextNode(p));
+    }
+    return node;
+  }
+  function richText(container, str) {
+    var lines = String(str).split("\n"), ol = null;
+    for (var i = 0; i < lines.length; i++) {
+      var ln = lines[i]; if (!ln) continue;
+      var m = /^(\d+)\.\s+([\s\S]*)$/.exec(ln);
+      if (m) { if (!ol) { ol = el("ol", "steps"); container.appendChild(ol); } var li = el("li"); mdInto(li, m[2]); ol.appendChild(li); }
+      else { ol = null; var p = el("p"); mdInto(p, ln); container.appendChild(p); }
+    }
+    return container;
+  }
+  function norm(s) {
+    s = String(s).toLowerCase().replace(/ß/g, "ss").replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue");
+    s = s.replace(/[.,!?;:"„“”'’‚‘…]/g, " ").replace(/\s+/g, " ").replace(/^ /, "").replace(/ $/, "");
+    return s;
+  }
+  function blankOk(user, ans) {
+    var alts = String(ans).split("|"), u = norm(user);
+    if (!u) return false;
+    for (var i = 0; i < alts.length; i++) if (norm(alts[i]) === u) return true;
+    return false;
+  }
+  function writeOk(user, answers) {
+    var u = norm(user); if (!u) return false;
+    for (var i = 0; i < answers.length; i++) if (norm(answers[i]) === u) return true;
+    return false;
+  }
+  function dispPunct(ans, isQ) { if (ans.indexOf(" ") < 0) return ans; return ans + (isQ ? "?" : "."); }
+
+  var prog = (function () {
+    var o = { ex: {} }, raw = lsGet(STORE_KEY);
+    if (raw) { try { var p = JSON.parse(raw); if (p && p.ex) o.ex = p.ex; } catch (e) {} }
+    return o;
+  })();
+  function saveProg() { lsSet(STORE_KEY, JSON.stringify(prog)); }
+
+  function applyLanguage(code) {
+    lang = code; STR = STRINGS[code];
+    root.lang = STR.lang; root.dir = STR.dir;
+    root.style.setProperty("--font", STR.font);
+    document.title = STR.appTitle;
+    $("picker").hidden = true; $("app").hidden = false;
+    render();
+  }
+  function showPicker() {
+    lang = null; STR = null;
+    root.lang = "de"; root.dir = "ltr"; root.style.removeProperty("--font");
+    document.title = "Perfekt: haben oder sein? · Regel 9 · A1";
+    $("picker").hidden = false; $("app").hidden = true;
+    window.scrollTo(0, 0);
+  }
+  function buildPicker() {
+    var prompt = $("pickPrompt"), list = $("langList");
+    LANG_ORDER.forEach(function (code) {
+      var s = STRINGS[code];
+      var pe = el("p", "", s.pickPrompt); pe.lang = s.lang; pe.dir = s.dir; pe.style.fontFamily = s.font; prompt.appendChild(pe);
+      var b = el("button", "langchoice", s.nativeName); b.type = "button"; b.lang = s.lang; b.dir = s.dir; b.style.fontFamily = s.font;
+      b.style.setProperty("--c", s.accent); b.style.setProperty("--cd", s.accentDark);
+      b.addEventListener("click", function () { applyLanguage(code); });
+      list.appendChild(b);
+    });
+  }
+
+  function renderTable(spec) {
+    var wrap = el("div", "tablewrap"); wrap.dir = "ltr";
+    var table = el("table"); table.dir = "ltr"; table.lang = "de";
+    var heads = ["inf", "perf", "ex"], de = { inf:"Infinitiv", perf:"Perfekt", ex:"Beispielsatz" };
+    var thead = el("thead"), tr = el("tr");
+    heads.forEach(function (h) {
+      var th = el("th"); th.appendChild(document.createTextNode(de[h]));
+      if (STR.col[h] !== de[h]) th.appendChild(setLangAttrs(el("small", "", STR.col[h]), lang));
+      tr.appendChild(th);
+    });
+    thead.appendChild(tr); table.appendChild(thead);
+    var tb = el("tbody");
+    spec.rows.forEach(function (row) {
+      var trr = el("tr");
+      row.forEach(function (v, c) {
+        var td = el("td");
+        if (c === 1) td.appendChild(el("strong", "", v)); else td.appendChild(document.createTextNode(v));
+        trr.appendChild(td);
+      });
+      tb.appendChild(trr);
+    });
+    table.appendChild(tb); wrap.appendChild(table);
+    return wrap;
+  }
+
+  function render() {
+    var app = $("app"); app.innerHTML = "";
+    var bar = el("div", "topbar");
+    bar.appendChild(deNode("span", "brand", "Das Perfekt · A1"));
+    var lb = el("button", "pill", "🌐 " + STR.nativeName); lb.type = "button"; setLangAttrs(lb, lang);
+    lb.addEventListener("click", showPicker);
+    bar.appendChild(lb); app.appendChild(bar);
+
+    var head = el("header", "sechead");
+    head.appendChild(tgNode("div", "kicker", fmt(STR.ruleN, { n: SEC.rule })));
+    var h2 = el("h1", "sectitle");
+    h2.appendChild(deNode("span", "tde", SEC.title.de));
+    if (tl(SEC.title) !== SEC.title.de) h2.appendChild(tgNode("span", "ttr", tl(SEC.title)));
+    head.appendChild(h2); app.appendChild(head);
+
+    var card = el("div", "card");
+    var kd = deNode("div", "keyde"); mdInto(kd, SEC.text.de); card.appendChild(kd);
+    var body = tgNode("div", "ruletext"); richText(body, tl(SEC.text)); card.appendChild(body);
+    app.appendChild(card);
+
+    SEC.tables.forEach(function (tb) {
+      var lab = el("div", "tlabel"); lab.appendChild(deNode("span", "", tb.label.de));
+      if (tl(tb.label) !== tb.label.de) { lab.appendChild(document.createTextNode(" · ")); lab.appendChild(tgNode("span", "", tl(tb.label))); }
+      app.appendChild(lab);
+      app.appendChild(renderTable(tb));
+    });
+
+    var mm = el("div", "memo");
+    mm.appendChild(tgNode("div", "memolabel", "💡 " + STR.memoLabel));
+    var md = deNode("div", "memode"); mdInto(md, SEC.memo.de); mm.appendChild(md);
+    var mt = tgNode("div", "memotext"); mdInto(mt, tl(SEC.memo)); mm.appendChild(mt);
+    app.appendChild(mm);
+
+    SEC.ex.forEach(function (ex) { app.appendChild(buildExercise(ex)); });
+    window.scrollTo(0, 0);
+  }
+
+  function newState(ex) {
+    var st = { vals: [] };
+    ex.items.forEach(function (it) {
+      if (ex.kind === "fill") { var n = it.t.split("___").length - 1, bl = []; for (var b = 0; b < n; b++) bl.push(""); st.vals.push(bl); }
+      else st.vals.push("");
+    });
+    return st;
+  }
+  function umlautBar(card) {
+    var bar = el("div", "umlauts"); bar.dir = "ltr";
+    ["ä", "ö", "ü", "ß"].forEach(function (ch) {
+      var b = el("button", "", ch); b.type = "button"; b.lang = "de";
+      b.addEventListener("mousedown", function (e) { e.preventDefault(); });
+      b.addEventListener("click", function () {
+        var inp = lastInput; if (!inp || !card.contains(inp)) return;
+        var s = inp.selectionStart, e2 = inp.selectionEnd;
+        if (typeof s !== "number") inp.value += ch;
+        else { inp.value = inp.value.slice(0, s) + ch + inp.value.slice(e2); try { inp.selectionStart = inp.selectionEnd = s + 1; } catch (er) {} }
+        var ev = document.createEvent("Event"); ev.initEvent("input", true, true); inp.dispatchEvent(ev); inp.focus();
+      });
+      bar.appendChild(b);
+    });
+    return bar;
+  }
+
+  function buildExercise(ex) {
+    var st = exState[ex.id]; if (!st) st = exState[ex.id] = newState(ex);
+    var card = el("section", "excard");
+    var head = el("div", "exhead");
+    head.appendChild(tgNode("h3", "", fmt(STR.exLabel, { n: ex.n })));
+    var badge = tgNode("span", "badge", ""); head.appendChild(badge); card.appendChild(head);
+    card.appendChild(deNode("p", "insde", ex.de));
+    card.appendChild(tgNode("p", "inst", STR[ex.ins]));
+    function setBadge() {
+      var s = prog.ex[ex.id];
+      badge.className = "badge" + (s ? " b-" + s : "");
+      badge.textContent = s === "ok" ? "✓ " + STR.stDone : s === "sol" ? "• " + STR.solShown : "";
+    }
+    setBadge();
+
+    var list = el("ol", "items"); card.appendChild(list);
+    var recs = [];
+    var res = tgNode("div", "result", ""); res.setAttribute("role", "status"); res.setAttribute("aria-live", "polite");
+
+    function clearMark(i) { recs[i].li.className = "item"; recs[i].mark.textContent = ""; }
+    function setMark(i, ok) { recs[i].li.className = "item " + (ok ? "ok" : "bad"); recs[i].mark.textContent = ok ? "✓" : "✗"; }
+    function inputCls(inp, c) { inp.className = inp.className.replace(/ ?(okin|badin)/g, "") + (c ? " " + c : ""); }
+
+    ex.items.forEach(function (it, i) {
+      var li = el("li", "item");
+      var rec = { li: li, mark: el("span", "mark"), inputs: [] };
+      rec.mark.setAttribute("aria-hidden", "true");
+      recs.push(rec);
+      var main = el("div", "imain");
+      if (ex.kind === "fill") {
+        var parts = it.t.split("___"), row = deNode("div", "line");
+        for (var b = 0; b < parts.length; b++) {
+          row.appendChild(document.createTextNode(parts[b]));
+          if (b < parts.length - 1) (function (b) {
+            var inp = el("input", "blank"); inp.type = "text";
+            inp.setAttribute("autocomplete", "off"); inp.setAttribute("autocapitalize", "none"); inp.setAttribute("autocorrect", "off");
+            inp.spellcheck = false; inp.lang = "de"; inp.dir = "ltr";
+            inp.style.width = Math.max(5, it.a[b].split("|")[0].length + 3) + "ch";
+            inp.value = st.vals[i][b] || "";
+            inp.addEventListener("input", function () { st.vals[i][b] = inp.value; clearMark(i); inputCls(inp, ""); });
+            inp.addEventListener("focus", function () { lastInput = inp; });
+            rec.inputs.push(inp); row.appendChild(inp);
+          })(b);
+        }
+        main.appendChild(row);
+        rec.ev = function () { for (var k = 0; k < it.a.length; k++) if (!blankOk(st.vals[i][k] || "", it.a[k])) return false; return true; };
+        rec.showSol = function () { for (var k = 0; k < it.a.length; k++) { var v = it.a[k].split("|")[0]; st.vals[i][k] = v; rec.inputs[k].value = v; } };
+      } else {
+        main.appendChild(deNode("div", "wprompt", it.t));
+        var inp2 = el("input", "blank wide"); inp2.type = "text";
+        inp2.setAttribute("autocomplete", "off"); inp2.setAttribute("autocapitalize", "sentences"); inp2.setAttribute("autocorrect", "off");
+        inp2.spellcheck = false; inp2.lang = "de"; inp2.dir = "ltr";
+        inp2.value = st.vals[i] || "";
+        inp2.addEventListener("input", function () { st.vals[i] = inp2.value; clearMark(i); inputCls(inp2, ""); });
+        inp2.addEventListener("focus", function () { lastInput = inp2; });
+        rec.inputs.push(inp2); main.appendChild(inp2);
+        rec.ev = function () { return writeOk(st.vals[i] || "", it.a); };
+        rec.showSol = function () { var v = (norm(it.a[0]) === "richtig") ? it.a[0] : dispPunct(it.a[0], /\?\s*$/.test(it.t)); st.vals[i] = v; inp2.value = v; };
+      }
+      li.appendChild(main); li.appendChild(rec.mark); list.appendChild(li);
+    });
+    card.appendChild(umlautBar(card));
+    card.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter" || !e.target || e.target.tagName !== "INPUT") return;
+      var all = card.querySelectorAll("input.blank"), k;
+      for (k = 0; k < all.length; k++) if (all[k] === e.target) break;
+      e.preventDefault();
+      if (k < all.length - 1) all[k + 1].focus(); else checkBtn.click();
+    });
+
+    var btnRow = el("div", "btnrow");
+    var checkBtn = el("button", "main", STR.check); checkBtn.type = "button"; setLangAttrs(checkBtn, lang);
+    var solBtn = el("button", "sec", STR.solution); solBtn.type = "button"; setLangAttrs(solBtn, lang);
+    var rstBtn = el("button", "linkbtn", STR.restart); rstBtn.type = "button"; setLangAttrs(rstBtn, lang);
+    btnRow.appendChild(checkBtn); btnRow.appendChild(solBtn); btnRow.appendChild(rstBtn);
+    card.appendChild(btnRow); card.appendChild(res);
+
+    function setRes(text, cls) { res.className = "result " + cls; res.textContent = text; }
+
+    checkBtn.addEventListener("click", function () {
+      var right = 0;
+      recs.forEach(function (r, i) {
+        var ok = r.ev(); setMark(i, ok); if (ok) right++;
+        r.inputs.forEach(function (inp) { inputCls(inp, ok ? "okin" : "badin"); });
+      });
+      var n = recs.length;
+      if (right === n) {
+        if (prog.ex[ex.id] !== "ok") { prog.ex[ex.id] = "ok"; saveProg(); }
+        setBadge(); setRes(fmt(STR.resFmt, { r: right, n: n }) + " · " + STR.allOk, "good");
+      } else setRes(fmt(STR.resFmt, { r: right, n: n }) + " · " + STR.fixIt, "warn");
+    });
+    solBtn.addEventListener("click", function () {
+      recs.forEach(function (r) {
+        r.showSol(); r.li.className = "item shown"; r.mark.textContent = "";
+        r.inputs.forEach(function (inp) { inputCls(inp, ""); });
+      });
+      if (!prog.ex[ex.id]) { prog.ex[ex.id] = "sol"; saveProg(); }
+      setBadge(); setRes(STR.solShown, "info");
+    });
+    rstBtn.addEventListener("click", function () {
+      delete exState[ex.id];
+      card.parentNode.replaceChild(buildExercise(ex), card);
+    });
+    return card;
+  }
+
+  buildPicker();
+})();
+</script>
+</body>
+</html>

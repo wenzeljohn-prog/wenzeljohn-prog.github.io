@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jahreszahlen hören und schreiben</title>
+<style>
+  :root{
+    --bg:#f4f6fa; --card:#fff; --text:#1d2433; --muted:#667085; --line:#d9deea;
+    --primary:#2557d6; --primary-d:#1b43a8; --ok:#1a8f4c; --ok-bg:#e6f6ec; --bad:#c7362b; --bad-bg:#fdeceb;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:20px}
+  .app{width:100%;max-width:640px}
+  h1{font-size:1.5rem;margin:0 0 4px;text-align:center}
+  .sub{color:var(--muted);text-align:center;margin:0 0 18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 2px 8px rgba(20,30,60,.05)}
+  label{display:block;font-weight:600;margin:14px 0 6px}
+  select,input[type=range]{width:100%}
+  select{padding:10px;border-radius:10px;border:1px solid var(--line);font-size:1rem;background:#fff}
+  button{font:inherit;cursor:pointer;border-radius:12px;border:none;padding:12px 20px;font-weight:600}
+  .primary{background:var(--primary);color:#fff}
+  .primary:hover{background:var(--primary-d)}
+  .secondary{background:#eef1f8;color:var(--text);border:1px solid var(--line)}
+  .secondary:hover{background:#e3e8f4}
+  .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+  .hidden{display:none!important}
+  .progress{display:flex;justify-content:space-between;color:var(--muted);font-size:.95rem;margin-bottom:8px}
+  .bar{height:8px;background:#e6eaf3;border-radius:99px;overflow:hidden;margin-bottom:18px}
+  .bar>div{height:100%;background:var(--primary);width:0;transition:width .3s}
+  .play{display:block;margin:6px auto 4px;width:110px;height:110px;border-radius:50%;background:var(--primary);color:#fff;font-size:3rem;padding:0;line-height:1}
+  .play:hover{background:var(--primary-d)}
+  .play.playing{animation:pulse 1s infinite}
+  @keyframes pulse{50%{transform:scale(1.06)}}
+  .hint{text-align:center;color:var(--muted);margin:8px 0 14px}
+  .answer{display:block;width:100%;max-width:260px;margin:0 auto;font-size:2.4rem;text-align:center;letter-spacing:.15em;padding:10px;border-radius:12px;border:2px solid var(--line);font-variant-numeric:tabular-nums}
+  .answer:focus{outline:none;border-color:var(--primary)}
+  .answer.ok{border-color:var(--ok);background:var(--ok-bg)}
+  .answer.bad{border-color:var(--bad);background:var(--bad-bg)}
+  .feedback{text-align:center;margin-top:14px;min-height:3.2em;font-size:1.1rem}
+  .feedback.ok{color:var(--ok)} .feedback.bad{color:var(--bad)}
+  .feedback .word{display:block;color:var(--muted);font-size:.95rem;margin-top:4px}
+  .result-score{font-size:3rem;font-weight:800;text-align:center;margin:6px 0}
+  .result-text{text-align:center;color:var(--muted);margin-bottom:14px}
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.95rem}
+  th,td{padding:8px;border-bottom:1px solid var(--line);text-align:left}
+  th{color:var(--muted);font-weight:600}
+  .warn{background:#fff6e0;border:1px solid #f0d58a;color:#7a5a00;border-radius:10px;padding:10px 12px;margin-top:14px;font-size:.92rem}
+  .small{font-size:.85rem;color:var(--muted);text-align:center;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>🎧 Jahreszahlen hören</h1>
+  <p class="sub">Hören Sie die Jahreszahl und schreiben Sie sie mit Ziffern.</p>
+
+  <!-- Start -->
+  <div id="screen-start" class="card">
+    <label for="range">Bereich</label>
+    <select id="range">
+      <option value="1950-2030" selected>1950 – 2030 (alle)</option>
+      <option value="1950-1999">1950 – 1999</option>
+      <option value="2000-2030">2000 – 2030</option>
+    </select>
+
+    <label for="count">Anzahl der Aufgaben</label>
+    <select id="count">
+      <option value="10" selected>10</option>
+      <option value="20">20</option>
+      <option value="30">30</option>
+      <option value="all">Alle Jahre des Bereichs</option>
+    </select>
+
+    <label for="voice">Stimme</label>
+    <select id="voice"></select>
+
+    <label for="rate">Sprechtempo: <span id="rateVal">0,85</span></label>
+    <input type="range" id="rate" min="0.5" max="1.2" step="0.05" value="0.85">
+
+    <label style="display:flex;gap:8px;align-items:center;font-weight:500">
+      <input type="checkbox" id="showWord" checked> Nach der Antwort die Zahl als Wort anzeigen
+    </label>
+
+    <div id="voiceWarn" class="warn hidden">
+      Auf diesem Gerät wurde keine deutsche Stimme gefunden. Bitte installieren Sie eine deutsche Sprachausgabe
+      (Systemeinstellungen → Sprache) oder öffnen Sie die Datei in Chrome, Edge oder Safari.
+    </div>
+    <div id="noTts" class="warn hidden">Dieser Browser unterstützt keine Sprachausgabe. Bitte verwenden Sie Chrome, Edge oder Safari.</div>
+
+    <div class="row"><button class="primary" id="btnStart">Start</button></div>
+  </div>
+
+  <!-- Quiz -->
+  <div id="screen-quiz" class="card hidden">
+    <div class="progress"><span id="pTxt">Aufgabe 1 / 10</span><span id="sTxt">Richtig: 0</span></div>
+    <div class="bar"><div id="pBar"></div></div>
+
+    <button class="play" id="btnPlay" title="Abspielen (Leertaste ist nicht belegt – Strg+Leertaste)" aria-label="Abspielen">▶</button>
+    <div class="hint">Noch einmal hören: Taste <b>Strg</b> + <b>Leertaste</b> oder auf den Knopf klicken</div>
+
+    <input id="answer" class="answer" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="····" aria-label="Jahreszahl">
+    <div id="feedback" class="feedback" aria-live="polite"></div>
+
+    <div class="row">
+      <button class="primary" id="btnCheck">Prüfen</button>
+      <button class="primary hidden" id="btnNext">Weiter</button>
+    </div>
+    <div class="row"><button class="secondary" id="btnAbort">Abbrechen</button></div>
+  </div>
+
+  <!-- Ergebnis -->
+  <div id="screen-result" class="card hidden">
+    <div class="result-score" id="rScore"></div>
+    <div class="result-text" id="rText"></div>
+    <div id="rMistakes"></div>
+    <div class="row">
+      <button class="primary hidden" id="btnRetryWrong">Fehler wiederholen</button>
+      <button class="secondary" id="btnAgain">Neue Runde</button>
+    </div>
+  </div>
+
+  <p class="small">Tipp: Mit Enter prüfen und weiter. Das Audio wird direkt im Browser erzeugt (kein Internet nötig, wenn eine deutsche Stimme installiert ist).</p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Zahl -> deutsches Wort ---------- */
+  const UNITS = ["","ein","zwei","drei","vier","fünf","sechs","sieben","acht","neun"];
+  const TEENS = ["zehn","elf","zwölf","dreizehn","vierzehn","fünfzehn","sechzehn","siebzehn","achtzehn","neunzehn"];
+  const TENS  = ["","","zwanzig","dreißig","vierzig","fünfzig","sechzig","siebzig","achtzig","neunzig"];
+
+  // 1..99; endsWithOne: "eins" statt "ein" (z. B. zweitausendeins)
+  function below100(n){
+    if(n===0) return "";
+    if(n<10)  return n===1 ? "eins" : UNITS[n];
+    if(n<20)  return TEENS[n-10];
+    const t = Math.floor(n/10), u = n%10;
+    if(u===0) return TENS[t];
+    return UNITS[u] + "und" + TENS[t];   // "ein" bleibt hier: einundzwanzig
+  }
+  function yearToWord(y){
+    if(y>=2000){
+      return "zweitausend" + below100(y-2000);
+    }
+    return "neunzehnhundert" + below100(y-1900);
+  }
+  // Schreibweise für die Anzeige (z. B. "neunzehnhundert­einundsechzig")
+  function pretty(w){ return w.charAt(0).toUpperCase()+w.slice(1); }
+
+  /* ---------- Sprachausgabe ---------- */
+  const tts = ("speechSynthesis" in window) ? window.speechSynthesis : null;
+  let voices = [];
+  const $ = id => document.getElementById(id);
+
+  function loadVoices(){
+    if(!tts) return;
+    voices = tts.getVoices().filter(v => /^de(-|_|$)/i.test(v.lang));
+    // bevorzugt de-DE, dann de-AT / de-CH
+    voices.sort((a,b)=>{
+      const sa = /de[-_]DE/i.test(a.lang)?0:1, sb = /de[-_]DE/i.test(b.lang)?0:1;
+      return sa-sb || a.name.localeCompare(b.name);
+    });
+    const sel = $("voice"); const old = sel.value;
+    sel.innerHTML = "";
+    voices.forEach((v,i)=>{
+      const o = document.createElement("option");
+      o.value = i; o.textContent = v.name + " (" + v.lang + ")";
+      sel.appendChild(o);
+    });
+    if(old && sel.querySelector('option[value="'+old+'"]')) sel.value = old;
+    $("voiceWarn").classList.toggle("hidden", voices.length>0);
+    if(!voices.length){
+      const o = document.createElement("option");
+      o.textContent = "Standardstimme"; o.value = "";
+      sel.appendChild(o);
+    }
+  }
+  if(tts){
+    loadVoices();
+    if(tts.onvoiceschanged !== undefined) tts.onvoiceschanged = loadVoices;
+  } else {
+    $("noTts").classList.remove("hidden");
+    $("btnStart").disabled = true;
+  }
+
+  function speak(text){
+    if(!tts) return;
+    tts.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "de-DE";
+    const sel = $("voice").value;
+    if(sel!=="" && voices[sel]) { u.voice = voices[sel]; u.lang = voices[sel].lang; }
+    u.rate = parseFloat($("rate").value);
+    const btn = $("btnPlay");
+    u.onstart = ()=>btn.classList.add("playing");
+    u.onend = u.onerror = ()=>btn.classList.remove("playing");
+    tts.speak(u);
+  }
+
+  $("rate").addEventListener("input", ()=>{
+    $("rateVal").textContent = parseFloat($("rate").value).toFixed(2).replace(".",",");
+  });
+
+  /* ---------- Quiz-Zustand ---------- */
+  let queue = [], idx = 0, correct = 0, wrong = [], answered = false, current = null;
+
+  function shuffle(a){
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+  function show(id){
+    ["screen-start","screen-quiz","screen-result"].forEach(s=>$(s).classList.toggle("hidden", s!==id));
+  }
+
+  function startRound(years){
+    queue = years; idx = 0; correct = 0; wrong = [];
+    show("screen-quiz");
+    nextQuestion();
+  }
+
+  function nextQuestion(){
+    if(idx >= queue.length){ return finish(); }
+    current = queue[idx]; answered = false;
+    $("pTxt").textContent = "Aufgabe " + (idx+1) + " / " + queue.length;
+    $("sTxt").textContent = "Richtig: " + correct;
+    $("pBar").style.width = (idx/queue.length*100) + "%";
+    const inp = $("answer");
+    inp.value = ""; inp.disabled = false; inp.className = "answer";
+    $("feedback").className = "feedback"; $("feedback").innerHTML = "";
+    $("btnCheck").classList.remove("hidden");
+    $("btnNext").classList.add("hidden");
+    inp.focus();
+    setTimeout(()=>speak(yearToWord(current)), 250);
+  }
+
+  function check(){
+    if(answered) return;
+    const inp = $("answer");
+    const val = inp.value.trim();
+    if(val.length !== 4){
+      $("feedback").className = "feedback bad";
+      $("feedback").textContent = "Bitte geben Sie vier Ziffern ein.";
+      inp.focus();
+      return;
+    }
+    answered = true;
+    inp.disabled = true;
+    const fb = $("feedback");
+    const word = $("showWord").checked ? '<span class="word">'+pretty(yearToWord(current))+'</span>' : "";
+    if(parseInt(val,10) === current){
+      correct++;
+      inp.classList.add("ok");
+      fb.className = "feedback ok";
+      fb.innerHTML = "✔ Richtig: <b>"+current+"</b>" + word;
+    } else {
+      wrong.push({year: current, given: val});
+      inp.classList.add("bad");
+      fb.className = "feedback bad";
+      fb.innerHTML = "✘ Leider falsch. Richtig ist: <b>"+current+"</b>" + word;
+    }
+    $("sTxt").textContent = "Richtig: " + correct;
+    $("btnCheck").classList.add("hidden");
+    $("btnNext").classList.remove("hidden");
+    $("btnNext").focus();
+  }
+
+  function next(){ idx++; nextQuestion(); }
+
+  function finish(){
+    if(tts) tts.cancel();
+    $("pBar").style.width = "100%";
+    const total = queue.length;
+    const pct = Math.round(correct/total*100);
+    $("rScore").textContent = correct + " / " + total;
+    $("rText").textContent = pct + " % richtig" + (wrong.length ? "" : " – sehr gut! 🎉");
+    const box = $("rMistakes");
+    if(wrong.length){
+      let h = "<table><thead><tr><th>Gehört</th><th>Ihre Antwort</th><th>Richtig</th></tr></thead><tbody>";
+      wrong.forEach(w=>{
+        h += "<tr><td>"+pretty(yearToWord(w.year))+"</td><td>"+w.given+"</td><td><b>"+w.year+"</b></td></tr>";
+      });
+      h += "</tbody></table>";
+      box.innerHTML = h;
+    } else box.innerHTML = "";
+    $("btnRetryWrong").classList.toggle("hidden", wrong.length===0);
+    show("screen-result");
+  }
+
+  /* ---------- Events ---------- */
+  $("btnStart").addEventListener("click", ()=>{
+    const [from,to] = $("range").value.split("-").map(Number);
+    let years = [];
+    for(let y=from;y<=to;y++) years.push(y);
+    shuffle(years);
+    const c = $("count").value;
+    if(c!=="all") years = years.slice(0, Math.min(parseInt(c,10), years.length));
+    startRound(years);
+  });
+
+  $("btnPlay").addEventListener("click", ()=>{ if(current!==null){ speak(yearToWord(current)); $("answer").focus(); } });
+  $("btnCheck").addEventListener("click", check);
+  $("btnNext").addEventListener("click", next);
+  $("btnAbort").addEventListener("click", ()=>{ if(tts) tts.cancel(); show("screen-start"); });
+  $("btnAgain").addEventListener("click", ()=>show("screen-start"));
+  $("btnRetryWrong").addEventListener("click", ()=>{
+    startRound(shuffle(wrong.map(w=>w.year)));
+  });
+
+  // nur Ziffern erlauben
+  $("answer").addEventListener("input", e=>{
+    e.target.value = e.target.value.replace(/\D/g,"").slice(0,4);
+  });
+
+  document.addEventListener("keydown", e=>{
+    if($("screen-quiz").classList.contains("hidden")) return;
+    if(e.key==="Enter"){
+      e.preventDefault();
+      answered ? next() : check();
+    } else if(e.ctrlKey && e.code==="Space"){
+      e.preventDefault();
+      speak(yearToWord(current));
+    }
+  });
+
+  // Selbsttest der Zahlwörter (Konsole)
+  console.assert(yearToWord(1950)==="neunzehnhundertfünfzig");
+  console.assert(yearToWord(1961)==="neunzehnhunderteinsundsechzig" ? false : yearToWord(1961)==="neunzehnhunderteinundsechzig");
+  console.assert(yearToWord(2000)==="zweitausend");
+  console.assert(yearToWord(2001)==="zweitausendeins");
+  console.assert(yearToWord(2011)==="zweitausendelf");
+  console.assert(yearToWord(2030)==="zweitausenddreißig");
+})();
+</script>
+</body>
+</html>

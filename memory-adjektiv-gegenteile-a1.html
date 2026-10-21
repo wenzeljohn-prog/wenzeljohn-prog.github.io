@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memory: Adjektiv-Gegenteile A1</title>
+<style>
+  :root {
+    --bg: #f4f6fb;
+    --card: #2f5d9e;
+    --card-hover: #3b70bb;
+    --text: #1d2433;
+    --open: #ffffff;
+    --border: #c9d2e3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 16px;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; text-align: center; }
+  p.sub { text-align: center; margin: 0 0 14px; color: #55607a; }
+  .tasks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 8px; margin: 0 0 16px;
+  }
+  .tasks .t {
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 12px;
+    font-size: 1.05rem; line-height: 1.5;
+  }
+  .tasks .l {
+    display: inline-block; min-width: 2em; margin: 0 6px;
+    padding: 0 6px; border-radius: 4px;
+    background: #2f5d9e; color: #fff;
+    font-size: .75rem; font-weight: 700;
+    text-align: center; vertical-align: middle;
+  }
+  .bar {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    justify-content: center; align-items: center;
+    margin-bottom: 16px; font-size: 1.1rem;
+  }
+  .bar span b { font-size: 1.25rem; }
+  button.btn {
+    background: #2f5d9e; color: #fff; border: 0;
+    padding: 9px 18px; border-radius: 8px;
+    font-size: 1rem; cursor: pointer;
+  }
+  button.btn:hover { background: #3b70bb; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  .card {
+    aspect-ratio: 4 / 3;
+    perspective: 700px;
+    cursor: pointer;
+    border: 0; background: none; padding: 0;
+  }
+  .inner {
+    position: relative; width: 100%; height: 100%;
+    transition: transform .45s;
+    transform-style: preserve-3d;
+  }
+  .card.open .inner, .card.done .inner { transform: rotateY(180deg); }
+  .face {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 10px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    font-weight: 600;
+    text-align: center;
+  }
+  .front {
+    background: var(--card); color: #fff;
+    font-size: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,.18);
+  }
+  .card:hover .front { background: var(--card-hover); }
+  .back {
+    background: var(--open);
+    border: 3px solid var(--border);
+    transform: rotateY(180deg);
+    font-size: clamp(1rem, 2.6vw, 1.5rem);
+    padding: 4px;
+  }
+  .card.done .back { border-color: transparent; color: #12301c; }
+  .card.wrong .back { border-color: #d9534f; }
+  .msg {
+    text-align: center; min-height: 1.6em;
+    margin-top: 14px; font-size: 1.15rem; font-weight: 600;
+  }
+  .win {
+    display: none; text-align: center; margin-top: 12px;
+    padding: 14px; background: #e3f6e8; border-radius: 10px;
+    font-size: 1.2rem;
+  }
+  .pairs {
+    display: none; margin-top: 16px; background: #fff;
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px;
+  }
+  .pairs h2 { margin: 0 0 8px; font-size: 1.1rem; }
+  .pairs ul { margin: 0; padding-left: 0; list-style: none;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 6px; }
+  .pairs li { padding: 6px 10px; border-radius: 6px; }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: repeat(4, 1fr); gap: 7px; }
+    .front { font-size: 1.4rem; }
+  }
+  @media (max-width: 440px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Memory: Gegenteile</h1>
+  <p class="sub">Finde die Adjektive mit der gegenteiligen Bedeutung. (A1)</p>
+  <div class="tasks">
+    <div class="t" lang="ru" dir="ltr"><span class="l">RU</span> Найди прилагательные с противоположным значением.</div>
+    <div class="t" lang="en" dir="ltr"><span class="l">EN</span> Find the adjectives with opposite meanings.</div>
+    <div class="t" lang="tr" dir="ltr"><span class="l">TR</span> Zıt anlamlı sıfatları bul.</div>
+    <div class="t" lang="ar" dir="rtl"><span class="l">AR</span> ابحث عن الصفات ذات المعاني المتضادة.</div>
+    <div class="t" lang="fa" dir="rtl"><span class="l">FA</span> صفت‌هایی را پیدا کن که معنای متضاد دارند.</div>
+  </div>
+
+  <div class="bar">
+    <span>Züge: <b id="moves">0</b></span>
+    <span>Paare: <b id="found">0</b> / 10</span>
+    <button class="btn" id="restart" type="button">Neu mischen</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="msg" id="msg"></div>
+  <div class="win" id="win">Super! Du hast alle 10 Gegensatzpaare gefunden.</div>
+
+  <div class="pairs" id="pairs">
+    <h2>Alle Paare</h2>
+    <ul id="pairlist"></ul>
+  </div>
+</div>
+
+<script>
+(function () {
+  var PAIRS = [
+    ["hell", "dunkel"],
+    ["neu", "alt"],
+    ["groß", "klein"],
+    ["schön", "hässlich"],
+    ["gut", "schlecht"],
+    ["interessant", "langweilig"],
+    ["laut", "ruhig"],
+    ["kurz", "lang"],
+    ["billig", "teuer"],
+    ["nah", "weit"]
+  ];
+  var COLORS = ["#ffe9a8","#d6d6d6","#cfe8ff","#ffd3e0","#d4f3d0",
+                "#e6d5ff","#ffd9b3","#c9f1ee","#f3f0b0","#e0cfc4"];
+
+  var grid = document.getElementById("grid");
+  var movesEl = document.getElementById("moves");
+  var foundEl = document.getElementById("found");
+  var msgEl = document.getElementById("msg");
+  var winEl = document.getElementById("win");
+  var pairsEl = document.getElementById("pairs");
+  var listEl = document.getElementById("pairlist");
+
+  var first = null, second = null, lock = false, moves = 0, found = 0;
+
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function setup() {
+    grid.innerHTML = "";
+    msgEl.textContent = "";
+    winEl.style.display = "none";
+    pairsEl.style.display = "none";
+    first = second = null; lock = false; moves = 0; found = 0;
+    movesEl.textContent = "0"; foundEl.textContent = "0";
+
+    var cards = [];
+    PAIRS.forEach(function (p, i) {
+      cards.push({ id: i, word: p[0] });
+      cards.push({ id: i, word: p[1] });
+    });
+    shuffle(cards).forEach(function (c) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "card";
+      b.dataset.id = c.id;
+      b.setAttribute("aria-label", "Karte");
+      b.innerHTML =
+        '<div class="inner">' +
+        '<div class="face front">?</div>' +
+        '<div class="face back"></div>' +
+        '</div>';
+      b.querySelector(".back").textContent = c.word;
+      b.addEventListener("click", function () { flip(b); });
+      grid.appendChild(b);
+    });
+  }
+
+  function flip(card) {
+    if (lock) return;
+    if (card.classList.contains("open") || card.classList.contains("done")) return;
+    card.classList.remove("wrong");
+    card.classList.add("open");
+    if (!first) { first = card; return; }
+    second = card;
+    moves++;
+    movesEl.textContent = moves;
+    check();
+  }
+
+  function check() {
+    lock = true;
+    if (first.dataset.id === second.dataset.id) {
+      var col = COLORS[+first.dataset.id];
+      [first, second].forEach(function (c) {
+        c.classList.remove("open");
+        c.classList.add("done");
+        c.querySelector(".back").style.background = col;
+      });
+      var w1 = first.querySelector(".back").textContent;
+      var w2 = second.querySelector(".back").textContent;
+      msgEl.textContent = "Richtig: " + w1 + " ↔ " + w2;
+      found++;
+      foundEl.textContent = found;
+      reset();
+      if (found === PAIRS.length) finish();
+    } else {
+      msgEl.textContent = "Nicht gleich – versuch es noch einmal.";
+      first.classList.add("wrong");
+      second.classList.add("wrong");
+      var a = first, b = second;
+      setTimeout(function () {
+        a.classList.remove("open", "wrong");
+        b.classList.remove("open", "wrong");
+        reset();
+      }, 1100);
+    }
+  }
+
+  function reset() { first = second = null; lock = false; }
+
+  function finish() {
+    winEl.style.display = "block";
+    winEl.textContent = "Super! Du hast alle 10 Paare mit " + moves + " Zügen gefunden.";
+    listEl.innerHTML = "";
+    PAIRS.forEach(function (p, i) {
+      var li = document.createElement("li");
+      li.style.background = COLORS[i];
+      li.textContent = p[0] + " ↔ " + p[1];
+      listEl.appendChild(li);
+    });
+    pairsEl.style.display = "block";
+  }
+
+  document.getElementById("restart").addEventListener("click", setup);
+  setup();
+})();
+</script>
+</body>
+</html>
