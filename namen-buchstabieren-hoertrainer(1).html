@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Familiennamen buchstabieren – Hörtrainer</title>
+<style>
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --ink:#1d2733; --muted:#5b6b7b; --line:#d5dde5;
+  --accent:#0f7b8a; --accent-ink:#ffffff; --ok:#1b7f3b; --okbg:#e5f4e9; --bad:#b3261e; --badbg:#fbe9e7;
+  --warnbg:#fff4d6; --warn:#7a5a00;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#141a21; --card:#1e2630; --ink:#e8eef4; --muted:#9bacbd; --line:#34414f;
+    --accent:#3cb4c4; --accent-ink:#06222a; --ok:#6fd08c; --okbg:#173524; --bad:#ff8a80; --badbg:#3b1e1b;
+    --warnbg:#3a3014; --warn:#f2d27a;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;margin:8px 0 4px}
+h2{font-size:1.15rem;margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px 18px}
+label{display:block;font-size:.92rem;color:var(--muted);margin-bottom:3px}
+select,input[type=text]{width:100%;font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+input[type=range]{width:100%}
+.check{display:flex;gap:8px;align-items:center;color:var(--ink);font-size:1rem}
+.check input{width:20px;height:20px}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 16px}
+button:hover:not(:disabled){border-color:var(--accent)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+button.big{font-size:1.25rem;padding:14px 26px}
+button.good{background:var(--okbg);color:var(--ok);border-color:var(--ok);font-weight:600}
+button.badbtn{background:var(--badbg);color:var(--bad);border-color:var(--bad);font-weight:600}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.top{display:flex;justify-content:space-between;color:var(--muted);font-size:.95rem;margin-bottom:8px}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.bar>div{height:100%;background:var(--accent);width:0;transition:width .3s}
+.player{text-align:center;padding:6px 0 10px}
+.status{min-height:1.6em;color:var(--muted);margin:8px 0}
+.keys{display:flex;gap:8px;margin:8px 0 12px}
+.keys button{padding:6px 14px;font-size:1.1rem}
+#answer{font-size:1.6rem;letter-spacing:.06em;padding:12px 14px}
+.fb{border-radius:12px;padding:14px;margin-top:14px}
+.fb.ok{background:var(--okbg);border:1px solid var(--ok)}
+.fb.bad{background:var(--badbg);border:1px solid var(--bad)}
+.fb h3{margin:0 0 6px;font-size:1.15rem}
+.spelled{font-size:1.9rem;letter-spacing:.18em;font-weight:700;word-break:break-all}
+.diff span.x{color:var(--bad);font-weight:700;text-decoration:underline}
+.diff{font-size:1.3rem;letter-spacing:.1em}
+.alts{margin-top:8px;color:var(--muted);font-size:.95rem}
+.alts b{color:var(--ink)}
+.notice{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 12px;margin-bottom:12px}
+.hidden{display:none!important}
+table{width:100%;border-collapse:collapse;font-size:.98rem}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
+td.r{color:var(--ok);font-weight:700} td.w{color:var(--bad);font-weight:700}
+.score{font-size:2.2rem;font-weight:700;margin:4px 0}
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:10px 0}
+.acell{display:flex;gap:6px;align-items:center}
+.acell .achar{width:1.6em;font-weight:700;text-align:center}
+.acell input{min-width:0;padding:6px 8px}
+.acell button{padding:4px 9px}
+details summary{cursor:pointer;font-weight:600}
+.small{font-size:.88rem;color:var(--muted)}
+@media print{
+  body{background:#fff;color:#000} .noprint{display:none!important}
+  .card{border:none;padding:0}
+}
+</style>
+</head>
+<body>
+<main>
+<h1>Familiennamen buchstabieren</h1>
+<p class="sub">Hörtrainer: Name hören, Buchstabieren hören, Schreibweise notieren.</p>
+
+<div id="notice" class="notice hidden" role="alert"></div>
+
+<!-- STARTSEITE -->
+<section id="screenStart">
+  <div class="card">
+    <h2>So funktioniert es</h2>
+    <p style="margin:0">Die Stimme spricht zuerst den ganzen Namen und danach Buchstabe für Buchstabe, zum Beispiel „Schmid – ess, zeh, H, M, i, D“. Die Teilnehmenden schreiben den Namen auf (Papier oder Eingabefeld). Verschiedene Schreibweisen klingen gleich (Meier, Meyer, Maier, Mayr …). Nur das Buchstabieren verrät, welche gemeint ist. Dazwischen kommen Telefonnummern: Nach der Ansage „Und hier meine Telefonnummer:“ folgen die Vorwahl und die Nummer, gemischt in einzelnen Ziffern sowie zwei- und dreistelligen Zahlen.</p>
+  </div>
+
+  <div class="card">
+    <h2>Einstellungen</h2>
+    <div class="grid">
+      <div><label for="taskType">Aufgaben</label>
+        <select id="taskType" data-k="taskType">
+          <option value="mixed">Namen und Telefonnummern gemischt</option>
+          <option value="names">Nur Namen</option>
+          <option value="phone">Nur Telefonnummern</option>
+        </select></div>
+      <div><label for="mode">Antwort</label>
+        <select id="mode" data-k="mode">
+          <option value="type">Eingeben und automatisch prüfen</option>
+          <option value="paper">Auf Papier schreiben, dann auflösen</option>
+        </select></div>
+      <div><label for="count">Anzahl Namen pro Runde</label>
+        <select id="count" data-k="count" data-t="num">
+          <option>5</option><option>10</option><option>15</option><option>20</option><option>30</option>
+        </select></div>
+      <div><label for="special">Sonderzeichen in Namen (ä ö ü ß)</label>
+        <select id="special" data-k="special">
+          <option value="all">Alle Namen</option>
+          <option value="no">Nur Namen ohne ä ö ü ß</option>
+          <option value="only">Nur Namen mit ä ö ü ß</option>
+        </select></div>
+      <div><label for="replays">Zusätzliche Wiederholungen</label>
+        <select id="replays" data-k="replays" data-t="num">
+          <option value="0">unbegrenzt</option>
+          <option value="1">höchstens 1</option>
+          <option value="2">höchstens 2</option>
+          <option value="3">höchstens 3</option>
+        </select></div>
+      <div><label for="rate">Sprechtempo Name: <span id="rateOut"></span></label>
+        <input type="range" id="rate" data-k="rate" data-t="num" min="0.5" max="1.1" step="0.05"></div>
+      <div><label for="spellRate">Sprechtempo Buchstabieren: <span id="spellRateOut"></span></label>
+        <input type="range" id="spellRate" data-k="spellRate" data-t="num" min="0.7" max="3" step="0.05"></div>
+      <div><label for="phoneRate">Sprechtempo Telefonnummer: <span id="phoneRateOut"></span></label>
+        <input type="range" id="phoneRate" data-k="phoneRate" data-t="num" min="0.6" max="2" step="0.05"></div>
+      <div><label for="gap">Pause zwischen den Buchstaben: <span id="gapOut"></span></label>
+        <input type="range" id="gap" data-k="gap" data-t="num" min="200" max="2000" step="50"></div>
+      <div><label for="voice">Stimme</label>
+        <select id="voice"></select></div>
+      <div><label for="letterMode">Buchstaben-Aussprache</label>
+        <select id="letterMode" data-k="letterMode">
+          <option value="phon">Lautnamen (B, zeh, H …) – empfohlen</option>
+          <option value="raw">Buchstaben direkt an die Stimme</option>
+        </select></div>
+    </div>
+    <div style="margin-top:14px;display:grid;gap:8px">
+      <label class="check"><input type="checkbox" id="rare" data-k="rare" data-t="bool"> Ungewöhnliche Schreibweisen bevorzugen</label>
+      <label class="check"><input type="checkbox" id="foreign" data-k="foreign" data-t="bool"> Fremdsprachige Namen authentisch sprechen (wenn eine passende Stimme vorhanden ist)</label>
+      <label class="check"><input type="checkbox" id="chunk" data-k="chunk" data-t="bool"> Buchstaben in einem Zug sprechen (flüssiger und schneller, kürzere Pausen)</label>
+      <label class="check"><input type="checkbox" id="double" data-k="double" data-t="bool"> Doppelbuchstaben als „doppel …“ ansagen</label>
+      <label class="check"><input type="checkbox" id="auto" data-k="auto" data-t="bool"> Name automatisch abspielen</label>
+      <label class="check"><input type="checkbox" id="showCount" data-k="showCount" data-t="bool"> Anzahl der Buchstaben anzeigen</label>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button id="btnTest">🔊 Stimme und Alphabet testen</button>
+      <button id="btnForeign">🌍 Fremdsprachige Stimmen prüfen</button>
+      <button id="btnStopTest" class="hidden">■ Stopp</button>
+    </div>
+    <div id="foreignInfo" class="small" style="white-space:pre-line;margin-top:8px"></div>
+    <details style="margin-top:14px">
+      <summary>Aussprache der Buchstaben anpassen</summary>
+      <p class="small">Wird ein Buchstabe falsch gesprochen, hier die Schreibung ändern und mit ▶ anhören. Manche Stimmen buchstabieren kurze Lautwörter wie „eff“ als Abkürzung. Dann hilft ein einzelner Großbuchstabe (z. B. „F“) oder eine andere Schreibung. Die Änderungen werden gespeichert und gelten für Buchstabieren und Alphabet-Test.</p>
+      <div id="alphaGrid" class="agrid"></div>
+      <button id="btnAlphaReset" type="button">Alle zurücksetzen</button>
+    </details>
+    <p class="small" style="margin-bottom:0">Die Sprachausgabe nutzt die Stimmen des Geräts (Browser). Ohne Internet funktioniert sie nur mit installierten deutschen Stimmen. Hinweis: Unbekannte oder fremdsprachige Namen werden von der Stimme manchmal etwas ungewohnt ausgesprochen.</p>
+  </div>
+
+  <div class="row">
+    <button id="btnStart" class="primary big">▶ Runde starten</button>
+  </div>
+</section>
+
+<!-- FRAGE -->
+<section id="screenQ" class="hidden">
+  <div class="top"><span id="qProg"></span><span id="qScore"></span></div>
+  <div class="bar"><div id="bar"></div></div>
+  <div class="card">
+    <div class="player">
+      <div class="row" style="justify-content:center">
+        <button id="btnPlay" class="primary big">▶ Anhören</button>
+        <button id="btnStop" class="hidden">■ Stopp</button>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:10px" id="replayRow">
+        <button id="btnAgain">↻ Alles nochmal</button>
+        <button id="btnSpell">Nur Buchstaben</button>
+        <button id="btnName">Nur Name</button>
+      </div>
+      <div class="status" id="status" aria-live="polite"></div>
+    </div>
+
+    <div id="typeBox">
+      <label for="answer" id="answerLabel">Wie wird der Name geschrieben?</label>
+      <input type="text" id="answer" autocomplete="off" autocapitalize="words" spellcheck="false">
+      <div class="keys" id="keys" aria-label="Sonderzeichen einfügen">
+        <button type="button" data-ins="ä">ä</button><button type="button" data-ins="ö">ö</button>
+        <button type="button" data-ins="ü">ü</button><button type="button" data-ins="ß">ß</button>
+      </div>
+      <button id="btnCheck" class="primary">Prüfen</button>
+    </div>
+
+    <div id="paperBox" class="hidden">
+      <p style="margin-top:0">Name auf Papier notieren, dann auflösen.</p>
+      <button id="btnReveal" class="primary">Auflösen</button>
+    </div>
+
+    <div id="fb" class="fb hidden" aria-live="polite"></div>
+    <div id="selfMark" class="row hidden" style="margin-top:12px">
+      <span>Hattest du den Namen richtig?</span>
+      <button id="btnRight" class="good">✓ Richtig</button>
+      <button id="btnWrong" class="badbtn">✗ Falsch</button>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button id="btnNext" class="primary hidden">Weiter →</button>
+    </div>
+  </div>
+  <button id="btnAbort" class="small" style="padding:6px 12px">Runde abbrechen</button>
+</section>
+
+<!-- ERGEBNIS -->
+<section id="screenR" class="hidden">
+  <div class="card">
+    <h2>Ergebnis</h2>
+    <div class="score" id="rScore"></div>
+    <table>
+      <thead><tr><th>Name</th><th>Antwort</th><th></th></tr></thead>
+      <tbody id="rBody"></tbody>
+    </table>
+  </div>
+  <div class="row noprint">
+    <button id="btnAgainRound" class="primary">Neue Runde</button>
+    <button id="btnRetryWrong">Nur falsche wiederholen</button>
+    <button id="btnPrint">Liste drucken</button>
+    <button id="btnBackSettings">Einstellungen</button>
+  </div>
+</section>
+</main>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Namensdaten ----------
+   Jede Familie = Schreibweisen, die gleich klingen.
+   [Schreibweise, Seltenheit 0=geläufig 1=weniger häufig 2=ungewöhnlich, optional abweichende Aussprache für die Stimme] */
+var FAM = [
+ {say:'Schmidt', v:[['Schmidt',0],['Schmid',0],['Schmitt',0],['Schmit',2]]},
+ {say:'Schmied', v:[['Schmied',0],['Schmiedt',1]]},
+ {say:'Maier', v:[['Meier',0],['Meyer',0],['Maier',0],['Mayer',1],['Mayr',2],['Meir',2],['Mair',2]]},
+ {say:'Müller', v:[['Müller',0],['Mueller',1]]},
+ {say:'Fischer', v:[['Fischer',0],['Vischer',2]]},
+ {say:'Hofmann', v:[['Hofmann',0],['Hoffmann',0],['Hoffman',1],['Hofman',2]]},
+ {say:'Schäfer', v:[['Schäfer',0],['Schaefer',1],['Schäffer',1],['Schaeffer',2]]},
+ {say:'Becker', v:[['Becker',0],['Bäcker',1],['Baecker',2],['Bekker',2]]},
+ {say:'Neumann', v:[['Neumann',0],['Neuman',1]]},
+ {say:'Schwarz', v:[['Schwarz',0],['Schwartz',1]]},
+ {say:'Krüger', v:[['Krüger',0],['Krueger',1]]},
+ {say:'Kraus', v:[['Kraus',0],['Krauss',1],['Krauß',1]]},
+ {say:'Krause', v:[['Krause',0]]},
+ {say:'Köhler', v:[['Köhler',0],['Koehler',1],['Köler',2]]},
+ {say:'Hermann', v:[['Hermann',0],['Herrmann',0],['Herman',1],['Herrman',2]]},
+ {say:'König', v:[['König',0],['Koenig',1]]},
+ {say:'Walter', v:[['Walter',0],['Walther',1]]},
+ {say:'Schulze', v:[['Schulze',0],['Schultze',1]]},
+ {say:'Schulz', v:[['Schulz',0],['Schultz',0]]},
+ {say:'Fuchs', v:[['Fuchs',0],['Fux',2],['Fuks',2]]},
+ {say:'Vogel', v:[['Vogel',0],['Fogel',2]]},
+ {say:'Peters', v:[['Peters',0]]},
+ {say:'Baier', v:[['Beyer',0],['Bayer',0],['Beier',0],['Baier',1]]},
+ {say:'Meißner', v:[['Meißner',0],['Meissner',1],['Meisner',1]]},
+ {say:'Voss', v:[['Voß',0],['Voss',1],['Vos',2]]},
+ {say:'Günther', v:[['Günther',0],['Günter',0],['Guenther',1],['Guenter',2]]},
+ {say:'Jäger', v:[['Jäger',0],['Jaeger',1]]},
+ {say:'Weiss', v:[['Weiß',0],['Weiss',1],['Weis',2],['Weisz',2]]},
+ {say:'Böhm', v:[['Böhm',0],['Boehm',1]]},
+ {say:'Dietrich', v:[['Dietrich',0],['Diedrich',1],['Diederich',2]]},
+ {say:'Seidel', v:[['Seidel',0],['Seydel',2]]},
+ {say:'Haase', v:[['Haase',0],['Hase',1]]},
+ {say:'Stefan', v:[['Stefan',0],['Stephan',0],['Steffan',1]]},
+ {say:'Friedrich', v:[['Friedrich',0],['Friederich',1]]},
+ {say:'Wolf', v:[['Wolf',0],['Wolff',1]]},
+ {say:'Lehmann', v:[['Lehmann',0],['Lehman',1],['Leemann',2]]},
+ {say:'Zimmermann', v:[['Zimmermann',0],['Zimmerman',1]]},
+ {say:'Thomas', v:[['Thomas',0],['Tomas',1]]},
+ {say:'Seiler', v:[['Seiler',0],['Sailer',1],['Seyler',2]]},
+ {say:'Reuter', v:[['Reuter',0],['Reutter',1],['Reuther',1]]},
+ {say:'Schröder', v:[['Schröder',0],['Schroeder',1]]},
+ {say:'Möller', v:[['Möller',0],['Moeller',1]]},
+ {say:'Brandt', v:[['Brandt',0],['Brand',1],['Brant',2]]},
+ {say:'Graf', v:[['Graf',0]]},
+ {say:'Hartmann', v:[['Hartmann',0],['Hartman',1]]},
+ {say:'Fritsche', v:[['Fritsche',0],['Fritzsche',1],['Fritzche',2]]},
+ {say:'Kaiser', v:[['Kaiser',0],['Keiser',1],['Kayser',1],['Keyser',2]]},
+ {say:'Hein', v:[['Hein',0],['Hain',1],['Heyn',2]]},
+ {say:'Eberhard', v:[['Eberhard',0],['Eberhardt',1],['Eberhart',2]]},
+ {say:'Reinhard', v:[['Reinhard',0],['Reinhardt',0],['Reinhart',2]]},
+ {say:'Wittmann', v:[['Wittmann',0],['Wittman',1]]},
+ {say:'Nowak', lang:'pl-PL', fs:'Nowak', v:[['Nowak',0],['Novak',1],['Nowack',2]]},
+ {say:'Wagner', v:[['Wagner',0],['Waagner',2]]},
+ {say:'Koch', v:[['Koch',0],['Kock',2]]},
+ {say:'Pfeiffer', v:[['Pfeiffer',0],['Pfeifer',0]]},
+ {say:'Bauer', v:[['Bauer',0],['Baur',1]]},
+ {say:'Ziegler', v:[['Ziegler',0]]},
+ /* Namen aus Herkunftsländern der Lernenden */
+ {say:'Nguyen', lang:'vi-VN', fs:'Nguyễn', v:[['Nguyen',0]]},
+ {say:'Öztürk', lang:'tr-TR', fs:'Öztürk', v:[['Öztürk',0],['Oeztuerk',1]]},
+ {say:'Kowalski', lang:'pl-PL', fs:'Kowalski', v:[['Kowalski',0],['Kowalsky',1],['Kovalski',2]]},
+ {say:'Mohammed', lang:'ar-SA', fs:'محمد', v:[['Mohammed',0],['Mohamed',0],['Mohammad',1],['Muhammad',1],['Mohamad',2],['Muhamed',2]]},
+ {say:'Hussein', lang:'ar-SA', fs:'حسين', v:[['Hussein',0],['Husein',1],['Hussain',2],['Husain',2]]},
+ {say:'Ahmadi', lang:'fa-IR', fs:'احمدی', v:[['Ahmadi',0],['Ahmady',1]]},
+ {say:'Iwanow', lang:'ru-RU', fs:'Иванов', v:[['Iwanow',0],['Ivanov',0],['Ivanow',1],['Ivanoff',2],['Iwanoff',2]]},
+ {say:'Popow', lang:'ru-RU', fs:'Попов', v:[['Popow',0],['Popov',0],['Popoff',2]]},
+ {say:'Schewtschenko', lang:'uk-UA', fs:'Шевченко', v:[['Schewtschenko',0],['Shevchenko',0],['Szewczenko',2]]},
+ {say:'Schahin', lang:'tr-TR', fs:'Şahin', v:[['Schahin',0],['Shahin',1]]},
+ {say:'Haddad', lang:'ar-SA', fs:'حداد', v:[['Haddad',0],['Hadad',1]]},
+ {say:'Petrowitsch', lang:'hr-HR', fs:'Petrović', v:[['Petrovic',0],['Petrowitsch',1],['Petrovich',2]]},
+ /* Häufige Namen Mitteldeutschlands (eigene Auswahl, keine amtliche Thüringen-Rangliste) */
+ {say:'Schneider', v:[['Schneider',0]]},
+ {say:'Weber', v:[['Weber',0]]},
+ {say:'Richter', v:[['Richter',0]]},
+ {say:'Braun', v:[['Braun',0]]},
+ {say:'Lange', v:[['Lange',0]]},
+ {say:'Werner', v:[['Werner',0]]},
+ {say:'Schubert', v:[['Schubert',0],['Schuberth',1]]},
+ {say:'Lorenz', v:[['Lorenz',0],['Lorentz',1]]},
+ {say:'Winkler', v:[['Winkler',0],['Winckler',2]]},
+ {say:'Albrecht', v:[['Albrecht',0]]},
+ {say:'Schuster', v:[['Schuster',0]]},
+ {say:'Voigt', v:[['Voigt',0]]},
+ {say:'Heinrich', v:[['Heinrich',0]]},
+ {say:'Kühn', v:[['Kühn',0],['Kuehn',1]]},
+ {say:'Böttcher', v:[['Böttcher',0],['Boettcher',1],['Bötcher',2]]},
+ {say:'Kirchner', v:[['Kirchner',0]]},
+ {say:'Ullrich', v:[['Ullrich',0],['Ulrich',0]]},
+ {say:'Kunze', v:[['Kunze',0],['Kuntze',1]]},
+ {say:'Heinze', v:[['Heinze',0],['Heintze',1]]},
+ {say:'Frank', v:[['Frank',0],['Franck',1]]},
+ /* Namen mit -e am Ende */
+ {say:'Franke', v:[['Franke',0],['Francke',1]]},
+ {say:'Funke', v:[['Funke',0],['Funcke',1]]},
+ {say:'Lemke', v:[['Lemke',0],['Lemcke',2]]},
+ {say:'Heine', v:[['Heine',0],['Heyne',1]]},
+ {say:'Böhme', v:[['Böhme',0],['Boehme',1]]},
+ {say:'Kühne', v:[['Kühne',0],['Kuehne',1]]},
+ {say:'Nitsche', v:[['Nitsche',0],['Nitzsche',1]]},
+ /* Namen mit -i am Ende */
+ {say:'Hosseini', lang:'fa-IR', fs:'حسینی', v:[['Hosseini',0],['Hoseini',1],['Husseini',1]]},
+ {say:'Karimi', lang:'fa-IR', fs:'کریمی', v:[['Karimi',0],['Karimy',2]]},
+ {say:'Rahimi', lang:'fa-IR', fs:'رحیمی', v:[['Rahimi',0],['Rahimy',2]]},
+ {say:'Mohammadi', lang:'fa-IR', fs:'محمدی', v:[['Mohammadi',0],['Mohamadi',1],['Muhammadi',1],['Mohammady',2]]},
+ {say:'Resai', lang:'fa-IR', fs:'رضایی', v:[['Rezaei',0],['Rezai',1],['Rezaie',2]]},
+ {say:'Nasiri', lang:'fa-IR', fs:'نصیری', v:[['Nasiri',0],['Nassiri',1],['Nasiry',2]]},
+ {say:'Haschemi', lang:'fa-IR', fs:'هاشمی', v:[['Hashemi',0],['Haschemi',1],['Hashemy',2]]},
+ {say:'Lüthi', v:[['Lüthi',0],['Lüthy',1],['Luethi',1]]},
+ {say:'Marti', v:[['Marti',0],['Marty',1]]}
+];
+
+var LETTER = {a:'ah',b:'B',c:'Zeh',d:'D',e:'e',f:'F',g:'geh',h:'H',i:'i',j:'jott',k:'ka',l:'L',m:'M',
+  n:'N',o:'oh',p:'P',q:'kuh',r:'err',s:'ess',t:'teh',u:'U',v:'fau',w:'weh',x:'iks',y:'üpsilon',z:'zett',
+  'ä':'äh','ö':'ö','ü':'ü','ß':'Eszett'};
+
+var DEFAULTS = {voiceV2:1,mode:'type',count:10,special:'all',replays:0,rate:0.85,spellRate:2.5,phoneRate:1.2,taskType:'mixed',gap:350,alpha:{},voice:'',letterMode:'phon',
+  rare:true,foreign:true,chunk:false,double:false,auto:true,showCount:false};
+
+/* ---------- Helfer ---------- */
+function $(id){return document.getElementById(id);}
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function hasSpecial(n){return /[äöüß]/i.test(n);}
+function fold(s){return s.toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss');}
+function norm(s){return s.replace(/\s+/g,'').toLowerCase();}
+function upper(n){return n.split('').map(function(c){return c==='ß'?'ß':c.toUpperCase();}).join(' ');}
+function pickWeighted(arr,wf){var t=0,i;for(i=0;i<arr.length;i++)t+=wf(arr[i]);var r=Math.random()*t;
+  for(i=0;i<arr.length;i++){r-=wf(arr[i]);if(r<=0)return arr[i];}return arr[arr.length-1];}
+
+/* ---------- Einstellungen ---------- */
+var S = {};
+function loadSettings(){var o={};try{o=JSON.parse(localStorage.getItem('namenBuchstabierenTrainer')||'{}');}catch(e){}
+  if(!o.voiceV2){delete o.voice;o.voiceV2=1;}
+  if(o.gap===900||o.gap===600||o.gap===500)delete o.gap;
+  if(o.spellRate===1.15||o.spellRate===1.4||o.spellRate===1.7||o.spellRate===2)delete o.spellRate;
+  S=Object.assign({},DEFAULTS,o);}
+function saveSettings(){try{localStorage.setItem('namenBuchstabierenTrainer',JSON.stringify(S));}catch(e){}}
+
+function bindSettings(){
+  var nodes=document.querySelectorAll('[data-k]');
+  Array.prototype.forEach.call(nodes,function(n){
+    var k=n.getAttribute('data-k'),t=n.getAttribute('data-t');
+    if(t==='bool')n.checked=!!S[k];else n.value=String(S[k]);
+    n.addEventListener('input',function(){
+      S[k]=t==='bool'?n.checked:(t==='num'?Number(n.value):n.value);
+      saveSettings();outs();
+    });
+  });
+  $('voice').addEventListener('change',function(){S.voice=$('voice').value;saveSettings();});
+  outs();
+}
+function outs(){$('phoneRateOut').textContent=Number(S.phoneRate).toFixed(2).replace('.',',')+'×';
+  $('spellRateOut').textContent=Number(S.spellRate).toFixed(2).replace('.',',')+'×';
+  $('rateOut').textContent=Number(S.rate).toFixed(2).replace('.',',')+'×';
+  $('gapOut').textContent=(S.gap/1000).toFixed(1).replace('.',',')+' s';}
+
+/* ---------- Sprachausgabe ---------- */
+var TTS = ('speechSynthesis' in window) && ('SpeechSynthesisUtterance' in window);
+var voices=[];
+function voiceScore(v){
+  var n=String(v.name).toLowerCase(),l=vnorm(v.lang),sc=0;
+  if(/natural/.test(n))sc+=100;
+  if(/premium/.test(n))sc+=90;
+  if(/enhanced|erweitert|neural|wavenet|studio/.test(n))sc+=70;
+  if(/online/.test(n))sc+=40;
+  if(/google/.test(n))sc+=30;
+  if(v.localService===false)sc+=10;
+  if(l==='de-de')sc+=20;
+  if(/compact|espeak|robot|novelty/.test(n))sc-=50;
+  return sc;
+}
+function loadVoices(){
+  if(!TTS)return;
+  voices=speechSynthesis.getVoices().filter(function(v){return /^de/i.test(v.lang);});
+  voices.sort(function(a,b){return voiceScore(b)-voiceScore(a);});
+  var sel=$('voice');sel.textContent='';
+  var best=voices[0]||null;
+  sel.appendChild(new Option(best?'Automatisch: beste verfügbare Stimme ('+best.name+')':'Automatisch (Standardstimme des Geräts)',''));
+  voices.forEach(function(v){sel.appendChild(new Option(v.name+' ('+v.lang+')',v.name));});
+  if(S.voice&&!voices.some(function(v){return v.name===S.voice;}))S.voice='';
+  sel.value=S.voice||'';
+  showNotice();
+}
+function currentVoice(){for(var i=0;i<voices.length;i++)if(voices[i].name===S.voice)return voices[i];return voices[0]||null;}
+function vnorm(l){return String(l).replace(/_/g,'-').toLowerCase();}
+function voiceFor(lang){
+  if(!TTS)return null;
+  var all=speechSynthesis.getVoices(),L=vnorm(lang),P=L.split('-')[0],ex=[],pr=[];
+  for(var i=0;i<all.length;i++){
+    var vl=vnorm(all[i].lang);
+    if(vl===L)ex.push(all[i]);else if(vl.split('-')[0]===P)pr.push(all[i]);
+  }
+  var c=ex.length?ex:pr;
+  if(!c.length)return null;
+  c.sort(function(a,b){return voiceScore(b)-voiceScore(a);});
+  return c[0];
+}
+function showNotice(){
+  var n=$('notice');
+  if(!TTS){n.textContent='Dieser Browser unterstützt keine Sprachausgabe. Bitte Chrome, Edge, Safari oder Firefox verwenden.';n.classList.remove('hidden');}
+  else if(!voices.length){n.textContent='Keine deutsche Stimme gefunden. Die Standardstimme des Geräts wird verwendet; deutsche Stimmen lassen sich in den Systemeinstellungen installieren.';n.classList.remove('hidden');}
+  else n.classList.add('hidden');
+}
+function speak(text,rate,voice,lang){
+  return new Promise(function(res){
+    if(!TTS){res();return;}
+    var u=new SpeechSynthesisUtterance(text);u.lang=lang||'de-DE';u.rate=rate;
+    var v=voice||currentVoice();if(v)u.voice=v;
+    var done=false,timer;
+    function fin(){if(done)return;done=true;clearTimeout(timer);res();}
+    u.onend=fin;u.onerror=fin;
+    timer=setTimeout(fin,9000);
+    speechSynthesis.speak(u);
+  });
+}
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+
+var run=0;
+function stopAudio(){run++;if(TTS)speechSynthesis.cancel();setPlaying(false);}
+function letterText(ch){return S.letterMode==='phon'?((S.alpha&&S.alpha[ch])||LETTER[ch]||ch):(ch==='ß'?'Eszett':ch.toUpperCase());}
+
+async function spellOut(name,my){
+  var ch=name.toLowerCase().split(''),texts=[];
+  for(var i=0;i<ch.length;i++){
+    if(S.double&&ch[i+1]===ch[i]){texts.push('doppel '+letterText(ch[i]));i++;}
+    else texts.push(letterText(ch[i]));
+  }
+  if(S.chunk){
+    await speak(texts.join(', '),S.spellRate);
+    return;
+  }
+  for(var k=0;k<texts.length;k++){
+    if(my!==run)return;
+    await speak(texts[k],S.spellRate);
+    if(my!==run)return;
+    await sleep(S.gap);
+  }
+}
+async function playSeq(item,part,statusFn){
+  var my=++run;
+  if(TTS)speechSynthesis.cancel();
+  setPlaying(true);
+  try{
+    if(item.kind==='phone'){await playPhone(item,part,my,statusFn);return;}
+    if(part!=='spell'){
+      if(statusFn)statusFn('Name …');
+      var fv=(S.foreign&&item.lang)?voiceFor(item.lang):null;
+      if(fv)await speak(item.fs||item.name,S.rate,fv,item.lang);
+      else await speak(item.say,S.rate);
+      if(my!==run)return;
+      if(part==='all')await sleep(1000);
+    }
+    if(part!=='name'){
+      if(statusFn)statusFn('Buchstabieren …');
+      await spellOut(item.name,my);
+    }
+  }finally{
+    if(my===run){setPlaying(false);if(statusFn)statusFn('');}
+  }
+}
+
+/* ---------- Telefonnummern ---------- */
+var ONES=['null','eins','zwei','drei','vier','fünf','sechs','sieben','acht','neun','zehn','elf','zwölf','dreizehn','vierzehn','fünfzehn','sechzehn','siebzehn','achtzehn','neunzehn'];
+var TENS=['','','zwanzig','dreißig','vierzig','fünfzig','sechzig','siebzig','achtzig','neunzig'];
+function below100(n){if(n<20)return ONES[n];var t=Math.floor(n/10),o=n%10;return (o?(o===1?'ein':ONES[o])+'und':'')+TENS[t];}
+function numWord(n){if(n<100)return below100(n);var h=Math.floor(n/100),r=n%100;return (h===1?'einhundert':ONES[h]+'hundert')+(r?below100(r):'');}
+function groupWords(g){
+  var out=[],i=0;
+  while(i<g.length-1&&g[i]==='0'){out.push('null');i++;}
+  out.push(numWord(parseInt(g.slice(i),10)));
+  return out.join(' ');
+}
+var FESTNETZ=['030','040','069','089','0221','0211','0711','0201','0231','0351','0341','0511','0421','0911','0228','0251','0521','0611','0721','0761','0391','0381','0431','0451','0561','0681','0621','0203','0202','0212','0234','0241','0821','0941','0991','0841','0731','0971','05121','06421','02331','04131','08031','07141','05251','06131','02871'];
+var MOBIL=['0151','0152','0157','0159','0160','0162','0163','0170','0171','0172','0173','0174','0175','0176','0177','0178','0179'];
+function randInt(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function makePhone(){
+  var mobile=Math.random()<0.5;
+  var vw=mobile?MOBIL[randInt(0,MOBIL.length-1)]:FESTNETZ[randInt(0,FESTNETZ.length-1)];
+  var len=mobile?randInt(7,8):(vw.length===3?randInt(7,8):(vw.length===4?randInt(6,8):randInt(6,7)));
+  var sizes=[1,2,3],extra=len-6;
+  if(extra===1)sizes.push(1);
+  if(extra===2){if(Math.random()<0.5)sizes.push(2);else sizes.push(1,1);}
+  sizes=shuffle(sizes);
+  var sub=String(randInt(1,9));
+  while(sub.length<len)sub+=String(randInt(0,9));
+  var groups=[],pos=0;
+  sizes.forEach(function(z){groups.push(sub.substr(pos,z));pos+=z;});
+  return {kind:'phone',vorwahl:vw,groups:groups,digits:vw+sub,name:vw+' '+groups.join(' '),count:(vw+sub).length};
+}
+async function playPhone(item,part,my,statusFn){
+  var pause=Math.max(300,S.gap);
+  if(part==='all'){
+    if(statusFn)statusFn('Einleitung …');
+    await speak('Und hier meine Telefonnummer:',S.rate);
+    if(my!==run)return;
+    await sleep(700);
+    if(my!==run)return;
+  }
+  if(statusFn)statusFn('Nummer …');
+  await speak(item.vorwahl.split('').map(function(d){return ONES[+d];}).join(' '),S.phoneRate);
+  for(var i=0;i<item.groups.length;i++){
+    if(my!==run)return;
+    await sleep(pause);
+    if(my!==run)return;
+    await speak(groupWords(item.groups[i]),S.phoneRate);
+  }
+}
+
+/* ---------- Runde ---------- */
+var G={items:[],i:0,res:[],played:0,answered:false,playing:false};
+
+function makeItem(f,vs){
+  var v=pickWeighted(vs,function(x){return S.rare?[1,3,6][x[1]]:1;});
+  return {kind:'name',name:v[0],count:v[0].length,say:v[2]||f.say,lang:f.lang,fs:f.fs,fam:f,rar:v[1]};
+}
+function allowed(n){var sp=hasSpecial(n);return S.special==='all'||(S.special==='no'&&!sp)||(S.special==='only'&&sp);}
+function buildRound(){
+  var n=S.count;
+  var np=S.taskType==='phone'?n:(S.taskType==='mixed'?Math.max(1,Math.round(n*0.3)):0);
+  var nn=n-np,items=[];
+  if(nn>0){
+    var pool=[];
+    FAM.forEach(function(f){var vs=f.v.filter(function(x){return allowed(x[0]);});if(vs.length)pool.push({f:f,vs:vs});});
+    pool=shuffle(pool).slice(0,nn);
+    items=pool.map(function(p){return makeItem(p.f,p.vs);});
+  }
+  var seen={};
+  while(np>0){var ph=makePhone();if(!seen[ph.digits]){seen[ph.digits]=1;items.push(ph);np--;}}
+  return shuffle(items);
+}
+function startRound(items){
+  G={items:items,i:0,res:[],played:0,answered:false,playing:false};
+  show('screenQ');renderQuestion();
+}
+function cur(){return G.items[G.i];}
+
+function show(id){['screenStart','screenQ','screenR'].forEach(function(s){$(s).classList.toggle('hidden',s!==id);});window.scrollTo(0,0);}
+
+function setPlaying(p){
+  G.playing=p;
+  $('btnStop').classList.toggle('hidden',!p);
+  updateReplayButtons();
+}
+function limit(){return S.replays;}
+function canPlay(){return !G.playing&&(limit()===0||G.played<1+limit());}
+function updateReplayButtons(){
+  var first=G.played===0;
+  $('btnPlay').classList.toggle('hidden',!first);
+  $('replayRow').classList.toggle('hidden',first);
+  var ok=canPlay();
+  $('btnPlay').disabled=G.playing;
+  ['btnAgain','btnSpell','btnName'].forEach(function(b){$(b).disabled=!ok;});
+}
+function status(t){
+  var base='';
+  if(S.showCount&&G.played>0&&cur())base=cur().kind==='phone'?cur().count+' Ziffern':cur().name.length+' Buchstaben';
+  if(limit()>0&&G.played>0)base+=(base?' · ':'')+'Wiedergaben: '+Math.min(G.played,1+limit())+' von '+(1+limit());
+  $('status').textContent=t?(t+(base?' · '+base:'')):base;
+}
+function trigger(part){
+  if(!canPlay()&&G.played>0)return;
+  G.played++;
+  updateReplayButtons();
+  playSeq(cur(),part,status).then(function(){status('');});
+}
+
+function renderQuestion(){
+  var n=G.items.length;
+  $('qProg').textContent='Aufgabe '+(G.i+1)+' von '+n;
+  var ok=G.res.filter(function(r){return r.ok;}).length;
+  $('qScore').textContent='Richtig: '+ok;
+  $('bar').style.width=(G.i/n*100)+'%';
+  G.played=0;G.answered=false;
+  $('fb').classList.add('hidden');$('fb').textContent='';
+  $('btnNext').classList.add('hidden');
+  $('selfMark').classList.add('hidden');
+  var typeMode=S.mode==='type';
+  $('typeBox').classList.toggle('hidden',!typeMode);
+  $('paperBox').classList.toggle('hidden',typeMode);
+  $('answer').value='';$('answer').disabled=false;$('btnCheck').disabled=false;$('btnReveal').disabled=false;
+  var ph=cur().kind==='phone';
+  $('btnName').classList.toggle('hidden',ph);
+  $('btnSpell').textContent=ph?'Nur Nummer':'Nur Buchstaben';
+  $('keys').classList.toggle('hidden',ph);
+  $('answerLabel').textContent=ph?'Wie lautet die Telefonnummer?':'Wie wird der Name geschrieben?';
+  $('answer').setAttribute('inputmode',ph?'tel':'text');
+  $('answer').setAttribute('autocapitalize',ph?'off':'words');
+  status('');
+  updateReplayButtons();
+  if(S.auto)trigger('all');
+  else if(typeMode)$('answer').focus();
+}
+
+function variantsLine(it){
+  var d=el('div','alts');
+  d.appendChild(document.createTextNode('Diese Schreibweisen klingen gleich: '));
+  it.fam.v.forEach(function(v,k){
+    var s=v[0]===it.name?el('b',null,v[0]):el('span',null,v[0]);
+    d.appendChild(s);if(k<it.fam.v.length-1)d.appendChild(document.createTextNode(' · '));
+  });
+  return d;
+}
+function finish(ok,given){
+  var it=cur();var phone=it.kind==='phone';G.answered=true;stopAudio();
+  G.res.push({name:it.name,given:given,ok:ok,item:it});
+  var fb=$('fb');fb.textContent='';fb.className='fb '+(ok?'ok':'bad');
+  fb.appendChild(el('h3',null,ok?'✓ Richtig!':'✗ Leider nicht richtig.'));
+  var p=el('div');p.appendChild(document.createTextNode(ok?'Geschrieben: ':'Richtig wäre: '));
+  p.appendChild(el('span','spelled',it.name));fb.appendChild(p);
+  if(S.mode==='type'&&!ok){
+    var d=el('div','diff');d.appendChild(document.createTextNode('Deine Antwort: '));
+    var a=phone?given.replace(/\D/g,''):given,t=phone?it.digits:it.name;
+    for(var i=0;i<Math.max(a.length,t.length);i++){
+      var c=a[i]||'_';var bad=!a[i]||!t[i]||a[i].toLowerCase()!==t[i].toLowerCase();
+      d.appendChild(el('span',bad?'x':null,c));
+    }
+    fb.appendChild(d);
+    if(!phone&&fold(given.replace(/\s+/g,''))===fold(it.name)&&norm(given)!==it.name.toLowerCase()){
+      fb.appendChild(el('div','alts','Fast richtig: Auf die Schreibung von ä/ö/ü/ß achten. Bei „ae“, „oe“, „ue“ wird A-E, O-E, U-E gebuchstabiert, bei „ä“, „ö“, „ü“ nur ein Buchstabe, und „ß“ ist nicht „ss“.'));
+    }
+  }
+  if(!phone)fb.appendChild(variantsLine(it));
+  $('typeBox').classList.add('hidden');$('paperBox').classList.add('hidden');$('selfMark').classList.add('hidden');
+  var last=G.i===G.items.length-1;
+  $('btnNext').textContent=last?'Ergebnis anzeigen':'Weiter →';
+  $('btnNext').classList.remove('hidden');$('btnNext').focus();
+  var okc=G.res.filter(function(r){return r.ok;}).length;$('qScore').textContent='Richtig: '+okc;
+}
+function check(){
+  if(G.answered)return;
+  var it=cur(),raw=$('answer').value;
+  if(it.kind==='phone'){
+    var dg=raw.replace(/\D/g,'');
+    if(!dg){$('answer').focus();return;}
+    finish(dg===it.digits,raw.trim());
+    return;
+  }
+  if(!norm(raw)){$('answer').focus();return;}
+  finish(norm(raw)===it.name.toLowerCase(),raw.trim());
+}
+function reveal(){
+  if(G.answered)return;stopAudio();
+  var it=cur();var fb=$('fb');fb.textContent='';fb.className='fb';fb.style.background='var(--bg)';fb.style.border='1px solid var(--line)';
+  fb.appendChild(el('div','spelled',it.name));if(it.kind!=='phone')fb.appendChild(variantsLine(it));
+  fb.classList.remove('hidden');
+  $('paperBox').classList.add('hidden');$('selfMark').classList.remove('hidden');
+}
+function selfMark(ok){
+  var it=cur();G.answered=true;
+  G.res.push({name:it.name,given:'(Papier)',ok:ok,item:it});
+  var fb=$('fb');fb.style.background='';fb.style.border='';fb.className='fb '+(ok?'ok':'bad');
+  fb.insertBefore(el('h3',null,ok?'✓ Richtig':'✗ Falsch'),fb.firstChild);
+  $('selfMark').classList.add('hidden');
+  var last=G.i===G.items.length-1;
+  $('btnNext').textContent=last?'Ergebnis anzeigen':'Weiter →';
+  $('btnNext').classList.remove('hidden');$('btnNext').focus();
+  $('qScore').textContent='Richtig: '+G.res.filter(function(r){return r.ok;}).length;
+}
+function next(){
+  if(!G.answered)return;
+  G.i++;
+  if(G.i>=G.items.length)showResult();else renderQuestion();
+}
+function showResult(){
+  stopAudio();show('screenR');
+  var n=G.res.length,ok=G.res.filter(function(r){return r.ok;}).length;
+  $('rScore').textContent=ok+' von '+n+' richtig';
+  var b=$('rBody');b.textContent='';
+  G.res.forEach(function(r){
+    var tr=el('tr');tr.appendChild(el('td',null,r.name));
+    tr.appendChild(el('td',null,r.given));
+    tr.appendChild(el('td',r.ok?'r':'w',r.ok?'✓':'✗'));
+    b.appendChild(tr);
+  });
+  $('btnRetryWrong').classList.toggle('hidden',ok===n);
+}
+
+/* ---------- Test ---------- */
+var testing=false;
+async function testVoice(){
+  if(!TTS){return;}
+  var my=++run;speechSynthesis.cancel();
+  $('btnStopTest').classList.remove('hidden');
+  await speak('Schmidt',S.rate);await sleep(1000);
+  var al='abcdefghijklmnopqrstuvwxyzäöüß'.split('');
+  for(var i=0;i<al.length;i++){
+    if(my!==run)break;
+    await speak(letterText(al[i]),S.spellRate);
+    if(my!==run)break;
+    await sleep(Math.min(S.gap,600));
+  }
+  if(my===run)$('btnStopTest').classList.add('hidden');
+}
+
+async function testForeign(){
+  if(!TTS)return;
+  var my=++run;speechSynthesis.cancel();
+  $('btnStopTest').classList.remove('hidden');
+  var seen={},lines=[],info=$('foreignInfo');info.textContent='';
+  for(var i=0;i<FAM.length;i++){
+    var f=FAM[i];if(!f.lang||seen[f.lang])continue;seen[f.lang]=1;
+    var v=voiceFor(f.lang);
+    lines.push(f.lang+' ('+f.fs+'): '+(v?v.name+(vnorm(v.lang)===vnorm(f.lang)?'':' ['+v.lang+']'):'keine Stimme – dieser Name wird deutsch gesprochen'));
+    info.textContent=lines.join('\n');
+    if(v){await speak(f.fs,S.rate,v,f.lang);if(my!==run)return;await sleep(500);}
+  }
+  if(my===run)$('btnStopTest').classList.add('hidden');
+}
+
+function buildAlphaEditor(){
+  var box=$('alphaGrid');box.textContent='';
+  'abcdefghijklmnopqrstuvwxyzäöüß'.split('').forEach(function(ch){
+    var cell=el('div','acell');
+    cell.appendChild(el('span','achar',ch==='ß'?'ß':ch.toUpperCase()));
+    var inp=document.createElement('input');inp.type='text';
+    inp.value=(S.alpha&&S.alpha[ch])||LETTER[ch];
+    inp.setAttribute('aria-label','Aussprache für '+(ch==='ß'?'ß':ch.toUpperCase()));
+    inp.addEventListener('input',function(){
+      if(!S.alpha)S.alpha={};
+      var v=inp.value.trim();
+      if(!v||v===LETTER[ch])delete S.alpha[ch];else S.alpha[ch]=v;
+      saveSettings();
+    });
+    var b=el('button',null,'▶');b.type='button';b.setAttribute('aria-label','Anhören');
+    b.addEventListener('click',function(){
+      if(!TTS)return;
+      run++;speechSynthesis.cancel();
+      speak(inp.value.trim()||LETTER[ch],S.spellRate);
+    });
+    cell.appendChild(inp);cell.appendChild(b);box.appendChild(cell);
+  });
+}
+
+/* ---------- Events ---------- */
+function init(){
+  loadSettings();bindSettings();buildAlphaEditor();
+  $('btnAlphaReset').addEventListener('click',function(){S.alpha={};saveSettings();buildAlphaEditor();});
+  if(TTS){loadVoices();if(speechSynthesis.onvoiceschanged!==undefined)speechSynthesis.onvoiceschanged=loadVoices;}
+  else showNotice();
+  $('btnStart').addEventListener('click',function(){startRound(buildRound());});
+  $('btnPlay').addEventListener('click',function(){trigger('all');});
+  $('btnAgain').addEventListener('click',function(){trigger('all');});
+  $('btnSpell').addEventListener('click',function(){trigger('spell');});
+  $('btnName').addEventListener('click',function(){trigger('name');});
+  $('btnStop').addEventListener('click',function(){stopAudio();status('');});
+  $('btnCheck').addEventListener('click',check);
+  $('btnReveal').addEventListener('click',reveal);
+  $('btnRight').addEventListener('click',function(){selfMark(true);});
+  $('btnWrong').addEventListener('click',function(){selfMark(false);});
+  $('btnNext').addEventListener('click',next);
+  $('btnAbort').addEventListener('click',function(){stopAudio();show('screenStart');});
+  $('btnAgainRound').addEventListener('click',function(){startRound(buildRound());});
+  $('btnRetryWrong').addEventListener('click',function(){
+    var items=G.res.filter(function(r){return !r.ok;}).map(function(r){return r.item;});
+    if(items.length)startRound(shuffle(items));
+  });
+  $('btnPrint').addEventListener('click',function(){window.print();});
+  $('btnBackSettings').addEventListener('click',function(){show('screenStart');});
+  $('btnTest').addEventListener('click',testVoice);
+  $('btnForeign').addEventListener('click',testForeign);
+  $('btnStopTest').addEventListener('click',function(){run++;if(TTS)speechSynthesis.cancel();$('btnStopTest').classList.add('hidden');});
+  Array.prototype.forEach.call(document.querySelectorAll('[data-ins]'),function(b){
+    b.addEventListener('click',function(){var a=$('answer');a.value+=b.getAttribute('data-ins');a.focus();});
+  });
+  $('answer').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();check();}});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Enter'&&G.answered&&!$('screenQ').classList.contains('hidden')&&document.activeElement!==$('btnNext')){e.preventDefault();next();}
+  });
+  window.addEventListener('beforeunload',function(){if(TTS)speechSynthesis.cancel();});
+}
+init();
+})();
+</script>
+</body>
+</html>
