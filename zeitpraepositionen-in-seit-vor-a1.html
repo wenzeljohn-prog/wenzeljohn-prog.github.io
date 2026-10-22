@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>In, seit, vor</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout: eine Spalte mit drei Schritten (Verstehen, Dativ, Üben).
+   Die Zeitfarben tragen die Bedeutung: in = Blau, seit = Petrol, vor = Orange. Der Dativ ist Violett. */
+:root{
+  --font-display:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;
+  --font-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --bg:#F3F6FB; --surface:#FFFFFF; --surface-2:#E8EDF6; --fg:#14203A; --muted:#55627F; --line:#D3DBE9;
+  --in:#1F5FD1; --in-ink:#174BA8; --in-soft:#DCE8FB;
+  --seit:#0E7C86; --seit-ink:#0A5F68; --seit-soft:#D2EEF0;
+  --vor:#C2410C; --vor-ink:#9A3412; --vor-soft:#FBE0D2;
+  --dat:#7B35C4; --dat-ink:#6527A8; --dat-soft:#EADCF8;
+  --good:#2B7A33; --good-soft:#DDF1DF; --bad:#B42318; --bad-soft:#FBE0DD;
+  --on-c:#FFFFFF; --shadow:0 1px 2px rgba(20,32,58,.06),0 6px 18px rgba(20,32,58,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1525; --surface:#161F35; --surface-2:#202C4A; --fg:#E7ECF8; --muted:#9BA8C6; --line:#2C3A5C;
+    --in:#6FA3FF; --in-ink:#9CC0FF; --in-soft:#1B2C54;
+    --seit:#4CC4D0; --seit-ink:#7FDAE3; --seit-soft:#123941;
+    --vor:#FF9B67; --vor-ink:#FFB894; --vor-soft:#4A2A19;
+    --dat:#C7A0FF; --dat-ink:#D8BCFF; --dat-soft:#3A2860;
+    --good:#74CF82; --good-soft:#18381F; --bad:#FF8F85; --bad-soft:#47201D;
+    --on-c:#0E1525; --shadow:0 1px 2px rgba(0,0,0,.4);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1525; --surface:#161F35; --surface-2:#202C4A; --fg:#E7ECF8; --muted:#9BA8C6; --line:#2C3A5C;
+  --in:#6FA3FF; --in-ink:#9CC0FF; --in-soft:#1B2C54;
+  --seit:#4CC4D0; --seit-ink:#7FDAE3; --seit-soft:#123941;
+  --vor:#FF9B67; --vor-ink:#FFB894; --vor-soft:#4A2A19;
+  --dat:#C7A0FF; --dat-ink:#D8BCFF; --dat-soft:#3A2860;
+  --good:#74CF82; --good-soft:#18381F; --bad:#FF8F85; --bad-soft:#47201D;
+  --on-c:#0E1525; --shadow:0 1px 2px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--fg);font:17px/1.55 var(--font-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:22px 56px;
+}
+.wrap{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.wrap>*{min-width:0}
+h1,h2,h3{font-family:var(--font-display);margin:0;text-wrap:balance;line-height:1.1}
+h1{font-size:clamp(2.6rem,11vw,4rem);font-weight:800;letter-spacing:-.03em}
+h2{font-size:clamp(1.5rem,5vw,1.9rem);font-weight:800;letter-spacing:-.015em}
+h3{font-size:1.15rem;font-weight:800}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:.92rem}
+.kicker{font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.lead{max-width:60ch;margin-top:12px;color:var(--muted)}
+.w-in{color:var(--in-ink)}.w-seit{color:var(--seit-ink)}.w-vor{color:var(--vor-ink)}
+.dotsep{color:var(--line)}
+
+/* Zeitfarben pro Wort */
+.t-in{--c:var(--in);--ci:var(--in-ink);--cs:var(--in-soft)}
+.t-seit{--c:var(--seit);--ci:var(--seit-ink);--cs:var(--seit-soft)}
+.t-vor{--c:var(--vor);--ci:var(--vor-ink);--cs:var(--vor-soft)}
+
+/* Schritte */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.step{
+  font:inherit;font-weight:700;color:var(--fg);background:var(--surface);border:2px solid var(--line);
+  border-radius:14px;padding:10px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;min-height:58px;
+}
+.step .n{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+.step[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--in);outline-offset:2px}
+
+.panel{display:flex;flex-direction:column;gap:16px}
+.panel>*{min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:16px;min-width:0}
+
+/* Chips und Buttons */
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  font:inherit;font-weight:700;color:var(--fg);background:var(--surface);border:2px solid var(--line);
+  border-radius:999px;padding:8px 16px;min-height:44px;cursor:pointer;
+}
+.chip[aria-pressed="true"]{background:var(--c,var(--fg));border-color:var(--c,var(--fg));color:var(--on-c)}
+.btn{font:inherit;font-weight:700;border:2px solid var(--fg);border-radius:12px;padding:10px 20px;min-height:46px;background:var(--fg);color:var(--bg);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line)}
+.row-btn{display:flex;flex-wrap:wrap;gap:10px}
+
+/* Zeitstrahl */
+.tl{margin:0}
+.tl svg{display:block;width:100%;height:auto;max-width:560px;margin:0 auto;overflow:visible}
+.axis{stroke:var(--line);stroke-width:4;stroke-linecap:round}
+.tick{stroke:var(--line);stroke-width:2;stroke-linecap:round}
+.now{fill:var(--fg)}
+.zone{fill:var(--muted);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.nowlbl{fill:var(--fg);font-size:12px;font-weight:700;letter-spacing:.1em}
+.lbl{fill:var(--ci);font-size:14px;font-weight:700}
+.tagw{fill:var(--ci);font-family:var(--font-display);font-size:26px;font-weight:800}
+.lane .fill-c{fill:var(--c)}
+.lane .stroke-c{stroke:var(--c)}
+.arc{fill:none;stroke-width:4;stroke-linecap:round}
+.dur{stroke-width:10;stroke-linecap:round}
+.more{stroke-width:5;stroke-linecap:round;stroke-dasharray:1 11}
+.dot{stroke:var(--surface);stroke-width:3}
+.bub rect{fill:var(--cs);stroke:var(--c);stroke-width:2}
+.bub text{fill:var(--ci);font-size:15px;font-weight:700}
+.mk-in path{fill:var(--in)}.mk-seit path{fill:var(--seit)}.mk-vor path{fill:var(--vor)}
+.lane{animation:rise .4s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.lane{animation:none}.bar>i{transition:none!important}}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:0}
+.facts dt{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.facts dd{margin:2px 0 0}
+.sentence{font-family:var(--font-display);font-size:clamp(1.25rem,4.6vw,1.6rem);font-weight:600;line-height:1.35}
+.ph{background:var(--cs,var(--dat-soft));color:var(--ci,var(--dat-ink));border-radius:8px;padding:0 .25em}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
+.col{display:flex;flex-direction:column;gap:6px;min-width:0}
+.col .big{font-size:2rem;color:var(--ci)}
+.col .short{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.col .q{font-weight:700;color:var(--ci)}
+.col .sentence{font-size:1.1rem}
+.note{background:var(--surface-2);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.note b{font-family:var(--font-display)}
+.yes{color:var(--good);font-weight:700}.no{color:var(--bad);font-weight:700}
+
+/* Dativ */
+.rule{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:1.6rem}
+.rule .plus{color:var(--muted)}
+.pw{color:var(--ci);font-weight:800}
+.rule .pw{background:var(--cs);border-radius:12px;padding:2px 12px}
+.dat{color:var(--dat-ink);background:var(--dat-soft);border-radius:6px;padding:0 .18em;font-weight:700}
+.big-dat{border-radius:12px;padding:2px 12px}
+.gcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.gcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.gcard h3{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.gcard .r{display:grid;grid-template-columns:3.6rem 1fr;gap:8px;align-items:baseline}
+.gcard .lab{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.machine-out{font-family:var(--font-display);font-size:clamp(1.7rem,7vw,2.3rem);font-weight:800;line-height:1.2}
+.machine-out .dat{font-weight:800}
+.group{display:flex;flex-direction:column;gap:6px}
+.group>.lab{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.evlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.evlist li{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:10px}
+.evlist .s{font-family:var(--font-display);font-size:1.2rem;font-weight:600}
+
+/* Üben */
+.qhead{display:flex;flex-direction:column;gap:8px}
+.qcount{font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.bar{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--fg);border-radius:99px;transition:width .3s}
+.task{font-weight:700}
+.ctx{background:var(--surface-2);border-radius:12px;padding:10px 14px;color:var(--muted)}
+.q.sentence{display:block}
+.gap{display:inline-block;min-width:3.4em;text-align:center;border-bottom:3px solid var(--fg);padding:0 .2em}
+.gap.right{border-color:var(--good);color:var(--good)}
+.gap.wrong{border-color:var(--bad);color:var(--bad)}
+.hint{font-size:.95rem;color:var(--muted)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.opt{
+  font:inherit;font-weight:700;font-size:1.1rem;min-height:52px;border-radius:14px;cursor:pointer;
+  background:var(--surface);color:var(--fg);border:2px solid var(--line);padding:8px 12px;
+}
+.opt.t-in,.opt.t-seit,.opt.t-vor{border-color:var(--c);color:var(--ci);background:var(--cs)}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--good-soft);border-color:var(--good);color:var(--fg)}
+.opt.right::before{content:"✓ ";color:var(--good)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--fg)}
+.opt.wrong::before{content:"✗ ";color:var(--bad)}
+.ans{
+  font:inherit;font-size:1.05rem;padding:8px 12px;border:2px solid var(--line);border-radius:12px;
+  background:var(--surface);color:var(--fg);width:min(100%,15rem);vertical-align:baseline;
+}
+.fb{border-radius:14px;padding:12px 14px}
+.fb.ok{background:var(--good-soft)}
+.fb.bad{background:var(--bad-soft)}
+.fb strong{display:block}
+.result{display:flex;flex-direction:column;gap:12px}
+.result .score{font-family:var(--font-display);font-size:2.6rem;font-weight:800;line-height:1}
+
+/* Übersetzungen */
+.langbar{gap:8px}
+.tr{font-size:.95rem;line-height:1.5;color:var(--muted);border-top:1px dashed var(--line);padding-top:6px}
+.tr[dir="rtl"]{text-align:right}
+.note .tr{border-top:0;padding-top:0}
+.col .tr,.fb .tr{margin-top:4px}
+.trbox{display:flex;flex-direction:column;gap:6px}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+
+  <header>
+    <p class="kicker">Deutsch A1 · Zeit</p>
+    <h1><span class="w-in">in</span> <span class="dotsep">·</span> <span class="w-seit">seit</span> <span class="dotsep">·</span> <span class="w-vor">vor</span></h1>
+    <p class="lead">Wann? Seit wann? Wie lange ist das her? Mit diesen drei Wörtern sprichst du über Zeit. Zuerst verstehen, dann den Dativ sehen, dann üben.</p>
+    <p class="tr" data-t="lead" hidden></p>
+  </header>
+
+  <div class="group langbar"><span class="lab">Übersetzung · Translation</span><div class="seg" id="lang-seg" role="group" aria-label="Sprache wählen"></div></div>
+
+  <nav class="steps" role="tablist" aria-label="Lernschritte">
+    <button class="step" role="tab" id="tab-1" aria-selected="true" aria-controls="panel-1"><span class="n">Schritt 1</span>Verstehen</button>
+    <button class="step" role="tab" id="tab-2" aria-selected="false" aria-controls="panel-2"><span class="n">Schritt 2</span>Dativ</button>
+    <button class="step" role="tab" id="tab-3" aria-selected="false" aria-controls="panel-3"><span class="n">Schritt 3</span>Üben</button>
+  </nav>
+
+  <!-- Schritt 1 -->
+  <section id="panel-1" class="panel" role="tabpanel" aria-labelledby="tab-1">
+    <h2>Der Zeitstrahl</h2>
+    <p>Links ist früher. Rechts ist später. In der Mitte ist <strong>jetzt</strong>. Wähle ein Wort und schau, wo die Zeit liegt.</p>
+    <p class="tr" data-t="tl_intro" hidden></p>
+    <div class="card">
+      <div class="seg" id="tl-seg" role="group" aria-label="Wort wählen"></div>
+      <figure class="tl" id="tl-fig"></figure>
+      <div id="tl-info"></div>
+    </div>
+    <div class="note">
+      <b>Merke: seit + Präsens</b>
+      <p class="tr" data-t="merke" hidden></p>
+      <p><span class="yes">✓</span> Ich wohne seit einem Jahr hier.</p>
+      <p><span class="no">✗</span> Ich habe seit einem Jahr gewohnt.</p>
+    </div>
+    <div class="row-btn"><button class="btn" data-go="2">Weiter zum Dativ →</button></div>
+  </section>
+
+  <!-- Schritt 2 -->
+  <section id="panel-2" class="panel" role="tabpanel" aria-labelledby="tab-2" hidden>
+    <h2>Der Dativ</h2>
+    <p class="rule"><span class="pw t-in">in</span><span class="pw t-seit">seit</span><span class="pw t-vor">vor</span><span class="plus">+</span><span class="dat big-dat">Dativ</span></p>
+    <p>Diese drei Wörter verlangen immer den Dativ. Auch bei der Zeit. Der Artikel verändert sich:</p>
+    <p class="tr" data-t="dat_intro" hidden></p>
+
+    <div class="gcards">
+      <div class="gcard">
+        <h3>maskulin · der Tag</h3>
+        <p class="r"><span class="lab">Nom.</span><span>der Tag · ein Tag</span></p>
+        <p class="r"><span class="lab">Dativ</span><span><span class="dat">dem</span> Tag · <span class="dat">einem</span> Tag</span></p>
+      </div>
+      <div class="gcard">
+        <h3>neutral · das Jahr</h3>
+        <p class="r"><span class="lab">Nom.</span><span>das Jahr · ein Jahr</span></p>
+        <p class="r"><span class="lab">Dativ</span><span><span class="dat">dem</span> Jahr · <span class="dat">einem</span> Jahr</span></p>
+      </div>
+      <div class="gcard">
+        <h3>feminin · die Woche</h3>
+        <p class="r"><span class="lab">Nom.</span><span>die Woche · eine Woche</span></p>
+        <p class="r"><span class="lab">Dativ</span><span><span class="dat">der</span> Woche · <span class="dat">einer</span> Woche</span></p>
+      </div>
+      <div class="gcard">
+        <h3>Plural · die Tage</h3>
+        <p class="r"><span class="lab">Nom.</span><span>die Tage · drei Tage</span></p>
+        <p class="r"><span class="lab">Dativ</span><span><span class="dat">den</span> Tage<span class="dat">n</span> · drei Tage<span class="dat">n</span></span></p>
+      </div>
+    </div>
+    <p class="small muted">Im Plural kommt im Dativ ein <b>-n</b> dazu. Endet das Wort schon auf -n (Wochen, Stunden, Minuten), bleibt es gleich.</p>
+    <p class="tr" data-t="dat_plural" hidden></p>
+
+    <h3>Baue den Satzteil</h3>
+    <div class="card" id="machine">
+      <div class="group"><span class="lab">Wort</span><div class="seg" id="m-prep" role="group" aria-label="Präposition"></div></div>
+      <div class="group"><span class="lab">Zeitwort</span><div class="seg" id="m-noun" role="group" aria-label="Nomen"></div></div>
+      <div class="group"><span class="lab">Zahl</span><div class="seg" id="m-num" role="group" aria-label="Zahl"></div></div>
+      <p class="machine-out" id="m-out" aria-live="polite"></p>
+      <p id="m-why"></p>
+      <p class="sentence" id="m-sent"></p>
+    </div>
+
+    <h3>Mit der, die, das</h3>
+    <ul class="evlist">
+      <li><span class="s">Ich komme vor <span class="dat">dem</span> Kurs.</span><span class="muted small">der Kurs → dem Kurs</span></li>
+      <li><span class="s">Ich bin seit <span class="dat">der</span> Prüfung müde.</span><span class="muted small">die Prüfung → der Prüfung</span></li>
+      <li><span class="s">Wir lernen vor <span class="dat">dem</span> Mittagessen.</span><span class="muted small">das Mittagessen → dem Mittagessen</span></li>
+      <li><span class="s">Ich arbeite seit <span class="dat">den</span> Ferien wieder.</span><span class="muted small">die Ferien (Plural) → den Ferien</span></li>
+    </ul>
+    <div class="row-btn"><button class="btn ghost" data-go="1">← Zurück</button><button class="btn" data-go="3">Weiter zum Üben →</button></div>
+  </section>
+
+  <!-- Schritt 3 -->
+  <section id="panel-3" class="panel" role="tabpanel" aria-labelledby="tab-3" hidden>
+    <h2>Üben</h2>
+    <p class="muted">Drei Teile. Nach jeder Aufgabe siehst du, ob es richtig ist, und warum.</p>
+    <p class="tr" data-t="prac_intro" hidden></p>
+    <div class="seg" id="stage-seg" role="group" aria-label="Teil wählen"></div>
+    <div class="card" id="quiz"></div>
+    <div class="row-btn"><button class="btn ghost" data-go="1">← Zeitstrahl</button><button class="btn ghost" data-go="2">← Dativ</button></div>
+  </section>
+
+</main>
+<script>
+const LANGS=[["","Nur Deutsch"],["en","English"],["ar","العربية"],["uk","Українська"],["ru","Русский"],["tr","Türkçe"],["fa","فارسی"],["vi","Tiếng Việt"],["pl","Polski"]];
+const RTL={ar:1,fa:1};
+const I18N={
+lead:{
+ en:"When? Since when? How long ago? With these three words you talk about time. First understand, then see the dative, then practise.",
+ ar:"متى؟ منذ متى؟ قبل كم من الوقت؟ بهذه الكلمات الثلاث تتحدّث عن الزمن. أولًا افهم، ثم شاهد حالة الـ Dativ، ثم تدرّب.",
+ uk:"Коли? Відколи? Скільки часу тому? Цими трьома словами ви говорите про час. Спочатку зрозумійте, потім подивіться на давальний відмінок (Dativ), потім тренуйтеся.",
+ ru:"Когда? С каких пор? Как давно это было? Этими тремя словами говорят о времени. Сначала поймите, потом посмотрите на дательный падеж (Dativ), потом тренируйтесь.",
+ tr:"Ne zaman? Ne zamandan beri? Ne kadar önce? Bu üç sözcükle zamandan söz edersin. Önce anla, sonra Dativ kuralına bak, sonra alıştırma yap.",
+ fa:"کی؟ از کی؟ چه مدت پیش؟ با این سه واژه درباره‌ی زمان صحبت می‌کنید. اول بفهمید، بعد حالت Dativ را ببینید، بعد تمرین کنید.",
+ vi:"Khi nào? Từ khi nào? Cách đây bao lâu? Với ba từ này bạn nói về thời gian. Trước hết hãy hiểu, rồi xem cách dùng Dativ, rồi luyện tập.",pl:"Kiedy? Od kiedy? Jak dawno temu? Tymi trzema słowami mówisz o czasie. Najpierw zrozum, potem zobacz celownik (Dativ), potem ćwicz."},
+tl_intro:{
+ en:"Left is earlier. Right is later. In the middle is now. Choose a word and see where the time is.",
+ ar:"اليسار = أبكر، واليمين = أحدث. في المنتصف: الآن. اختر كلمة وشاهد أين يقع الزمن.",
+ uk:"Ліворуч — раніше. Праворуч — пізніше. Посередині — зараз. Оберіть слово й подивіться, де лежить час.",
+ ru:"Слева — раньше. Справа — позже. В центре — сейчас. Выберите слово и посмотрите, где находится время.",
+ tr:"Sol daha erken, sağ daha geç. Ortada şimdi var. Bir sözcük seç ve zamanın nerede olduğuna bak.",
+ fa:"چپ یعنی زودتر، راست یعنی دیرتر. وسط یعنی «اکنون». یک واژه انتخاب کنید و ببینید زمان کجاست.",
+ vi:"Bên trái là sớm hơn. Bên phải là muộn hơn. Ở giữa là bây giờ. Chọn một từ và xem thời gian nằm ở đâu.",pl:"Po lewej jest wcześniej. Po prawej jest później. Pośrodku jest teraz. Wybierz słowo i zobacz, gdzie leży czas."},
+merke:{
+ en:"Remember: seit + present tense (not perfect).",
+ ar:"تذكّر: seit + المضارع (Präsens)، وليس الماضي التام (Perfekt).",
+ uk:"Запам'ятайте: seit + теперішній час (Präsens), а не Perfekt.",
+ ru:"Запомните: seit + настоящее время (Präsens), а не Perfekt.",
+ tr:"Unutma: seit + şimdiki zaman (Präsens), Perfekt değil.",
+ fa:"یادتان باشد: seit + زمان حال (Präsens)، نه Perfekt.",
+ vi:"Ghi nhớ: seit + thì hiện tại (Präsens), không dùng Perfekt.",pl:"Zapamiętaj: seit + czas teraźniejszy (Präsens), nie Perfekt."},
+dat_intro:{
+ en:"These three words always take the dative, also with time. The article changes:",
+ ar:"هذه الكلمات الثلاث تتطلّب دائمًا حالة Dativ، حتى مع الزمن. وتتغيّر الأداة (der/die/das):",
+ uk:"Ці три слова завжди вимагають давального відмінка (Dativ), також і в часових виразах. Артикль змінюється:",
+ ru:"Эти три слова всегда требуют дательного падежа (Dativ), в том числе и во временных выражениях. Артикль меняется:",
+ tr:"Bu üç sözcük her zaman Dativ ister, zaman ifadelerinde de. Artikel değişir:",
+ fa:"این سه واژه همیشه حالت Dativ می‌خواهند، در بیان زمان هم. حرف تعریف (Artikel) تغییر می‌کند:",
+ vi:"Ba từ này luôn đi với Dativ, kể cả khi nói về thời gian. Mạo từ thay đổi:",pl:"Te trzy słowa zawsze wymagają celownika (Dativ), także w wyrażeniach czasu. Rodzajnik się zmienia:"},
+dat_plural:{
+ en:"In the dative plural an -n is added. If the word already ends in -n (Wochen, Stunden, Minuten), it stays the same.",
+ ar:"في الجمع مع Dativ تُضاف -n. وإذا كانت الكلمة تنتهي أصلًا بـ -n (Wochen, Stunden, Minuten) فلا تتغيّر.",
+ uk:"У множині в Dativ додається -n. Якщо слово вже закінчується на -n (Wochen, Stunden, Minuten), воно не змінюється.",
+ ru:"Во множественном числе в Dativ добавляется -n. Если слово уже оканчивается на -n (Wochen, Stunden, Minuten), оно не меняется.",
+ tr:"Çoğulda Dativ'de -n eklenir. Sözcük zaten -n ile bitiyorsa (Wochen, Stunden, Minuten) aynı kalır.",
+ fa:"در جمع و حالت Dativ، -n اضافه می‌شود. اگر واژه از قبل به -n ختم شود (Wochen, Stunden, Minuten)، تغییر نمی‌کند.",
+ vi:"Ở số nhiều, Dativ thêm -n. Nếu từ đã kết thúc bằng -n (Wochen, Stunden, Minuten) thì giữ nguyên.",pl:"W liczbie mnogiej w celowniku dodaje się -n. Jeśli słowo już kończy się na -n (Wochen, Stunden, Minuten), nie zmienia się."},
+prac_intro:{
+ en:"Three parts. After each task you see whether it is correct, and why.",
+ ar:"ثلاثة أجزاء. بعد كل تمرين ترى هل الإجابة صحيحة، ولماذا.",
+ uk:"Три частини. Після кожного завдання ви бачите, чи правильно, і чому.",
+ ru:"Три части. После каждого задания вы видите, правильно ли, и почему.",
+ tr:"Üç bölüm. Her görevden sonra doğru olup olmadığını ve nedenini görürsün.",
+ fa:"سه بخش. بعد از هر تمرین می‌بینید درست است یا نه و چرا.",
+ vi:"Ba phần. Sau mỗi bài bạn biết đúng hay sai, và vì sao.",pl:"Trzy części. Po każdym zadaniu widzisz, czy jest dobrze, i dlaczego."},
+r_in:{
+ en:"in: it is still to come. You count forward from now.",
+ ar:"in: الأمر لم يحدث بعد. تحسب إلى الأمام من الآن.",
+ uk:"in: це ще буде. Ви рахуєте вперед від зараз.",
+ ru:"in: это ещё впереди. Вы считаете вперёд от «сейчас».",
+ tr:"in: henüz olmadı, olacak. Şimdiden ileriye doğru sayarsın.",
+ fa:"in: هنوز اتفاق نیفتاده. از «اکنون» به جلو می‌شمارید.",
+ vi:"in: việc đó còn ở phía trước. Bạn đếm tiến lên từ bây giờ.",pl:"in: to dopiero nastąpi. Liczysz do przodu od teraz."},
+r_seit:{
+ en:"seit: it started and it is still like that now.",
+ ar:"seit: بدأ الأمر ولا يزال مستمرًّا حتى الآن.",
+ uk:"seit: це почалося й триває досі.",
+ ru:"seit: это началось и продолжается до сих пор.",
+ tr:"seit: başladı ve şimdi hâlâ sürüyor.",
+ fa:"seit: شروع شده و هنوز ادامه دارد.",
+ vi:"seit: việc đó đã bắt đầu và bây giờ vẫn đang tiếp diễn.",pl:"seit: to się zaczęło i trwa nadal."},
+r_vor:{
+ en:"vor: it happened and it is over. You count back from now.",
+ ar:"vor: حدث الأمر وانتهى. تحسب إلى الخلف من الآن.",
+ uk:"vor: це сталося й закінчилося. Ви рахуєте назад від зараз.",
+ ru:"vor: это произошло и закончилось. Вы считаете назад от «сейчас».",
+ tr:"vor: oldu ve bitti. Şimdiden geriye doğru sayarsın.",
+ fa:"vor: اتفاق افتاده و تمام شده. از «اکنون» به عقب می‌شمارید.",
+ vi:"vor: việc đó đã xảy ra và đã xong. Bạn đếm lùi từ bây giờ.",pl:"vor: to się stało i już minęło. Liczysz wstecz od teraz."},
+r_m:{
+ en:"masculine (der) → dative: einem / dem.",
+ ar:"مذكّر (der) ← في Dativ: einem / dem.",
+ uk:"чоловічий рід (der) → Dativ: einem / dem.",
+ ru:"мужской род (der) → Dativ: einem / dem.",
+ tr:"eril (der) → Dativ: einem / dem.",
+ fa:"مذکر (der) ← Dativ: einem / dem.",
+ vi:"giống đực (der) → Dativ: einem / dem.",pl:"rodzaj męski (der) → Dativ: einem / dem."},
+r_n:{
+ en:"neuter (das) → dative: einem / dem.",
+ ar:"محايد (das) ← في Dativ: einem / dem.",
+ uk:"середній рід (das) → Dativ: einem / dem.",
+ ru:"средний род (das) → Dativ: einem / dem.",
+ tr:"nötr (das) → Dativ: einem / dem.",
+ fa:"خنثی (das) ← Dativ: einem / dem.",
+ vi:"giống trung (das) → Dativ: einem / dem.",pl:"rodzaj nijaki (das) → Dativ: einem / dem."},
+r_f:{
+ en:"feminine (die) → dative: einer / der.",
+ ar:"مؤنّث (die) ← في Dativ: einer / der.",
+ uk:"жіночий рід (die) → Dativ: einer / der.",
+ ru:"женский род (die) → Dativ: einer / der.",
+ tr:"dişil (die) → Dativ: einer / der.",
+ fa:"مؤنث (die) ← Dativ: einer / der.",
+ vi:"giống cái (die) → Dativ: einer / der.",pl:"rodzaj żeński (die) → Dativ: einer / der."},
+r_pl:{
+ en:"plural → dative: add -n.",
+ ar:"الجمع ← في Dativ تُضاف -n.",
+ uk:"множина → у Dativ додається -n.",
+ ru:"множественное число → в Dativ добавляется -n.",
+ tr:"çoğul → Dativ'de -n eklenir.",
+ fa:"جمع ← در Dativ حرف -n اضافه می‌شود.",
+ vi:"số nhiều → Dativ thêm -n.",pl:"liczba mnoga → w Dativ dodaje się -n."},
+r_plsame:{
+ en:"plural already ends in -n → stays the same.",
+ ar:"الجمع ينتهي أصلًا بـ -n ← لا يتغيّر.",
+ uk:"множина вже закінчується на -n → без змін.",
+ ru:"множественное число уже оканчивается на -n → без изменений.",
+ tr:"çoğul zaten -n ile bitiyor → aynı kalır.",
+ fa:"جمع از قبل به -n ختم می‌شود ← تغییری نمی‌کند.",
+ vi:"số nhiều đã kết thúc bằng -n → giữ nguyên.",pl:"liczba mnoga już kończy się na -n → bez zmian."},
+q_in:{en:"When does it come?",ar:"متى يحدث؟",uk:"Коли це буде?",ru:"Когда это будет?",tr:"Ne zaman olacak?",fa:"کی اتفاق می‌افتد؟",vi:"Khi nào xảy ra?",pl:"Kiedy to nastąpi?"},
+q_seit:{en:"Since when?",ar:"منذ متى؟",uk:"Відколи?",ru:"С каких пор?",tr:"Ne zamandan beri?",fa:"از کی؟",vi:"Từ khi nào?",pl:"Od kiedy?"},
+q_vor:{en:"When was that?",ar:"متى كان ذلك؟",uk:"Коли це було?",ru:"Когда это было?",tr:"Bu ne zamandı?",fa:"کی بود؟",vi:"Việc đó xảy ra khi nào?",pl:"Kiedy to było?"},
+tense_pres:{en:"present tense",ar:"المضارع (Präsens)",uk:"теперішній час",ru:"настоящее время",tr:"şimdiki zaman",fa:"زمان حال",vi:"thì hiện tại",pl:"czas teraźniejszy"},
+tense_perf:{en:"perfect tense",ar:"الماضي التام (Perfekt)",uk:"Perfekt (минулий час)",ru:"Perfekt (прошедшее время)",tr:"Perfekt (geçmiş zaman)",fa:"Perfekt (گذشته)",vi:"Perfekt (thì quá khứ)",pl:"Perfekt (czas przeszły)"},
+l_mean:{en:"Meaning",ar:"المعنى",uk:"Значення",ru:"Значение",tr:"Anlam",fa:"معنی",vi:"Ý nghĩa",pl:"Znaczenie"},
+l_q:{en:"Question",ar:"السؤال",uk:"Питання",ru:"Вопрос",tr:"Soru",fa:"پرسش",vi:"Câu hỏi",pl:"Pytanie"},
+l_verb:{en:"Verb",ar:"الفعل",uk:"Дієслово",ru:"Глагол",tr:"Fiil",fa:"فعل",vi:"Động từ",pl:"Czasownik"},
+task_a:{en:"Which word fits: in, seit or vor?",ar:"أي كلمة تناسب: in أم seit أم vor؟",uk:"Яке слово підходить: in, seit чи vor?",ru:"Какое слово подходит: in, seit или vor?",tr:"Hangi sözcük uygun: in, seit ya da vor?",fa:"کدام واژه مناسب است: in، seit یا vor؟",vi:"Từ nào phù hợp: in, seit hay vor?",pl:"Które słowo pasuje: in, seit czy vor?"},
+task_b:{en:"Choose the correct dative form.",ar:"اختر صيغة Dativ الصحيحة.",uk:"Оберіть правильну форму Dativ.",ru:"Выберите правильную форму Dativ.",tr:"Doğru Dativ biçimini seç.",fa:"شکل درست Dativ را انتخاب کنید.",vi:"Chọn dạng Dativ đúng.",pl:"Wybierz poprawną formę Dativ."},
+task_c:{en:"Write the whole phrase: word + dative.",ar:"اكتب العبارة كاملة: الكلمة + Dativ.",uk:"Напишіть увесь вираз: слово + Dativ.",ru:"Напишите всё выражение: слово + Dativ.",tr:"Tüm ifadeyi yaz: sözcük + Dativ.",fa:"کل عبارت را بنویسید: واژه + Dativ.",vi:"Viết cả cụm: từ + Dativ.",pl:"Napisz całe wyrażenie: słowo + Dativ."},
+fb_ok:{en:"Correct.",ar:"صحيح.",uk:"Правильно.",ru:"Правильно.",tr:"Doğru.",fa:"درست است.",vi:"Đúng rồi.",pl:"Dobrze."},
+fb_no:{en:"Not quite. Correct:",ar:"ليس تمامًا. الصحيح:",uk:"Не зовсім. Правильно:",ru:"Не совсем. Правильно:",tr:"Tam değil. Doğrusu:",fa:"کاملاً درست نیست. پاسخ درست:",vi:"Chưa đúng. Đáp án đúng:",pl:"Nie całkiem. Poprawnie:"},
+fb_try:{en:"Not correct yet. Try again.",ar:"لم تصح بعد. حاول مرة أخرى.",uk:"Ще не правильно. Спробуйте ще раз.",ru:"Пока неверно. Попробуйте ещё раз.",tr:"Henüz doğru değil. Tekrar dene.",fa:"هنوز درست نیست. دوباره تلاش کنید.",vi:"Chưa đúng. Hãy thử lại.",pl:"Jeszcze nie jest dobrze. Spróbuj jeszcze raz."}
+};
+const EX={
+ in:[
+  {b:"Der Deutschkurs beginnt ",p:"in einer Woche",a:".",tr:{en:"The German course starts in one week.",ar:"تبدأ دورة اللغة الألمانية بعد أسبوع واحد.",uk:"Курс німецької починається через тиждень.",ru:"Курс немецкого начинается через неделю.",tr:"Almanca kursu bir hafta sonra başlıyor.",fa:"دوره‌ی آلمانی یک هفته‌ی دیگر شروع می‌شود.",vi:"Khóa học tiếng Đức bắt đầu sau một tuần nữa.",pl:"Kurs niemieckiego zaczyna się za tydzień."}},
+  {b:"Der Bus kommt ",p:"in fünf Minuten",a:".",tr:{en:"The bus comes in five minutes.",ar:"تصل الحافلة بعد خمس دقائق.",uk:"Автобус приїде через п'ять хвилин.",ru:"Автобус приедет через пять минут.",tr:"Otobüs beş dakika sonra geliyor.",fa:"اتوبوس پنج دقیقه‌ی دیگر می‌آید.",vi:"Xe buýt đến sau năm phút nữa.",pl:"Autobus przyjedzie za pięć minut."}},
+  {b:"Ich habe ",p:"in zwei Monaten",a:" Geburtstag.",tr:{en:"My birthday is in two months.",ar:"عيد ميلادي بعد شهرين.",uk:"Мій день народження — через два місяці.",ru:"У меня день рождения через два месяца.",tr:"Doğum günüm iki ay sonra.",fa:"تولد من دو ماه دیگر است.",vi:"Hai tháng nữa là sinh nhật của tôi.",pl:"Moje urodziny są za dwa miesiące."}}
+ ],
+ seit:[
+  {b:"Ich wohne ",p:"seit einem Jahr",a:" hier.",tr:{en:"I have lived here for one year.",ar:"أسكن هنا منذ سنة.",uk:"Я живу тут уже рік.",ru:"Я живу здесь уже год.",tr:"Bir yıldır burada yaşıyorum.",fa:"من یک سال است که اینجا زندگی می‌کنم.",vi:"Tôi sống ở đây được một năm rồi.",pl:"Mieszkam tu od roku."}},
+  {b:"Ich lerne ",p:"seit drei Monaten",a:" Deutsch.",tr:{en:"I have been learning German for three months.",ar:"أتعلّم الألمانية منذ ثلاثة أشهر.",uk:"Я вивчаю німецьку вже три місяці.",ru:"Я учу немецкий уже три месяца.",tr:"Üç aydır Almanca öğreniyorum.",fa:"من سه ماه است که آلمانی یاد می‌گیرم.",vi:"Tôi học tiếng Đức được ba tháng rồi.",pl:"Uczę się niemieckiego od trzech miesięcy."}},
+  {b:"Sie arbeitet ",p:"seit zwei Wochen",a:" hier.",tr:{en:"She has worked here for two weeks.",ar:"تعمل هنا منذ أسبوعين.",uk:"Вона працює тут уже два тижні.",ru:"Она работает здесь уже две недели.",tr:"İki haftadır burada çalışıyor.",fa:"او دو هفته است که اینجا کار می‌کند.",vi:"Cô ấy làm việc ở đây được hai tuần rồi.",pl:"Pracuje tu od dwóch tygodni."}}
+ ],
+ vor:[
+  {b:"Ich bin ",p:"vor einer Woche",a:" angekommen.",tr:{en:"I arrived one week ago.",ar:"وصلتُ قبل أسبوع.",uk:"Я приїхав(-ла) тиждень тому.",ru:"Я приехал(а) неделю назад.",tr:"Bir hafta önce geldim.",fa:"من یک هفته پیش رسیدم.",vi:"Tôi đến cách đây một tuần.",pl:"Przyjechałem(-am) tydzień temu."}},
+  {b:"Wir haben ",p:"vor zwei Stunden",a:" gegessen.",tr:{en:"We ate two hours ago.",ar:"أكلنا قبل ساعتين.",uk:"Ми їли дві години тому.",ru:"Мы ели два часа назад.",tr:"İki saat önce yemek yedik.",fa:"ما دو ساعت پیش غذا خوردیم.",vi:"Chúng tôi đã ăn cách đây hai tiếng.",pl:"Jedliśmy dwie godziny temu."}},
+  {b:"Er hat ",p:"vor drei Tagen",a:" angerufen.",tr:{en:"He called three days ago.",ar:"اتصل قبل ثلاثة أيام.",uk:"Він телефонував три дні тому.",ru:"Он звонил три дня назад.",tr:"Üç gün önce aradı.",fa:"او سه روز پیش تماس گرفت.",vi:"Anh ấy đã gọi điện cách đây ba ngày.",pl:"Zadzwonił trzy dni temu."}}
+ ]
+};
+
+const FACT={
+ in:{mean:"Es kommt noch. Du zählst von JETZT nach vorne.",q:"Wann kommt das?",tense:"Präsens",tk:"tense_pres",short:"Zukunft · ab jetzt",tex:"Der Bus kommt in fünf Minuten."},
+ seit:{mean:"Es hat angefangen. Und es ist jetzt noch so.",q:"Seit wann?",tense:"Präsens",tk:"tense_pres",short:"Anfang → jetzt",tex:"Ich wohne seit einem Jahr hier."},
+ vor:{mean:"Es war und es ist vorbei. Du zählst von JETZT zurück.",q:"Wann war das?",tense:"Perfekt",tk:"tense_perf",short:"Vergangenheit · vorbei",tex:"Ich bin vor einer Woche angekommen."}
+};
+
+const NOUNS=[
+ {w:"Tag",g:"m",art:"der",pl:"Tage",dpl:"Tagen"},
+ {w:"Woche",g:"f",art:"die",pl:"Wochen",dpl:"Wochen"},
+ {w:"Monat",g:"m",art:"der",pl:"Monate",dpl:"Monaten"},
+ {w:"Jahr",g:"n",art:"das",pl:"Jahre",dpl:"Jahren"},
+ {w:"Stunde",g:"f",art:"die",pl:"Stunden",dpl:"Stunden"},
+ {w:"Minute",g:"f",art:"die",pl:"Minuten",dpl:"Minuten"}
+];
+const DATART={m:"einem",n:"einem",f:"einer"};
+const GNAME={m:"maskulin",n:"neutral",f:"feminin"};
+const GRULE={m:"r_m",n:"r_n",f:"r_f"};
+
+/* Teil A: Bedeutung */
+const A=[
+ {ctx:"Heute ist Montag. Der Test ist am Donnerstag.",b:"Der Test ist ",a:" drei Tagen.",ans:"in",why:"Der Test kommt noch. Du zählst von jetzt nach vorne: in drei Tagen."},
+ {ctx:"Ich habe im Januar mit dem Kurs angefangen. Jetzt ist März. Ich lerne noch.",b:"Ich lerne ",a:" zwei Monaten Deutsch.",ans:"seit",why:"Es hat angefangen und es dauert noch an: seit zwei Monaten."},
+ {ctx:"Tom ist letzten Montag angekommen. Heute ist wieder Montag.",b:"Tom ist ",a:" einer Woche angekommen.",ans:"vor",why:"Es ist passiert und es ist vorbei. Du zählst von jetzt zurück: vor einer Woche."},
+ {ctx:"Es ist 10:00 Uhr. Der Bus kommt um 10:10 Uhr.",b:"Der Bus kommt ",a:" zehn Minuten.",ans:"in",why:"Der Bus kommt noch. Du zählst von jetzt nach vorne: in zehn Minuten."},
+ {ctx:"Maria hat 2023 angefangen. Sie arbeitet noch immer dort. Heute ist 2026.",b:"Maria arbeitet ",a:" drei Jahren in einer Bäckerei.",ans:"seit",why:"Es hat angefangen und es dauert noch an: seit drei Jahren."},
+ {ctx:"Wir haben um 12 Uhr gegessen. Jetzt ist es 14 Uhr.",b:"Wir haben ",a:" zwei Stunden gegessen.",ans:"vor",why:"Das Essen ist vorbei. Du zählst von jetzt zurück: vor zwei Stunden."},
+ {ctx:"Jetzt ist Oktober. Die Prüfung ist im Dezember.",b:"Die Prüfung ist ",a:" zwei Monaten.",ans:"in",why:"Die Prüfung kommt noch: in zwei Monaten."},
+ {ctx:"Lena ist am Montag krank geworden. Heute ist Mittwoch. Sie ist noch krank.",b:"Lena ist ",a:" zwei Tagen krank.",ans:"seit",why:"Es hat angefangen und es dauert noch an: seit zwei Tagen."},
+ {ctx:"Der Film war am Samstag. Heute ist Mittwoch.",b:"Wir haben den Film ",a:" vier Tagen gesehen.",ans:"vor",why:"Der Film ist vorbei. Du zählst von jetzt zurück: vor vier Tagen."},
+ {ctx:"Es ist 9:00 Uhr. Der Zug fährt um 9:15 Uhr.",b:"Der Zug fährt ",a:" fünfzehn Minuten.",ans:"in",why:"Der Zug fährt noch nicht. Du zählst von jetzt nach vorne: in fünfzehn Minuten."},
+ {ctx:"Der Umzug war am 8. Oktober. Heute ist der 22. Oktober. Ich wohne noch dort.",b:"Ich wohne ",a:" zwei Wochen in der neuen Wohnung.",ans:"seit",why:"Es hat angefangen und es dauert noch an: seit zwei Wochen."},
+ {ctx:"Das Telefonat mit Anna war gestern.",b:"Ich habe ",a:" einem Tag mit Anna telefoniert.",ans:"vor",why:"Das Telefonat ist vorbei. Du zählst von jetzt zurück: vor einem Tag."}
+].map(x=>Object.assign(x,{rule:["r_"+x.ans]}));
+
+/* Teil B: Dativ wählen */
+const B=[
+ {b:"Der Kurs beginnt in ",a:" Woche.",hint:"die Woche",opts:["einer","einem","eine"],ans:"einer",why:"Woche ist feminin (die). Dativ: einer Woche.",rule:["r_f"]},
+ {b:"Ich wohne seit ",a:" Monat hier.",hint:"der Monat",opts:["einem","einen","ein"],ans:"einem",why:"Monat ist maskulin (der). Dativ: einem Monat.",rule:["r_m"]},
+ {b:"Wir sind vor ",a:" Jahr umgezogen.",hint:"das Jahr",opts:["einem","einer","ein"],ans:"einem",why:"Jahr ist neutral (das). Dativ: einem Jahr.",rule:["r_n"]},
+ {b:"Er ist vor drei ",a:" gekommen.",hint:"der Tag",opts:["Tag","Tage","Tagen"],ans:"Tagen",why:"Plural nach vor: Dativ Plural bekommt ein -n. Tage → Tagen.",rule:["r_pl"]},
+ {b:"Der Film beginnt in zwei ",a:".",hint:"die Stunde",opts:["Stunde","Stunden","Stundens"],ans:"Stunden",why:"Das Wort endet im Plural schon auf -n. Es bleibt: Stunden.",rule:["r_plsame"]},
+ {b:"Ich lerne seit vier ",a:" Deutsch.",hint:"der Monat",opts:["Monat","Monate","Monaten"],ans:"Monaten",why:"Plural nach seit: Dativ Plural bekommt ein -n. Monate → Monaten.",rule:["r_pl"]},
+ {b:"Sie wartet seit ",a:" Minute.",hint:"die Minute",opts:["einer","einem","einen"],ans:"einer",why:"Minute ist feminin (die). Dativ: einer Minute.",rule:["r_f"]},
+ {b:"Wir fahren in drei ",a:" nach Spanien.",hint:"das Jahr",opts:["Jahr","Jahre","Jahren"],ans:"Jahren",why:"Plural nach in: Dativ Plural bekommt ein -n. Jahre → Jahren.",rule:["r_pl"]},
+ {b:"Ich bin vor ",a:" Tag angekommen.",hint:"der Tag",opts:["einem","einer","ein"],ans:"einem",why:"Tag ist maskulin (der). Dativ: einem Tag.",rule:["r_m"]},
+ {b:"Ich bin seit ",a:" Prüfung müde.",hint:"die Prüfung",opts:["der","die","dem"],ans:"der",why:"Prüfung ist feminin (die). Dativ: der Prüfung.",rule:["r_f"]},
+ {b:"Wir telefonieren vor ",a:" Kurs.",hint:"der Kurs",opts:["dem","den","der"],ans:"dem",why:"Kurs ist maskulin (der). Dativ: dem Kurs.",rule:["r_m"]},
+ {b:"Ich bin seit fünf ",a:" hier.",hint:"die Woche",opts:["Woche","Wochen","Wochens"],ans:"Wochen",why:"Das Wort endet im Plural schon auf -n. Es bleibt: Wochen.",rule:["r_plsame"]}
+];
+
+/* Teil C: alles zusammen */
+const C=[
+ {ctx:"Er hat letzten Monat angefangen. Er arbeitet noch dort.",b:"Er arbeitet ",a:" hier.",hint:"1 · der Monat",ans:"seit einem Monat",whyPrep:"Es dauert noch an. Das passt zu seit.",whyDat:"Monat ist maskulin (der). Dativ: einem Monat.",why:"seit: es dauert noch an. Monat ist maskulin: einem Monat.",rule:["r_seit","r_m"]},
+ {ctx:"Es war gestern.",b:"Ich bin ",a:" angekommen.",hint:"1 · der Tag",ans:"vor einem Tag",whyPrep:"Es ist vorbei. Das passt zu vor.",whyDat:"Tag ist maskulin (der). Dativ: einem Tag.",why:"vor: es ist vorbei. Tag ist maskulin: einem Tag.",rule:["r_vor","r_m"]},
+ {ctx:"Es ist 8:00 Uhr. Der Bus kommt um 8:05 Uhr.",b:"Der Bus kommt ",a:".",hint:"5 · die Minute",ans:"in fünf Minuten",whyPrep:"Es kommt noch. Das passt zu in.",whyDat:"Plural: Minuten endet schon auf -n.",why:"in: es kommt noch. Plural Minuten (schon -n).",rule:["r_in","r_plsame"]},
+ {ctx:"Ich bin am 8. Oktober gekommen. Heute ist der 22. Oktober. Ich bin noch hier.",b:"Ich bin ",a:" in Deutschland.",hint:"2 · die Woche",ans:"seit zwei Wochen",whyPrep:"Es dauert noch an. Das passt zu seit.",whyDat:"Plural: Wochen endet schon auf -n.",why:"seit: es dauert noch an. Plural Wochen (schon -n).",rule:["r_seit","r_plsame"]},
+ {ctx:"Das Konzert war am Samstag. Heute ist Dienstag.",b:"Das Konzert war ",a:".",hint:"3 · der Tag",ans:"vor drei Tagen",whyPrep:"Es ist vorbei. Das passt zu vor.",whyDat:"Dativ Plural bekommt ein -n: Tage → Tagen.",why:"vor: es ist vorbei. Dativ Plural: Tagen.",rule:["r_vor","r_pl"]},
+ {ctx:"Meine Tochter ist vier Jahre alt. Mit sechs geht sie in die Schule.",b:"Sie geht ",a:" in die Schule.",hint:"2 · das Jahr",ans:"in zwei Jahren",whyPrep:"Es kommt noch. Das passt zu in.",whyDat:"Dativ Plural bekommt ein -n: Jahre → Jahren.",why:"in: es kommt noch. Dativ Plural: Jahren.",rule:["r_in","r_pl"]},
+ {ctx:"Ich habe im Mai angefangen. Jetzt ist Oktober. Ich lerne noch.",b:"Ich lerne ",a:" Deutsch.",hint:"5 · der Monat",ans:"seit fünf Monaten",whyPrep:"Es dauert noch an. Das passt zu seit.",whyDat:"Dativ Plural bekommt ein -n: Monate → Monaten.",why:"seit: es dauert noch an. Dativ Plural: Monaten.",rule:["r_seit","r_pl"]},
+ {ctx:"Es ist 14:00 Uhr. Wir sind um 15:00 Uhr fertig.",b:"Wir sind ",a:" fertig.",hint:"1 · die Stunde",ans:"in einer Stunde",whyPrep:"Es kommt noch. Das passt zu in.",whyDat:"Stunde ist feminin (die). Dativ: einer Stunde.",why:"in: es kommt noch. Stunde ist feminin: einer Stunde.",rule:["r_in","r_f"]}
+];
+
+const STAGES=[
+ {name:"Teil A",title:"Bedeutung",desc:"Welches Wort passt: in, seit oder vor?",tk:"task_a",type:"prep",items:A},
+ {name:"Teil B",title:"Dativ",desc:"Wähle die richtige Dativ-Form.",tk:"task_b",type:"choice",items:B},
+ {name:"Teil C",title:"Alles zusammen",desc:"Schreibe den ganzen Teil: Wort + Dativ.",tk:"task_c",type:"type",items:C}
+];
+(function(){
+"use strict";
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{const r=a.slice();for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=r[i];r[i]=r[j];r[j]=t;}return r;};
+const range=n=>Array.from({length:n},(_,i)=>i);
+
+/* ---------- Übersetzung ---------- */
+let LANG="";
+try{const s=localStorage.getItem("izv-lang");if(s&&LANGS.some(l=>l[0]===s))LANG=s;}catch(e){}
+const T=k=>(LANG&&I18N[k]&&I18N[k][LANG])||"";
+const dirAttr=()=>`lang="${LANG}" dir="${RTL[LANG]?"rtl":"ltr"}"`;
+const trLine=t=>t?`<p class="tr" ${dirAttr()}>${esc(t)}</p>`:"";
+const trKeys=keys=>LANG?keys.map(k=>trLine(T(k))).join(""):"";
+function applyStatic(){
+  $$("[data-t]").forEach(el=>{
+    const t=T(el.dataset.t);
+    el.hidden=!t;el.textContent=t;
+    el.lang=LANG||"de";el.dir=RTL[LANG]?"rtl":"ltr";
+  });
+}
+function renderLangSeg(){
+  $("#lang-seg").innerHTML=LANGS.map(l=>`<button class="chip" data-lang="${l[0]}" aria-pressed="${l[0]===LANG}" lang="${l[0]||"de"}">${l[1]}</button>`).join("");
+}
+function setLang(l){
+  LANG=l;
+  try{localStorage.setItem("izv-lang",l);}catch(e){}
+  renderLangSeg();applyStatic();renderTL();renderMachine();
+  if(!Q.answered&&Q.pos<Q.queue.length)renderQuiz();
+}
+
+/* ---------- Schritte ---------- */
+function showStep(n){
+  $$(".step").forEach((b,i)=>b.setAttribute("aria-selected",String(i+1===n)));
+  $$("[role=tabpanel]").forEach((p,i)=>{p.hidden=(i+1!==n);});
+  try{window.scrollTo(0,0);}catch(e){}
+}
+
+/* ---------- Zeitstrahl ---------- */
+const AX0=24,AX1=456,NOW=240;
+const tl={mode:"in",i:{in:0,seit:0,vor:0}};
+const DEFS="<defs>"+["in","seit","vor"].map(m=>`<marker id="mk-${m}" class="mk-${m}" viewBox="0 0 14 14" refX="11" refY="7" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L13 7 L1 13 z"/></marker>`).join("")+"</defs>";
+function axis(y0){
+  let s=`<line class="axis" x1="${AX0}" y1="${y0}" x2="${AX1}" y2="${y0}"/>`;
+  for(let k=0;k<=12;k++){const x=AX0+k*36;if(x===NOW)continue;s+=`<line class="tick" x1="${x}" y1="${y0-7}" x2="${x}" y2="${y0+7}"/>`;}
+  return s;
+}
+function nowMark(y0){return `<rect class="now" x="${NOW-3}" y="${y0-18}" width="6" height="36" rx="3"/><text class="nowlbl" x="${NOW}" y="${y0+38}" text-anchor="middle">JETZT</text>`;}
+function bub(x,y,t){const w=Math.round(t.length*8.6+28);return `<g class="bub"><rect x="${x-w/2}" y="${y-15}" width="${w}" height="30" rx="15"/><text x="${x}" y="${y+5}" text-anchor="middle">${esc(t)}</text></g>`;}
+function lane(mode,y0,phrase,tag){
+  let s=`<g class="lane t-${mode}">`+axis(y0);
+  if(mode==="in"){
+    s+=`<path class="arc stroke-c" d="M${NOW+8} ${y0-14} Q310 ${y0-76} 370 ${y0-14}" marker-end="url(#mk-in)"/>`;
+    s+=`<circle class="dot fill-c" cx="382" cy="${y0}" r="11"/>`;
+    s+=bub(312,y0-64,phrase);
+    s+=`<text class="lbl" x="382" y="${y0+38}" text-anchor="middle">kommt noch</text>`;
+  }else if(mode==="seit"){
+    s+=`<line class="dur stroke-c" x1="100" y1="${y0}" x2="${NOW}" y2="${y0}"/>`;
+    s+=`<line class="more stroke-c" x1="${NOW+14}" y1="${y0}" x2="338" y2="${y0}" marker-end="url(#mk-seit)"/>`;
+    s+=`<circle class="dot fill-c" cx="100" cy="${y0}" r="11"/>`;
+    s+=bub(170,y0-44,phrase);
+    s+=`<text class="lbl" x="100" y="${y0+38}" text-anchor="middle">Anfang</text>`;
+    s+=`<text class="lbl" x="340" y="${y0+38}" text-anchor="middle">geht weiter</text>`;
+  }else{
+    s+=`<path class="arc stroke-c" d="M${NOW-8} ${y0-14} Q170 ${y0-76} 110 ${y0-14}" marker-end="url(#mk-vor)"/>`;
+    s+=`<circle class="dot fill-c" cx="98" cy="${y0}" r="11"/>`;
+    s+=bub(168,y0-64,phrase);
+    s+=`<text class="lbl" x="98" y="${y0+38}" text-anchor="middle">vorbei</text>`;
+  }
+  s+=nowMark(y0);
+  if(tag)s+=`<text class="tagw" x="24" y="${y0-52}">${mode}</text>`;
+  return s+"</g>";
+}
+const zones=()=>`<text class="zone" x="24" y="22">Vergangenheit</text><text class="zone" x="456" y="22" text-anchor="end">Zukunft</text>`;
+function sentenceHtml(ex){return `${esc(ex.b)}<mark class="ph">${esc(ex.p)}</mark>${esc(ex.a)}`;}
+function renderTL(){
+  const m=tl.mode;
+  $$("#tl-seg .chip").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===m)));
+  const fig=$("#tl-fig"),info=$("#tl-info");
+  if(m==="alle"){
+    let svg=`<svg viewBox="0 0 480 470" role="img" aria-label="Zeitstrahl mit in, seit und vor">${DEFS}${zones()}`;
+    ["in","seit","vor"].forEach((k,idx)=>{svg+=lane(k,118+idx*150,EX[k][tl.i[k]].p,true);});
+    fig.innerHTML=svg+"</svg>";
+    info.innerHTML=`<div class="three">`+["in","seit","vor"].map(k=>{
+      const ex=EX[k][tl.i[k]],f=FACT[k];
+      return `<div class="col t-${k}"><h3 class="big">${k}</h3><p class="short">${f.short}</p><p>${f.mean}</p><p class="q">${f.q}</p><p class="sentence">${sentenceHtml(ex)}</p>${LANG?trLine(T("r_"+k))+trLine(T("q_"+k))+trLine(ex.tr[LANG]):""}</div>`;
+    }).join("")+`</div><div class="row-btn"><button class="btn ghost" data-act="ex-all">Andere Beispiele</button></div>`;
+  }else{
+    const ex=EX[m][tl.i[m]],f=FACT[m];
+    fig.innerHTML=`<svg viewBox="0 0 480 190" role="img" aria-label="Zeitstrahl: ${m}">${DEFS}${zones()}${lane(m,128,ex.p,false)}</svg>`;
+    info.innerHTML=`<div class="t-${m} trbox"><dl class="facts"><div><dt>Bedeutung</dt><dd>${f.mean}</dd></div><div><dt>Frage</dt><dd>${f.q}</dd></div><div><dt>Verb</dt><dd>${f.tense}</dd></div></dl>`
+      +(LANG?`<dl class="facts">`+[["l_mean",T("r_"+m)],["l_q",T("q_"+m)],["l_verb",T(f.tk)]].map(x=>`<div class="tr" ${dirAttr()}><b>${esc(T(x[0]))}</b><br>${esc(x[1])}</div>`).join("")+`</dl>`:"")
+      +`<p class="sentence">${sentenceHtml(ex)}</p>${LANG?trLine(ex.tr[LANG]):""}<div class="row-btn"><button class="btn ghost" data-act="ex-next">Nächstes Beispiel</button></div></div>`;
+  }
+}
+
+/* ---------- Dativ-Baukasten ---------- */
+const M={prep:"in",noun:0,num:1};
+function renderMachine(){
+  $$("#m-prep .chip").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===M.prep)));
+  $$("#m-noun .chip").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.v===M.noun)));
+  $$("#m-num .chip").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.v===M.num)));
+  const n=NOUNS[M.noun],P=M.prep;
+  let out,why,str,rule;
+  const pw=`<span class="pw t-${P}">${P}</span>`;
+  if(M.num===1){
+    const d=DATART[n.g];
+    out=`${pw} <span class="dat">${d}</span> ${n.w}`;
+    why=`<strong>${n.art} ${n.w}</strong> ist ${GNAME[n.g]}. Nach <em>${P}</em> steht der Dativ: <span class="dat">${d}</span> ${n.w}.`;
+    str=`${P} ${d} ${n.w}`;rule=GRULE[n.g];
+  }else{
+    const same=n.dpl===n.pl;
+    const noun=same?n.pl:`${n.pl}<span class="dat">n</span>`;
+    out=`${pw} drei ${noun}`;
+    why=same?`Plural: <strong>die ${n.pl}</strong>. Das Wort endet schon auf -n. Nach <em>${P}</em> bleibt es: ${n.dpl}.`:`Plural: <strong>die ${n.pl}</strong>. Im Dativ Plural kommt ein <span class="dat">-n</span> dazu: ${n.dpl}.`;
+    str=`${P} drei ${n.dpl}`;rule=same?"r_plsame":"r_pl";
+  }
+  const sent=P==="in"?`Der Kurs beginnt ${str}.`:P==="seit"?`Ich lerne ${str} Deutsch.`:`Ich bin ${str} angekommen.`;
+  $("#m-out").innerHTML=out;
+  $("#m-why").innerHTML=why+(LANG?trLine(T(rule)):"");
+  $("#m-sent").innerHTML=esc(sent).replace(esc(str),`<mark class="ph t-${P}">${esc(str)}</mark>`);
+}
+function buildMachine(){
+  $("#m-prep").innerHTML=["in","seit","vor"].map(p=>`<button class="chip t-${p}" data-v="${p}" aria-pressed="false">${p}</button>`).join("");
+  $("#m-noun").innerHTML=NOUNS.map((n,i)=>`<button class="chip" data-v="${i}" aria-pressed="false">${n.w}</button>`).join("");
+  $("#m-num").innerHTML=`<button class="chip" data-v="1" aria-pressed="false">1 · ein/eine</button><button class="chip" data-v="3" aria-pressed="false">3 · drei</button>`;
+}
+
+/* ---------- Üben ---------- */
+const NUMW={"1":"ein","2":"zwei","3":"drei","4":"vier","5":"fünf","6":"sechs"};
+const norm=s=>s.toLowerCase().replace(/[.!?,;]/g," ").replace(/fuenf/g,"fünf").replace(/\b\d\b/g,d=>NUMW[d]||d).replace(/\s+/g," ").trim();
+const Q={stage:0,queue:[],pos:0,runOK:0,wrong:[],review:false,answered:false,tries:0,failed:false,score:{}};
+
+function startStage(s,idxs){
+  Q.stage=s;Q.queue=idxs||shuffle(range(STAGES[s].items.length));Q.pos=0;Q.runOK=0;Q.wrong=[];Q.review=!!idxs;Q.answered=false;Q.tries=0;Q.failed=false;
+  renderChips();renderQuiz();
+}
+function renderChips(){
+  $("#stage-seg").innerHTML=STAGES.map((s,i)=>`<button class="chip" data-stage="${i}" aria-pressed="${i===Q.stage}">${s.name}: ${s.title}${Q.score[i]?` · ${Q.score[i].ok}/${Q.score[i].total}`:""}</button>`).join("");
+}
+function renderQuiz(){
+  const st=STAGES[Q.stage],box=$("#quiz");
+  if(Q.pos>=Q.queue.length){renderResult();return;}
+  const it=st.items[Q.queue[Q.pos]];
+  Q.answered=false;Q.tries=0;Q.failed=false;
+  const pct=Math.round(Q.pos/Q.queue.length*100);
+  let h=`<div class="qhead"><p class="qcount">${st.name} · Aufgabe ${Q.pos+1} von ${Q.queue.length}${Q.review?" · Wiederholung":""}</p><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${Q.queue.length}" aria-valuenow="${Q.pos}"><i style="width:${pct}%"></i></div></div>`;
+  h+=`<div class="trbox"><p class="task">${st.desc}</p>${trLine(T(st.tk))}</div>`;
+  if(it.ctx)h+=`<p class="ctx">${esc(it.ctx)}</p>`;
+  if(st.type==="type"){
+    h+=`<p class="sentence q">${esc(it.b)}<input class="ans" id="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Antwort"> ${esc(it.a)}</p><p class="hint">(${esc(it.hint)})</p>`;
+    h+=`<div class="row-btn" id="actions"><button class="btn" data-act="check">Prüfen</button></div>`;
+  }else{
+    h+=`<p class="sentence q">${esc(it.b)}<span class="gap" id="gap">&nbsp;&nbsp;&nbsp;</span>${esc(it.a)}</p>`;
+    if(it.hint)h+=`<p class="hint">(${esc(it.hint)})</p>`;
+    const opts=st.type==="prep"?["in","seit","vor"]:shuffle(it.opts);
+    h+=`<div class="opts" id="opts">`+opts.map(o=>`<button class="opt ${st.type==="prep"?"t-"+o:""}" data-v="${esc(o)}">${esc(o)}</button>`).join("")+`</div><div id="actions" class="row-btn"></div>`;
+  }
+  h+=`<div id="fb" class="fb" role="status" aria-live="polite" hidden></div>`;
+  box.innerHTML=h;
+  const inp=$("#ans");if(inp)inp.focus({preventScroll:true});
+}
+function nextBtn(){
+  const last=Q.pos>=Q.queue.length-1;
+  $("#actions").innerHTML=`<button class="btn" data-act="next" id="nextbtn">${last?"Ergebnis zeigen":"Weiter"}</button>`;
+  const b=$("#nextbtn");if(b)b.focus({preventScroll:true});
+}
+function showFb(ok,germanHead,why,rule){
+  const fb=$("#fb");
+  fb.hidden=false;fb.className="fb "+(ok?"ok":"bad");
+  fb.innerHTML=`<strong>${germanHead}</strong><span>${esc(why)}</span>`+(LANG?trLine(ok?T("fb_ok"):T("fb_no"))+trKeys(rule):"");
+}
+function record(ok){if(ok)Q.runOK++;else Q.wrong.push(Q.queue[Q.pos]);}
+function choose(v){
+  if(Q.answered)return;
+  const st=STAGES[Q.stage],it=st.items[Q.queue[Q.pos]];
+  const ok=v===it.ans;Q.answered=true;record(ok);
+  $$("#opts .opt").forEach(b=>{b.disabled=true;if(b.dataset.v===it.ans)b.classList.add("right");else if(b.dataset.v===v)b.classList.add("wrong");});
+  const gap=$("#gap");gap.textContent=it.ans;gap.classList.add(ok?"right":"wrong");
+  showFb(ok,ok?"Richtig.":"Nicht ganz. Richtig ist: "+it.ans,it.why,it.rule);
+  nextBtn();
+}
+function checkTyped(){
+  if(Q.answered)return;
+  const it=STAGES[Q.stage].items[Q.queue[Q.pos]],inp=$("#ans"),val=inp.value;
+  if(!norm(val)){inp.focus();return;}
+  if(norm(val)===norm(it.ans)){
+    Q.answered=true;record(!Q.failed);inp.disabled=true;
+    showFb(true,"Richtig: "+it.ans,it.why,it.rule);nextBtn();return;
+  }
+  Q.tries++;Q.failed=true;
+  if(Q.tries>=2){reveal();return;}
+  const gotPrep=norm(val).split(" ")[0],wantPrep=norm(it.ans).split(" ")[0];
+  const fb=$("#fb");fb.hidden=false;fb.className="fb bad";
+  fb.innerHTML=`<strong>Noch nicht richtig. Versuche es noch einmal.</strong><span>${esc(gotPrep!==wantPrep?"Tipp: "+it.whyPrep:"Die Präposition stimmt. Tipp: "+it.whyDat)}</span>`+(LANG?trLine(T("fb_try")):"");
+  $("#actions").innerHTML=`<button class="btn" data-act="check">Prüfen</button><button class="btn ghost" data-act="reveal">Lösung zeigen</button>`;
+  inp.focus({preventScroll:true});inp.select();
+}
+function reveal(){
+  if(Q.answered)return;
+  const it=STAGES[Q.stage].items[Q.queue[Q.pos]],inp=$("#ans");
+  Q.answered=true;record(false);inp.disabled=true;
+  showFb(false,"Lösung: "+it.ans,it.why,it.rule);nextBtn();
+}
+function nextQ(){Q.pos++;renderQuiz();try{$("#quiz").scrollIntoView({block:"nearest"});}catch(e){}}
+function renderResult(){
+  const st=STAGES[Q.stage],total=Q.queue.length,ok=Q.runOK;
+  if(!Q.review)Q.score[Q.stage]={ok,total};
+  renderChips();
+  const msg=ok===total?"Sehr gut! Alles richtig.":(ok/total>=0.7?"Gut gemacht.":"Das übst du am besten noch einmal. Schau dir Schritt 1 und 2 noch einmal an.");
+  let h=`<div class="result"><p class="qcount">${st.name} · ${st.title}${Q.review?" · Wiederholung":""}</p><p class="score">${ok} von ${total}</p><p>${msg}</p>`;
+  const done=STAGES.every((s,i)=>Q.score[i]);
+  if(done){const o=STAGES.reduce((a,s,i)=>a+Q.score[i].ok,0),t=STAGES.reduce((a,s,i)=>a+Q.score[i].total,0);h+=`<p class="muted">Alle drei Teile: ${o} von ${t} beim ersten Versuch richtig.</p>`;}
+  h+=`<div class="row-btn">`;
+  if(Q.wrong.length)h+=`<button class="btn" data-act="redo">Fehler wiederholen (${Q.wrong.length})</button>`;
+  if(Q.stage<STAGES.length-1)h+=`<button class="btn ${Q.wrong.length?"ghost":""}" data-act="nextstage">Weiter zu ${STAGES[Q.stage+1].name}</button>`;
+  h+=`<button class="btn ghost" data-act="again">${st.name} von vorn</button></div></div>`;
+  $("#quiz").innerHTML=h;
+}
+
+/* ---------- Ereignisse ---------- */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.classList.contains("step")){showStep(+t.id.replace("tab-",""));return;}
+  if(t.dataset.go){showStep(+t.dataset.go);return;}
+  if(t.dataset.lang!==undefined){setLang(t.dataset.lang);return;}
+  if(t.dataset.m){tl.mode=t.dataset.m;renderTL();return;}
+  if(t.dataset.act==="ex-next"){const m=tl.mode;tl.i[m]=(tl.i[m]+1)%EX[m].length;renderTL();return;}
+  if(t.dataset.act==="ex-all"){["in","seit","vor"].forEach(k=>{tl.i[k]=(tl.i[k]+1)%EX[k].length;});renderTL();return;}
+  const mp=t.closest("#m-prep");if(mp){M.prep=t.dataset.v;renderMachine();return;}
+  const mn=t.closest("#m-noun");if(mn){M.noun=+t.dataset.v;renderMachine();return;}
+  const mu=t.closest("#m-num");if(mu){M.num=+t.dataset.v;renderMachine();return;}
+  if(t.dataset.stage!==undefined){startStage(+t.dataset.stage);return;}
+  if(t.classList.contains("opt")){choose(t.dataset.v);return;}
+  switch(t.dataset.act){
+    case "check":checkTyped();break;
+    case "reveal":reveal();break;
+    case "next":nextQ();break;
+    case "redo":startStage(Q.stage,Q.wrong.slice());break;
+    case "again":startStage(Q.stage);break;
+    case "nextstage":startStage(Q.stage+1);break;
+  }
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&e.target&&e.target.id==="ans"){e.preventDefault();checkTyped();}
+  if((e.key==="ArrowRight"||e.key==="ArrowLeft")&&e.target&&e.target.classList&&e.target.classList.contains("step")){
+    const cur=+e.target.id.replace("tab-","");const n=e.key==="ArrowRight"?(cur%3)+1:((cur+1)%3)+1;
+    showStep(n);const b=$("#tab-"+n);if(b)b.focus();
+  }
+});
+
+/* ---------- Start ---------- */
+$("#tl-seg").innerHTML=[["in","in"],["seit","seit"],["vor","vor"],["alle","alle drei"]].map(x=>`<button class="chip ${x[0]==="alle"?"":"t-"+x[0]}" data-m="${x[0]}" aria-pressed="false">${x[1]}</button>`).join("");
+buildMachine();renderLangSeg();applyStatic();renderTL();renderMachine();startStage(0);
+})();
+</script>
+</body>
+</html>
