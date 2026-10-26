@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sein oder haben? – Lernsequenz A1</title>
+<style>
+:root{
+  --bg:#f5f6fa;--card:#ffffff;--ink:#1d2433;--mute:#667085;--line:#e1e5ee;
+  --sein:#1d6fb8;--sein-bg:#e3f0fb;--haben:#b8500a;--haben-bg:#fdebd8;
+  --ok:#17803f;--ok-bg:#dff4e6;--bad:#bf3326;--bad-bg:#fde3df;
+  --v:#ffe97a;--c:#cde6ff;--accent:#4457d6;--shadow:0 2px 10px rgba(20,30,60,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#12151d;--card:#1b2030;--ink:#eef1f8;--mute:#a0a9bf;--line:#2e3752;
+    --sein:#74b8f5;--sein-bg:#16304a;--haben:#f5a661;--haben-bg:#47290f;
+    --ok:#5ed98f;--ok-bg:#12351f;--bad:#ff8f80;--bad-bg:#44201c;
+    --v:#6e5c00;--c:#1d4268;--accent:#93a0ff;--shadow:none;
+  }
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:18px;line-height:1.5}
+.wrap{max-width:900px;margin:0 auto;padding:0 14px}
+.top{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;box-shadow:var(--shadow)}
+.top .row1{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:10px 0 4px}
+.brand h1{margin:0;font-size:1.25rem;line-height:1.2}
+.brand p{margin:0;color:var(--mute);font-size:.8rem}
+.langbox{font-size:.8rem;color:var(--mute);display:flex;align-items:center;gap:6px}
+.langbox select{font-size:.95rem;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);max-width:190px}
+.stepper{display:flex;gap:5px;overflow-x:auto;padding:6px 0 4px;-webkit-overflow-scrolling:touch}
+.pill{flex:0 0 auto;min-width:36px;height:36px;border-radius:18px;border:2px solid var(--line);background:var(--card);color:var(--ink);font-size:.9rem;font-weight:700;cursor:pointer;padding:0 6px}
+.pill.sein{border-color:var(--sein)}
+.pill.haben{border-color:var(--haben)}
+.pill.both{border-color:var(--accent)}
+.pill.gap{margin-left:10px}
+.pill.cur{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pill.d-ok:not(.cur){background:var(--ok-bg);color:var(--ok)}
+.pill.d-part:not(.cur){background:#fff6d6;color:#7a5b00}
+@media (prefers-color-scheme: dark){.pill.d-part:not(.cur){background:#4a3d0a;color:#ffe27a}}
+.prog{font-size:.75rem;color:var(--mute);padding:0 0 6px}
+main{padding-top:16px;padding-bottom:60px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 18px 22px;box-shadow:var(--shadow)}
+.phead h2{margin:.2em 0 .3em;font-size:1.45rem;line-height:1.25}
+.badge{display:inline-block;font-size:.72rem;font-weight:700;border-radius:20px;padding:2px 10px;margin-right:6px;background:var(--line);color:var(--ink);letter-spacing:.02em}
+.badge.sein{background:var(--sein-bg);color:var(--sein)}
+.badge.haben{background:var(--haben-bg);color:var(--haben)}
+.intro{background:var(--sein-bg);border-radius:12px;padding:12px 14px;margin:6px 0 14px;font-size:.95rem}
+.intro ol{margin:.4em 0 0;padding-left:1.3em}
+.sec{margin-top:22px}
+.sh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:1.05rem;margin:0 0 8px;border-bottom:2px solid var(--line);padding-bottom:4px}
+.sh .num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:13px;background:var(--accent);color:#fff;font-size:.85rem;flex:0 0 auto}
+.instr{color:var(--mute);font-size:.92rem}
+.tr{color:var(--mute);font-size:.82rem;font-weight:400}
+.tr.tb{display:block;margin-top:2px}
+.tr.tro{display:block;margin-top:3px;font-size:.82rem;font-weight:400;color:var(--mute)}
+.opt .tr.tro{color:var(--mute)}
+.tr.trbox{display:block;margin-top:12px;padding:10px 12px;border-left:4px solid var(--accent);background:rgba(120,130,200,.1);color:var(--ink);font-size:.95rem;line-height:1.55;border-radius:0 8px 8px 0}
+.tr[dir=rtl]{text-align:right}
+.tr i{unicode-bidi:isolate;direction:ltr;font-style:italic}
+.group{margin:8px 0}
+.group h4{margin:8px 0 4px;font-size:.9rem;color:var(--mute);text-transform:none}
+.line{padding:5px 0;border-bottom:1px dashed var(--line)}
+.v{background:var(--v);font-weight:700;padding:0 4px;border-radius:5px}
+.c{background:var(--c);padding:0 4px;border-radius:5px}
+.g{color:var(--mute);font-size:.82em}
+.task{margin:14px 0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(120,130,200,.05)}
+.tq{font-weight:600;margin-bottom:8px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opts.inline{flex-direction:row;flex-wrap:wrap}
+.opt,.sb{font:inherit;text-align:left;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;line-height:1.35}
+.opt:hover:not(:disabled),.sb:hover:not(:disabled){border-color:var(--accent)}
+.opt.sel{border-color:var(--accent);background:rgba(120,130,200,.15)}
+.opt.good,.sb.good{border-color:var(--ok);background:var(--ok-bg)}
+.opt.bad,.sb.bad{border-color:var(--bad);background:var(--bad-bg);opacity:.75}
+.opt:disabled,.sb:disabled{cursor:default}
+.msg{margin-top:8px;font-size:.95rem;min-height:1.2em}
+.msg.good{color:var(--ok);font-weight:600}
+.msg.bad{color:var(--bad)}
+.srow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.srow .sw{flex:1 1 130px;font-weight:600}
+.sb{padding:6px 12px;font-size:.92rem}
+table.tbl{border-collapse:collapse;margin:6px 0;width:100%;max-width:520px}
+table.tbl th,table.tbl td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+table.tbl th{background:rgba(120,130,200,.12)}
+table.tbl td.lab{font-weight:600;white-space:nowrap}
+table.tbl input{width:100%;min-width:70px}
+input.in{font:inherit;padding:5px 8px;border-radius:8px;border:2px solid var(--line);background:var(--card);color:var(--ink);width:110px}
+input.in:focus{outline:none;border-color:var(--accent)}
+input.in.good{border-color:var(--ok);background:var(--ok-bg)}
+input.in.bad{border-color:var(--bad);background:var(--bad-bg)}
+.btn{font:inherit;padding:9px 18px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;margin:8px 8px 0 0}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.btn:disabled{opacity:.45;cursor:default}
+.btn .tr{color:inherit;opacity:.8;margin-left:4px}
+.rule{background:rgba(120,130,200,.07);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.fms{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.fm{display:inline-block;padding:6px 12px;border-radius:10px;font-weight:700;background:var(--line)}
+.fm.sein{background:var(--sein-bg);color:var(--sein)}
+.fm.haben{background:var(--haben-bg);color:var(--haben)}
+.exs{margin:8px 0 0;padding-left:1.2em}
+.item{display:flex;gap:10px;align-items:flex-start;padding:7px 8px;border-radius:10px;margin:4px 0;border:2px solid transparent}
+.item .n{flex:0 0 auto;width:24px;height:24px;border-radius:12px;background:var(--line);font-size:.8rem;display:flex;align-items:center;justify-content:center;margin-top:3px}
+.item .ib{flex:1 1 auto}
+.item.good{border-color:var(--ok);background:var(--ok-bg)}
+.item.bad{border-color:var(--bad);background:var(--bad-bg)}
+.item .mk{font-weight:700;margin-left:6px}
+.item.good .mk{color:var(--ok)}
+.item.bad .mk{color:var(--bad)}
+.item .sol{display:inline-block;margin-left:8px;font-size:.88rem;color:var(--ink);background:var(--card);border-radius:6px;padding:1px 8px}
+.vh{color:var(--mute);font-size:.82rem;margin-left:4px}
+.blank{display:inline-block;min-width:3.2em;border-bottom:2px solid var(--ink)}
+.pq{margin-bottom:6px}
+.result{margin-top:10px;font-weight:600}
+.summary{margin-top:22px}
+.nav{display:flex;justify-content:space-between;margin-top:24px;gap:8px}
+footer{max-width:900px;margin:0 auto;padding:0 14px 40px;color:var(--mute);font-size:.8rem}
+footer button{font:inherit;font-size:.8rem;background:none;border:none;color:var(--mute);text-decoration:underline;cursor:pointer;padding:0}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.shake{animation:shake .25s}
+@media (max-width:520px){body{font-size:17px}.panel{padding:14px 12px 18px}}
+</style>
+</head>
+<body>
+<noscript>Bitte JavaScript aktivieren. / Please enable JavaScript.</noscript>
+<header class="top">
+  <div class="wrap">
+    <div class="row1">
+      <div class="brand"><h1>sein oder haben?</h1><p>Vollverben entdecken · A1 · Präsens &amp; Präteritum</p></div>
+      <label class="langbox"><span>🌐 Hilfssprache · Help language</span><select id="lang"></select></label>
+    </div>
+    <div id="stepper" class="stepper"></div>
+    <div id="prog" class="prog"></div>
+  </div>
+</header>
+<main class="wrap" id="main"></main>
+<footer><button type="button" id="reset">Fortschritt zurücksetzen</button></footer>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Hilfsfunktionen (ES5, für ältere Android-/iOS-Browser) ---------- */
+var LK=['en','pl','tr','ar','ru','ku','uk'];
+var LN={en:'English',pl:'Polski',tr:'Türkçe',ar:'العربية',ru:'Русский',ku:'Kurmancî (Kurdî)',uk:'Українська'};
+var RTL={ar:1};
+function $(s,r){return (r||document).querySelector(s);}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function el(tag,cls,html){var e=document.createElement(tag);if(cls){e.className=cls;}if(html!=null){e.innerHTML=html;}return e;}
+function mk(s){
+  return s.replace(/\[\[(.+?)\]\]/g,'<span class="v">$1</span>')
+          .replace(/\{\{(.+?)\}\}/g,'<span class="c">$1</span>')
+          .replace(/\(\((.+?)\)\)/g,'<span class="g">($1)</span>');
+}
+function shuffle(a){var b=a.slice(),i,j,t;for(i=b.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function norm(s){return String(s).replace(/^\s+|\s+$/g,'').toLowerCase().replace(/\s+/g,' ').replace(/[.!?]+$/,'');}
+var KEY='seinhaben_a1_';
+function sget(k){try{return JSON.parse(localStorage.getItem(KEY+k));}catch(e){return null;}}
+function sset(k,v){try{localStorage.setItem(KEY+k,JSON.stringify(v));}catch(e){}}
+function sdel(k){try{localStorage.removeItem(KEY+k);}catch(e){}}
+function scrollToEl(n){setTimeout(function(){try{n.scrollIntoView({behavior:'smooth',block:'start'});}catch(e){n.scrollIntoView();}},60);}
+
+/* ---------- Oberfläche in 7 Hilfssprachen (Reihenfolge: en, pl, tr, ar, ru, ku, uk) ---------- */
+function U(de,t){return {de:de,t:t};}
+var UI={
+  h_observe:U('Beobachte',['Observe','Obserwuj','Gözlemle','لاحظ','Наблюдай','Çavdêrî bike','Спостерігай']),
+  h_discover:U('Entdecke',['Discover','Odkryj','Keşfet','اكتشف','Открой','Bibîne','Відкрий']),
+  h_rule:U('Regel',['Rule','Reguła','Kural','القاعدة','Правило','Rêgez','Правило']),
+  h_ex:U('Übung',['Exercise','Ćwiczenie','Alıştırma','تمرين','Упражнение','Pratîk','Вправа']),
+  i_observe:U('Lies die Sätze. Achte auf die farbigen Wörter.',['Read the sentences. Look at the coloured words.','Przeczytaj zdania. Zwróć uwagę na kolorowe słowa.','Cümleleri oku. Renkli kelimelere dikkat et.','اقرأ الجمل. انتبه إلى الكلمات الملوّنة.','Прочитай предложения. Обрати внимание на цветные слова.','Hevokan bixwîne. Bala xwe bide peyvên rengîn.','Прочитай речення. Зверни увагу на кольорові слова.']),
+  i_choice:U('Was passt? Wähle.',['What fits? Choose.','Co pasuje? Wybierz.','Hangisi uygun? Seç.','ما الأنسب؟ اختر.','Что подходит? Выбери.','Kîjan lê tê? Hilbijêre.','Що підходить? Вибери.']),
+  i_table:U('Ergänze die Tabelle.',['Complete the table.','Uzupełnij tabelę.','Tabloyu tamamla.','أكمل الجدول.','Заполни таблицу.','Tabloyê temam bike.','Заповни таблицю.']),
+  i_sort:U('Ordne zu.',['Sort them.','Przyporządkuj.','Eşleştir.','صنّف.','Распредели.','Rêz bike.','Розподіли.']),
+  i_ex:U('Ergänze die richtige Form von sein oder haben.',['Fill in the correct form of sein or haben.','Wpisz poprawną formę czasownika sein lub haben.','sein veya haben fiilinin doğru biçimini yaz.','اكتب الصيغة الصحيحة للفعل sein أو haben.','Впиши правильную форму sein или haben.','Forma rast a sein an haben binivîse.','Впиши правильну форму sein або haben.']),
+  b_check:U('Prüfen',['Check','Sprawdź','Kontrol et','تحقّق','Проверить','Kontrol bike','Перевірити']),
+  b_next:U('Weiter',['Next','Dalej','İleri','التالي','Дальше','Pêşve','Далі']),
+  b_prev:U('Zurück',['Back','Wstecz','Geri','السابق','Назад','Paşve','Назад']),
+  b_sol:U('Lösung zeigen',['Show solution','Pokaż rozwiązanie','Çözümü göster','أظهر الحل','Показать ответ','Çareseriyê nîşan bide','Показати відповідь']),
+  m_ok:U('Richtig!',['Correct!','Dobrze!','Doğru!','صحيح!','Верно!','Rast e!','Правильно!']),
+  m_no:U('Noch nicht. Versuche es noch einmal.',['Not yet. Try again.','Jeszcze nie. Spróbuj ponownie.','Henüz değil. Tekrar dene.','ليس بعد. حاول مرة أخرى.','Пока нет. Попробуй ещё раз.','Hê na. Dîsa biceribîne.','Ще ні. Спробуй ще раз.']),
+  m_fix:U('Korrigiere die roten Antworten.',['Correct the red answers.','Popraw czerwone odpowiedzi.','Kırmızı cevapları düzelt.','صحّح الإجابات الحمراء.','Исправь красные ответы.','Bersivên sor rast bike.','Виправ червоні відповіді.']),
+  m_all:U('Alles richtig! Sehr gut!',['All correct! Very good!','Wszystko dobrze! Bardzo dobrze!','Hepsi doğru! Çok iyi!','كل الإجابات صحيحة! ممتاز!','Всё верно! Очень хорошо!','Hemû rast in! Pir baş!','Усе правильно! Дуже добре!']),
+  h_sum:U('Alles auf einen Blick',['Everything at a glance','Wszystko w skrócie','Her şey bir bakışta','كل شيء في لمحة','Всё вкратце','Her tişt bi kurtî','Усе коротко'])
+};
+
+/* ---------- Beispielübungen ---------- */
+function g(s,a,v){return {s:s,a:(a instanceof Array)?a:[a],v:v||''};}
+function p(s,o,a){return {s:s,o:o,a:a};}
+function C(q,o,hint){return {t:'choice',q:q,o:o,hint:hint||'Schau noch einmal auf die farbig markierten Wörter.'};}
+
+var SEIN_HABEN_ROWS=[['ich','bin','habe'],['du','bist','hast'],['er / sie / es','ist','hat'],['wir','sind','haben'],['ihr','seid','habt'],['sie / Sie','sind','haben']];
+
+/* ---------- Die Lernschritte ---------- */
+var STEPS=[
+
+/* 0 ------------------------------------------------------------ */
+{title:'Die Formen im Präsens',tag:'both',ph:'Präsens',
+ observe:[
+  {t:'sein',l:['Ich [[bin]] Amira.','Du [[bist]] müde.','Er [[ist]] Lehrer.','Wir [[sind]] in Erfurt.','Ihr [[seid]] nett.','Sie [[sind]] aus Syrien.']},
+  {t:'haben',l:['Ich [[habe]] ein Handy.','Du [[hast]] Zeit.','Er [[hat]] ein Auto.','Wir [[haben]] Hunger.','Ihr [[habt]] einen Hund.','Sie [[haben]] zwei Kinder.']}
+ ],
+ tasks:[{t:'table',head:['','sein','haben'],rows:SEIN_HABEN_ROWS,hint:'Die Sätze oben helfen dir.'}],
+ rule:{f:[],de:'<b>sein</b> und <b>haben</b> sind unregelmäßig. Du musst die Formen lernen. Beide Verben sind <b>Vollverben</b>: Sie haben eine eigene Bedeutung. <b>sein</b> verbindet (A = B). <b>haben</b> sagt, was jemand hat.',
+  table:{head:['','sein','haben'],rows:SEIN_HABEN_ROWS},ex:[],
+  tr:{
+   en:'The verbs <i>sein</i> and <i>haben</i> are irregular in the present tense. You have to learn their forms by heart.',
+   pl:'Czasowniki <i>sein</i> i <i>haben</i> są w czasie teraźniejszym nieregularne. Ich formy trzeba nauczyć się na pamięć.',
+   tr:'<i>sein</i> ve <i>haben</i> fiilleri şimdiki zamanda düzensizdir. Biçimlerini ezberlemen gerekir.',
+   ar:'الفعلان <i>sein</i> و<i>haben</i> شاذّان (غير منتظمين) في المضارع. عليك أن تحفظ صيغهما عن ظهر قلب.',
+   ru:'Глаголы <i>sein</i> и <i>haben</i> в настоящем времени неправильные. Их формы нужно выучить наизусть.',
+   ku:'Lêkerên <i>sein</i> û <i>haben</i> di dema niha de bi awayekî taybet diguherin. Divê tu formên wan ji ber bikî.',
+   uk:'Дієслова <i>sein</i> і <i>haben</i> у теперішньому часі неправильні. Їхні форми треба вивчити напам’ять.'}},
+ ex:[g('Ich ___ Anna.','bin','sein'),g('Du ___ ein Auto.','hast','haben'),g('Er ___ in Berlin.','ist','sein'),g('Wir ___ Zeit.','haben','haben'),g('Ihr ___ Studenten.','seid','sein'),g('Die Kinder ___ Hunger.','haben','haben'),g('Maria ___ eine Tochter.','hat','haben'),g('Die Kinder ___ im Park.','sind','sein')]},
+
+/* 1 ------------------------------------------------------------ */
+{title:'sein: Wer? Woher?',tag:'sein',ph:'Präsens',
+ observe:['Ich [[bin]] {{Amira}}.','Das [[ist]] {{Herr Kowalski}}.','Wir [[sind]] {{Olena und Ivan}}.','Ich [[bin]] {{aus Syrien}}.','Herr Kowalski [[ist]] {{aus Polen}}.','Olena und Ivan [[sind]] {{aus der Ukraine}}.'],
+ tasks:[
+  C('Welche Fragen beantworten die Sätze?',['Wer? und Woher?','Wo? und Wann?','Was hast du? und Wie viele?'],'Lies die Sätze noch einmal: Name … und Land.'),
+  C('Was steht nach <span class="v">bin / ist / sind</span>?',['ein Name oder <b>aus</b> + Land','ein Nomen mit ein / eine / einen','ein Adjektiv (müde, groß)'])
+ ],
+ rule:{f:['sein + Name','sein + aus + Land / Stadt'],de:'Mit <b>sein</b> sagst du, <b>wer</b> jemand ist und <b>woher</b> jemand kommt.',ex:['Ich [[bin]] {{Amira}}.','Er [[ist]] {{aus Polen}}.','Wir [[sind]] {{aus der Türkei}}.'],
+  tr:{
+   en:'With <i>sein</i> you say who someone is (name) and where someone is from: <i>sein</i> + name, <i>sein</i> + <i>aus</i> + country/city.',
+   pl:'Za pomocą <i>sein</i> mówimy, kim ktoś jest (imię) i skąd pochodzi: <i>sein</i> + imię, <i>sein</i> + <i>aus</i> + kraj/miasto.',
+   tr:'<i>sein</i> ile birinin kim olduğunu (adını) ve nereli olduğunu söyleriz: <i>sein</i> + isim, <i>sein</i> + <i>aus</i> + ülke/şehir.',
+   ar:'نستخدم <i>sein</i> لنقول مَن هو الشخص (اسمه) ومن أين هو: <i>sein</i> + الاسم، <i>sein</i> + <i>aus</i> + البلد/المدينة.',
+   ru:'С глаголом <i>sein</i> мы называем, кто человек (имя) и откуда он: <i>sein</i> + имя, <i>sein</i> + <i>aus</i> + страна/город.',
+   ku:'Bi <i>sein</i> em dibêjin kes kî ye (nav) û ji ku derê ye: <i>sein</i> + nav, <i>sein</i> + <i>aus</i> + welat/bajar.',
+   uk:'За допомогою <i>sein</i> ми говоримо, хто людина (ім’я) і звідки вона: <i>sein</i> + ім’я, <i>sein</i> + <i>aus</i> + країна/місто.'}},
+ ex:[g('Ich ___ Amira.','bin'),g('Das ___ Frau Yilmaz.','ist'),g('Wir ___ aus Syrien.','sind'),g('Mehmet ___ aus der Türkei.','ist'),g('___ du aus Polen?','bist'),g('Ihr ___ aus der Ukraine.','seid'),g('Olena und Ivan ___ aus der Ukraine.','sind')]},
+
+/* 2 ------------------------------------------------------------ */
+{title:'sein: Wo?',tag:'sein',ph:'Präsens',
+ observe:['Ich [[bin]] {{in Erfurt}}.','Der Bus [[ist]] {{an der Haltestelle}}.','Die Kinder [[sind]] {{in der Schule}}.','Wir [[sind]] {{zu Hause}}.','Der Bahnhof [[ist]] {{hier}}.','Das Buch [[ist]] {{auf dem Tisch}}.'],
+ tasks:[
+  C('Welche Frage passt zu den Sätzen?',['Wo?','Wer?','Wie?'],'Wo ist der Bus? An der Haltestelle.'),
+  C('Was steht nach <span class="v">bin / ist / sind</span>?',['ein Ort (in, an, auf, hier, zu Hause …)','ein Beruf','ein Name'])
+ ],
+ rule:{f:['sein + Ort'],de:'Mit <b>sein</b> sagst du, <b>wo</b> jemand oder etwas ist. Danach steht ein Ort: <i>in, an, auf, bei, hier, da, zu Hause …</i>',ex:['Ich [[bin]] {{in Jena}}.','Der Bahnhof [[ist]] {{hier}}.','Wo [[ist]] {{die Schule}}?'],
+  tr:{
+   en:'With <i>sein</i> you say where someone or something is: <i>sein</i> + place (<i>in, an, auf, hier, da, zu Hause</i>).',
+   pl:'Za pomocą <i>sein</i> mówimy, gdzie ktoś lub coś jest: <i>sein</i> + miejsce (<i>in, an, auf, hier, da, zu Hause</i>).',
+   tr:'<i>sein</i> ile birinin ya da bir şeyin nerede olduğunu söyleriz: <i>sein</i> + yer (<i>in, an, auf, hier, da, zu Hause</i>).',
+   ar:'نستخدم <i>sein</i> لنقول أين يوجد شخص أو شيء: <i>sein</i> + المكان (<i>in, an, auf, hier, da, zu Hause</i>).',
+   ru:'С глаголом <i>sein</i> мы говорим, где находится человек или предмет: <i>sein</i> + место (<i>in, an, auf, hier, da, zu Hause</i>).',
+   ku:'Bi <i>sein</i> em dibêjin kes an tişt li ku ye: <i>sein</i> + cih (<i>in, an, auf, hier, da, zu Hause</i>).',
+   uk:'За допомогою <i>sein</i> ми говоримо, де є людина або предмет: <i>sein</i> + місце (<i>in, an, auf, hier, da, zu Hause</i>).'}},
+ ex:[g('Ich ___ in Jena.','bin'),g('Das Buch ___ auf dem Tisch.','ist'),g('Wo ___ du jetzt?','bist'),g('Wir ___ zu Hause.','sind'),g('Die Lehrerin ___ im Kursraum.','ist'),g('Ihr ___ im Park.','seid'),g('Wo ___ der Bahnhof?','ist')]},
+
+/* 3 ------------------------------------------------------------ */
+{title:'sein: Beruf',tag:'sein',ph:'Präsens',
+ observe:['Ich [[bin]] {{Lehrerin}}.','Mein Vater [[ist]] {{Arzt}}.','Wir [[sind]] {{Studenten}}.','Frau Yilmaz [[ist]] {{Krankenschwester}}.','Du [[bist]] {{Fahrer}}.'],
+ tasks:[
+  C('Welche Frage passt zu den Sätzen?',['Was sind Sie von Beruf?','Wo sind Sie?','Wie alt sind Sie?']),
+  C('Steht vor dem Beruf ein Artikel (ein / eine)?',['Nein. Der Beruf steht ohne Artikel.','Ja. Immer ein / eine.','Ja. Nur bei Frauen: eine.'],'Lies noch einmal: „Ich bin Lehrerin.“ Steht dort „eine“?')
+ ],
+ rule:{f:['sein + Beruf (ohne Artikel!)'],de:'Mit <b>sein</b> sagst du den Beruf. Vor dem Beruf steht <b>kein</b> Artikel: <i>Ich bin Lehrer.</i> (nicht: <i>Ich bin ein Lehrer.</i>) <b>sein</b> darf nie fehlen!',ex:['Ich [[bin]] {{Lehrer}}.','Sie [[ist]] {{Bäckerin}}.','Was [[sind]] Sie von Beruf?'],
+  tr:{
+   en:'With <i>sein</i> you say someone’s job: <i>sein</i> + job. No article before the job: <i>Ich bin Lehrer.</i> (not: <i>Ich bin ein Lehrer.</i>)',
+   pl:'Za pomocą <i>sein</i> podajemy zawód: <i>sein</i> + zawód. Przed zawodem nie ma rodzajnika: <i>Ich bin Lehrer.</i> (nie: <i>Ich bin ein Lehrer.</i>)',
+   tr:'<i>sein</i> ile meslek söylenir: <i>sein</i> + meslek. Mesleğin önünde artikel (ein/eine) yoktur: <i>Ich bin Lehrer.</i> (<i>Ich bin ein Lehrer.</i> değil.) Dikkat: Türkçede “öğretmenim” gibi bir ek kullanılır; Almancada ise <i>sein</i> ayrı bir sözcüktür ve her zaman gerekir.',
+   ar:'نستخدم <i>sein</i> للتعبير عن المهنة: <i>sein</i> + المهنة. لا نضع أداة (ein / eine) قبل المهنة: <i>Ich bin Lehrer.</i> (وليس: <i>Ich bin ein Lehrer.</i>) تنبيه: في العربية لا نستخدم فعلًا في مثل هذه الجمل («أنا معلّم»)، أمّا في الألمانية فلا بدّ دائمًا من <i>sein</i>.',
+   ru:'С <i>sein</i> называют профессию: <i>sein</i> + профессия. Перед профессией нет артикля: <i>Ich bin Lehrer.</i> (не: <i>Ich bin ein Lehrer.</i>) Внимание: по-русски в настоящем времени глагола «быть» нет («Я учитель»). По-немецки <i>sein</i> нужен всегда.',
+   ku:'Bi <i>sein</i> pîşe tê gotin: <i>sein</i> + pîşe. Beriya pîşeyê artîkel (ein / eine) nayê: <i>Ich bin Lehrer.</i> (ne: <i>Ich bin ein Lehrer.</i>)',
+   uk:'За допомогою <i>sein</i> називають професію: <i>sein</i> + професія. Перед професією немає артикля: <i>Ich bin Lehrer.</i> (не: <i>Ich bin ein Lehrer.</i>) Увага: українською в теперішньому часі дієслова «бути» зазвичай немає («Я вчитель»). Німецькою <i>sein</i> потрібен завжди.'}},
+ ex:[p('Welcher Satz ist richtig?',['Ich bin Ärztin.','Ich bin eine Ärztin.'],'Ich bin Ärztin.'),p('Welcher Satz ist richtig?',['Er ist ein Koch.','Er ist Koch.'],'Er ist Koch.'),g('Ich ___ Studentin.','bin'),g('Sie ___ Bäckerin.','ist'),g('Wir ___ Lehrer.','sind'),g('Was ___ du von Beruf?','bist'),g('Ihr ___ Ingenieure.','seid')]},
+
+/* 4 ------------------------------------------------------------ */
+{title:'sein: Wie?',tag:'sein',ph:'Präsens',
+ observe:['Ich [[bin]] {{müde}}.','Das Wetter [[ist]] {{schön}}.','Der Tee [[ist]] {{heiß}}.','Die Getränke [[sind]] {{heiß}}.','Die Wohnung [[ist]] {{groß}}.','Wir [[sind]] {{krank}}.','Die Kinder [[sind]] {{glücklich}}.'],
+ tasks:[
+  C('Welche Frage passt zu den Sätzen?',['Wie?','Wer?','Woher?']),
+  C('Was steht nach <span class="v">bin / ist / sind</span>?',['ein Adjektiv (müde, schön, heiß)','ein Name','ein Ort mit „in“']),
+  C('Wie ändert sich das Adjektiv bei <b>ist</b> und <b>sind</b>?',['Gar nicht: Der Tee ist heiß. Die Getränke sind heiß.','Es bekommt immer ein -e: heiße.','Es bekommt immer -en: heißen.'],'Vergleiche: „Der Tee ist heiß.“ und „Die Getränke sind heiß.“')
+ ],
+ rule:{f:['sein + Adjektiv'],de:'Mit <b>sein</b> sagst du, <b>wie</b> jemand oder etwas ist (auch: wie man sich fühlt). Das Adjektiv ändert sich nicht.',ex:['Ich [[bin]] {{müde}}.','Der Kaffee [[ist]] {{heiß}}.','Die Kinder [[sind]] {{klein}}.'],
+  tr:{
+   en:'With <i>sein</i> you say what someone or something is like (or how someone feels): <i>sein</i> + adjective. The adjective does not change: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>',
+   pl:'Za pomocą <i>sein</i> mówimy, jaki ktoś lub coś jest (albo jak się czuje): <i>sein</i> + przymiotnik. Przymiotnik się nie zmienia: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>',
+   tr:'<i>sein</i> ile birinin ya da bir şeyin nasıl olduğu (ya da nasıl hissettiği) söylenir: <i>sein</i> + sıfat. Sıfat değişmez: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>',
+   ar:'نستخدم <i>sein</i> لوصف شخص أو شيء أو حالته: <i>sein</i> + صفة. الصفة لا تتغيّر: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>',
+   ru:'С <i>sein</i> говорят, какой человек или предмет (или как человек себя чувствует): <i>sein</i> + прилагательное. Прилагательное не изменяется: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>',
+   ku:'Bi <i>sein</i> em dibêjin kes an tişt çawa ye (an kes çawa hîs dike): <i>sein</i> + rengdêr. Rengdêr nayê guhertin: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>',
+   uk:'За допомогою <i>sein</i> ми говоримо, який хтось або щось є (чи як почувається): <i>sein</i> + прикметник. Прикметник не змінюється: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>'}},
+ ex:[g('Ich ___ müde.','bin'),g('Die Suppe ___ heiß.','ist'),g('Wir ___ glücklich.','sind'),g('Du ___ krank.','bist'),g('Das Auto ___ neu.','ist'),g('Ihr ___ fleißig.','seid'),g('Die Kinder ___ klein.','sind')]},
+
+/* 5 ------------------------------------------------------------ */
+{title:'sein: Wie alt?',tag:'sein',ph:'Präsens',
+ observe:['Ich [[bin]] {{25}} Jahre alt.','Meine Tochter [[ist]] {{5}}.','Wir [[sind]] {{30}} Jahre alt.','Wie alt [[bist]] du?','Ich [[bin]] {{40}}.','Mein Vater [[ist]] {{62}} Jahre alt.'],
+ tasks:[
+  C('Welche Frage passt zu den Sätzen?',['Wie alt?','Wie viel?','Wie lange?']),
+  C('Welches Verb steht in den Sätzen?',['sein (bin, bist, ist, sind)','haben (habe, hast, hat, haben)'],'Schau auf die gelben Wörter: bin, ist, bist …')
+ ],
+ rule:{f:['sein + Zahl (+ Jahre alt)'],de:'Das Alter sagst du mit <b>sein</b> – nie mit <i>haben</i>! <i>Ich bin 25 Jahre alt.</i> (nicht: <i>Ich habe 25 Jahre.</i>)',ex:['Ich [[bin]] {{25}} Jahre alt.','Wie alt [[ist]] {{deine Tochter}}?','Sie [[ist]] {{5}}.'],
+  tr:{
+   en:'You say your age with <i>sein</i>: <i>sein</i> + number (+ <i>Jahre alt</i>). Never with <i>haben</i>! <i>Ich bin 25 Jahre alt.</i> (not: <i>Ich habe 25 Jahre.</i>) In German you “are” a certain age, you do not “have” years.',
+   pl:'Wiek podajemy z <i>sein</i>: <i>sein</i> + liczba (+ <i>Jahre alt</i>). Nigdy z <i>haben</i>! Uwaga: po polsku mówimy „mam 25 lat”, ale po niemiecku: <i>Ich bin 25 Jahre alt.</i>',
+   tr:'Yaş <i>sein</i> ile söylenir: <i>sein</i> + sayı (+ <i>Jahre alt</i>). <i>haben</i> ile asla! Türkçedeki “25 yaşındayım” gibi Almancada da <i>sein</i> kullanılır: <i>Ich bin 25 Jahre alt.</i>',
+   ar:'نذكر العمر بـ <i>sein</i>: <i>sein</i> + رقم (+ <i>Jahre alt</i>). وليس بـ <i>haben</i> أبدًا! تنبيه: بالعربية نقول «عمري 25 سنة»، وبالألمانية: <i>Ich bin 25 Jahre alt.</i> (وليس: <i>Ich habe 25 Jahre.</i>)',
+   ru:'Возраст выражают с <i>sein</i>: <i>sein</i> + число (+ <i>Jahre alt</i>). Никогда с <i>haben</i>! Обратите внимание: по-русски «мне 25 лет», а по-немецки: <i>Ich bin 25 Jahre alt.</i>',
+   ku:'Temen bi <i>sein</i> tê gotin: <i>sein</i> + hejmar (+ <i>Jahre alt</i>). Qet bi <i>haben</i> nayê gotin! Bala xwe bide: bi kurmancî dibêjin «ez 25 salî me», bi almanî jî <i>sein</i> tê bikaranîn: <i>Ich bin 25 Jahre alt.</i>',
+   uk:'Вік виражають із <i>sein</i>: <i>sein</i> + число (+ <i>Jahre alt</i>). Ніколи з <i>haben</i>! Зверніть увагу: українською «мені 25 років», а німецькою: <i>Ich bin 25 Jahre alt.</i>'}},
+ ex:[p('Ich ___ 30 Jahre alt.',['bin','habe'],'bin'),p('Mein Bruder ___ 12.',['ist','hat'],'ist'),g('Wie alt ___ du?','bist'),g('Wir ___ 20 Jahre alt.','sind'),p('Meine Tochter ___ 8 Jahre alt.',['ist','hat'],'ist'),p('Welcher Satz ist richtig?',['Ich bin 25 Jahre alt.','Ich habe 25 Jahre alt.'],'Ich bin 25 Jahre alt.'),g('Mein Opa ___ 80 Jahre alt.','ist')]},
+
+/* 6 ------------------------------------------------------------ */
+{title:'haben: etwas besitzen',tag:'haben',ph:'Präsens',
+ observe:['Ich [[habe]] {{ein Handy}} ((das Handy)).','Du [[hast]] {{einen Computer}} ((der Computer)).','Sie [[hat]] {{eine Katze}} ((die Katze)).','Wir [[haben]] {{ein Auto}} ((das Auto)).','Er [[hat]] {{einen Hund}} ((der Hund)).','Ihr [[habt]] {{eine Wohnung}} ((die Wohnung)).'],
+ tasks:[
+  C('Was sagen die Sätze?',['Was jemand hat (besitzt): Dinge, Tiere.','Wo jemand ist.','Wie jemand ist.']),
+  C('Was steht nach <span class="v">habe / hast / hat / haben</span>?',['ein Nomen mit Artikel (ein Handy, eine Katze)','ein Adjektiv','ein Ort']),
+  C('Bei welchen Nomen steht <b>einen</b>?',['bei Computer und Hund (der-Wörter)','bei Handy und Auto (das-Wörter)','bei Katze und Wohnung (die-Wörter)'],'Schau auf die grauen Wörter in Klammern: der, das, die.')
+ ],
+ rule:{f:['haben + ein / eine / einen + Nomen'],de:'Mit <b>haben</b> sagst du, <b>was</b> jemand hat (Dinge, Tiere). Danach steht ein Nomen mit Artikel. Bei <b>der</b>-Wörtern: <b>einen</b>!',ex:['Ich [[habe]] {{ein Handy}}.','Er [[hat]] {{einen Computer}}.','Wir [[haben]] {{eine Katze}}.'],
+  tr:{
+   en:'With <i>haben</i> you say what someone has (things, animals): <i>haben</i> + noun with article. Masculine (<i>der</i>) nouns: <i>einen</i>! <i>Ich habe einen Computer.</i>',
+   pl:'Za pomocą <i>haben</i> mówimy, co ktoś ma (rzeczy, zwierzęta): <i>haben</i> + rzeczownik z rodzajnikiem. Rzeczowniki rodzaju męskiego (<i>der</i>): <i>einen</i>! <i>Ich habe einen Computer.</i>',
+   tr:'<i>haben</i> ile birinin neyi olduğu (eşya, hayvan) söylenir: <i>haben</i> + artikelli isim. Eril (<i>der</i>) isimlerde: <i>einen</i>! <i>Ich habe einen Computer.</i>',
+   ar:'نستخدم <i>haben</i> لنقول ماذا يملك الشخص (أشياء، حيوانات): <i>haben</i> + اسم مع أداة (Artikel). الأسماء المذكّرة (<i>der</i>): <i>einen</i>! <i>Ich habe einen Computer.</i>',
+   ru:'С <i>haben</i> мы говорим, что у человека есть (вещи, животные): <i>haben</i> + существительное с артиклем. Мужской род (<i>der</i>): <i>einen</i>! <i>Ich habe einen Computer.</i>',
+   ku:'Bi <i>haben</i> em dibêjin kesek çi heye (tişt, heywan): <i>haben</i> + navdêr bi artîkel. Navdêrên nêr (<i>der</i>): <i>einen</i>! <i>Ich habe einen Computer.</i>',
+   uk:'За допомогою <i>haben</i> ми говоримо, що є в людини (речі, тварини): <i>haben</i> + іменник з артиклем. Чоловічий рід (<i>der</i>): <i>einen</i>! <i>Ich habe einen Computer.</i>'}},
+ ex:[g('Ich ___ ein Fahrrad.','habe'),g('Du ___ ein Handy.','hast'),g('Er ___ einen Computer.','hat'),g('Wir ___ ein Auto.','haben'),g('Ihr ___ eine Katze.','habt'),g('Meine Eltern ___ ein Haus.','haben'),p('Ich habe ___ Tisch. (der Tisch)',['ein','eine','einen'],'einen'),p('Sie hat ___ Lampe. (die Lampe)',['ein','eine','einen'],'eine')]},
+
+/* 7 ------------------------------------------------------------ */
+{title:'haben: Familie und Aussehen',tag:'haben',ph:'Präsens',
+ observe:['Ich [[habe]] {{zwei Kinder}}.','Er [[hat]] {{einen Bruder}}.','Sie [[hat]] {{keine Schwester}}.','Wir [[haben]] {{eine Tochter}}.','Anna [[hat]] {{lange Haare}}.','Der Mann [[hat]] {{blaue Augen}}.'],
+ tasks:[
+  C('Welches Verb steht in den Sätzen?',['haben','sein']),
+  C('Was steht nach dem Verb?',['ein Nomen (Kinder, Bruder, Haare, Augen)','ein Adjektiv allein (lang, blau)','ein Ort'],'Schau auf die blauen Wörter: zwei Kinder, einen Bruder …'),
+  C('Welcher Satz ist richtig?',['Sie hat lange Haare.','Sie ist lange Haare.','Sie hat lang.'],'Haare ist ein Nomen. Man „hat“ Haare.')
+ ],
+ rule:{f:['haben + Familie','haben + Haare / Augen'],de:'Mit <b>haben</b> sagst du auch, welche <b>Familie</b> jemand hat und wie jemand <b>aussieht</b> (Haare, Augen). Aber: <i>Sie ist blond.</i> (Adjektiv → <b>sein</b>)',ex:['Ich [[habe]] {{zwei Kinder}}.','Sie [[hat]] {{lange Haare}}.','Aber: Sie [[ist]] {{blond}}.'],
+  tr:{
+   en:'With <i>haben</i> you also say what family someone has and what someone looks like (hair, eyes): <i>Ich habe zwei Kinder. Sie hat lange Haare.</i> But: <i>Sie ist blond.</i> (adjective: <i>sein</i>)',
+   pl:'Za pomocą <i>haben</i> mówimy też o rodzinie (kto ma dzieci, rodzeństwo) i o wyglądzie (włosy, oczy): <i>Ich habe zwei Kinder. Sie hat lange Haare.</i> Ale: <i>Sie ist blond.</i> (przymiotnik: <i>sein</i>)',
+   tr:'<i>haben</i> ile ailen (çocuk, kardeş) ve dış görünüş (saç, göz) de anlatılır: <i>Ich habe zwei Kinder. Sie hat lange Haare.</i> Ama: <i>Sie ist blond.</i> (sıfat: <i>sein</i>)',
+   ar:'نستخدم <i>haben</i> أيضًا للحديث عن العائلة (أولاد، إخوة) وعن المظهر (الشعر، العينان): <i>Ich habe zwei Kinder. Sie hat lange Haare.</i> لكن: <i>Sie ist blond.</i> (صفة: <i>sein</i>)',
+   ru:'С <i>haben</i> говорят также о семье (дети, братья и сёстры) и о внешности (волосы, глаза): <i>Ich habe zwei Kinder. Sie hat lange Haare.</i> Но: <i>Sie ist blond.</i> (прилагательное: <i>sein</i>)',
+   ku:'Bi <i>haben</i> herwiha behsa malbatê (zarok, bira) û xuyabûnê (por, çav) dikin: <i>Ich habe zwei Kinder. Sie hat lange Haare.</i> Lê: <i>Sie ist blond.</i> (rengdêr: <i>sein</i>)',
+   uk:'За допомогою <i>haben</i> говорять також про сім’ю (діти, брати й сестри) та зовнішність (волосся, очі): <i>Ich habe zwei Kinder. Sie hat lange Haare.</i> Але: <i>Sie ist blond.</i> (прикметник: <i>sein</i>)'}},
+ ex:[g('Ich ___ einen Sohn.','habe'),g('Sie ___ zwei Brüder.','hat'),g('Wir ___ keine Kinder.','haben'),g('Du ___ braune Augen.','hast'),g('Die Frau ___ lange Haare.','hat'),g('Ihr ___ eine Schwester.','habt'),p('Welcher Satz ist richtig?',['Anna hat blonde Haare.','Anna ist blonde Haare.'],'Anna hat blonde Haare.')]},
+
+/* 8 ------------------------------------------------------------ */
+{title:'haben: Hunger, Durst, Angst …',tag:'both',ph:'Präsens',
+ observe:[
+  {t:'Gruppe A',l:['Ich [[habe]] {{Hunger}}.','Du [[hast]] {{Durst}}.','Sie [[hat]] {{Angst}}.','Er [[hat]] {{Kopfschmerzen}}.']},
+  {t:'Gruppe B',l:['Ich [[bin]] {{müde}}.','Du [[bist]] {{krank}}.','Sie [[ist]] {{glücklich}}.','Er [[ist]] {{fit}}.']}
+ ],
+ tasks:[
+  {t:'sort',q:'Ich … + welches Wort? Ordne zu.',labels:['ich bin …','ich habe …'],hint:'Tipp: Nomen schreibt man groß (Hunger). Adjektive schreibt man klein (müde).',
+   items:[['Hunger',1],['müde',0],['Durst',1],['krank',0],['Angst',1],['glücklich',0],['Kopfschmerzen',1],['fit',0],['Fieber',1],['traurig',0]]},
+  C('Was ist der Unterschied?',['Hunger, Durst, Angst = Nomen → haben. müde, krank = Adjektive → sein.','Hunger, Durst, Angst = Adjektive → sein.','Es gibt keinen Unterschied.'],'Denk an die Großschreibung: Hunger (Nomen) – müde (Adjektiv).')
+ ],
+ rule:{f:['haben + Hunger / Durst / Angst / Schmerzen','sein + müde / krank / glücklich'],de:'<b>Hunger, Durst, Angst, Schmerzen</b> sind <b>Nomen</b> → <b>haben</b> + Nomen (ohne Artikel): <i>Ich habe Hunger.</i><br><b>müde, krank, glücklich</b> sind <b>Adjektive</b> → <b>sein</b>: <i>Ich bin müde.</i>',ex:['Ich [[habe]] {{Hunger}}.','Sie [[hat]] {{Kopfschmerzen}}.','Ich [[bin]] {{müde}}.'],
+  tr:{
+   en:'Hunger, Durst, Angst, Schmerzen are <b>nouns</b>: <i>haben</i> + noun, no article: <i>Ich habe Hunger.</i> müde, krank, glücklich are <b>adjectives</b>: <i>sein</i>. Careful: in English you say “I am hungry” (be + adjective). In German it is “I have hunger”!',
+   pl:'Hunger, Durst, Angst, Schmerzen to <b>rzeczowniki</b>: <i>haben</i> + rzeczownik, bez rodzajnika: <i>Ich habe Hunger.</i> müde, krank, glücklich to <b>przymiotniki</b>: <i>sein</i>. Uwaga: po polsku mówimy „jestem głodny” (być + przymiotnik), a po niemiecku dosłownie „mam głód” (<i>haben</i> + rzeczownik)!',
+   tr:'Hunger, Durst, Angst, Schmerzen <b>isimdir</b>: <i>haben</i> + isim, artikelsiz: <i>Ich habe Hunger.</i> müde, krank, glücklich <b>sıfattır</b>: <i>sein</i>. Dikkat: Türkçede “açım” (sıfat) dersin; Almancada kelimesi kelimesine “açlığım var” gibidir (<i>haben</i> + isim)!',
+   ar:'الكلمات Hunger وDurst وAngst وSchmerzen هي <b>أسماء</b>: <i>haben</i> + اسم، بدون أداة: <i>Ich habe Hunger.</i> أمّا müde وkrank وglücklich فهي <b>صفات</b>: <i>sein</i>. تنبيه: بالعربية نقول «أنا جائع» (صفة)، وبالألمانية نقول حرفيًّا «عندي جوع» (<i>haben</i> + اسم)!',
+   ru:'Hunger, Durst, Angst, Schmerzen — <b>существительные</b>: <i>haben</i> + существительное, без артикля: <i>Ich habe Hunger.</i> müde, krank, glücklich — <b>прилагательные</b>: <i>sein</i>. Внимание: по-русски «я голоден» (прилагательное), а по-немецки буквально «у меня голод» (<i>haben</i> + существительное)!',
+   ku:'Hunger, Durst, Angst, Schmerzen <b>navdêr</b> in: <i>haben</i> + navdêr, bê artîkel: <i>Ich habe Hunger.</i> müde, krank, glücklich <b>rengdêr</b> in: <i>sein</i>. Bala xwe bide: bi kurmancî «ez birçî me» (rengdêr) tê gotin, lê bi almanî <i>haben</i> + navdêr (<i>Hunger</i>) tê bikaranîn!',
+   uk:'Hunger, Durst, Angst, Schmerzen — <b>іменники</b>: <i>haben</i> + іменник, без артикля: <i>Ich habe Hunger.</i> müde, krank, glücklich — <b>прикметники</b>: <i>sein</i>. Увага: українською «я голодний» (прикметник), а німецькою буквально «у мене голод» (<i>haben</i> + іменник)!'}},
+ ex:[g('Ich ___ Hunger.','habe'),g('Du ___ müde.','bist'),g('Er ___ Durst.','hat'),g('Wir ___ krank.','sind'),g('Anna ___ Angst.','hat'),g('Die Kinder ___ glücklich.','sind'),g('Ihr ___ Kopfschmerzen.','habt'),p('Welcher Satz ist richtig?',['Ich habe Hunger.','Ich bin Hunger.'],'Ich habe Hunger.')]},
+
+/* 9 ------------------------------------------------------------ */
+{title:'haben: Zeit, Termin, Unterricht …',tag:'haben',ph:'Präsens',
+ observe:['Ich [[habe]] {{heute Unterricht}}.','Du [[hast]] {{um 10 Uhr einen Termin}}.','Er [[hat]] {{morgen Geburtstag}}.','Wir [[haben]] {{Zeit}}.','Ich [[habe]] {{keine Zeit}}.','Die Kinder [[haben]] {{Ferien}}.'],
+ tasks:[
+  C('Was sind Unterricht, Termin, Geburtstag, Zeit, Ferien?',['Nomen → haben','Adjektive → sein','Orte → sein']),
+  C('Wie sagt man das Gegenteil von „Ich habe Zeit“?',['Ich habe <b>keine</b> Zeit.','Ich habe nicht Zeit.','Ich bin keine Zeit.'],'Schau auf den Beispielsatz: „Ich habe keine Zeit.“')
+ ],
+ rule:{f:['haben + Zeit / Unterricht / Termin / Geburtstag / Ferien'],de:'Auch diese Wörter sind <b>Nomen</b>: <b>haben</b> + Nomen. Verneinung mit <b>kein-</b>: <i>Ich habe keine Zeit.</i>',ex:['Ich [[habe]] {{heute Unterricht}}.','Er [[hat]] {{morgen Geburtstag}}.','Wir [[haben]] {{keine Zeit}}.'],
+  tr:{
+   en:'These words are nouns, too: <i>haben</i> + noun. <i>Ich habe heute Unterricht. Er hat Geburtstag.</i> Negation with <i>kein-</i>: <i>Ich habe keine Zeit.</i>',
+   pl:'To też są rzeczowniki: <i>haben</i> + rzeczownik. <i>Ich habe heute Unterricht. Er hat Geburtstag.</i> Zaprzeczenie z <i>kein-</i>: <i>Ich habe keine Zeit.</i>',
+   tr:'Bunlar da isimdir: <i>haben</i> + isim. <i>Ich habe heute Unterricht. Er hat Geburtstag.</i> Olumsuzluk <i>kein-</i> ile: <i>Ich habe keine Zeit.</i>',
+   ar:'هذه الكلمات أيضًا أسماء: <i>haben</i> + اسم. <i>Ich habe heute Unterricht. Er hat Geburtstag.</i> النفي بـ <i>kein-</i>: <i>Ich habe keine Zeit.</i>',
+   ru:'Эти слова тоже существительные: <i>haben</i> + существительное. <i>Ich habe heute Unterricht. Er hat Geburtstag.</i> Отрицание с <i>kein-</i>: <i>Ich habe keine Zeit.</i>',
+   ku:'Ev peyv jî navdêr in: <i>haben</i> + navdêr. <i>Ich habe heute Unterricht. Er hat Geburtstag.</i> Neyînî bi <i>kein-</i>: <i>Ich habe keine Zeit.</i>',
+   uk:'Ці слова теж іменники: <i>haben</i> + іменник. <i>Ich habe heute Unterricht. Er hat Geburtstag.</i> Заперечення з <i>kein-</i>: <i>Ich habe keine Zeit.</i>'}},
+ ex:[g('Wir ___ heute Unterricht.','haben'),g('Ich ___ morgen einen Termin.','habe'),g('Er ___ im Mai Geburtstag.','hat'),g('___ du Zeit?','hast'),g('Ihr ___ Ferien.','habt'),g('Die Lehrerin ___ keine Zeit.','hat'),p('Ich ___ keine Zeit.',['bin','habe'],'habe')]},
+
+/* 10 ----------------------------------------------------------- */
+{title:'sein oder haben?',tag:'both',ph:'Präsens',
+ observe:[
+  {t:'sein: A ist B',l:['Ich [[bin]] {{Amira}}. ((Name))','Ich [[bin]] {{aus Syrien}}. ((Herkunft))','Ich [[bin]] {{in Erfurt}}. ((Ort))','Ich [[bin]] {{Lehrerin}}. ((Beruf))','Ich [[bin]] {{müde}}. ((Adjektiv))','Ich [[bin]] {{25}} Jahre alt. ((Alter))']},
+  {t:'haben: A hat etwas',l:['Ich [[habe]] {{ein Handy}}. ((Ding))','Ich [[habe]] {{zwei Kinder}}. ((Familie))','Ich [[habe]] {{blaue Augen}}. ((Aussehen))','Ich [[habe]] {{Hunger}}. ((Nomen))','Ich [[habe]] {{Zeit}}. ((Nomen))','Ich [[habe]] {{einen Termin}}. ((Nomen))']}
+ ],
+ tasks:[
+  {t:'sort',q:'Ordne zu: ich bin … oder ich habe …?',labels:['ich bin …','ich habe …'],hint:'Denk an die Regeln: Name, Ort, Beruf, Adjektiv, Alter → sein. Dinge, Familie, Hunger, Zeit → haben.',
+   items:[['in Erfurt',0],['ein Handy',1],['Lehrer',0],['müde',0],['Hunger',1],['25 Jahre alt',0],['zwei Kinder',1],['aus Polen',0],['einen Termin',1],['blaue Augen',1],['zu Hause',0],['Zeit',1]]},
+  C('Was ist die beste Regel?',['Nach sein: Name, Herkunft, Ort, Beruf, Adjektiv, Alter. Nach haben: ein Nomen (Ding, Familie, Hunger, Zeit …).','Nach sein: ein Nomen. Nach haben: ein Ort oder ein Adjektiv.','sein und haben sind fast gleich.'])
+ ],
+ rule:{f:['sein: Wer? Woher? Wo? Wie? Wie alt?','haben: Was hast du?'],de:'<b>sein</b> (A = B): danach steht ein <b>Name, Land/Stadt, Ort, Beruf, Adjektiv oder Alter</b>.<br><b>haben</b> (A hat etwas): danach steht ein <b>Nomen</b> – Dinge, Familie, Aussehen, Hunger/Durst/Angst, Zeit, Termin.',ex:['Ich [[bin]] {{müde}}. ↔ Ich [[habe]] {{Hunger}}.','Er [[ist]] {{25}}. ↔ Er [[hat]] {{ein Auto}}.'],
+  tr:{
+   en:'After <i>sein</i> comes: name, origin, place, job, adjective, age (questions: who? where? where from? how? how old?). After <i>haben</i> comes a noun: things, family, hair/eyes, hunger/thirst/fear, time, appointment (question: what does someone have?).',
+   pl:'Po <i>sein</i> następuje: imię, pochodzenie, miejsce, zawód, przymiotnik, wiek (pytania: kto? gdzie? skąd? jaki? ile lat?). Po <i>haben</i> następuje rzeczownik: rzeczy, rodzina, włosy/oczy, głód/pragnienie/strach, czas, termin (pytanie: co ktoś ma?).',
+   tr:'<i>sein</i>’dan sonra gelenler: isim, köken, yer, meslek, sıfat, yaş (sorular: kim? nerede? nereli? nasıl? kaç yaşında?). <i>haben</i>’den sonra bir isim gelir: eşya, aile, saç/göz, açlık/susuzluk/korku, zaman, randevu (soru: kimin neyi var?).',
+   ar:'بعد <i>sein</i> يأتي: الاسم، الأصل، المكان، المهنة، الصفة، العمر (الأسئلة: مَن؟ أين؟ من أين؟ كيف؟ كم العمر؟). بعد <i>haben</i> يأتي اسم: أشياء، عائلة، شعر/عيون، جوع/عطش/خوف، وقت، موعد (السؤال: ماذا لدى الشخص؟).',
+   ru:'После <i>sein</i> стоят: имя, происхождение, место, профессия, прилагательное, возраст (вопросы: кто? где? откуда? какой? сколько лет?). После <i>haben</i> стоит существительное: вещи, семья, волосы/глаза, голод/жажда/страх, время, встреча (вопрос: что у человека есть?).',
+   ku:'Piştî <i>sein</i>: nav, eslê kes, cih, pîşe, rengdêr, tem (pirs: kî? li ku? ji ku? çawa? çend salî?). Piştî <i>haben</i> navdêrek tê: tişt, malbat, por/çav, birçîbûn/tîbûn/tirs, wext, randevû (pirs: kes çi heye?).',
+   uk:'Після <i>sein</i> стоять: ім’я, походження, місце, професія, прикметник, вік (питання: хто? де? звідки? який? скільки років?). Після <i>haben</i> стоїть іменник: речі, сім’я, волосся/очі, голод/спрага/страх, час, зустріч (питання: що в людини є?).'}},
+ ex:[g('Ich ___ Lehrer.','bin'),g('Du ___ einen Bruder.','hast'),g('Wir ___ in Erfurt.','sind'),g('Er ___ Hunger.','hat'),g('Meine Eltern ___ 50 Jahre alt.','sind'),g('Ihr ___ Zeit.','habt'),g('Die Suppe ___ heiß.','ist'),g('Ich ___ aus der Türkei.','bin'),g('Maria ___ lange Haare.','hat'),g('Wir ___ Durst.','haben')]},
+
+/* 11 ----------------------------------------------------------- */
+{title:'Präteritum: war und hatte',tag:'both',ph:'Präteritum',
+ observe:[
+  {t:'Jetzt (Präsens)',l:['Heute [[bin]] ich {{müde}}.','Heute [[bist]] du {{krank}}.','Er [[ist]] heute {{in Erfurt}}.','Ihr [[seid]] heute {{zu Hause}}.','Meine Eltern [[sind]] heute {{in Polen}}.','Heute [[hast]] du {{Zeit}}.','Sie [[hat]] heute {{Kopfschmerzen}}.','Wir [[haben]] heute {{Unterricht}}.','Ihr [[habt]] heute {{Ferien}}.','Die Kinder [[haben]] jetzt {{Hunger}}.']},
+  {t:'Früher (Präteritum)',l:['Gestern [[war]] ich {{müde}}.','Gestern [[warst]] du {{krank}}.','Er [[war]] gestern {{in Berlin}}.','Ihr [[wart]] gestern {{zu Hause}}.','Meine Eltern [[waren]] gestern {{in Polen}}.','Gestern [[hattest]] du {{Zeit}}.','Gestern [[hatte]] sie {{Kopfschmerzen}}.','Wir [[hatten]] gestern {{Unterricht}}.','Ihr [[hattet]] gestern {{Ferien}}.','Die Kinder [[hatten]] gestern {{Hunger}}.']}
+ ],
+ tasks:[{t:'table',head:['','sein','haben'],rows:[['ich','war','hatte'],['du','warst','hattest'],['er / sie / es','war','hatte'],['wir','waren','hatten'],['ihr','wart','hattet'],['sie / Sie','waren','hatten']],hint:'Vergleiche die Sätze mit „gestern“ (rechts) mit den Sätzen mit „heute“ (links).'}],
+ rule:{f:['sein → war','haben → hatte'],de:'Für die Vergangenheit sagt man mit <b>sein</b> meistens <b>war</b> und mit <b>haben</b> meistens <b>hatte</b>. <b>ich</b> und <b>er / sie / es</b> haben dieselbe Form.',
+  table:{head:['','sein','haben'],rows:[['ich','bin → <b>war</b>','habe → <b>hatte</b>'],['du','bist → <b>warst</b>','hast → <b>hattest</b>'],['er / sie / es','ist → <b>war</b>','hat → <b>hatte</b>'],['wir','sind → <b>waren</b>','haben → <b>hatten</b>'],['ihr','seid → <b>wart</b>','habt → <b>hattet</b>'],['sie / Sie','sind → <b>waren</b>','haben → <b>hatten</b>']]},ex:[],
+  tr:{
+   en:'For the past, <i>sein</i> becomes <i>war</i> and <i>haben</i> becomes <i>hatte</i>. The forms for <i>ich</i> and <i>er/sie/es</i> are the same (<i>war</i>, <i>hatte</i>).',
+   pl:'W czasie przeszłym <i>sein</i> zmienia się w <i>war</i>, a <i>haben</i> w <i>hatte</i>. Formy dla <i>ich</i> i <i>er/sie/es</i> są takie same (<i>war</i>, <i>hatte</i>).',
+   tr:'Geçmiş zamanda <i>sein</i> → <i>war</i>, <i>haben</i> → <i>hatte</i> olur. <i>ich</i> ve <i>er/sie/es</i> için biçim aynıdır (<i>war</i>, <i>hatte</i>).',
+   ar:'في الماضي يصبح <i>sein</i> ← <i>war</i> ويصبح <i>haben</i> ← <i>hatte</i>. الصيغة لـ <i>ich</i> ولـ <i>er/sie/es</i> واحدة (<i>war</i>، <i>hatte</i>).',
+   ru:'В прошедшем времени <i>sein</i> → <i>war</i>, <i>haben</i> → <i>hatte</i>. Формы для <i>ich</i> и <i>er/sie/es</i> одинаковые (<i>war</i>, <i>hatte</i>).',
+   ku:'Di dema borî de <i>sein</i> dibe <i>war</i> û <i>haben</i> dibe <i>hatte</i>. Ji bo <i>ich</i> û <i>er/sie/es</i> form wekhev e (<i>war</i>, <i>hatte</i>).',
+   uk:'У минулому часі <i>sein</i> → <i>war</i>, <i>haben</i> → <i>hatte</i>. Форми для <i>ich</i> і <i>er/sie/es</i> однакові (<i>war</i>, <i>hatte</i>).'}},
+ ex:[g('Gestern ___ ich krank.','war'),g('Du ___ gestern in Berlin.','warst'),g('Er ___ gestern Unterricht.','hatte'),g('Wir ___ letzte Woche Urlaub.','hatten'),g('Ihr ___ gestern zu Hause.','wart'),g('Die Kinder ___ gestern im Park.','waren'),g('Du ___ gestern keine Zeit.','hattest'),g('Ihr ___ gestern Hunger.','hattet')]},
+
+/* 12 ----------------------------------------------------------- */
+{title:'Präteritum: Wann?',tag:'both',ph:'Präteritum',
+ observe:[
+  {t:'Jetzt (Präsens)',l:['Heute [[bin]] ich {{in Jena}}.','Jetzt [[habe]] ich {{Zeit}}.','Im Moment [[ist]] Amira {{müde}}.','Heute [[haben]] wir {{Unterricht}}.']},
+  {t:'Früher (Präteritum)',l:['Gestern [[war]] ich {{in Erfurt}}.','Letzte Woche [[hatte]] ich {{Zeit}}.','Vor einem Jahr [[war]] Amira {{in Syrien}}.','Früher [[hatte]] ich {{ein Auto}}.']}
+ ],
+ tasks:[
+  {t:'sort',q:'Welche Zeit passt zu dem Wort?',labels:['Präsens','Präteritum'],hint:'Gestern, letzte Woche, früher, vor … = Vergangenheit. Heute, jetzt, im Moment = Gegenwart.',
+   items:[['heute',0],['gestern',1],['jetzt',0],['letzte Woche',1],['früher',1],['im Moment',0],['vor zwei Jahren',1],['gerade',0],['vorgestern',1],['letztes Jahr',1]]},
+  C('Ändert sich die Verwendung von sein und haben im Präteritum?',['Nein. Es gelten dieselben Regeln, nur die Zeit ist anders.','Ja. Im Präteritum benutzt man nur sein.','Ja. Im Präteritum benutzt man nur haben.'],'Vergleiche links und rechts: Was steht nach „bin“ und was nach „war“?'),
+  C('Was sagt man mit sein und haben meistens über die Vergangenheit?',['Ich war … / Ich hatte …','Ich bin gewesen … / Ich habe gehabt …','Ich wurde … / Ich hatte gehabt …'],'„bin gewesen“ und „habe gehabt“ gibt es auch, aber man sagt meistens: war, hatte.')
+ ],
+ rule:{f:['gestern, früher, vor … → war / hatte','heute, jetzt → bin / habe'],de:'Die <b>Regeln</b> bleiben gleich – nur die <b>Zeit</b> ist anders. Signalwörter für die Vergangenheit: <i>gestern, letzte Woche, früher, vor zwei Jahren</i> → <b>war / hatte</b>. Signalwörter für jetzt: <i>heute, jetzt, im Moment</i> → <b>bin / habe</b>.',ex:['Gestern [[war]] ich {{müde}}. (sein + Adjektiv)','Gestern [[hatte]] ich {{Hunger}}. (haben + Nomen)'],
+  tr:{
+   en:'Same rules as in the present — only the time is different. Words like <i>gestern, letzte Woche, früher, vor zwei Jahren</i> (yesterday, last week, earlier, two years ago) → <i>war / hatte</i>. Words like <i>heute, jetzt, im Moment</i> (today, now, at the moment) → <i>bin / habe</i>. About the past, with <i>sein</i> and <i>haben</i> you mostly say <i>war</i> and <i>hatte</i>.',
+   pl:'Zasady są takie same jak w czasie teraźniejszym — zmienia się tylko czas. Słowa takie jak <i>gestern, letzte Woche, früher, vor zwei Jahren</i> (wczoraj, w zeszłym tygodniu, dawniej, dwa lata temu) → <i>war / hatte</i>. Słowa takie jak <i>heute, jetzt, im Moment</i> (dziś, teraz, w tej chwili) → <i>bin / habe</i>. O przeszłości z <i>sein</i> i <i>haben</i> mówi się najczęściej <i>war</i> i <i>hatte</i>.',
+   tr:'Kurallar şimdiki zamanla aynıdır — sadece zaman farklıdır. <i>gestern, letzte Woche, früher, vor zwei Jahren</i> (dün, geçen hafta, eskiden, iki yıl önce) gibi sözcükler → <i>war / hatte</i>. <i>heute, jetzt, im Moment</i> (bugün, şimdi, şu anda) gibi sözcükler → <i>bin / habe</i>. Geçmişten bahsederken <i>sein</i> ve <i>haben</i> için çoğunlukla <i>war</i> ve <i>hatte</i> kullanılır.',
+   ar:'القواعد نفسها كما في المضارع، والفرق في الزمن فقط. كلمات مثل <i>gestern, letzte Woche, früher, vor zwei Jahren</i> (أمس، الأسبوع الماضي، سابقًا، قبل سنتين) ← <i>war / hatte</i>. وكلمات مثل <i>heute, jetzt, im Moment</i> (اليوم، الآن، في هذه اللحظة) ← <i>bin / habe</i>. مع <i>sein</i> و<i>haben</i> نقول في الغالب <i>war</i> و<i>hatte</i> عن الماضي.',
+   ru:'Правила те же, что и в настоящем времени — меняется только время. Слова <i>gestern, letzte Woche, früher, vor zwei Jahren</i> (вчера, на прошлой неделе, раньше, два года назад) → <i>war / hatte</i>. Слова <i>heute, jetzt, im Moment</i> (сегодня, сейчас, в данный момент) → <i>bin / habe</i>. О прошлом с <i>sein</i> и <i>haben</i> чаще всего говорят <i>war</i> и <i>hatte</i>.',
+   ku:'Rêgez ew in ku di dema niha de ne — tenê dem cuda ye. Peyvên wekî <i>gestern, letzte Woche, früher, vor zwei Jahren</i> (duh, hefteya borî, berê, du sal berê) → <i>war / hatte</i>. Peyvên wekî <i>heute, jetzt, im Moment</i> (îro, niha, vê gavê) → <i>bin / habe</i>. Ji bo borî bi <i>sein</i> û <i>haben</i> piranî <i>war</i> û <i>hatte</i> tê gotin.',
+   uk:'Правила ті самі, що й у теперішньому часі — змінюється лише час. Слова <i>gestern, letzte Woche, früher, vor zwei Jahren</i> (вчора, минулого тижня, раніше, два роки тому) → <i>war / hatte</i>. Слова <i>heute, jetzt, im Moment</i> (сьогодні, зараз, наразі) → <i>bin / habe</i>. Про минуле з <i>sein</i> і <i>haben</i> здебільшого кажуть <i>war</i> і <i>hatte</i>.'}},
+ ex:[g('Gestern ___ ich in Jena.','war'),g('Heute ___ ich in Erfurt.','bin'),g('Letzte Woche ___ wir Unterricht.','hatten'),g('Jetzt ___ du Zeit.','hast'),g('Vor zwei Jahren ___ Olena noch in Kyiv.','war'),g('Früher ___ er ein Fahrrad.','hatte'),g('Im Moment ___ die Kinder im Park.','sind'),g('Gestern ___ ihr krank.','wart'),g('Heute ___ wir Hunger.','haben'),g('Letztes Jahr ___ Frau Yilmaz 29 Jahre alt.','war')]},
+
+/* 13 ----------------------------------------------------------- */
+{title:'Abschlusstest',tag:'both',ph:'Test',summary:true,
+ ex:[g('Ich ___ Ärztin.','bin'),g('Gestern ___ ich in Erfurt.','war'),g('Wir ___ keinen Hunger.','haben'),g('Du ___ gestern müde.','warst'),g('Er ___ eine Schwester.','hat'),g('Die Kinder ___ in der Schule.','sind'),g('Letzte Woche ___ ihr keine Zeit.','hattet'),g('Wie alt ___ du?','bist'),g('Anna ___ lange Haare.','hat'),g('Ich ___ aus Syrien.','bin'),g('Früher ___ wir ein Auto.','hatten'),g('Vor einer Woche ___ Mehmet krank.','war'),g('Ihr ___ Durst.','habt'),g('Heute ___ das Wetter schön.','ist'),g('Gestern ___ wir Unterricht.','hatten'),g('Meine Großeltern ___ 70 Jahre alt.','sind'),g('Wir ___ gestern im Park.','waren'),p('Welcher Satz ist richtig?',['Ich bin 25 Jahre alt.','Ich habe 25 Jahre alt.'],'Ich bin 25 Jahre alt.'),p('Welcher Satz ist richtig?',['Ich habe Hunger.','Ich bin Hunger.'],'Ich habe Hunger.')]}
+];
+
+/* ---------- Übersetzungen der Entdecke-Fragen und Antwortmöglichkeiten ----------
+   Je Aufgabe: Sprache → [Frage, Antwort 1, Antwort 2, …] in der Reihenfolge von t.o (richtige Antwort zuerst).
+   Bei Aufgaben mit deutschen Beispielsätzen als Antworten wird nur die Frage übersetzt. */
+var TRREG=[];
+function trq(t,i){
+  if(!t.tr){return '';}
+  TRREG.push({t:t,i:i});
+  return '<span class="tr tro" data-q="'+(TRREG.length-1)+'" hidden></span>';
+}
+function L(en,pl,tr,ar,ru,ku,uk){return {en:en,pl:pl,tr:tr,ar:ar,ru:ru,ku:ku,uk:uk};}
+function W(a,b){var r={},k;for(k in a){if(a.hasOwnProperty(k)){r[k]=a[k].concat(b?b[k]:[]);}}return r;}
+var QFIT=L(['Which question fits the sentences?'],['Które pytanie pasuje do tych zdań?'],['Hangi soru bu cümlelere uygun?'],['أي سؤال يناسب هذه الجمل؟'],['Какой вопрос подходит к предложениям?'],['Kîjan pirs bi van hevokan re lê tê?'],['Яке запитання підходить до речень?']);
+var QAFTER=L(['What comes after <i>bin / ist / sind</i>?'],['Co stoi po <i>bin / ist / sind</i>?'],['<i>bin / ist / sind</i>’den sonra ne gelir?'],['ماذا يأتي بعد <i>bin / ist / sind</i>؟'],['Что стоит после <i>bin / ist / sind</i>?'],['Piştî <i>bin / ist / sind</i> çi tê?'],['Що стоїть після <i>bin / ist / sind</i>?']);
+var QVERB=L(['Which verb is in the sentences?'],['Który czasownik występuje w zdaniach?'],['Cümlelerde hangi fiil var?'],['ما الفعل الموجود في الجمل؟'],['Какой глагол стоит в предложениях?'],['Di hevokan de kîjan lêker heye?'],['Яке дієслово стоїть у реченнях?']);
+var QRIGHT=L(['Which sentence is correct?'],['Które zdanie jest poprawne?'],['Hangi cümle doğru?'],['أي جملة صحيحة؟'],['Какое предложение правильное?'],['Kîjan hevok rast e?'],['Яке речення правильне?']);
+var CT={
+ 1:[
+  W(QFIT,L(['Who? and Where from?','Where? and When?','What do you have? and How many?'],['Kto? i Skąd?','Gdzie? i Kiedy?','Co masz? i Ile?'],['Kim? ve Nereli?','Nerede? ve Ne zaman?','Neyin var? ve Kaç tane?'],['مَن؟ ومن أين؟','أين؟ ومتى؟','ماذا لديك؟ وكم؟'],['Кто? и Откуда?','Где? и Когда?','Что у тебя есть? и Сколько?'],['Kî? û Ji ku?','Li ku? û Kengî?','Çi li cem te heye? û Çend?'],['Хто? і Звідки?','Де? і Коли?','Що в тебе є? і Скільки?'])),
+  W(QAFTER,L(['a name or <i>aus</i> + country','a noun with <i>ein / eine / einen</i>','an adjective (tired, big)'],['imię lub <i>aus</i> + kraj','rzeczownik z <i>ein / eine / einen</i>','przymiotnik (zmęczony, duży)'],['bir isim ya da <i>aus</i> + ülke','<i>ein / eine / einen</i> ile bir isim','bir sıfat (yorgun, büyük)'],['اسم أو <i>aus</i> + بلد','اسم مع <i>ein / eine / einen</i>','صفة (متعب، كبير)'],['имя или <i>aus</i> + страна','существительное с <i>ein / eine / einen</i>','прилагательное (усталый, большой)'],['nav an <i>aus</i> + welat','navdêrek bi <i>ein / eine / einen</i>','rengdêrek (westiyayî, mezin)'],['ім’я або <i>aus</i> + країна','іменник з <i>ein / eine / einen</i>','прикметник (втомлений, великий)']))
+ ],
+ 2:[
+  W(QFIT,L(['Where?','Who?','How?'],['Gdzie?','Kto?','Jaki? / Jak?'],['Nerede?','Kim?','Nasıl?'],['أين؟','مَن؟','كيف؟'],['Где?','Кто?','Какой? / Как?'],['Li ku?','Kî?','Çawa?'],['Де?','Хто?','Який? / Як?'])),
+  W(QAFTER,L(['a place (in, on, at, here, at home …)','a job','a name'],['miejsce (w, przy, na, tutaj, w domu …)','zawód','imię'],['bir yer (in, an, auf, burada, evde …)','bir meslek','bir isim'],['مكان (في، عند، على، هنا، في البيت …)','مهنة','اسم'],['место (в, у, на, здесь, дома …)','профессия','имя'],['cihek (li, nêzî, li ser, li vir, li mal …)','pîşeyek','navek'],['місце (в, біля, на, тут, удома …)','професія','ім’я']))
+ ],
+ 3:[
+  W(QFIT,L(['What is your job?','Where are you?','How old are you?'],['Kim Pan/Pani jest z zawodu?','Gdzie Pan/Pani jest?','Ile Pan/Pani ma lat?'],['Mesleğiniz nedir?','Neredesiniz?','Kaç yaşındasınız?'],['ما هي مهنتك؟','أين أنت؟','كم عمرك؟'],['Кто вы по профессии?','Где вы?','Сколько вам лет?'],['Pîşeya we çi ye?','Hûn li ku ne?','Temenê we çend e?'],['Яка ваша професія?','Де ви?','Скільки вам років?'])),
+  L(['Is there an article (<i>ein / eine</i>) before the job?','No. The job has no article.','Yes. Always <i>ein / eine</i>.','Yes. Only for women: <i>eine</i>.'],['Czy przed zawodem stoi rodzajnik (<i>ein / eine</i>)?','Nie. Zawód stoi bez rodzajnika.','Tak. Zawsze <i>ein / eine</i>.','Tak. Tylko u kobiet: <i>eine</i>.'],['Mesleğin önünde artikel (<i>ein / eine</i>) var mı?','Hayır. Meslek artikelsiz kullanılır.','Evet. Her zaman <i>ein / eine</i>.','Evet. Sadece kadınlarda: <i>eine</i>.'],['هل تأتي أداة (<i>ein / eine</i>) قبل المهنة؟','لا. تأتي المهنة بدون أداة.','نعم. دائمًا <i>ein / eine</i>.','نعم. فقط للنساء: <i>eine</i>.'],['Стоит ли перед профессией артикль (<i>ein / eine</i>)?','Нет. Профессия без артикля.','Да. Всегда <i>ein / eine</i>.','Да. Только у женщин: <i>eine</i>.'],['Gelo beriya pîşeyê artîkel (<i>ein / eine</i>) heye?','Na. Pîşe bê artîkel tê.','Erê. Her tim <i>ein / eine</i>.','Erê. Tenê ji bo jinan: <i>eine</i>.'],['Чи стоїть перед професією артикль (<i>ein / eine</i>)?','Ні. Професія без артикля.','Так. Завжди <i>ein / eine</i>.','Так. Лише в жінок: <i>eine</i>.'])
+ ],
+ 4:[
+  W(QFIT,L(['How? (what like?)','Who?','Where from?'],['Jaki? / Jak?','Kto?','Skąd?'],['Nasıl?','Kim?','Nereli?'],['كيف؟ (ما صفته؟)','مَن؟','من أين؟'],['Какой? / Как?','Кто?','Откуда?'],['Çawa?','Kî?','Ji ku?'],['Який? / Як?','Хто?','Звідки?'])),
+  W(QAFTER,L(['an adjective (tired, nice, hot)','a name','a place with “in”'],['przymiotnik (zmęczony, ładny, gorący)','imię','miejsce z „in”'],['bir sıfat (yorgun, güzel, sıcak)','bir isim','“in” ile bir yer'],['صفة (متعب، جميل، ساخن)','اسم','مكان مع <i>in</i>'],['прилагательное (усталый, красивый, горячий)','имя','место с «in»'],['rengdêrek (westiyayî, xweş, germ)','navek','cihek bi “in”'],['прикметник (втомлений, гарний, гарячий)','ім’я','місце з «in»'])),
+  L(['How does the adjective change after <i>ist</i> and <i>sind</i>?','Not at all: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>','It always gets an -e: <i>heiße</i>.','It always gets -en: <i>heißen</i>.'],['Jak zmienia się przymiotnik po <i>ist</i> i <i>sind</i>?','Wcale: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>','Zawsze dostaje -e: <i>heiße</i>.','Zawsze dostaje -en: <i>heißen</i>.'],['<i>ist</i> ve <i>sind</i>’den sonra sıfat nasıl değişir?','Hiç değişmez: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>','Her zaman -e alır: <i>heiße</i>.','Her zaman -en alır: <i>heißen</i>.'],['كيف تتغيّر الصفة بعد <i>ist</i> و<i>sind</i>؟','لا تتغيّر أبدًا: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>','تأخذ دائمًا النهاية -e: <i>heiße</i>.','تأخذ دائمًا النهاية -en: <i>heißen</i>.'],['Как изменяется прилагательное после <i>ist</i> и <i>sind</i>?','Никак: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>','Всегда получает -e: <i>heiße</i>.','Всегда получает -en: <i>heißen</i>.'],['Piştî <i>ist</i> û <i>sind</i> rengdêr çawa diguhere?','Qet nayê guhertin: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>','Her tim -e distîne: <i>heiße</i>.','Her tim -en distîne: <i>heißen</i>.'],['Як змінюється прикметник після <i>ist</i> і <i>sind</i>?','Ніяк: <i>Der Tee ist heiß. Die Getränke sind heiß.</i>','Завжди отримує -e: <i>heiße</i>.','Завжди отримує -en: <i>heißen</i>.'])
+ ],
+ 5:[
+  W(QFIT,L(['How old?','How much?','How long?'],['Ile lat?','Ile?','Jak długo?'],['Kaç yaşında?','Ne kadar?','Ne kadar süre?'],['كم العمر؟','كم (الكمية أو السعر)؟','كم من الوقت؟'],['Сколько лет?','Сколько (стоит / много)?','Как долго?'],['Çend salî?','Çiqas?','Çiqas dem?'],['Скільки років?','Скільки (коштує / багато)?','Як довго?'])),
+  QVERB
+ ],
+ 6:[
+  L(['What do the sentences say?','What someone has (owns): things, animals.','Where someone is.','What someone is like.'],['Co mówią te zdania?','Co ktoś ma (posiada): rzeczy, zwierzęta.','Gdzie ktoś jest.','Jaki ktoś jest.'],['Cümleler ne söylüyor?','Birinin neyi olduğu (sahip olduğu): eşya, hayvan.','Birinin nerede olduğu.','Birinin nasıl olduğu.'],['ماذا تقول هذه الجمل؟','ماذا يملك الشخص: أشياء، حيوانات.','أين يوجد الشخص.','كيف هو الشخص.'],['О чём говорят эти предложения?','Что есть у человека (чем он владеет): вещи, животные.','Где находится человек.','Какой человек.'],['Ev hevok çi dibêjin?','Kesek çi heye (xwedî ye): tişt, heywan.','Kes li ku ye.','Kes çawa ye.'],['Про що говорять ці речення?','Що є в людини (чим вона володіє): речі, тварини.','Де є людина.','Яка людина.']),
+  L(['What comes after <i>habe / hast / hat / haben</i>?','a noun with an article (a mobile phone, a cat)','an adjective','a place'],['Co stoi po <i>habe / hast / hat / haben</i>?','rzeczownik z rodzajnikiem (telefon, kot)','przymiotnik','miejsce'],['<i>habe / hast / hat / haben</i>’den sonra ne gelir?','artikelli bir isim (cep telefonu, kedi)','bir sıfat','bir yer'],['ماذا يأتي بعد <i>habe / hast / hat / haben</i>؟','اسم مع أداة (هاتف، قطة)','صفة','مكان'],['Что стоит после <i>habe / hast / hat / haben</i>?','существительное с артиклем (телефон, кошка)','прилагательное','место'],['Piştî <i>habe / hast / hat / haben</i> çi tê?','navdêrek bi artîkel (têlefon, pisîk)','rengdêrek','cihek'],['Що стоїть після <i>habe / hast / hat / haben</i>?','іменник з артиклем (телефон, кішка)','прикметник','місце']),
+  L(['With which nouns do you use <i>einen</i>?','with <i>Computer</i> and <i>Hund</i> (<i>der</i>-words)','with <i>Handy</i> and <i>Auto</i> (<i>das</i>-words)','with <i>Katze</i> and <i>Wohnung</i> (<i>die</i>-words)'],['Przy których rzeczownikach stoi <i>einen</i>?','przy <i>Computer</i> i <i>Hund</i> (rzeczowniki z <i>der</i>)','przy <i>Handy</i> i <i>Auto</i> (rzeczowniki z <i>das</i>)','przy <i>Katze</i> i <i>Wohnung</i> (rzeczowniki z <i>die</i>)'],['<i>einen</i> hangi isimlerle kullanılır?','<i>Computer</i> ve <i>Hund</i> ile (<i>der</i>’li isimler)','<i>Handy</i> ve <i>Auto</i> ile (<i>das</i>’lı isimler)','<i>Katze</i> ve <i>Wohnung</i> ile (<i>die</i>’li isimler)'],['مع أي أسماء نستخدم <i>einen</i>؟','مع <i>Computer</i> و<i>Hund</i> (كلمات <i>der</i>)','مع <i>Handy</i> و<i>Auto</i> (كلمات <i>das</i>)','مع <i>Katze</i> و<i>Wohnung</i> (كلمات <i>die</i>)'],['При каких существительных стоит <i>einen</i>?','при <i>Computer</i> и <i>Hund</i> (слова с <i>der</i>)','при <i>Handy</i> и <i>Auto</i> (слова с <i>das</i>)','при <i>Katze</i> и <i>Wohnung</i> (слова с <i>die</i>)'],['<i>einen</i> bi kîjan navdêran re tê?','bi <i>Computer</i> û <i>Hund</i> re (peyvên <i>der</i>)','bi <i>Handy</i> û <i>Auto</i> re (peyvên <i>das</i>)','bi <i>Katze</i> û <i>Wohnung</i> re (peyvên <i>die</i>)'],['При яких іменниках стоїть <i>einen</i>?','при <i>Computer</i> і <i>Hund</i> (слова з <i>der</i>)','при <i>Handy</i> і <i>Auto</i> (слова з <i>das</i>)','при <i>Katze</i> і <i>Wohnung</i> (слова з <i>die</i>)'])
+ ],
+ 7:[
+  QVERB,
+  L(['What comes after the verb?','a noun (children, brother, hair, eyes)','an adjective on its own (long, blue)','a place'],['Co stoi po czasowniku?','rzeczownik (dzieci, brat, włosy, oczy)','sam przymiotnik (długi, niebieski)','miejsce'],['Fiilden sonra ne gelir?','bir isim (çocuk, erkek kardeş, saç, göz)','tek başına bir sıfat (uzun, mavi)','bir yer'],['ماذا يأتي بعد الفعل؟','اسم (أولاد، أخ، شعر، عيون)','صفة وحدها (طويل، أزرق)','مكان'],['Что стоит после глагола?','существительное (дети, брат, волосы, глаза)','одно прилагательное (длинный, синий)','место'],['Piştî lêkerê çi tê?','navdêrek (zarok, bira, por, çav)','rengdêrek bi tena serê xwe (dirêj, şîn)','cihek'],['Що стоїть після дієслова?','іменник (діти, брат, волосся, очі)','самотній прикметник (довгий, синій)','місце']),
+  QRIGHT
+ ],
+ 8:[
+  null,
+  L(['What is the difference?','<i>Hunger, Durst, Angst</i> = nouns → <i>haben</i>. <i>müde, krank</i> = adjectives → <i>sein</i>.','<i>Hunger, Durst, Angst</i> = adjectives → <i>sein</i>.','There is no difference.'],['Jaka jest różnica?','<i>Hunger, Durst, Angst</i> = rzeczowniki → <i>haben</i>. <i>müde, krank</i> = przymiotniki → <i>sein</i>.','<i>Hunger, Durst, Angst</i> = przymiotniki → <i>sein</i>.','Nie ma różnicy.'],['Fark nedir?','<i>Hunger, Durst, Angst</i> = isim → <i>haben</i>. <i>müde, krank</i> = sıfat → <i>sein</i>.','<i>Hunger, Durst, Angst</i> = sıfat → <i>sein</i>.','Hiçbir fark yok.'],['ما الفرق؟','<i>Hunger</i> و<i>Durst</i> و<i>Angst</i> أسماء، فنستخدم <i>haben</i>. و<i>müde</i> و<i>krank</i> صفات، فنستخدم <i>sein</i>.','<i>Hunger</i> و<i>Durst</i> و<i>Angst</i> صفات، فنستخدم <i>sein</i>.','لا يوجد فرق.'],['В чём разница?','<i>Hunger, Durst, Angst</i> = существительные → <i>haben</i>. <i>müde, krank</i> = прилагательные → <i>sein</i>.','<i>Hunger, Durst, Angst</i> = прилагательные → <i>sein</i>.','Разницы нет.'],['Cudahî çi ye?','<i>Hunger, Durst, Angst</i> = navdêr → <i>haben</i>. <i>müde, krank</i> = rengdêr → <i>sein</i>.','<i>Hunger, Durst, Angst</i> = rengdêr → <i>sein</i>.','Cudahî tune.'],['У чому різниця?','<i>Hunger, Durst, Angst</i> = іменники → <i>haben</i>. <i>müde, krank</i> = прикметники → <i>sein</i>.','<i>Hunger, Durst, Angst</i> = прикметники → <i>sein</i>.','Різниці немає.'])
+ ],
+ 9:[
+  L(['What are <i>Unterricht, Termin, Geburtstag, Zeit, Ferien</i>?','nouns → <i>haben</i>','adjectives → <i>sein</i>','places → <i>sein</i>'],['Czym są <i>Unterricht, Termin, Geburtstag, Zeit, Ferien</i>?','rzeczowniki → <i>haben</i>','przymiotniki → <i>sein</i>','miejsca → <i>sein</i>'],['<i>Unterricht, Termin, Geburtstag, Zeit, Ferien</i> nedir?','isimler → <i>haben</i>','sıfatlar → <i>sein</i>','yerler → <i>sein</i>'],['ما نوع الكلمات <i>Unterricht</i> و<i>Termin</i> و<i>Geburtstag</i> و<i>Zeit</i> و<i>Ferien</i>؟','أسماء: <i>haben</i>','صفات: <i>sein</i>','أماكن: <i>sein</i>'],['Чем являются <i>Unterricht, Termin, Geburtstag, Zeit, Ferien</i>?','существительные → <i>haben</i>','прилагательные → <i>sein</i>','места → <i>sein</i>'],['<i>Unterricht, Termin, Geburtstag, Zeit, Ferien</i> çi ne?','navdêr → <i>haben</i>','rengdêr → <i>sein</i>','cih → <i>sein</i>'],['Чим є <i>Unterricht, Termin, Geburtstag, Zeit, Ferien</i>?','іменники → <i>haben</i>','прикметники → <i>sein</i>','місця → <i>sein</i>']),
+  L(['How do you say the opposite of “<i>Ich habe Zeit</i>”?'],['Jak powiedzieć odwrotność zdania „<i>Ich habe Zeit</i>”?'],['“<i>Ich habe Zeit</i>” cümlesinin tersi nasıl söylenir?'],['كيف نقول عكس «<i>Ich habe Zeit</i>»؟'],['Как сказать противоположное «<i>Ich habe Zeit</i>»?'],['Berevajiyê «<i>Ich habe Zeit</i>» çawa tê gotin?'],['Як сказати протилежне до «<i>Ich habe Zeit</i>»?'])
+ ],
+ 10:[
+  null,
+  L(['Which is the best rule?','After <i>sein</i>: name, origin, place, job, adjective, age. After <i>haben</i>: a noun (thing, family, hunger, time …).','After <i>sein</i>: a noun. After <i>haben</i>: a place or an adjective.','<i>sein</i> and <i>haben</i> are almost the same.'],['Która reguła jest najlepsza?','Po <i>sein</i>: imię, pochodzenie, miejsce, zawód, przymiotnik, wiek. Po <i>haben</i>: rzeczownik (rzecz, rodzina, głód, czas …).','Po <i>sein</i>: rzeczownik. Po <i>haben</i>: miejsce lub przymiotnik.','<i>sein</i> i <i>haben</i> są prawie takie same.'],['En iyi kural hangisi?','<i>sein</i>’dan sonra: isim, köken, yer, meslek, sıfat, yaş. <i>haben</i>’den sonra: bir isim (eşya, aile, açlık, zaman …).','<i>sein</i>’dan sonra: bir isim. <i>haben</i>’den sonra: bir yer ya da sıfat.','<i>sein</i> ve <i>haben</i> hemen hemen aynıdır.'],['ما أفضل قاعدة؟','بعد <i>sein</i>: الاسم، الأصل، المكان، المهنة، الصفة، العمر. بعد <i>haben</i>: اسم (شيء، عائلة، جوع، وقت …).','بعد <i>sein</i>: اسم. بعد <i>haben</i>: مكان أو صفة.','<i>sein</i> و<i>haben</i> متشابهان تقريبًا.'],['Какое правило лучше всего?','После <i>sein</i>: имя, происхождение, место, профессия, прилагательное, возраст. После <i>haben</i>: существительное (вещь, семья, голод, время …).','После <i>sein</i>: существительное. После <i>haben</i>: место или прилагательное.','<i>sein</i> и <i>haben</i> почти одинаковы.'],['Kîjan rêgez baştir e?','Piştî <i>sein</i>: nav, eslê kes, cih, pîşe, rengdêr, tem. Piştî <i>haben</i>: navdêr (tişt, malbat, birçîbûn, wext …).','Piştî <i>sein</i>: navdêr. Piştî <i>haben</i>: cih an rengdêr.','<i>sein</i> û <i>haben</i> hema hema wek hev in.'],['Яке правило найкраще?','Після <i>sein</i>: ім’я, походження, місце, професія, прикметник, вік. Після <i>haben</i>: іменник (річ, сім’я, голод, час …).','Після <i>sein</i>: іменник. Після <i>haben</i>: місце або прикметник.','<i>sein</i> і <i>haben</i> майже однакові.'])
+ ],
+ 12:[
+  null,
+  L(['Does the use of <i>sein</i> and <i>haben</i> change in the <i>Präteritum</i>?','No. The same rules apply, only the tense is different.','Yes. In the <i>Präteritum</i> you only use <i>sein</i>.','Yes. In the <i>Präteritum</i> you only use <i>haben</i>.'],['Czy użycie <i>sein</i> i <i>haben</i> zmienia się w <i>Präteritum</i>?','Nie. Obowiązują te same reguły, zmienia się tylko czas.','Tak. W <i>Präteritum</i> używa się tylko <i>sein</i>.','Tak. W <i>Präteritum</i> używa się tylko <i>haben</i>.'],['<i>sein</i> ve <i>haben</i>’in kullanımı <i>Präteritum</i>’da değişir mi?','Hayır. Aynı kurallar geçerlidir, sadece zaman farklıdır.','Evet. <i>Präteritum</i>’da sadece <i>sein</i> kullanılır.','Evet. <i>Präteritum</i>’da sadece <i>haben</i> kullanılır.'],['هل يتغيّر استخدام <i>sein</i> و<i>haben</i> في الماضي (<i>Präteritum</i>)؟','لا. تنطبق القواعد نفسها، والزمن فقط مختلف.','نعم. في الماضي نستخدم <i>sein</i> فقط.','نعم. في الماضي نستخدم <i>haben</i> فقط.'],['Меняется ли употребление <i>sein</i> и <i>haben</i> в <i>Präteritum</i>?','Нет. Действуют те же правила, только время другое.','Да. В <i>Präteritum</i> используют только <i>sein</i>.','Да. В <i>Präteritum</i> используют только <i>haben</i>.'],['Gelo di <i>Präteritum</i> de bikaranîna <i>sein</i> û <i>haben</i> diguhere?','Na. Heman rêgez derbas dibin, tenê dem cuda ye.','Erê. Di <i>Präteritum</i> de tenê <i>sein</i> tê bikaranîn.','Erê. Di <i>Präteritum</i> de tenê <i>haben</i> tê bikaranîn.'],['Чи змінюється вживання <i>sein</i> і <i>haben</i> у <i>Präteritum</i>?','Ні. Діють ті самі правила, змінюється лише час.','Так. У <i>Präteritum</i> вживають лише <i>sein</i>.','Так. У <i>Präteritum</i> вживають лише <i>haben</i>.']),
+  L(['What do you mostly say with <i>sein</i> and <i>haben</i> about the past?'],['Co najczęściej mówi się z <i>sein</i> i <i>haben</i> o przeszłości?'],['Geçmiş için <i>sein</i> ve <i>haben</i> ile çoğunlukla ne söylenir?'],['ماذا نقول في الغالب مع <i>sein</i> و<i>haben</i> عن الماضي؟'],['Что чаще всего говорят с <i>sein</i> и <i>haben</i> о прошлом?'],['Ji bo borî bi <i>sein</i> û <i>haben</i> piranî çi tê gotin?'],['Що найчастіше кажуть із <i>sein</i> і <i>haben</i> про минуле?'])
+ ]
+};
+(function(){var i,k,s;for(i in CT){if(CT.hasOwnProperty(i)){s=STEPS[parseInt(i,10)];for(k=0;k<CT[i].length;k++){if(CT[i][k]){s.tasks[k].tr=CT[i][k];}}}}})();
+
+/* ---------- Zustand ---------- */
+var state={cur:0,lang:sget('lang')||'',done:sget('done')||{}};
+var panels=[];
+
+/* ---------- Übersetzungen ein-/ausblenden ---------- */
+function updateTr(){
+  var list=$$('.tr'),i,e,txt,k,idx;
+  for(i=0;i<list.length;i++){
+    e=list[i];txt='';
+    if(state.lang){
+      idx=LK.indexOf(state.lang);
+      if(e.getAttribute('data-u')){
+        k=UI[e.getAttribute('data-u')];
+        txt=k?k.t[idx]:'';
+      }else if(e.getAttribute('data-q')!==null){
+        k=TRREG[parseInt(e.getAttribute('data-q'),10)];
+        txt=(k&&k.t.tr&&k.t.tr[state.lang]&&k.t.tr[state.lang][k.i])?k.t.tr[state.lang][k.i]:'';
+      }else if(e.getAttribute('data-r')!==null&&e.getAttribute('data-r')!==''){
+        k=STEPS[parseInt(e.getAttribute('data-r'),10)].rule;
+        txt=(k&&k.tr&&k.tr[state.lang])?k.tr[state.lang]:'';
+      }
+    }
+    e.innerHTML=txt;
+    e.hidden=!txt;
+    e.setAttribute('lang',state.lang||'de');
+    e.setAttribute('dir',RTL[state.lang]?'rtl':'ltr');
+  }
+}
+function tri(key,cls){return '<span class="tr '+(cls||'')+'" data-u="'+key+'" hidden></span>';}
+function sh(n,key){return '<h3 class="sh"><span class="num">'+n+'</span><span>'+UI[key].de+'</span> '+tri(key)+'</h3>';}
+
+/* ---------- Beobachte ---------- */
+function observeEl(S){
+  var w=el('div','sec');
+  w.innerHTML=sh(1,'h_observe')+'<div class="instr">'+UI.i_observe.de+'</div><div class="tr tb" data-u="i_observe" hidden></div>';
+  var groups=(typeof S.observe[0]==='string')?[{t:null,l:S.observe}]:S.observe;
+  var gi,li,gdiv,h;
+  for(gi=0;gi<groups.length;gi++){
+    gdiv=el('div','group');
+    if(groups[gi].t){h=el('h4',null,groups[gi].t);gdiv.appendChild(h);}
+    for(li=0;li<groups[gi].l.length;li++){gdiv.appendChild(el('div','line',mk(groups[gi].l[li])));}
+    w.appendChild(gdiv);
+  }
+  return w;
+}
+
+/* ---------- Entdecke: Aufgabentypen ---------- */
+function choiceTask(t,done){
+  var w=el('div','task');
+  w.appendChild(el('div','tq',t.q+' '+tri('i_choice')+trq(t,0)));
+  var opts=[],i;
+  for(i=0;i<t.o.length;i++){opts.push({x:t.o[i],c:i===0,i:i+1});}
+  opts=shuffle(opts);
+  var box=el('div','opts'),msg=el('div','msg'),btns=[];
+  function lockAll(){var k;for(k=0;k<btns.length;k++){btns[k].disabled=true;}}
+  function make(o){
+    var b=el('button','opt',mk(o.x)+trq(t,o.i));b.type='button';
+    b.onclick=function(){
+      if(o.c){
+        b.className='opt good';lockAll();
+        msg.className='msg good';msg.innerHTML='✓ '+UI.m_ok.de+' '+tri('m_ok');updateTr();
+        done();
+      }else{
+        b.className='opt bad shake';b.disabled=true;
+        msg.className='msg bad';msg.innerHTML=(t.hint||'')+' '+tri('m_no');updateTr();
+      }
+    };
+    btns.push(b);box.appendChild(b);
+  }
+  for(i=0;i<opts.length;i++){make(opts[i]);}
+  w.appendChild(box);w.appendChild(msg);
+  return w;
+}
+function sortTask(t,done){
+  var w=el('div','task');
+  w.appendChild(el('div','tq',t.q+' '+tri('i_sort')));
+  var left=t.items.length,msg=el('div','msg'),i;
+  function row(item){
+    var r=el('div','srow'),sw=el('span','sw',item[0]),bs=[],j;
+    r.appendChild(sw);
+    function mkb(j){
+      var b=el('button','sb',t.labels[j]);b.type='button';
+      b.onclick=function(){
+        var k;
+        if(j===item[1]){
+          b.className='sb good';
+          for(k=0;k<bs.length;k++){bs[k].disabled=true;}
+          left--;
+          if(left===0){msg.className='msg good';msg.innerHTML='✓ '+UI.m_ok.de+' '+tri('m_ok');updateTr();done();}
+        }else{
+          b.className='sb bad shake';b.disabled=true;
+          msg.className='msg bad';msg.textContent=t.hint||'';
+        }
+      };
+      bs.push(b);r.appendChild(b);
+    }
+    for(j=0;j<t.labels.length;j++){mkb(j);}
+    return r;
+  }
+  for(i=0;i<t.items.length;i++){w.appendChild(row(t.items[i]));}
+  w.appendChild(msg);
+  return w;
+}
+function tableTask(t,done){
+  var w=el('div','task');
+  w.appendChild(el('div','tq',UI.i_table.de+' '+tri('i_table')));
+  var tb=el('table','tbl'),tr,th,td,inp,cells=[],r,c;
+  tr=el('tr');
+  for(c=0;c<t.head.length;c++){th=el('th',null,t.head[c]);tr.appendChild(th);}
+  tb.appendChild(tr);
+  for(r=0;r<t.rows.length;r++){
+    tr=el('tr');
+    td=el('td','lab',t.rows[r][0]);tr.appendChild(td);
+    for(c=1;c<t.rows[r].length;c++){
+      td=el('td');inp=el('input','in');inp.type='text';
+      inp.setAttribute('autocomplete','off');inp.setAttribute('autocapitalize','none');
+      inp.setAttribute('autocorrect','off');inp.setAttribute('spellcheck','false');
+      td.appendChild(inp);tr.appendChild(td);
+      cells.push({inp:inp,a:t.rows[r][c]});
+    }
+    tb.appendChild(tr);
+  }
+  w.appendChild(tb);
+  var btn=el('button','btn primary',UI.b_check.de+' '+tri('b_check'));btn.type='button';
+  var msg=el('div','msg');
+  btn.onclick=function(){
+    var ok=0,k,good;
+    for(k=0;k<cells.length;k++){
+      good=norm(cells[k].inp.value)===norm(cells[k].a);
+      cells[k].inp.className='in '+(good?'good':'bad');
+      if(good){ok++;}
+    }
+    if(ok===cells.length){
+      msg.className='msg good';msg.innerHTML='✓ '+UI.m_ok.de+' '+tri('m_ok');updateTr();
+      btn.disabled=true;done();
+    }else{
+      msg.className='msg bad';msg.innerHTML=ok+' / '+cells.length+' – '+(t.hint||'')+' '+tri('m_no');updateTr();
+    }
+  };
+  w.appendChild(btn);w.appendChild(msg);
+  return w;
+}
+function tasksEl(S,onAll){
+  var w=el('div','sec');
+  w.innerHTML=sh(2,'h_discover');
+  var list=S.tasks,nodes=[],idx=0,i,n;
+  function next(){
+    idx++;
+    if(idx<list.length){nodes[idx].hidden=false;scrollToEl(nodes[idx]);}
+    else{onAll();}
+  }
+  for(i=0;i<list.length;i++){
+    if(list[i].t==='choice'){n=choiceTask(list[i],next);}
+    else if(list[i].t==='sort'){n=sortTask(list[i],next);}
+    else{n=tableTask(list[i],next);}
+    n.hidden=(i>0);nodes.push(n);w.appendChild(n);
+  }
+  return w;
+}
+
+/* ---------- Regel ---------- */
+function tableHtml(T){
+  var h='<table class="tbl"><tr>',i,j;
+  for(i=0;i<T.head.length;i++){h+='<th>'+T.head[i]+'</th>';}
+  h+='</tr>';
+  for(i=0;i<T.rows.length;i++){
+    h+='<tr><td class="lab">'+T.rows[i][0]+'</td>';
+    for(j=1;j<T.rows[i].length;j++){h+='<td>'+T.rows[i][j]+'</td>';}
+    h+='</tr>';
+  }
+  return h+'</table>';
+}
+function ruleEl(S,i){
+  var R=S.rule,w=el('div','sec'),h='',k,cls;
+  h+=sh(3,'h_rule')+'<div class="rule">';
+  if(R.f&&R.f.length){
+    h+='<div class="fms">';
+    for(k=0;k<R.f.length;k++){
+      cls=R.f[k].indexOf('sein')===0?'sein':(R.f[k].indexOf('haben')===0?'haben':'');
+      h+='<span class="fm '+cls+'">'+R.f[k]+'</span>';
+    }
+    h+='</div>';
+  }
+  h+='<div>'+R.de+'</div>';
+  if(R.table){h+=tableHtml(R.table);}
+  if(R.ex&&R.ex.length){
+    h+='<ul class="exs">';
+    for(k=0;k<R.ex.length;k++){h+='<li>'+mk(R.ex[k])+'</li>';}
+    h+='</ul>';
+  }
+  h+='<div class="tr trbox" data-r="'+i+'" hidden></div></div>';
+  w.innerHTML=h;
+  return w;
+}
+
+/* ---------- Übung ---------- */
+function exEl(S,i,onChecked){
+  var w=el('div','sec'),items=[],usedSol=false;
+  w.innerHTML=sh(4,'h_ex')+'<div class="instr">'+UI.i_ex.de+'</div><div class="tr tb" data-u="i_ex" hidden></div>';
+  var list=el('div','exlist');
+  function build(it,n){
+    var row=el('div','item'),body=el('div','ib'),obj={row:row},inp,sel=null,mark=el('span','mk'),sol=el('span','sol'),parts,q,bx,k,b;
+    sol.hidden=true;
+    row.appendChild(el('span','n',String(n+1)));
+    if(it.o){
+      q=el('div','pq',it.s.replace('___','<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
+      body.appendChild(q);
+      bx=el('div','opts inline');
+      for(k=0;k<it.o.length;k++){
+        (function(o){
+          b=el('button','opt',o);b.type='button';
+          b.onclick=function(){
+            var z,bs=bx.children;
+            sel=o;
+            for(z=0;z<bs.length;z++){bs[z].className='opt'+(bs[z]===this?' sel':'');}
+            row.className='item';mark.textContent='';sol.hidden=true;
+          };
+          bx.appendChild(b);
+        })(it.o[k]);
+      }
+      body.appendChild(bx);
+      body.appendChild(mark);body.appendChild(sol);
+      obj.ok=function(){return sel===it.a;};
+      obj.answer=it.a;
+    }else{
+      parts=it.s.split('___');
+      inp=el('input','in');inp.type='text';
+      inp.setAttribute('autocomplete','off');inp.setAttribute('autocapitalize','none');
+      inp.setAttribute('autocorrect','off');inp.setAttribute('spellcheck','false');
+      inp.setAttribute('aria-label','Antwort '+(n+1));
+      inp.oninput=function(){row.className='item';inp.className='in';mark.textContent='';sol.hidden=true;};
+      body.appendChild(document.createTextNode(parts[0]));
+      body.appendChild(inp);
+      body.appendChild(document.createTextNode(parts.slice(1).join('___')));
+      if(it.v){body.appendChild(el('span','vh','('+it.v+')'));}
+      body.appendChild(mark);body.appendChild(sol);
+      obj.ok=function(){
+        var v=norm(inp.value),z;
+        for(z=0;z<it.a.length;z++){if(v===norm(it.a[z])){return true;}}
+        return false;
+      };
+      obj.answer=it.a[0];
+      obj.inp=inp;
+    }
+    obj.mark=mark;obj.sol=sol;
+    row.appendChild(body);
+    return obj;
+  }
+  var n;
+  for(n=0;n<S.ex.length;n++){var o=build(S.ex[n],n);items.push(o);list.appendChild(o.row);}
+  w.appendChild(list);
+  var btn=el('button','btn primary',UI.b_check.de+' '+tri('b_check'));btn.type='button';
+  var solBtn=el('button','btn',UI.b_sol.de+' '+tri('b_sol'));solBtn.type='button';solBtn.hidden=true;
+  var res=el('div','result');
+  btn.onclick=function(){
+    var right=0,k,good,total=items.length;
+    for(k=0;k<items.length;k++){
+      good=items[k].ok();
+      if(good){right++;}
+      items[k].row.className='item '+(good?'good':'bad');
+      if(items[k].inp){items[k].inp.className='in '+(good?'good':'bad');}
+      items[k].mark.textContent=good?'✓':'✗';
+      items[k].sol.hidden=!(usedSol&&!good);
+    }
+    if(right===total){
+      res.className='result msg good';
+      res.innerHTML='🎉 '+total+' / '+total+' – '+UI.m_all.de+' '+tri('m_all');
+      solBtn.hidden=true;
+      state.done[i]=usedSol?'part':'ok';
+    }else{
+      res.className='result msg bad';
+      res.innerHTML=right+' / '+total+' – '+UI.m_fix.de+' '+tri('m_fix');
+      solBtn.hidden=false;
+      state.done[i]='part';
+    }
+    sset('done',state.done);paintStepper();updateTr();onChecked(right===total);
+  };
+  solBtn.onclick=function(){
+    var k;usedSol=true;
+    for(k=0;k<items.length;k++){
+      if(!items[k].ok()){items[k].sol.textContent='→ '+items[k].answer;items[k].sol.hidden=false;}
+    }
+  };
+  w.appendChild(btn);w.appendChild(solBtn);w.appendChild(res);
+  return w;
+}
+
+/* ---------- Gesamtübersicht (letzter Schritt) ---------- */
+function summaryEl(){
+  var w=el('div','sec summary');
+  var T={head:['','sein','haben'],rows:[
+    ['Danach steht …','Name · aus + Land · Ort · Beruf (ohne Artikel) · Adjektiv · Alter','Nomen: Ding · Familie · Aussehen · Hunger/Durst/Angst · Zeit · Termin'],
+    ['Fragen','Wer? Woher? Wo? Wie? Wie alt?','Was hast du?'],
+    ['Beispiel','Ich <b>bin</b> müde. / Ich <b>bin</b> Lehrerin. / Ich <b>bin</b> 25.','Ich <b>habe</b> Hunger. / Ich <b>habe</b> ein Auto. / Ich <b>habe</b> Zeit.'],
+    ['Präsens','bin · bist · ist · sind · seid · sind','habe · hast · hat · haben · habt · haben'],
+    ['Präteritum','war · warst · war · waren · wart · waren','hatte · hattest · hatte · hatten · hattet · hatten']
+  ]};
+  w.innerHTML='<h3 class="sh"><span class="num">★</span><span>'+UI.h_sum.de+'</span> '+tri('h_sum')+'</h3><div class="rule">'+tableHtml(T)+
+    '<div class="tr trbox" data-r="10" hidden></div><div class="tr trbox" data-r="12" hidden></div></div>';
+  return w;
+}
+
+/* ---------- Einleitung ---------- */
+function introEl(){
+  return el('div','intro','<b>So lernst du hier:</b><ol><li><b>Beobachte</b> – lies die Beispielsätze.</li><li><b>Entdecke</b> – finde das Muster selbst.</li><li><b>Regel</b> – danach zeigt dir das Programm die Regel.</li><li><b>Übung</b> – teste dich.</li></ol>'+
+    '<div style="margin-top:6px;font-size:.88rem">Du lernst <b>sein</b> und <b>haben</b> als <b>Vollverben</b> (mit eigener Bedeutung) – im <b>Präsens</b> und im <b>Präteritum</b>. Hilfe in deiner Sprache: oben rechts wählen (optional).</div>');
+}
+
+/* ---------- Panels ---------- */
+function buildPanel(i){
+  var S=STEPS[i],p=el('section','panel'),tags='',after=el('div','after'),hasTasks=!!(S.tasks&&S.tasks.length);
+  tags='<span class="badge">'+S.ph+'</span>';
+  if(S.tag==='sein'||S.tag==='both'){tags+='<span class="badge sein">sein</span>';}
+  if(S.tag==='haben'||S.tag==='both'){tags+='<span class="badge haben">haben</span>';}
+  if(i===0){p.appendChild(introEl());}
+  p.appendChild(el('div','phead',tags+'<h2>'+(i+1)+'. '+S.title+'</h2>'));
+  if(S.observe){p.appendChild(observeEl(S));}
+
+  var nav=el('div','nav'),prev=el('button','btn','← '+UI.b_prev.de+' '+tri('b_prev')),next=el('button','btn primary',UI.b_next.de+' '+tri('b_next')+' →');
+  prev.type='button';next.type='button';
+  prev.onclick=function(){show(i-1);};
+  next.onclick=function(){show(i+1);};
+  prev.style.visibility=(i===0)?'hidden':'visible';
+  next.style.visibility=(i===STEPS.length-1)?'hidden':'visible';
+  next.disabled=!state.done[i];
+  nav.appendChild(prev);nav.appendChild(next);
+
+  var sum=null;
+  if(S.summary){sum=summaryEl();sum.hidden=true;}
+
+  if(hasTasks){
+    after.hidden=true;
+    p.appendChild(tasksEl(S,function(){after.hidden=false;scrollToEl(after);}));
+  }
+  if(S.rule){after.appendChild(ruleEl(S,i));}
+  after.appendChild(exEl(S,i,function(allOk){
+    next.disabled=false;
+    if(sum){sum.hidden=false;updateTr();if(allOk){scrollToEl(sum);}}
+  }));
+  if(sum){after.appendChild(sum);}
+  p.appendChild(after);
+  p.appendChild(nav);
+  return p;
+}
+
+/* ---------- Navigation ---------- */
+function paintStepper(){
+  var bs=$('#stepper').children,i,d,done=0,k;
+  for(i=0;i<bs.length;i++){
+    d=state.done[i];
+    bs[i].className=bs[i].className.replace(/\s*(cur|d-ok|d-part)/g,'');
+    if(i===state.cur){bs[i].className+=' cur';}
+    if(d){bs[i].className+=' d-'+d;}
+  }
+  for(k in state.done){if(state.done.hasOwnProperty(k)&&state.done[k]){done++;}}
+  $('#prog').textContent='Fortschritt: '+done+' / '+STEPS.length+' Schritte bearbeitet';
+}
+function show(i){
+  var j;
+  if(i<0||i>=STEPS.length){return;}
+  state.cur=i;sset('cur',i);
+  if(!panels[i]){panels[i]=buildPanel(i);$('#main').appendChild(panels[i]);}
+  for(j=0;j<STEPS.length;j++){if(panels[j]){panels[j].hidden=(j!==i);}}
+  paintStepper();updateTr();
+  try{window.scrollTo(0,0);}catch(e){}
+}
+function buildStepper(){
+  var bar=$('#stepper'),i,b,gaps={1:1,6:1,10:1,11:1,13:1};
+  for(i=0;i<STEPS.length;i++){
+    (function(i){
+      b=el('button','pill '+STEPS[i].tag+(gaps[i]?' gap':''),String(i+1));
+      b.type='button';b.title=STEPS[i].title;b.setAttribute('aria-label',(i+1)+'. '+STEPS[i].title);
+      b.onclick=function(){show(i);};
+      bar.appendChild(b);
+    })(i);
+  }
+}
+function buildLang(){
+  var sel=$('#lang'),o,k;
+  o=el('option',null,'— keine · none —');o.value='';sel.appendChild(o);
+  for(k=0;k<LK.length;k++){o=el('option',null,LN[LK[k]]);o.value=LK[k];sel.appendChild(o);}
+  sel.value=state.lang;
+  sel.onchange=function(){state.lang=sel.value;sset('lang',state.lang);updateTr();};
+}
+
+/* ---------- Start ---------- */
+buildStepper();buildLang();
+$('#reset').onclick=function(){
+  if(window.confirm('Fortschritt wirklich zurücksetzen?')){sdel('done');sdel('cur');window.location.reload();}
+};
+var start=sget('cur');
+show((typeof start==='number'&&start>=0&&start<STEPS.length)?start:0);
+
+/* Testzugriff (nur für automatische Prüfung) */
+window.__SH={STEPS:STEPS,show:show,state:state};
+})();
+</script>
+</body>
+</html>
