@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modalverben: wollen, möchten, sollen, dürfen, müssen, können</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Naskh Arabic",Arial,sans-serif;background:#f4f6fa;color:#1d2433;line-height:1.45}
+#app{max-width:920px;margin:0 auto;padding:12px}
+h1{font-size:1.5rem;margin:8px 0 2px}
+h2{font-size:1.1rem;margin:18px 0 6px}
+.sub{color:#556;margin-bottom:6px}
+button{font:inherit;cursor:pointer;color:inherit}
+.langs,.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.lb{border:1px solid #b9c2d3;background:#fff;border-radius:18px;padding:6px 12px}
+.lb.on{background:#25408f;color:#fff;border-color:#25408f}
+.tb{border:1px solid #b9c2d3;background:#fff;border-radius:8px;padding:8px 12px}
+.tb.on{background:#1d2433;color:#fff;border-color:#1d2433}
+.card{background:#fff;border-radius:10px;padding:12px 14px;margin:10px 0;border-left:6px solid #888;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card.plain{border-left-color:#25408f}
+.v0{border-left-color:#2f6fed}.v1{border-left-color:#14958f}.v2{border-left-color:#8e44ad}
+.v3{border-left-color:#2e9e4f}.v4{border-left-color:#d64545}.v5{border-left-color:#e08a1e}
+.c0{color:#2f6fed}.c1{color:#14958f}.c2{color:#8e44ad}.c3{color:#2e9e4f}.c4{color:#d64545}.c5{color:#e08a1e}
+.vn{font-size:1.3rem;font-weight:700;margin-right:10px}
+.ex{color:#333;font-style:italic}
+.mean{margin-top:6px}
+ul.rules{margin:6px 0;padding-left:22px;padding-right:22px}
+ul.rules li{margin:6px 0}
+table{border-collapse:collapse;width:100%;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+th,td{padding:9px 8px;text-align:center;border-bottom:1px solid #e3e8f0}
+th{color:#fff}
+th.p{background:#444}
+th.h0{background:#2f6fed}th.h1{background:#14958f}th.h2{background:#8e44ad}
+th.h3{background:#2e9e4f}th.h4{background:#d64545}th.h5{background:#e08a1e}
+td.pr{font-weight:700;background:#f0f2f7}
+td.irr{font-weight:700;background:#fff0c9}
+.legend{margin:8px 0;color:#444}
+.legend span{background:#fff0c9;padding:1px 8px;border-radius:4px;font-weight:700}
+.intro{margin:10px 0}
+.score{font-weight:700;margin:6px 0}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0}
+.row .pr{min-width:5.5em;font-weight:700;text-align:right}
+.row .inf{color:#667}
+.row .sol{color:#b32d2d;font-weight:700}
+input[type=text]{font:inherit;font-size:16px;padding:7px 9px;width:9.5em;border:2px solid #b9c2d3;border-radius:6px;background:#fff}
+input.ok{border-color:#2e9e4f;background:#e8f7ec}
+input.bad{border-color:#d64545;background:#fdeaea}
+.chars{display:flex;gap:6px;margin:8px 0}
+.chars button{border:1px solid #b9c2d3;background:#fff;border-radius:6px;padding:6px 14px;font-size:1.1rem}
+.act{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.btn{border:0;background:#25408f;color:#fff;border-radius:8px;padding:9px 16px}
+.btn.alt{background:#fff;color:#25408f;border:1px solid #25408f}
+.qs{font-size:1.1rem;margin-bottom:8px}
+.qs i{color:#667;font-size:.95rem}
+.gap{display:inline-block;min-width:4em;border-bottom:2px solid #25408f;text-align:center;font-weight:700;color:#25408f}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{border:2px solid #b9c2d3;background:#fff;border-radius:8px;padding:8px 14px;font-size:1.05rem}
+.opt.right{border-color:#2e9e4f;background:#e8f7ec}
+.opt.wrong{border-color:#d64545;background:#fdeaea}
+.fb{margin-top:8px;padding:8px 10px;border-radius:8px}
+.fb.okc{background:#e8f7ec}
+.fb.badc{background:#fdeaea}
+.ans{min-height:48px;border:2px dashed #b9c2d3;border-radius:8px;padding:4px;margin-bottom:8px;display:flex;flex-wrap:wrap;align-items:center}
+.pool{display:flex;flex-wrap:wrap}
+.w{border:2px solid #25408f;background:#fff;border-radius:8px;padding:6px 11px;margin:3px;font-size:1.05rem}
+.ans .w{background:#eef2ff}
+.card.q.good{border-left-color:#2e9e4f}
+.card.q.nogood{border-left-color:#d64545}
+@media (max-width:520px){th,td{padding:7px 3px;font-size:.88rem}.vn{font-size:1.15rem}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function () {
+"use strict";
+
+var LANGS = [
+  {c: "en", n: "English"},
+  {c: "pl", n: "Polski"},
+  {c: "ru", n: "Русский"},
+  {c: "uk", n: "Українська"},
+  {c: "tr", n: "Türkçe"},
+  {c: "ar", n: "العربية"},
+  {c: "fa", n: "فارسی"}
+];
+
+var UI = {
+  en: {tExp: "Explanation", tTab: "Conjugation table", t1: "1 Conjugation", t2: "2 Usage", t3: "3 Word order",
+    check: "Check", newSet: "New exercise", ok: "Correct!", bad: "Not quite.", score: "Score", sol: "Solution", undo: "Undo",
+    done: "Finished!", rulesH: "Important rules", verbsH: "Meaning and use",
+    legend: "Highlighted forms: vowel change in the singular (ich/du/er).",
+    i1: "Type the correct form of the verb. Use the buttons for ä, ö, ü, ß.",
+    i2: "Choose the correct form for the situation.",
+    i3: "Tap the words in the right order to build the sentence. The modal verb is in position 2 (in a yes/no question: position 1), the infinitive is at the end."},
+  pl: {tExp: "Wyjaśnienie", tTab: "Tabela odmiany", t1: "1 Odmiana", t2: "2 Użycie", t3: "3 Szyk zdania",
+    check: "Sprawdź", newSet: "Nowe zadanie", ok: "Dobrze!", bad: "Niezupełnie.", score: "Wynik", sol: "Rozwiązanie", undo: "Cofnij",
+    done: "Gotowe!", rulesH: "Ważne zasady", verbsH: "Znaczenie i użycie",
+    legend: "Wyróżnione formy: zmiana samogłoski w liczbie pojedynczej (ich/du/er).",
+    i1: "Wpisz poprawną formę czasownika. Użyj przycisków dla ä, ö, ü, ß.",
+    i2: "Wybierz poprawną formę pasującą do sytuacji.",
+    i3: "Klikaj słowa w poprawnej kolejności, aby ułożyć zdanie. Czasownik modalny stoi na pozycji 2 (w pytaniu rozstrzygającym na pozycji 1), bezokolicznik na końcu."},
+  ru: {tExp: "Объяснение", tTab: "Таблица спряжения", t1: "1 Спряжение", t2: "2 Употребление", t3: "3 Порядок слов",
+    check: "Проверить", newSet: "Новое задание", ok: "Верно!", bad: "Не совсем.", score: "Результат", sol: "Решение", undo: "Отменить",
+    done: "Готово!", rulesH: "Важные правила", verbsH: "Значение и употребление",
+    legend: "Выделенные формы: смена гласной в единственном числе (ich/du/er).",
+    i1: "Впишите правильную форму глагола. Для ä, ö, ü, ß используйте кнопки.",
+    i2: "Выберите правильную форму для данной ситуации.",
+    i3: "Нажимайте на слова в правильном порядке, чтобы составить предложение. Модальный глагол стоит на 2-м месте (в вопросе без вопросительного слова — на 1-м), инфинитив — в конце."},
+  uk: {tExp: "Пояснення", tTab: "Таблиця дієвідмінювання", t1: "1 Дієвідмінювання", t2: "2 Вживання", t3: "3 Порядок слів",
+    check: "Перевірити", newSet: "Нове завдання", ok: "Правильно!", bad: "Не зовсім.", score: "Результат", sol: "Відповідь", undo: "Скасувати",
+    done: "Готово!", rulesH: "Важливі правила", verbsH: "Значення та вживання",
+    legend: "Виділені форми: зміна голосного в однині (ich/du/er).",
+    i1: "Впишіть правильну форму дієслова. Для ä, ö, ü, ß користуйтеся кнопками.",
+    i2: "Виберіть правильну форму для цієї ситуації.",
+    i3: "Натискайте на слова в правильному порядку, щоб скласти речення. Модальне дієслово стоїть на 2-му місці (у питанні без питального слова — на 1-му), інфінітив — у кінці."},
+  tr: {tExp: "Açıklama", tTab: "Çekim tablosu", t1: "1 Çekim", t2: "2 Kullanım", t3: "3 Sözcük sırası",
+    check: "Kontrol et", newSet: "Yeni alıştırma", ok: "Doğru!", bad: "Tam değil.", score: "Puan", sol: "Çözüm", undo: "Geri al",
+    done: "Bitti!", rulesH: "Önemli kurallar", verbsH: "Anlam ve kullanım",
+    legend: "Renkli biçimler: tekilde ünlü değişimi (ich/du/er).",
+    i1: "Fiilin doğru biçimini yazın. ä, ö, ü, ß için düğmeleri kullanın.",
+    i2: "Duruma uygun doğru biçimi seçin.",
+    i3: "Cümleyi oluşturmak için sözcüklere doğru sırayla dokunun. Kipli fiil 2. sırada (evet/hayır sorusunda 1. sırada), mastar en sondadır."},
+  ar: {tExp: "الشرح", tTab: "جدول التصريف", t1: "١ التصريف", t2: "٢ الاستخدام", t3: "٣ ترتيب الكلمات",
+    check: "تحقق", newSet: "تمرين جديد", ok: "صحيح!", bad: "ليس تماماً.", score: "النتيجة", sol: "الحل", undo: "تراجع",
+    done: "انتهى!", rulesH: "قواعد مهمة", verbsH: "المعنى والاستخدام",
+    legend: "الصيغ الملوّنة: تغيّر حرف العلة في المفرد (ich/du/er).",
+    i1: "اكتب الصيغة الصحيحة للفعل. استخدم الأزرار للحروف ä و ö و ü و ß.",
+    i2: "اختر الصيغة الصحيحة المناسبة للموقف.",
+    i3: "اضغط على الكلمات بالترتيب الصحيح لتكوين الجملة. يأتي الفعل المساعد في المرتبة الثانية (وفي أسئلة نعم/لا في المرتبة الأولى)، ويأتي المصدر في النهاية."},
+  fa: {tExp: "توضیح", tTab: "جدول صرف", t1: "۱ صرف", t2: "۲ کاربرد", t3: "۳ ترتیب کلمات",
+    check: "بررسی", newSet: "تمرین جدید", ok: "درست!", bad: "کاملاً درست نیست.", score: "امتیاز", sol: "پاسخ", undo: "بازگشت",
+    done: "تمام شد!", rulesH: "نکته‌های مهم", verbsH: "معنی و کاربرد",
+    legend: "شکل‌های رنگی: تغییر مصوت در مفرد (ich/du/er).",
+    i1: "شکل درست فعل را بنویسید. برای ä، ö، ü، ß از دکمه‌ها استفاده کنید.",
+    i2: "شکل درست را متناسب با موقعیت انتخاب کنید.",
+    i3: "برای ساختن جمله، روی کلمات به ترتیب درست بزنید. فعل کمکی در جایگاه دوم (در پرسش بله/خیر در جایگاه اول) و مصدر در پایان است."}
+};
+
+var RULES = {
+  en: [
+    "The modal verb is in position 2 (in a yes/no question: position 1). The second verb stays in the infinitive at the end: Ich muss heute lernen.",
+    "ich and er/sie/es have the same form, without an ending: ich kann – er kann. Vowel change in the singular: wollen → will, dürfen → darf, müssen → muss, können → kann. sollen → soll (no change).",
+    "möchten is treated as its own verb with the stem möcht-: ich möchte, du möchtest, er möchte, wir möchten, ihr möchtet, sie möchten.",
+    "nicht müssen = not necessary (don’t have to). nicht dürfen = forbidden. These are NOT the same!"
+  ],
+  pl: [
+    "Czasownik modalny stoi na pozycji 2 (w pytaniu rozstrzygającym – na pozycji 1). Drugi czasownik stoi w bezokoliczniku na końcu: Ich muss heute lernen.",
+    "ich i er/sie/es mają tę samą formę, bez końcówki: ich kann – er kann. Zmiana samogłoski w liczbie pojedynczej: wollen → will, dürfen → darf, müssen → muss, können → kann. sollen → soll (bez zmiany).",
+    "möchten traktujemy jako osobny czasownik z tematem möcht-: ich möchte, du möchtest, er möchte, wir möchten, ihr möchtet, sie möchten.",
+    "nicht müssen = nie musieć (nie jest konieczne). nicht dürfen = nie wolno (zakaz). To NIE jest to samo!"
+  ],
+  ru: [
+    "Модальный глагол стоит на 2-м месте (в вопросе без вопросительного слова — на 1-м). Второй глагол стоит в инфинитиве в конце: Ich muss heute lernen.",
+    "ich и er/sie/es имеют одинаковую форму без окончания: ich kann – er kann. Смена гласной в единственном числе: wollen → will, dürfen → darf, müssen → muss, können → kann. sollen → soll (без изменений).",
+    "möchten рассматривается как отдельный глагол с основой möcht-: ich möchte, du möchtest, er möchte, wir möchten, ihr möchtet, sie möchten.",
+    "nicht müssen = не нужно (не обязательно). nicht dürfen = нельзя (запрещено). Это НЕ одно и то же!"
+  ],
+  uk: [
+    "Модальне дієслово стоїть на 2-му місці (у питанні без питального слова — на 1-му). Друге дієслово стоїть в інфінітиві в кінці: Ich muss heute lernen.",
+    "ich і er/sie/es мають однакову форму без закінчення: ich kann – er kann. Зміна голосного в однині: wollen → will, dürfen → darf, müssen → muss, können → kann. sollen → soll (без змін).",
+    "möchten розглядається як окреме дієслово з основою möcht-: ich möchte, du möchtest, er möchte, wir möchten, ihr möchtet, sie möchten.",
+    "nicht müssen = не треба (не обов’язково). nicht dürfen = не можна (заборонено). Це НЕ одне й те саме!"
+  ],
+  tr: [
+    "Kipli fiil 2. sırada durur (evet/hayır sorularında 1. sırada). İkinci fiil mastar halinde cümlenin sonunda durur: Ich muss heute lernen.",
+    "ich ve er/sie/es aynı biçimdedir, ek almaz: ich kann – er kann. Tekilde ünlü değişir: wollen → will, dürfen → darf, müssen → muss, können → kann. sollen → soll (değişmez).",
+    "möchten kendi başına bir fiil olarak ele alınır, kökü möcht-: ich möchte, du möchtest, er möchte, wir möchten, ihr möchtet, sie möchten.",
+    "nicht müssen = gerek yok (zorunlu değil). nicht dürfen = yasak. Bunlar AYNI şey DEĞİL!"
+  ],
+  ar: [
+    "يأتي الفعل المساعد في المرتبة الثانية (وفي أسئلة نعم/لا في المرتبة الأولى). ويبقى الفعل الثاني في صيغة المصدر في نهاية الجملة: Ich muss heute lernen.",
+    "للضمائر ich و er/sie/es الصيغة نفسها بلا نهاية: ich kann – er kann. يتغير حرف العلة في المفرد — wollen: will، dürfen: darf، müssen: muss، können: kann. أما sollen: soll فلا يتغير.",
+    "يُعامل möchten كفعل مستقل جذره möcht-: ich möchte, du möchtest, er möchte, wir möchten, ihr möchtet, sie möchten.",
+    "nicht müssen = ليس ضرورياً (لا يلزم). nicht dürfen = ممنوع. ليسا الشيء نفسه!"
+  ],
+  fa: [
+    "فعل کمکی در جایگاه دوم می‌آید (در پرسش‌های بله/خیر در جایگاه اول). فعل دوم به صورت مصدر در پایان جمله می‌ماند: Ich muss heute lernen.",
+    "ich و er/sie/es شکل یکسان و بدون پایانه دارند: ich kann – er kann. در مفرد مصوت تغییر می‌کند — wollen: will، dürfen: darf، müssen: muss، können: kann. اما sollen: soll تغییر نمی‌کند.",
+    "möchten به‌عنوان یک فعل مستقل با ریشهٔ möcht- در نظر گرفته می‌شود: ich möchte, du möchtest, er möchte, wir möchten, ihr möchtet, sie möchten.",
+    "nicht müssen = لازم نیست (اجباری نیست). nicht dürfen = ممنوع است. این دو یکی نیستند!"
+  ]
+};
+
+var VERBS = [
+  {inf: "wollen",  f: ["will", "willst", "will", "wollen", "wollt", "wollen"], ex: "Ich will Arzt werden.", irr: true},
+  {inf: "möchten", f: ["möchte", "möchtest", "möchte", "möchten", "möchtet", "möchten"], ex: "Ich möchte einen Kaffee, bitte.", irr: false},
+  {inf: "sollen",  f: ["soll", "sollst", "soll", "sollen", "sollt", "sollen"], ex: "Du sollst mehr Wasser trinken.", irr: false},
+  {inf: "dürfen",  f: ["darf", "darfst", "darf", "dürfen", "dürft", "dürfen"], ex: "Hier darf man nicht rauchen.", irr: true},
+  {inf: "müssen",  f: ["muss", "musst", "muss", "müssen", "müsst", "müssen"], ex: "Ich muss heute arbeiten.", irr: true},
+  {inf: "können",  f: ["kann", "kannst", "kann", "können", "könnt", "können"], ex: "Meine Tochter kann schon schwimmen.", irr: true}
+];
+
+var MEAN = [
+  { en: ["to want to", "a strong wish, a plan or an intention. Direct and firm."],
+    pl: ["chcieć", "silne życzenie, plan lub zamiar. Bezpośrednio i stanowczo."],
+    ru: ["хотеть", "сильное желание, план или намерение. Прямо и решительно."],
+    uk: ["хотіти", "сильне бажання, план або намір. Прямо й рішуче."],
+    tr: ["istemek", "güçlü bir istek, plan veya niyet. Doğrudan ve kararlı."],
+    ar: ["يريد", "رغبة قوية أو خطة أو نية. مباشر وحازم."],
+    fa: ["خواستن", "میل قوی، برنامه یا قصد. مستقیم و قاطع."] },
+  { en: ["would like to", "a polite wish. Softer than wollen. Used when ordering, asking or offering."],
+    pl: ["chciałbym / chciałabym (uprzejme chcieć)", "uprzejme życzenie. Łagodniejsze niż wollen. Używane przy zamawianiu, prośbach i propozycjach."],
+    ru: ["хотел бы / хотела бы", "вежливое пожелание. Мягче, чем wollen. Используется при заказе, просьбе, предложении."],
+    uk: ["хотів би / хотіла б", "ввічливе бажання. М’якше, ніж wollen. Вживається під час замовлення, прохання, пропозиції."],
+    tr: ["isterim (kibar istemek)", "kibar bir istek. wollen’den daha yumuşaktır. Sipariş verirken, rica ederken ve teklif ederken kullanılır."],
+    ar: ["يودّ / أودّ", "رغبة مهذبة. ألطف من wollen. تُستخدم عند الطلب أو الاستفسار أو العرض."],
+    fa: ["دوست داشتن / مایل بودن (مؤدبانه)", "خواسته‌ای مؤدبانه. ملایم‌تر از wollen. برای سفارش دادن، درخواست و پیشنهاد."] },
+  { en: ["to be supposed to / should", "someone else wants it: an order, a rule, advice or an instruction (doctor, teacher, boss). Not your own wish."],
+    pl: ["mieć coś zrobić / powinien (z czyjegoś polecenia)", "ktoś inny tego chce: polecenie, zasada, rada lub instrukcja (lekarz, nauczyciel, szef). To nie jest twoje własne życzenie."],
+    ru: ["должен (по чьему-то требованию) / велено", "этого хочет кто-то другой: приказ, правило, совет или указание (врач, учитель, начальник). Не ваше собственное желание."],
+    uk: ["мати (щось зробити) / повинен (за чиєюсь вимогою)", "цього хоче хтось інший: наказ, правило, порада чи вказівка (лікар, вчитель, начальник). Не ваше власне бажання."],
+    tr: ["-meli / -mesi gerekiyor (başkası istiyor)", "başka biri bunu istiyor: emir, kural, tavsiye veya talimat (doktor, öğretmen, patron). Kendi isteğiniz değil."],
+    ar: ["يجب أن / مطلوب منه (بطلب من شخص آخر)", "شخص آخر يريد ذلك: أمر أو قاعدة أو نصيحة أو تعليمات (الطبيب، المعلم، المدير). ليست رغبتك الشخصية."],
+    fa: ["باید (به خواست دیگری) / قرار است", "شخص دیگری این را می‌خواهد: دستور، قانون، توصیه یا راهنمایی (پزشک، معلم، رئیس). خواستهٔ خودِ شما نیست."] },
+  { en: ["to be allowed to / may", "permission. nicht dürfen = it is forbidden."],
+    pl: ["wolno / mieć pozwolenie", "pozwolenie. nicht dürfen = nie wolno (zakaz)."],
+    ru: ["можно / иметь разрешение", "разрешение. nicht dürfen = нельзя (запрещено)."],
+    uk: ["можна / мати дозвіл", "дозвіл. nicht dürfen = не можна (заборонено)."],
+    tr: ["izinli olmak", "izin. nicht dürfen = yasak."],
+    ar: ["يُسمح له / يحق له", "إذن. nicht dürfen = ممنوع."],
+    fa: ["اجازه داشتن / مجاز بودن", "اجازه. nicht dürfen = ممنوع است."] },
+  { en: ["must / to have to", "necessity or obligation. nicht müssen = not necessary (NOT forbidden!)."],
+    pl: ["musieć", "konieczność lub obowiązek. nicht müssen = nie musieć (to NIE jest zakaz!)."],
+    ru: ["должен / нужно", "необходимость или обязанность. nicht müssen = не нужно (это НЕ запрет!)."],
+    uk: ["мусити / треба", "необхідність або обов’язок. nicht müssen = не треба (це НЕ заборона!)."],
+    tr: ["-mek zorunda olmak / -meli", "zorunluluk veya yükümlülük. nicht müssen = gerek yok (yasak DEĞİL!)."],
+    ar: ["يجب / يضطر إلى", "ضرورة أو واجب. nicht müssen = لا يلزم (وليس ممنوعاً!)."],
+    fa: ["مجبور بودن / باید", "ضرورت یا تکلیف. nicht müssen = لازم نیست (ممنوع نیست!)."] },
+  { en: ["can / to be able to", "ability or possibility. Also used for polite requests: Können Sie mir helfen?"],
+    pl: ["móc / umieć", "umiejętność lub możliwość. Także w uprzejmych prośbach: Können Sie mir helfen?"],
+    ru: ["мочь / уметь", "умение или возможность. Также в вежливых просьбах: Können Sie mir helfen?"],
+    uk: ["могти / вміти", "вміння або можливість. Також у ввічливих проханнях: Können Sie mir helfen?"],
+    tr: ["-ebilmek", "yetenek veya olasılık. Kibar ricalarda da kullanılır: Können Sie mir helfen?"],
+    ar: ["يستطيع / يمكن", "قدرة أو إمكانية. يُستخدم أيضاً في الطلبات المهذبة: Können Sie mir helfen?"],
+    fa: ["توانستن", "توانایی یا امکان. در درخواست‌های مؤدبانه هم به کار می‌رود: Können Sie mir helfen?"] }
+];
+
+var PRON = ["ich", "du", "er/sie/es", "wir", "ihr", "sie/Sie"];
+var PV = [["ich"], ["du"], ["er", "sie", "es"], ["wir"], ["ihr"], ["sie", "Sie"]];
+
+/* v = Verb, p = Person, d = Ablenker (Verbindex) */
+var BANK = [
+  {v: 3, p: 2, s: "Im Krankenhaus ___ man nicht rauchen. Das ist verboten.", d: [4, 0, 1]},
+  {v: 1, p: 0, s: "Guten Tag, ich ___ bitte einen Kaffee.", h: "(höflich bestellen)", d: [3, 4, 5]},
+  {v: 4, p: 0, s: "Mein Zug fährt um 5 Uhr. Ich ___ sehr früh aufstehen.", d: [3, 1, 5]},
+  {v: 5, p: 2, s: "Meine Tochter ist fünf Jahre alt und ___ schon schwimmen.", d: [4, 2, 3]},
+  {v: 2, p: 1, s: "Der Arzt sagt: Du ___ mehr Wasser trinken.", d: [0, 3, 1]},
+  {v: 0, p: 0, s: "Ich ___ nächstes Jahr in die Schweiz ziehen. Das ist mein fester Plan.", d: [2, 3, 5]},
+  {v: 4, p: 1, s: "Du ___ nicht kommen, wenn du keine Zeit hast. Es ist freiwillig.", d: [3, 2, 0]},
+  {v: 3, p: 1, s: "Hier ___ du nicht parken. Das Schild zeigt: Parken verboten.", d: [4, 0, 1]},
+  {v: 5, p: 4, s: "___ ihr bitte leiser sein?", cap: true, d: [0, 4, 3]},
+  {v: 1, p: 5, s: "Was ___ Sie trinken?", h: "(im Restaurant)", d: [2, 3, 4]},
+  {v: 2, p: 4, s: "Die Lehrerin sagt: Ihr ___ die Hausaufgaben machen.", d: [0, 3, 1]},
+  {v: 5, p: 2, s: "Unsere Nachbarin ___ sehr gut Klavier spielen.", d: [3, 4]},
+  {v: 0, p: 2, s: "Mein Bruder ___ Pilot werden. Das ist sein großer Traum.", d: [3, 2, 4]},
+  {v: 3, p: 0, s: "___ ich hier sitzen? Ist der Platz frei?", cap: true, d: [4, 0, 2]},
+  {v: 4, p: 3, s: "Wir haben morgen eine Prüfung. Wir ___ heute lernen.", d: [3, 1]},
+  {v: 1, p: 3, s: "Wir ___ einen Tisch für vier Personen reservieren.", h: "(höflicher Wunsch)", d: [3, 4, 2]}
+];
+
+var SENT = [
+  {t: ["ich", "muss", "heute", "lange", "arbeiten."], a: ["Ich muss heute lange arbeiten.", "Heute muss ich lange arbeiten."]},
+  {t: ["kannst", "du", "mir", "bitte", "helfen?"], a: ["Kannst du mir bitte helfen?"]},
+  {t: ["wir", "möchten", "einen", "Tisch", "reservieren."], a: ["Wir möchten einen Tisch reservieren."]},
+  {t: ["hier", "darf", "man", "nicht", "rauchen."], a: ["Hier darf man nicht rauchen.", "Man darf hier nicht rauchen."]},
+  {t: ["du", "sollst", "mehr", "schlafen."], a: ["Du sollst mehr schlafen."]},
+  {t: ["er", "will", "Arzt", "werden."], a: ["Er will Arzt werden."]},
+  {t: ["am", "Wochenende", "müssen", "wir", "nicht", "arbeiten."], a: ["Am Wochenende müssen wir nicht arbeiten.", "Wir müssen am Wochenende nicht arbeiten."]},
+  {t: ["möchten", "Sie", "noch", "einen", "Tee", "trinken?"], a: ["Möchten Sie noch einen Tee trinken?"]},
+  {t: ["dürfen", "wir", "hier", "Fotos", "machen?"], a: ["Dürfen wir hier Fotos machen?", "Dürfen wir Fotos hier machen?"]},
+  {t: ["wollt", "ihr", "heute", "ins", "Kino", "gehen?"], a: ["Wollt ihr heute ins Kino gehen?"]}
+];
+
+var app = document.getElementById("app");
+var st = {lang: "en", tab: "exp", e1: null, e2: null, e3: null, last: null};
+try {
+  var sv = window.localStorage.getItem("modalverbenLang");
+  if (sv && UI[sv]) { st.lang = sv; }
+} catch (err) {}
+
+function rnd(n) { return Math.floor(Math.random() * n); }
+function shuffle(a) {
+  var b = a.slice(), i, j, t;
+  for (i = b.length - 1; i > 0; i--) { j = rnd(i + 1); t = b[i]; b[i] = b[j]; b[j] = t; }
+  return b;
+}
+function U(k) { return UI[st.lang][k]; }
+function D() { return (st.lang === "ar" || st.lang === "fa") ? ' dir="rtl"' : ""; }
+function cap1(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function trim(s) { return s.replace(/^\s+|\s+$/g, ""); }
+
+/* ---------- Aufgaben erzeugen ---------- */
+function newE1() {
+  var items = [], v, ps, k, p, pv;
+  for (v = 0; v < 6; v++) {
+    ps = shuffle([0, 1, 2, 3, 4, 5]);
+    for (k = 0; k < 2; k++) {
+      p = ps[k]; pv = PV[p];
+      items.push({v: v, p: p, pr: pv[rnd(pv.length)], val: "", res: -1});
+    }
+  }
+  st.e1 = {items: shuffle(items), checked: false};
+}
+function newE2() {
+  var pick = shuffle(BANK).slice(0, 12), items = [], i, b, vs, opts, j;
+  for (i = 0; i < pick.length; i++) {
+    b = pick[i];
+    vs = [b.v].concat(b.d);
+    opts = [];
+    for (j = 0; j < vs.length; j++) {
+      opts.push({v: vs[j], t: b.cap ? cap1(VERBS[vs[j]].f[b.p]) : VERBS[vs[j]].f[b.p]});
+    }
+    items.push({b: b, opts: shuffle(opts), sel: -1});
+  }
+  st.e2 = {items: items};
+}
+function newE3() {
+  var pick = shuffle(SENT).slice(0, 8), items = [], i, n, idx, tries, order;
+  for (i = 0; i < pick.length; i++) {
+    n = pick[i].t.length;
+    idx = [];
+    for (tries = 0; tries < n; tries++) { idx.push(tries); }
+    tries = 0;
+    do { order = shuffle(idx); tries++; } while (order.join() === idx.join() && tries < 8);
+    items.push({s: pick[i], pool: order, built: [], checked: false, ok: false});
+  }
+  st.e3 = {items: items};
+}
+
+/* ---------- Rendering ---------- */
+function saveE1() {
+  var inputs = app.querySelectorAll("input[data-i]"), i, it;
+  if (!st.e1) { return; }
+  for (i = 0; i < inputs.length; i++) {
+    it = st.e1.items[parseInt(inputs[i].getAttribute("data-i"), 10)];
+    if (it && !st.e1.checked) { it.val = inputs[i].value; }
+  }
+}
+
+function rExp() {
+  var h = "", i, m, r = RULES[st.lang];
+  h += '<h2' + D() + '>' + U("rulesH") + '</h2><div class="card plain"' + D() + '><ul class="rules">';
+  for (i = 0; i < r.length; i++) { h += "<li>" + r[i] + "</li>"; }
+  h += "</ul></div>";
+  h += '<h2' + D() + '>' + U("verbsH") + '</h2>';
+  for (i = 0; i < VERBS.length; i++) {
+    m = MEAN[i][st.lang];
+    h += '<div class="card v' + i + '"><div><span class="vn c' + i + '">' + VERBS[i].inf + '</span><span class="ex">' + VERBS[i].ex + '</span></div>' +
+         '<div class="mean"' + D() + '><b>' + m[0] + '</b> – ' + m[1] + '</div></div>';
+  }
+  return h;
+}
+
+function rTab() {
+  var h = "<table><tr><th class=\"p\"></th>", i, p;
+  for (i = 0; i < 6; i++) { h += '<th class="h' + i + '">' + VERBS[i].inf + "</th>"; }
+  h += "</tr>";
+  for (p = 0; p < 6; p++) {
+    h += '<tr><td class="pr">' + PRON[p] + "</td>";
+    for (i = 0; i < 6; i++) {
+      h += "<td" + ((p < 3 && VERBS[i].irr) ? ' class="irr"' : "") + ">" + VERBS[i].f[p] + "</td>";
+    }
+    h += "</tr>";
+  }
+  h += "</table>";
+  h += '<p class="legend"' + D() + '><span>' + "ich kann" + '</span> ' + U("legend") + "</p>";
+  return h;
+}
+
+function score1() {
+  var n = st.e1.items.length, s = 0, i;
+  for (i = 0; i < n; i++) { if (st.e1.items[i].res === 1) { s++; } }
+  return U("score") + ": " + s + " / " + n + ((st.e1.checked && s === n) ? " – " + U("done") : "");
+}
+
+function r1() {
+  var h = "", i, it, cls, dis;
+  h += '<p class="intro"' + D() + '>' + U("i1") + '</p>';
+  h += '<div class="chars"><button data-act="ins" data-ch="ä">ä</button><button data-act="ins" data-ch="ö">ö</button><button data-act="ins" data-ch="ü">ü</button><button data-act="ins" data-ch="ß">ß</button></div>';
+  if (st.e1.checked) { h += '<div class="score"' + D() + '>' + score1() + '</div>'; }
+  for (i = 0; i < st.e1.items.length; i++) {
+    it = st.e1.items[i];
+    cls = it.res === 1 ? ' class="ok"' : (it.res === 0 ? ' class="bad"' : "");
+    dis = st.e1.checked ? " disabled" : "";
+    h += '<div class="row"><span class="pr">' + it.pr + '</span>' +
+         '<input type="text" data-i="' + i + '" value="' + it.val.replace(/"/g, "&quot;") + '"' + cls + dis + ' autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">' +
+         '<span class="inf">(' + VERBS[it.v].inf + ')</span>' +
+         (it.res === 0 ? '<span class="sol">→ ' + VERBS[it.v].f[it.p] + '</span>' : "") + '</div>';
+  }
+  h += '<div class="act">' + (st.e1.checked ? "" : '<button class="btn" data-act="chk1">' + U("check") + '</button>') +
+       '<button class="btn alt" data-act="new1">' + U("newSet") + '</button></div>';
+  return h;
+}
+
+function score2() {
+  var n = st.e2.items.length, s = 0, a = 0, i, it;
+  for (i = 0; i < n; i++) {
+    it = st.e2.items[i];
+    if (it.sel >= 0) { a++; if (it.opts[it.sel].v === it.b.v) { s++; } }
+  }
+  return U("score") + ": " + s + " / " + n + (a === n ? " – " + U("done") : "");
+}
+
+function r2() {
+  var h = "", i, it, q, j, o, ok, cls, gap, m, f;
+  h += '<p class="intro"' + D() + '>' + U("i2") + '</p><div class="score"' + D() + '>' + score2() + '</div>';
+  for (i = 0; i < st.e2.items.length; i++) {
+    it = st.e2.items[i]; q = it.b;
+    gap = it.sel < 0 ? "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" : it.opts[it.sel].t;
+    h += '<div class="card q"><div class="qs">' + (i + 1) + ". " +
+         q.s.replace("___", '<span class="gap">' + gap + "</span>") + (q.h ? " <i>" + q.h + "</i>" : "") + '</div><div class="opts">';
+    for (j = 0; j < it.opts.length; j++) {
+      o = it.opts[j]; cls = "opt";
+      if (it.sel >= 0) {
+        if (o.v === q.v) { cls += " right"; } else if (j === it.sel) { cls += " wrong"; }
+      }
+      h += '<button class="' + cls + '" data-act="opt" data-q="' + i + '" data-o="' + j + '"' + (it.sel >= 0 ? " disabled" : "") + ">" + o.t + "</button>";
+    }
+    h += "</div>";
+    if (it.sel >= 0) {
+      ok = it.opts[it.sel].v === q.v;
+      m = MEAN[q.v][st.lang];
+      f = q.cap ? cap1(VERBS[q.v].f[q.p]) : VERBS[q.v].f[q.p];
+      h += '<div class="fb ' + (ok ? "okc" : "badc") + '"' + D() + '><b>' + (ok ? "✔ " + U("ok") : "✘ " + U("bad") + " " + U("sol") + ": " + f) +
+           '</b> <span dir="ltr">' + f + " (" + VERBS[q.v].inf + ")</span> — " + m[0] + ": " + m[1] + "</div>";
+    }
+    h += "</div>";
+  }
+  h += '<div class="act"><button class="btn alt" data-act="new2">' + U("newSet") + '</button></div>';
+  return h;
+}
+
+function score3() {
+  var n = st.e3.items.length, s = 0, i;
+  for (i = 0; i < n; i++) { if (st.e3.items[i].checked && st.e3.items[i].ok) { s++; } }
+  return U("score") + ": " + s + " / " + n;
+}
+
+function sentText(it) {
+  var w = [], i;
+  for (i = 0; i < it.built.length; i++) { w.push(it.s.t[it.built[i]]); }
+  return w.join(" ");
+}
+
+function r3() {
+  var h = "", i, it, k;
+  h += '<p class="intro"' + D() + '>' + U("i3") + '</p><div class="score"' + D() + '>' + score3() + '</div>';
+  for (i = 0; i < st.e3.items.length; i++) {
+    it = st.e3.items[i];
+    h += '<div class="card q' + (it.checked ? (it.ok ? " good" : " nogood") : "") + '"><div class="ans">';
+    for (k = 0; k < it.built.length; k++) {
+      h += '<button class="w" data-act="rm" data-q="' + i + '" data-k="' + k + '"' + (it.checked ? " disabled" : "") + ">" + it.s.t[it.built[k]] + "</button>";
+    }
+    h += '</div><div class="pool">';
+    for (k = 0; k < it.pool.length; k++) {
+      h += '<button class="w" data-act="w" data-q="' + i + '" data-k="' + k + '"' + (it.checked ? " disabled" : "") + ">" + it.s.t[it.pool[k]] + "</button>";
+    }
+    h += "</div>";
+    if (!it.checked) {
+      h += '<div class="act">';
+      if (it.built.length) { h += '<button class="btn alt" data-act="undo3" data-q="' + i + '">' + U("undo") + "</button>"; }
+      if (!it.pool.length) { h += '<button class="btn" data-act="chk3" data-q="' + i + '">' + U("check") + "</button>"; }
+      h += "</div>";
+    } else {
+      h += '<div class="fb ' + (it.ok ? "okc" : "badc") + '"' + D() + '><b>' + (it.ok ? "✔ " + U("ok") : "✘ " + U("bad")) + "</b>" +
+           (it.ok ? "" : ' <span dir="ltr">' + U("sol") + ": " + it.s.a[0] + "</span>") + "</div>";
+    }
+    h += "</div>";
+  }
+  h += '<div class="act"><button class="btn alt" data-act="new3">' + U("newSet") + '</button></div>';
+  return h;
+}
+
+function render() {
+  var h = "", i, tabs = [["exp", "tExp"], ["tab", "tTab"], ["e1", "t1"], ["e2", "t2"], ["e3", "t3"]];
+  if (st.tab === "e1" && st.e1) { saveE1(); }
+  if (!st.e1) { newE1(); }
+  if (!st.e2) { newE2(); }
+  if (!st.e3) { newE3(); }
+  st.last = null;
+  h += "<h1>Modalverben</h1><div class=\"sub\">wollen · möchten · sollen · dürfen · müssen · können — Präsens</div>";
+  h += '<div class="langs">';
+  for (i = 0; i < LANGS.length; i++) {
+    h += '<button class="lb' + (LANGS[i].c === st.lang ? " on" : "") + '" data-act="lang" data-v="' + LANGS[i].c + '">' + LANGS[i].n + "</button>";
+  }
+  h += "</div><div class=\"tabs\">";
+  for (i = 0; i < tabs.length; i++) {
+    h += '<button class="tb' + (tabs[i][0] === st.tab ? " on" : "") + '" data-act="tab" data-v="' + tabs[i][0] + '">' + U(tabs[i][1]) + "</button>";
+  }
+  h += "</div><div id=\"content\">";
+  if (st.tab === "exp") { h += rExp(); }
+  else if (st.tab === "tab") { h += rTab(); }
+  else if (st.tab === "e1") { h += r1(); }
+  else if (st.tab === "e2") { h += r2(); }
+  else { h += r3(); }
+  h += "</div>";
+  app.innerHTML = h;
+}
+
+/* ---------- Aktionen ---------- */
+function chk1() {
+  var inputs = app.querySelectorAll("input[data-i]"), i, it, v;
+  for (i = 0; i < inputs.length; i++) {
+    it = st.e1.items[parseInt(inputs[i].getAttribute("data-i"), 10)];
+    it.val = inputs[i].value;
+    v = trim(it.val).toLowerCase();
+    it.res = (v === VERBS[it.v].f[it.p]) ? 1 : 0;
+  }
+  st.e1.checked = true;
+  render();
+}
+
+function chk3(q) {
+  var it = st.e3.items[q], s = sentText(it).toLowerCase(), i;
+  it.checked = true; it.ok = false;
+  for (i = 0; i < it.s.a.length; i++) {
+    if (it.s.a[i].toLowerCase() === s) { it.ok = true; }
+  }
+  render();
+}
+
+function act(el) {
+  var a = el.getAttribute("data-act"), q, k, it, inp, s, e, v, ch;
+  if (a === "lang") {
+    st.lang = el.getAttribute("data-v");
+    try { window.localStorage.setItem("modalverbenLang", st.lang); } catch (err) {}
+    render();
+  } else if (a === "tab") {
+    if (st.tab === "e1") { saveE1(); }
+    st.tab = el.getAttribute("data-v");
+    render();
+  } else if (a === "ins") {
+    inp = st.last;
+    if (!inp || inp.disabled) { return; }
+    ch = el.getAttribute("data-ch");
+    v = inp.value;
+    s = inp.selectionStart; e = inp.selectionEnd;
+    if (typeof s === "number") {
+      inp.value = v.slice(0, s) + ch + v.slice(e);
+      inp.focus();
+      try { inp.setSelectionRange(s + 1, s + 1); } catch (err2) {}
+    } else {
+      inp.value = v + ch;
+      inp.focus();
+    }
+  } else if (a === "chk1") { chk1(); }
+  else if (a === "new1") { newE1(); render(); }
+  else if (a === "opt") {
+    q = parseInt(el.getAttribute("data-q"), 10);
+    if (st.e2.items[q].sel < 0) { st.e2.items[q].sel = parseInt(el.getAttribute("data-o"), 10); render(); }
+  } else if (a === "new2") { newE2(); render(); }
+  else if (a === "w") {
+    q = parseInt(el.getAttribute("data-q"), 10); k = parseInt(el.getAttribute("data-k"), 10);
+    it = st.e3.items[q];
+    if (it.checked) { return; }
+    it.built.push(it.pool[k]);
+    it.pool.splice(k, 1);
+    render();
+  } else if (a === "rm") {
+    q = parseInt(el.getAttribute("data-q"), 10); k = parseInt(el.getAttribute("data-k"), 10);
+    it = st.e3.items[q];
+    if (it.checked) { return; }
+    it.pool.push(it.built[k]);
+    it.built.splice(k, 1);
+    render();
+  } else if (a === "undo3") {
+    q = parseInt(el.getAttribute("data-q"), 10);
+    it = st.e3.items[q];
+    if (it.built.length) { it.pool.push(it.built.pop()); render(); }
+  } else if (a === "chk3") { chk3(parseInt(el.getAttribute("data-q"), 10)); }
+  else if (a === "new3") { newE3(); render(); }
+}
+
+app.addEventListener("click", function (e) {
+  var t = e.target;
+  while (t && t !== app && !(t.getAttribute && t.getAttribute("data-act"))) { t = t.parentNode; }
+  if (!t || t === app || t.disabled) { return; }
+  act(t);
+});
+app.addEventListener("mousedown", function (e) {
+  var t = e.target;
+  if (t && t.getAttribute && t.getAttribute("data-act") === "ins") { e.preventDefault(); }
+});
+app.addEventListener("focus", function (e) {
+  if (e.target && e.target.tagName === "INPUT") { st.last = e.target; }
+}, true);
+
+render();
+})();
+</script>
+</body>
+</html>
