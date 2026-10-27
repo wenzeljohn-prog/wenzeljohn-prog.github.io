@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verb-Slotmaschine – Präsens, Perfekt und Präteritum üben</title>
+<style>
+:root{--h:124px;--gold:#f5c542;--ink:#1d1633;--red1:#d12f47;--red2:#8e1428}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% 0,#4a2a8a 0,#241447 55%,#150b2e 100%);color:#fff;min-height:100vh}
+.wrap{max-width:980px;margin:0 auto;padding:16px 14px 40px}
+header{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
+h1{font-size:clamp(20px,3.2vw,30px);margin:0;line-height:1.2}
+h1 span{display:block;font-size:.55em;font-weight:600;color:var(--gold);letter-spacing:.04em}
+.score{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:rgba(255,255,255,.14);border-radius:999px;padding:6px 14px;font-weight:700;font-size:15px}
+.machine{margin-top:14px;background:linear-gradient(var(--red1),var(--red2));border:4px solid var(--gold);border-radius:26px;padding:14px 16px 22px;box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 0 0 3px rgba(255,255,255,.12)}
+.lights{display:flex;justify-content:space-between;margin:0 4px 12px}
+.lights i{width:12px;height:12px;border-radius:50%;background:#ffe27a;box-shadow:0 0 8px #ffd23f;animation:blink 1.2s infinite}
+.lights i:nth-child(odd){animation-delay:.6s}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.reels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.label{text-align:center;color:var(--gold);font-weight:800;letter-spacing:.08em;font-size:13px;text-transform:uppercase}
+.reel{height:var(--h);overflow:hidden;background:#fff;border-radius:14px;border:3px solid #3a2a07;position:relative;box-shadow:inset 0 6px 14px rgba(0,0,0,.3),inset 0 -6px 14px rgba(0,0,0,.3)}
+.reel:after{content:"";position:absolute;left:0;right:0;top:0;bottom:0;background:linear-gradient(rgba(0,0,0,.22),transparent 25%,transparent 75%,rgba(0,0,0,.22));pointer-events:none}
+.reel.spinning .strip{filter:blur(1.4px)}
+.cell{height:var(--h);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6px 8px;color:var(--ink);font-weight:800;font-size:clamp(15px,2.5vw,28px);line-height:1.15;overflow:hidden;word-break:normal;-webkit-hyphens:auto;hyphens:auto}
+.cell small{font-size:.55em;font-weight:600;color:#6a5d8a;margin-top:3px}
+.cell.q{font-size:56px;color:#c9c2dc}
+.hold{border:2px solid rgba(255,255,255,.55);background:rgba(0,0,0,.22);color:#fff;border-radius:999px;padding:7px 8px;font-size:14px;font-weight:700;cursor:pointer}
+.hold.on{background:var(--gold);color:#3a2a07;border-color:#3a2a07}
+.hold:disabled{opacity:.5;cursor:not-allowed}
+.tl{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:14px;font-size:14px}
+.tl[hidden]{display:none}
+.tl span{background:rgba(0,0,0,.28);border-radius:10px;padding:7px 4px;text-align:center;color:#fff;opacity:.55;font-weight:600}
+.tl span.on{opacity:1;background:var(--gold);color:#3a2a07;font-weight:800}
+.spin{margin:18px auto 0;display:block;padding:14px 54px;font-size:24px;font-weight:900;letter-spacing:.08em;border-radius:999px;border:4px solid #3a2a07;background:linear-gradient(#ffe27a,#f5b41b);color:#3a2a07;cursor:pointer;box-shadow:0 6px 0 #9a6b00}
+.spin:active{transform:translateY(4px);box-shadow:0 2px 0 #9a6b00}
+.spin:disabled{filter:grayscale(.6);cursor:not-allowed}
+.settings{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:14px;font-size:14px;align-items:center}
+.settings label{display:flex;gap:6px;align-items:center}
+select{font:inherit;padding:5px 8px;border-radius:8px;border:1px solid #bbb;background:#fff;color:#1d1633}
+.card{background:#fff;color:var(--ink);border-radius:18px;padding:18px;margin-top:16px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.card[hidden]{display:none}
+.task{font-size:17px;margin-bottom:10px}
+.chip{display:inline-block;background:#efe9ff;color:#4a2a8a;border-radius:999px;padding:3px 12px;font-weight:700;font-size:14px;margin-left:6px}
+.chip[hidden]{display:none}
+.inputrow{display:flex;flex-wrap:wrap;gap:8px}
+.inputrow input{flex:1 1 260px;font:inherit;font-size:18px;padding:10px 12px;border:2px solid #b9aedc;border-radius:12px;color:var(--ink)}
+.btn{font:inherit;font-weight:800;border:0;border-radius:12px;padding:10px 18px;cursor:pointer;background:#4a2a8a;color:#fff}
+.btn.ghost{background:#e9e4f7;color:#3b2475}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.tip{font-size:13px;color:#5b5078;margin:8px 0 0}
+#fb{margin-top:10px;font-weight:700;min-height:1.2em}
+#fb.good{color:#0d7a3f}#fb.bad{color:#b3261e}#fb.warn{color:#8a5a00}
+#sol{margin-top:12px;border-top:2px dashed #d6cfee;padding-top:12px}
+#sol[hidden]{display:none}
+.verdict{font-size:16px;margin-bottom:8px}
+.model{font-size:20px;font-weight:800;line-height:1.5;margin:6px 0 10px;color:#2a1a5e}
+table{border-collapse:collapse;width:100%;max-width:640px;font-size:16px}
+td,th{padding:6px 10px;border-bottom:1px solid #e5e0f3;text-align:left}
+tr.need td{background:#fff4c9;font-weight:800}
+.stamm{font-size:14px;color:#5b5078;margin-top:8px}
+.badge{display:inline-block;background:#e2f6ea;color:#0d6a37;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:700;margin-left:6px}
+.help{margin-top:16px;font-size:14px;color:#d9d0f2}
+.help summary{cursor:pointer;font-weight:700}
+.help ul{margin:8px 0 0 18px;padding:0;line-height:1.5}
+.linkbtn{background:none;border:0;color:#d9d0f2;text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+@media (max-width:560px){:root{--h:112px}.machine{padding:10px 8px 18px}.reels{gap:6px}.hold{font-size:12px;padding:6px 2px}.spin{padding:12px 40px;font-size:20px}.cell{font-size:13px;padding:4px 3px}.cell small{font-size:.8em}.label{font-size:11px;letter-spacing:.02em}.tl{font-size:12px}}
+@media (prefers-reduced-motion:reduce){.lights i{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🎰 Verb-Slotmaschine <span>Präsens &amp; Vergangenheit üben</span></h1>
+    <div class="score"><span class="pill" id="scoreEl">⭐ 0 Punkte</span><span class="pill" id="streakEl">🔥 Serie: 0</span></div>
+  </header>
+
+  <div class="machine">
+    <div class="lights" id="lights"></div>
+    <div class="reels">
+      <div class="col"><div class="label">Zeit</div><div class="reel" id="reel0"><div class="strip"><div class="cell q">?</div></div></div><button type="button" class="hold" id="hold0" aria-pressed="false">🔓 Halten</button></div>
+      <div class="col"><div class="label">Person</div><div class="reel" id="reel1"><div class="strip"><div class="cell q">?</div></div></div><button type="button" class="hold" id="hold1" aria-pressed="false">🔓 Halten</button></div>
+      <div class="col"><div class="label">Verbalphrase</div><div class="reel" id="reel2"><div class="strip"><div class="cell q">?</div></div></div><button type="button" class="hold" id="hold2" aria-pressed="false">🔓 Halten</button></div>
+    </div>
+    <div class="tl" id="tl"><span>◀ Vergangenheit</span><span>Gegenwart</span><span>Zukunft ▶</span></div>
+    <button type="button" class="spin" id="spin">DREHEN</button>
+  </div>
+
+  <div class="settings">
+    <label>Vergangenheit:
+      <select id="selPast"><option value="perfekt">Perfekt</option><option value="praet">Präteritum</option><option value="mixed" selected>gemischt</option></select>
+    </label>
+    <label>Zeiten:
+      <select id="selTense"><option value="all">alle (Vergangenheit, Gegenwart, Zukunft)</option><option value="pf">nur Gegenwart &amp; Zukunft</option><option value="past">nur Vergangenheit</option></select>
+    </label>
+    <label>Zeitstrahl:
+      <select id="selTl"><option value="on">an</option><option value="off" selected>aus</option></select>
+    </label>
+    <label><input type="checkbox" id="chkSound"> Ton</label>
+    <button type="button" class="linkbtn" id="resetScore">Punkte zurücksetzen</button>
+  </div>
+
+  <div class="card" id="card" hidden>
+    <div class="task"><strong>Aufgabe:</strong> Bilde einen Satz mit allen drei Walzen.<span class="chip" id="chip" hidden></span></div>
+    <div class="inputrow">
+      <input id="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Verbform(en) oder ganzer Satz …" aria-label="Deine Antwort">
+      <button type="button" class="btn" id="btnCheck">Prüfen</button>
+      <button type="button" class="btn ghost" id="btnReveal">Lösung zeigen</button>
+    </div>
+    <p class="tip">Schreibe nur die Verbform(en), z. B. „gehe“, „bin gegangen“ oder „stehe auf“ – oder den ganzen Satz. Die Wortstellung wird hier nicht bewertet.</p>
+    <div id="fb" role="status" aria-live="polite"></div>
+    <div id="sol" hidden></div>
+  </div>
+
+  <details class="help">
+    <summary>So funktioniert’s</summary>
+    <ul>
+      <li><b>DREHEN</b> (oder Leertaste): Alle drei Walzen drehen sich. Der Zeitstrahl zeigt, ob die Zeitangabe Vergangenheit, Gegenwart oder Zukunft meint. Für die Zukunft verwendet man im Deutschen meist das Präsens.</li>
+      <li><b>Halten</b>: Eine Walze bleibt stehen, die anderen drehen sich weiter. So lässt sich z. B. dieselbe Verbalphrase mit verschiedenen Zeiten üben.</li>
+      <li>Zeitangaben wie „heute um 08:00 Uhr“ richten sich nach der Uhrzeit dieses Geräts: Ist es schon vorbei, braucht man die Vergangenheit.</li>
+      <li>In etwa 35 % der Drehungen kommt <b>haben</b> oder <b>sein</b> als Vollverb vor.</li>
+      <li>Im Unterricht geht es auch ohne Eingabe: laut sprechen und danach „Lösung zeigen“.</li>
+    </ul>
+  </details>
+</div>
+
+<script id="logic">
+(function(root){
+'use strict';
+var IDX={p1s:0,p2s:1,p3s:2,p1p:3,p2p:4,p3p:5};
+var TN={praes:'Präsens',praet:'Präteritum',perfekt:'Perfekt'};
+var HS_SHARE=0.35;
+function S(s){return s.split(' ');}
+
+/* ---------- Verben ---------- */
+var verbs={};
+function def(k,o){var r={key:k,inf:k},x;for(x in o){if(o.hasOwnProperty(x)){r[x]=o[x];}}verbs[k]=r;}
+function weak(k,stem,pp,e){
+  var a=e?'e':'';
+  def(k,{p:[stem+'e',stem+a+'st',stem+a+'t',stem+'en',stem+a+'t',stem+'en'],
+         t:[stem+a+'te',stem+a+'test',stem+a+'te',stem+a+'ten',stem+a+'tet',stem+a+'ten'],pp:pp,aux:'haben'});
+}
+function strong(k,p,t,pp,aux){def(k,{p:S(p),t:S(t),pp:pp,aux:aux||'haben'});}
+function sep(k,base,prefix,aux){var b=verbs[base];def(k,{p:b.p,t:b.t,pp:prefix+b.pp,aux:aux||b.aux,sep:prefix});}
+
+strong('haben','habe hast hat haben habt haben','hatte hattest hatte hatten hattet hatten','gehabt','haben');
+strong('sein','bin bist ist sind seid sind','war warst war waren wart waren','gewesen','sein');
+strong('werden','werde wirst wird werden werdet werden','wurde wurdest wurde wurden wurdet wurden','geworden','sein');
+strong('gehen','gehe gehst geht gehen geht gehen','ging gingst ging gingen gingt gingen','gegangen','sein');
+strong('kommen','komme kommst kommt kommen kommt kommen','kam kamst kam kamen kamt kamen','gekommen','sein');
+strong('fahren','fahre fährst fährt fahren fahrt fahren','fuhr fuhrst fuhr fuhren fuhrt fuhren','gefahren','sein');
+strong('laufen','laufe läufst läuft laufen lauft laufen','lief liefst lief liefen lieft liefen','gelaufen','sein');
+strong('schwimmen','schwimme schwimmst schwimmt schwimmen schwimmt schwimmen','schwamm schwammst schwamm schwammen schwammt schwammen','geschwommen','sein');
+strong('fliegen','fliege fliegst fliegt fliegen fliegt fliegen','flog flogst flog flogen flogt flogen','geflogen','sein');
+strong('bleiben','bleibe bleibst bleibt bleiben bleibt bleiben','blieb bliebst blieb blieben bliebt blieben','geblieben','sein');
+strong('steigen','steige steigst steigt steigen steigt steigen','stieg stiegst stieg stiegen stiegt stiegen','gestiegen','sein');
+strong('schlafen','schlafe schläfst schläft schlafen schlaft schlafen','schlief schliefst schlief schliefen schlieft schliefen','geschlafen');
+strong('trinken','trinke trinkst trinkt trinken trinkt trinken','trank trankst trank tranken trankt tranken','getrunken');
+strong('essen','esse isst isst essen esst essen','aß aßest aß aßen aßt aßen','gegessen');
+strong('lesen','lese liest liest lesen lest lesen','las lasest las lasen last lasen','gelesen');
+strong('sprechen','spreche sprichst spricht sprechen sprecht sprechen','sprach sprachst sprach sprachen spracht sprachen','gesprochen');
+strong('schreiben','schreibe schreibst schreibt schreiben schreibt schreiben','schrieb schriebst schrieb schrieben schriebt schrieben','geschrieben');
+strong('singen','singe singst singt singen singt singen','sang sangst sang sangen sangt sangen','gesungen');
+strong('sehen','sehe siehst sieht sehen seht sehen','sah sahst sah sahen saht sahen','gesehen');
+strong('treffen','treffe triffst trifft treffen trefft treffen','traf trafst traf trafen traft trafen','getroffen');
+strong('helfen','helfe hilfst hilft helfen helft helfen','half halfst half halfen halft halfen','geholfen');
+strong('nehmen','nehme nimmst nimmt nehmen nehmt nehmen','nahm nahmst nahm nahmen nahmt nahmen','genommen');
+strong('bringen','bringe bringst bringt bringen bringt bringen','brachte brachtest brachte brachten brachtet brachten','gebracht');
+strong('denken','denke denkst denkt denken denkt denken','dachte dachtest dachte dachten dachtet dachten','gedacht');
+strong('wissen','weiß weißt weiß wissen wisst wissen','wusste wusstest wusste wussten wusstet wussten','gewusst');
+strong('kennen','kenne kennst kennt kennen kennt kennen','kannte kanntest kannte kannten kanntet kannten','gekannt');
+strong('sitzen','sitze sitzt sitzt sitzen sitzt sitzen','saß saßest saß saßen saßt saßen','gesessen');
+strong('liegen','liege liegst liegt liegen liegt liegen','lag lagst lag lagen lagt lagen','gelegen');
+strong('stehen','stehe stehst steht stehen steht stehen','stand standest stand standen standet standen','gestanden');
+strong('rufen','rufe rufst ruft rufen ruft rufen','rief riefst rief riefen rieft riefen','gerufen');
+strong('bekommen','bekomme bekommst bekommt bekommen bekommt bekommen','bekam bekamst bekam bekamen bekamt bekamen','bekommen');
+strong('verlieren','verliere verlierst verliert verlieren verliert verlieren','verlor verlorst verlor verloren verlort verloren','verloren');
+strong('verlassen','verlasse verlässt verlässt verlassen verlasst verlassen','verließ verließt verließ verließen verließt verließen','verlassen');
+strong('treiben','treibe treibst treibt treiben treibt treiben','trieb triebst trieb trieben triebt trieben','getrieben');
+strong('tanzen','tanze tanzt tanzt tanzen tanzt tanzen','tanzte tanztest tanzte tanzten tanztet tanzten','getanzt');
+weak('lernen','lern','gelernt');
+weak('spielen','spiel','gespielt');
+weak('kochen','koch','gekocht');
+weak('machen','mach','gemacht');
+weak('hören','hör','gehört');
+weak('wohnen','wohn','gewohnt');
+weak('kaufen','kauf','gekauft');
+weak('räumen','räum','geräumt');
+weak('bestellen','bestell','bestellt');
+weak('telefonieren','telefonier','telefoniert');
+weak('reparieren','reparier','repariert');
+weak('arbeiten','arbeit','gearbeitet',true);
+weak('warten','wart','gewartet',true);
+weak('öffnen','öffn','geöffnet',true);
+sep('aufstehen','stehen','auf','sein');
+sep('fernsehen','sehen','fern');
+sep('einkaufen','kaufen','ein');
+sep('anrufen','rufen','an');
+sep('mitbringen','bringen','mit');
+sep('aufräumen','räumen','auf');
+sep('ankommen','kommen','an');
+sep('einsteigen','steigen','ein');
+
+/* ---------- Verbalphrasen ---------- */
+function P(d,v,pre,cn){return {d:d,v:v,pre:pre||'',cn:cn||null};}
+var HS=[
+  P('Hunger haben','haben','Hunger'),P('Durst haben','haben','Durst'),P('Angst haben','haben','Angst'),
+  P('Zeit haben','haben','Zeit'),P('keine Zeit haben','haben','keine Zeit'),P('Kopfschmerzen haben','haben','Kopfschmerzen'),
+  P('Glück haben','haben','Glück'),P('recht haben','haben','recht'),P('Geburtstag haben','haben','Geburtstag'),
+  P('ein Auto haben','haben','ein Auto'),P('zwei Katzen haben','haben','zwei Katzen'),P('viel Arbeit haben','haben','viel Arbeit'),
+  P('Urlaub haben','haben','Urlaub'),P('Langeweile haben','haben','Langeweile'),P('Besuch haben','haben','Besuch'),
+  P('eine gute Idee haben','haben','eine gute Idee'),P('Spaß haben','haben','Spaß'),
+  P('müde sein','sein','müde'),P('krank sein','sein','krank'),P('Schüler sein','sein','','Schüler'),
+  P('Lehrer sein','sein','','Lehrer'),P('Kellner sein','sein','','Kellner'),P('Bäcker sein','sein','','Bäcker'),
+  P('zu Hause sein','sein','zu Hause'),P('in der Schule sein','sein','in der Schule'),P('im Urlaub sein','sein','im Urlaub'),
+  P('in Erfurt sein','sein','in Erfurt'),P('pünktlich sein','sein','pünktlich'),P('nervös sein','sein','nervös'),
+  P('glücklich sein','sein','glücklich'),P('zu spät sein','sein','zu spät'),P('fertig sein','sein','fertig'),
+  P('traurig sein','sein','traurig'),P('fleißig sein','sein','fleißig'),P('bei der Arbeit sein','sein','bei der Arbeit')
+];
+var OT=[
+  P('zur Arbeit gehen','gehen','zur Arbeit'),P('zu Fuß gehen','gehen','zu Fuß'),P('um 6 Uhr aufstehen','aufstehen','um 6 Uhr'),
+  P('wie ein Stein schlafen','schlafen','wie ein Stein'),P('Kaffee trinken','trinken','Kaffee'),P('viel Wasser trinken','trinken','viel Wasser'),
+  P('ein Brot essen','essen','ein Brot'),P('ein Buch lesen','lesen','ein Buch'),P('Deutsch lernen','lernen','Deutsch'),
+  P('Deutsch sprechen','sprechen','Deutsch'),P('mit dem Bus fahren','fahren','mit dem Bus'),P('nach Hause fahren','fahren','nach Hause'),
+  P('Fahrrad fahren','fahren','Fahrrad'),P('Fußball spielen','spielen','Fußball'),P('Gitarre spielen','spielen','Gitarre'),
+  P('Freunde treffen','treffen','Freunde'),P('im Supermarkt einkaufen','einkaufen','im Supermarkt'),P('den Chef anrufen','anrufen','den Chef'),
+  P('einen Film sehen','sehen','einen Film'),P('fernsehen','fernsehen',''),P('in Jena wohnen','wohnen','in Jena'),
+  P('viel arbeiten','arbeiten','viel'),P('auf den Bus warten','warten','auf den Bus'),P('einen Brief schreiben','schreiben','einen Brief'),
+  P('ein Lied singen','singen','ein Lied'),P('im Park laufen','laufen','im Park'),P('im See schwimmen','schwimmen','im See'),
+  P('nach Spanien fliegen','fliegen','nach Spanien'),P('zu Hause bleiben','bleiben','zu Hause'),P('Kuchen mitbringen','mitbringen','Kuchen'),
+  P('die Wohnung aufräumen','aufräumen','die Wohnung'),P('um 8 Uhr ankommen','ankommen','um 8 Uhr'),P('in den Zug einsteigen','einsteigen','in den Zug'),
+  P('im Café sitzen','sitzen','im Café'),P('im Bett liegen','liegen','im Bett'),P('dem Nachbarn helfen','helfen','dem Nachbarn'),
+  P('Hausaufgaben machen','machen','Hausaufgaben'),P('Suppe kochen','kochen','Suppe'),P('die Antwort wissen','wissen','die Antwort'),
+  P('den Lehrer kennen','kennen','den Lehrer'),P('an die Familie denken','denken','an die Familie'),P('auf der Party tanzen','tanzen','auf der Party'),
+  P('Lehrer werden','werden','','Lehrer'),P('Bäcker werden','werden','','Bäcker'),P('Obst kaufen','kaufen','Obst'),
+  P('das Fenster öffnen','öffnen','das Fenster'),P('den Bus nehmen','nehmen','den Bus'),P('einen Brief bekommen','bekommen','einen Brief'),
+  P('das Fahrrad reparieren','reparieren','das Fahrrad'),P('Pizza bestellen','bestellen','Pizza'),P('den Schlüssel verlieren','verlieren','den Schlüssel'),
+  P('Musik hören','hören','Musik'),P('mit Freunden telefonieren','telefonieren','mit Freunden'),P('Sport machen','machen','Sport'),
+  P('das Haus verlassen','verlassen','das Haus')
+];
+
+/* ---------- Personen (g: m, f, mpl, fpl, x = unbekannt) ---------- */
+function Sb(t,p,g,note,cap){return {t:t,p:p,g:g,note:note||'',cap:!!cap};}
+var SUBJ=[
+  Sb('ich','p1s','x'),Sb('du','p2s','x'),Sb('er','p3s','m'),Sb('sie','p3s','f','eine Person'),
+  Sb('wir','p1p','mpl'),Sb('ihr','p2p','mpl'),Sb('sie','p3p','mpl','mehrere Personen'),Sb('Sie','p3p','mpl','formell',true),
+  Sb('der Chef','p3s','m'),Sb('meine Freunde','p3p','mpl'),Sb('meine Schwester','p3s','f'),Sb('unser Lehrer','p3s','m'),
+  Sb('die Kinder','p3p','mpl'),Sb('mein Bruder','p3s','m'),Sb('die Nachbarin','p3s','f'),Sb('Anna und Tom','p3p','mpl'),
+  Sb('meine Eltern','p3p','mpl'),Sb('die Studentinnen','p3p','fpl'),Sb('mein Hund','p3s','m'),Sb('die Katze','p3s','f')
+];
+
+/* ---------- Zeitangaben ---------- */
+var TIMES={
+  past:['gestern','vorgestern','gestern Abend','gestern Nacht','gestern um 20:00 Uhr','letzte Woche','letzten Monat','letztes Jahr','letzten Sommer','letzten Montag','letzten Freitag','vor einer Stunde','vor zwei Tagen','vor einer Woche','vor einem Monat','vor drei Jahren','vor langer Zeit','früher','damals','als Kind'],
+  pres:['jetzt','im Moment','momentan','zurzeit','gerade jetzt','in diesem Moment','heutzutage'],
+  fut:['morgen','übermorgen','morgen früh um 07:00 Uhr','nächste Woche','nächsten Monat','nächstes Jahr','nächsten Sommer','nächsten Freitag','in einer Stunde','in zwei Tagen','in einem Monat','in drei Jahren','bald','in Zukunft'],
+  clock:['06:00','08:00','10:30','12:00','15:00','18:00','20:00','22:00']
+};
+function timePools(nowMin){
+  var out={past:[],pres:[],fut:[]},i,c,hm,m,d;
+  for(i=0;i<TIMES.past.length;i++){out.past.push({t:TIMES.past[i],k:'past'});}
+  for(i=0;i<TIMES.pres.length;i++){out.pres.push({t:TIMES.pres[i],k:'pres'});}
+  for(i=0;i<TIMES.fut.length;i++){out.fut.push({t:TIMES.fut[i],k:'fut'});}
+  for(i=0;i<TIMES.clock.length;i++){
+    c=TIMES.clock[i];hm=c.split(':');m=parseInt(hm[0],10)*60+parseInt(hm[1],10);d=m-nowMin;
+    if(d<=-10){out.past.push({t:'heute um '+c+' Uhr',k:'past',c:m});}
+    else if(d>=10){out.fut.push({t:'heute um '+c+' Uhr',k:'fut',c:m});}
+  }
+  return out;
+}
+function kOf(item,nowMin){if(item.c!==undefined&&item.c!==null){return item.c<nowMin?'past':'fut';}return item.k;}
+
+/* ---------- Auswahl ---------- */
+function pick(a,rnd){return a[Math.floor(rnd()*a.length)];}
+function pickTime(tenseCfg,nowMin,rnd){
+  var pools=timePools(nowMin),w,keys,k,acc=0,r=rnd(),cat,i;
+  if(tenseCfg==='past'){w={past:1};}else if(tenseCfg==='pf'){w={pres:0.5,fut:0.5};}else{w={past:0.45,pres:0.30,fut:0.25};}
+  keys=[];for(k in w){if(w.hasOwnProperty(k)){keys.push(k);}}
+  cat=keys[keys.length-1];
+  for(i=0;i<keys.length;i++){acc+=w[keys[i]];if(r<acc){cat=keys[i];break;}}
+  return pick(pools[cat],rnd);
+}
+function pickPhrase(rnd){return rnd()<HS_SHARE?pick(HS,rnd):pick(OT,rnd);}
+function newSpin(prev,held,cfg,nowMin,rnd){
+  rnd=rnd||Math.random;
+  var st={};
+  st.time=(prev&&held[0])?prev.time:pickTime(cfg.tense,nowMin,rnd);
+  st.subj=(prev&&held[1])?prev.subj:pick(SUBJ,rnd);
+  st.phrase=(prev&&held[2])?prev.phrase:pickPhrase(rnd);
+  st.kind=kOf(st.time,nowMin);
+  if(st.kind==='past'){st.tense=cfg.past==='mixed'?(rnd()<0.5?'perfekt':'praet'):cfg.past;}else{st.tense='praes';}
+  return st;
+}
+
+/* ---------- Sätze ---------- */
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+function join(a){var o=[],i;for(i=0;i<a.length;i++){if(a[i]){o.push(a[i]);}}return o.join(' ');}
+function nounFor(b,g){if(g==='f'){return b+'in';}if(g==='fpl'){return b+'innen';}if(g==='x'){return b+'/in';}return b;}
+function preFor(ph,g){return ph.cn?nounFor(ph.cn,g):ph.pre;}
+function vtoks(st,tense){
+  var v=verbs[st.phrase.v],i=IDX[st.subj.p],fin;
+  if(tense==='perfekt'){return [verbs[v.aux].p[i],v.pp];}
+  fin=(tense==='praes'?v.p:v.t)[i];
+  return v.sep?[fin,v.sep]:[fin];
+}
+function clause(st,tense,g){
+  var t=vtoks(st,tense);
+  return join([st.subj.t,t[0],preFor(st.phrase,g||st.subj.g),t[1]||'']);
+}
+function sentence(st,tense,order,g){
+  var t=vtoks(st,tense),pre=preFor(st.phrase,g||st.subj.g),fin=t[0],end=t[1]||'';
+  var parts=order==='time'?[st.time.t,fin,st.subj.t,pre,end]:[st.subj.t,fin,st.time.t,pre,end];
+  return cap(join(parts))+'.';
+}
+function stamm(st){
+  var v=verbs[st.phrase.v];
+  return v.inf+' – '+v.t[2]+' – '+(v.aux==='sein'?'ist ':'hat ')+v.pp;
+}
+
+/* ---------- Prüfen ---------- */
+function norm(s){
+  return String(s).toLowerCase().replace(/\/in\b/g,'in').replace(/\(in\)/g,'in')
+    .replace(/ß/g,'ss').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue')
+    .replace(/[.,;:!?„“”"'’‘…()\/\-–]/g,' ').replace(/\s+/g,' ').replace(/\b0(\d)/g,'$1').trim();
+}
+function toks(s){var n=norm(s);return n?n.split(' '):[];}
+function key(s){return toks(s).sort().join(' ');}
+/* Bei haben/sein sind in der Vergangenheit Präteritum und Perfekt richtig */
+function allowed(st){
+  var v=st.phrase.v;
+  if(st.kind==='past'&&(v==='haben'||v==='sein')){return ['praet','perfekt'];}
+  return [st.tense];
+}
+function acceptedKeys(st){
+  var m={},gs=st.subj.g==='x'?['m','f']:[st.subj.g],al=allowed(st),s=st.subj.t,t=st.time.t,i,j,k,pre,combos,vt;
+  for(k=0;k<al.length;k++){
+    vt=vtoks(st,al[k]).join(' ');
+    for(i=0;i<gs.length;i++){
+      pre=preFor(st.phrase,gs[i]);
+      combos=[vt,vt+' '+s,vt+' '+pre,vt+' '+s+' '+pre,vt+' '+s+' '+t,vt+' '+pre+' '+t,vt+' '+s+' '+pre+' '+t];
+      for(j=0;j<combos.length;j++){m[key(combos[j])]=true;}
+    }
+  }
+  return m;
+}
+function evaluate(st,raw){
+  var k=key(raw),ts,inp={},i,order=['perfekt','praet','praes'];
+  if(!k){return {status:'empty'};}
+  if(acceptedKeys(st)[k]){return {status:'ok'};}
+  ts=toks(raw);for(i=0;i<ts.length;i++){inp[ts[i]]=true;}
+  function has(tn){var v=toks(vtoks(st,tn).join(' ')),j;for(j=0;j<v.length;j++){if(!inp[v[j]]){return false;}}return true;}
+  var al=allowed(st);
+  for(i=0;i<al.length;i++){if(has(al[i])){return {status:'verbok'};}}
+  for(i=0;i<order.length;i++){if(al.indexOf(order[i])<0&&has(order[i])){return {status:'othertense',tense:order[i]};}}
+  return {status:'wrong'};
+}
+
+root.SlotLogic={verbs:verbs,HS:HS,OT:OT,SUBJ:SUBJ,TIMES:TIMES,TN:TN,HS_SHARE:HS_SHARE,IDX:IDX,
+  timePools:timePools,kOf:kOf,newSpin:newSpin,pickPhrase:pickPhrase,pickTime:pickTime,
+  cap:cap,allowed:allowed,preFor:preFor,vtoks:vtoks,clause:clause,sentence:sentence,stamm:stamm,
+  evaluate:evaluate,acceptedKeys:acceptedKeys,norm:norm,key:key};
+})(typeof window!=='undefined'?window:this);
+</script>
+
+<script id="ui">
+(function(){
+'use strict';
+var L=window.SlotLogic;
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+var reels=[$('reel0'),$('reel1'),$('reel2')];
+var holdBtns=[$('hold0'),$('hold1'),$('hold2')];
+var held=[false,false,false],state=null,busy=false,solved=false,attempts=0,score=0,streak=0;
+var cfg={tense:'all',past:'mixed'};
+var tlOn=false,soundOn=false,ac=null;
+var reduce=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+/* Lichter */
+(function(){var h='',i;for(i=0;i<14;i++){h+='<i></i>';}$('lights').innerHTML=h;})();
+
+/* Ton */
+function tone(f,d,type,vol,delay){
+  if(!soundOn){return;}
+  try{
+    if(!ac){var A=window.AudioContext||window.webkitAudioContext;if(!A){return;}ac=new A();}
+    var o=ac.createOscillator(),g=ac.createGain(),t0=ac.currentTime+(delay||0);
+    o.type=type||'square';o.frequency.value=f;
+    g.gain.setValueAtTime(vol||0.05,t0);g.gain.exponentialRampToValueAtTime(0.0001,t0+d);
+    o.connect(g);g.connect(ac.destination);o.start(t0);o.stop(t0+d+0.02);
+  }catch(e){}
+}
+function clack(){tone(220,0.08,'square',0.06);}
+function winSound(){tone(523,0.14,'triangle',0.08,0);tone(659,0.14,'triangle',0.08,0.12);tone(784,0.14,'triangle',0.08,0.24);tone(1047,0.28,'triangle',0.08,0.36);}
+function badSound(){tone(150,0.25,'sawtooth',0.05);}
+
+/* Zellen */
+function timeCell(it){return esc(L.cap(it.t));}
+function subjCell(s){return esc(L.cap(s.t))+(s.note?'<small>'+esc(s.note)+'</small>':'');}
+function phraseCell(p){return esc(p.d);}
+function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+function allTimes(){return L.TIMES.past.concat(L.TIMES.pres,L.TIMES.fut);}
+function fillers(i,n){
+  var out=[],k;
+  for(k=0;k<n;k++){
+    if(i===0){out.push(esc(L.cap(rnd(allTimes()))));}
+    else if(i===1){out.push(subjCell(rnd(L.SUBJ)));}
+    else{out.push(phraseCell(Math.random()<0.4?rnd(L.HS):rnd(L.OT)));}
+  }
+  return out;
+}
+function mkCell(html){var d=document.createElement('div');d.className='cell';d.innerHTML=html;return d;}
+
+function animate(i,finalHtml,dur,cb){
+  var reel=reels[i],strip=reel.firstElementChild,H=reel.clientHeight,n,f,j,done=false,fl=fillers(i,12+i*5);
+  var first=strip.firstElementChild?strip.firstElementChild.cloneNode(true):mkCell('?');
+  strip.innerHTML='';strip.appendChild(first);
+  for(j=0;j<fl.length;j++){strip.appendChild(mkCell(fl[j]));}
+  strip.appendChild(mkCell(finalHtml));
+  strip.style.transition='none';strip.style.transform='translateY(0)';
+  void strip.offsetHeight;
+  n=strip.children.length-1;
+  reel.className='reel spinning';
+  strip.style.transition='transform '+dur+'ms cubic-bezier(.17,.67,.2,1)';
+  strip.style.transform='translateY('+(-n*H)+'px)';
+  f=function(){
+    if(done){return;}done=true;
+    reel.className='reel';
+    var last=strip.lastElementChild;strip.innerHTML='';strip.appendChild(last);
+    strip.style.transition='none';strip.style.transform='translateY(0)';
+    clack();cb();
+  };
+  strip.addEventListener('transitionend',f);
+  setTimeout(f,dur+150);
+}
+
+function setHoldDisabled(v){var i;for(i=0;i<3;i++){holdBtns[i].disabled=v;}}
+
+function spin(){
+  if(busy){return;}
+  busy=true;$('spin').disabled=true;setHoldDisabled(true);$('card').hidden=true;
+  var now=new Date(),nowMin=now.getHours()*60+now.getMinutes();
+  var next=L.newSpin(state,held,cfg,nowMin);
+  var finals=[timeCell(next.time),subjCell(next.subj),phraseCell(next.phrase)];
+  var pending=0,base=reduce?150:1100,i;
+  function one(){pending--;if(pending<=0){finish(next);}}
+  for(i=0;i<3;i++){
+    if(state&&held[i]){continue;}
+    pending++;
+    animate(i,finals[i],base+i*550,one);
+  }
+  if(pending===0){finish(next);}
+}
+
+function updateTl(){
+  var tl=$('tl'),spans=tl.getElementsByTagName('span'),idx=-1,i;
+  tl.hidden=!tlOn;
+  if(state){idx=state.kind==='past'?0:(state.kind==='pres'?1:2);}
+  for(i=0;i<spans.length;i++){spans[i].className=(i===idx)?'on':'';}
+}
+
+function finish(next){
+  state=next;busy=false;$('spin').disabled=false;setHoldDisabled(false);
+  solved=false;attempts=0;
+  $('ans').value='';$('ans').disabled=false;$('btnCheck').disabled=false;
+  $('fb').textContent='';$('fb').className='';$('sol').hidden=true;$('sol').innerHTML='';
+  var chip=$('chip');
+  if(cfg.past==='mixed'&&state.kind==='past'){
+    chip.textContent=L.allowed(state).length>1?'Form: Präteritum oder Perfekt':'Form: '+L.TN[state.tense];chip.hidden=false;
+  }else{chip.hidden=true;}
+  updateTl();
+  $('card').hidden=false;
+  if(window.matchMedia&&window.matchMedia('(pointer:fine)').matches){$('ans').focus();}
+}
+
+function setFb(msg,cls){var f=$('fb');f.textContent=msg;f.className=cls||'';}
+function updateScore(){$('scoreEl').textContent='⭐ '+score+' Punkte';$('streakEl').textContent='🔥 Serie: '+streak;}
+
+function showSolution(){
+  var st=state,order=['praes','praet','perfekt'],rows='',i,tn,verdict,v=L.verbs[st.phrase.v],kindTxt;
+  var al=L.allowed(st),both=al.length>1,mt=both?'praet':st.tense;
+  if(st.kind==='past'){kindTxt=both?'Vergangenheit → <b>Präteritum</b> (bei haben und sein üblich), <b>Perfekt</b> ist auch richtig':'Vergangenheit → <b>'+L.TN[st.tense]+'</b>';}
+  else if(st.kind==='pres'){kindTxt='Gegenwart → <b>Präsens</b>';}
+  else{kindTxt='Zukunft → im Deutschen meist <b>Präsens</b>';}
+  verdict='<div class="verdict">„'+esc(st.time.t)+'“ = '+kindTxt+'</div>';
+  var m1=L.sentence(st,mt,'time'),m2=L.sentence(st,mt,'subj');
+  for(i=0;i<order.length;i++){
+    tn=order[i];
+    var need=al.indexOf(tn)>=0;
+    rows+='<tr'+(need?' class="need"':'')+'><th>'+L.TN[tn]+'</th><td>'+esc(L.cap(L.clause(st,tn)))+'.'+(need?' ◀':'')+'</td></tr>';
+  }
+  var badge=(st.phrase.v==='haben'||st.phrase.v==='sein')?'<span class="badge">'+st.phrase.v+' als Vollverb</span>':'';
+  $('sol').innerHTML=verdict+'<div class="model">'+esc(m1)+'<br>'+esc(m2)+'</div>'
+    +'<table><tbody>'+rows+'</tbody></table>'
+    +'<div class="stamm">Stammformen: '+esc(L.stamm(st))+badge+'</div>';
+  $('sol').hidden=false;
+}
+
+function check(){
+  if(!state||solved){return;}
+  var raw=$('ans').value,r=L.evaluate(state,raw),pts;
+  if(r.status==='empty'){setFb('Schreib zuerst die Verbform(en) oder den ganzen Satz.','warn');return;}
+  if(r.status==='ok'){
+    pts=attempts===0?10:5;score+=pts;streak++;solved=true;
+    setFb('✔ Richtig! +'+pts+' Punkte','good');winSound();
+    $('ans').disabled=true;$('btnCheck').disabled=true;updateScore();showSolution();return;
+  }
+  attempts++;badSound();
+  if(r.status==='verbok'){
+    setFb('Die Verbform stimmt. Im Rest ist aber noch etwas anders (Wörter oder Schreibung). Du kannst auch nur die Verbform(en) schreiben.','warn');
+  }else if(r.status==='othertense'){
+    if(state.kind==='past'){setFb('Das ist '+L.TN[r.tense]+'. Die Zeitangabe zeigt Vergangenheit – hier brauchst du '+L.TN[state.tense]+'.','bad');}
+    else{setFb('Das ist '+L.TN[r.tense]+'. Die Zeitangabe zeigt '+(state.kind==='pres'?'Gegenwart':'Zukunft')+' – hier passt das Präsens.','bad');}
+  }else{
+    setFb('Noch nicht ganz. Prüfe die Person (ich, du, er …), die Endung und – beim Perfekt – haben oder sein.','bad');
+  }
+}
+function reveal(){
+  if(!state){return;}
+  if(!solved){streak=0;updateScore();setFb('','');}
+  solved=true;$('ans').disabled=true;$('btnCheck').disabled=true;showSolution();
+}
+
+/* Ereignisse */
+$('spin').addEventListener('click',spin);
+$('btnCheck').addEventListener('click',check);
+$('btnReveal').addEventListener('click',reveal);
+$('ans').addEventListener('keydown',function(e){if(e.key==='Enter'||e.keyCode===13){e.preventDefault();check();}});
+(function(){
+  var i;
+  function bind(k){
+    holdBtns[k].addEventListener('click',function(){
+      held[k]=!held[k];
+      holdBtns[k].className='hold'+(held[k]?' on':'');
+      holdBtns[k].setAttribute('aria-pressed',held[k]?'true':'false');
+      holdBtns[k].textContent=held[k]?'🔒 Gehalten':'🔓 Halten';
+    });
+  }
+  for(i=0;i<3;i++){bind(i);}
+})();
+$('selPast').addEventListener('change',function(){cfg.past=this.value;});
+$('selTense').addEventListener('change',function(){cfg.tense=this.value;});
+$('selTl').addEventListener('change',function(){tlOn=(this.value==='on');updateTl();});
+$('chkSound').addEventListener('change',function(){soundOn=this.checked;if(soundOn){clack();}});
+$('resetScore').addEventListener('click',function(){score=0;streak=0;updateScore();});
+document.addEventListener('keydown',function(e){
+  var tag=document.activeElement?document.activeElement.tagName:'';
+  if((e.key===' '||e.keyCode===32)&&tag!=='INPUT'&&tag!=='SELECT'&&tag!=='BUTTON'&&tag!=='TEXTAREA'){e.preventDefault();spin();}
+});
+updateScore();updateTl();
+})();
+</script>
+</body>
+</html>
