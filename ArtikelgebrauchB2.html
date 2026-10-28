@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"></head><body>
+<title>Artikelgebrauch B2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Literata:opsz,wght@7..72,400;7..72,600;7..72,700&family=Vazirmatn:wght@400;600&display=swap">
+<style>
+/* Layout: Lesetext links, Arbeitsfeld rechts (Desktop) bzw. unten fixiert (Handy). Drei Artikelarten = drei Farben. */
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --ink:#1B2230; --muted:#5A6378; --line:#D9DEE7;
+  --accent:#2B4AA8; --accent-soft:#E5EBFA;
+  --tN:#6A52B3; --tN-soft:#EEEAFB;
+  --tU:#9C5A00; --tU-soft:#FBEFDC;
+  --tB:#0A6C7A; --tB-soft:#DCF1F3;
+  --ok:#1C7342; --ok-soft:#E0F2E7; --bad:#AE2A21; --bad-soft:#FBE5E3;
+  --shadow:0 1px 2px rgba(20,30,60,.06),0 6px 24px rgba(20,30,60,.08);
+  --f-text:"Literata", Georgia, "Times New Roman", serif;
+  --f-ui:"Atkinson Hyperlegible", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11151C; --surface:#1A2029; --ink:#E6E9F0; --muted:#9BA4B6; --line:#2D3542;
+    --accent:#93AAF4; --accent-soft:#232D47;
+    --tN:#B7A8F3; --tN-soft:#2A2442;
+    --tU:#F0B45A; --tU-soft:#3A2D17;
+    --tB:#62C7D4; --tB-soft:#15343A;
+    --ok:#62CB8D; --ok-soft:#173326; --bad:#F27E75; --bad-soft:#3B1F1D;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11151C; --surface:#1A2029; --ink:#E6E9F0; --muted:#9BA4B6; --line:#2D3542;
+  --accent:#93AAF4; --accent-soft:#232D47;
+  --tN:#B7A8F3; --tN-soft:#2A2442;
+  --tU:#F0B45A; --tU-soft:#3A2D17;
+  --tB:#62C7D4; --tB-soft:#15343A;
+  --ok:#62CB8D; --ok-soft:#173326; --bad:#F27E75; --bad-soft:#3B1F1D;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 24px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:16px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 48px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h1,h2,h3{text-wrap:balance;margin:0}
+
+/* Kopf */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.brand h1{font-family:var(--f-text);font-weight:700;font-size:clamp(1.6rem,3.2vw,2.2rem);letter-spacing:-.01em}
+.brand p{margin:4px 0 0;color:var(--muted)}
+.lvl{display:inline-block;font-family:var(--f-ui);font-size:.8rem;font-weight:700;letter-spacing:.06em;border:1.5px solid var(--accent);color:var(--accent);border-radius:999px;padding:1px 9px;vertical-align:middle;margin-left:8px;transform:translateY(-3px)}
+.legend{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;font-weight:700;border-radius:999px;padding:3px 10px}
+.chip.N{background:var(--tN-soft);color:var(--tN)} .chip.U{background:var(--tU-soft);color:var(--tU)} .chip.B{background:var(--tB-soft);color:var(--tB)}
+
+.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:16px 0 20px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font-weight:700;color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:.92rem;color:var(--muted)}
+.toggle input{width:18px;height:18px;accent-color:var(--accent)}
+
+.intro{max-width:70ch;color:var(--muted);margin:0 0 18px}
+.intro strong{color:var(--ink)}
+.stats{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.92rem;color:var(--muted);margin-bottom:14px;font-variant-numeric:tabular-nums}
+.stats b{color:var(--ink)}
+.progress{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:18px;max-width:70ch}
+.progress span{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+
+/* Übung 1 */
+.ex1{display:block}
+.reading{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,34px) 26px;min-width:0}
+.reading h2{font-family:var(--f-text);font-size:1.5rem;margin-bottom:10px}
+.reading p{font-family:var(--f-text);font-size:1.1rem;line-height:2.15;max-width:68ch;margin:0 0 .9em}
+.gap{display:inline-flex;align-items:baseline;justify-content:center;gap:2px;min-width:3.1em;padding:0 .35em;margin:0 .05em;
+  font-family:var(--f-ui);font-size:.9em;line-height:1.55;border:none;border-bottom:2px dashed var(--muted);border-radius:6px 6px 2px 2px;
+  background:var(--bg);color:var(--muted);scroll-margin-top:22vh;vertical-align:baseline}
+.gap .gn{font-size:.72em;font-weight:700;opacity:.8}
+.gap:hover{background:var(--accent-soft)}
+.gap.is-active{outline:2.5px solid var(--accent);outline-offset:1px;background:var(--accent-soft);color:var(--accent)}
+.gap.is-done{border-bottom-style:solid;font-weight:700}
+.gap.is-done.N{background:var(--tN-soft);color:var(--tN);border-color:var(--tN)}
+.gap.is-done.U{background:var(--tU-soft);color:var(--tU);border-color:var(--tU)}
+.gap.is-done.B{background:var(--tB-soft);color:var(--tB);border-color:var(--tB)}
+.gap sup{font-size:.62em;font-weight:700;opacity:.75;margin-left:1px}
+.gap.half{border-bottom-style:solid;border-color:var(--accent)}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px 18px;min-width:0}
+.ph{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.gapno{font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.x{border:1px solid var(--line);background:var(--surface);border-radius:8px;width:34px;height:34px;font-size:1.2rem;line-height:1}
+.ctx{font-family:var(--f-text);font-size:1.08rem;margin:0 0 12px;padding:10px 12px;background:var(--bg);border-radius:10px}
+.ctxgap{display:inline-block;min-width:2.6em;text-align:center;font-family:var(--f-ui);font-weight:700;border-bottom:2px solid var(--accent);color:var(--accent);padding:0 4px}
+.ctxgap.N{color:var(--tN);border-color:var(--tN)} .ctxgap.U{color:var(--tU);border-color:var(--tU)} .ctxgap.B{color:var(--tB);border-color:var(--tB)}
+.step{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.step h3{font-size:1rem;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.sn{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:.8rem}
+.step.locked{opacity:.45}
+.grp{margin-bottom:8px}
+.grp-l{font-size:.74rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px}
+.grp-l.N{color:var(--tN)} .grp-l.U{color:var(--tU)} .grp-l.B{color:var(--tB)}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{border:1.5px solid var(--line);background:var(--surface);border-radius:9px;padding:7px 11px;min-width:46px;font-weight:700;font-size:.98rem}
+.opt.N{border-color:color-mix(in srgb,var(--tN) 45%,var(--line))}
+.opt.U{border-color:color-mix(in srgb,var(--tU) 45%,var(--line))}
+.opt.B{border-color:color-mix(in srgb,var(--tB) 45%,var(--line))}
+.opt:hover:not([disabled]){background:var(--accent-soft)}
+.opt.big{padding:10px 14px;flex:1 1 140px;text-align:center}
+.opt[disabled].wrong,.rule[disabled].wrong{opacity:.5;text-decoration:line-through;border-color:var(--bad);cursor:not-allowed}
+.rules{display:grid;gap:6px}
+.rule{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px}
+.rule:hover:not([disabled]){background:var(--accent-soft)}
+.code{flex:none;display:inline-grid;place-items:center;min-width:30px;height:24px;border-radius:6px;font-size:.78rem;font-weight:700;padding:0 5px}
+.code.N{background:var(--tN-soft);color:var(--tN)} .code.U{background:var(--tU-soft);color:var(--tU)} .code.B{background:var(--tB-soft);color:var(--tB)}
+.rule .rl{display:block;font-weight:700;line-height:1.3}
+.rt{display:block;font-family:var(--f-ui);font-size:.92rem;line-height:1.35;color:var(--ink);opacity:.85;margin-top:2px}
+.rt[dir="rtl"]{font-family:"Vazirmatn","Noto Naskh Arabic","Segoe UI",Tahoma,sans-serif;font-size:.98rem}
+.res .rt{display:inline;margin-left:6px;font-weight:400}
+.toggle select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:5px 8px}
+.settings{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.rule .rx{display:block;font-size:.86rem;color:var(--muted);font-style:italic}
+.msg{margin:8px 0 0;font-size:.93rem;padding:7px 10px;border-radius:8px}
+.msg.bad{background:var(--bad-soft);color:var(--bad)}
+.msg.hint{background:var(--accent-soft);color:var(--ink)}
+.res{display:flex;align-items:center;gap:8px;font-weight:700;margin:0}
+.res .tick{color:var(--ok)}
+.sol{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--ok-soft)}
+.sol p{margin:0 0 6px} .sol p:last-child{margin:0}
+.sol .alt{font-size:.92rem;color:var(--muted)}
+.link{border:none;background:none;color:var(--accent);text-decoration:underline;padding:0;font-weight:700}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{border:none;background:var(--accent);color:var(--bg);border-radius:10px;padding:10px 16px;font-weight:700}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.btn.warn{background:var(--bad);color:var(--bg)}
+.muted{color:var(--muted)}
+.final{padding:12px 14px;border-radius:10px;background:var(--accent-soft);margin-top:10px}
+
+@media (min-width:980px){
+  .ex1{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:26px;align-items:start}
+  .panel{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}
+  .panel.closed{display:block}
+  .x{display:none}
+}
+@media (max-width:979.98px){
+  .panel{position:fixed;left:0;right:0;bottom:0;z-index:20;max-height:56vh;overflow:auto;border-radius:16px 16px 0 0;border-bottom:none;
+    padding-top:14px;padding-bottom:calc(16px + env(safe-area-inset-bottom, 0px));
+    padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+  .panel.closed{display:none}
+  .ex1.open .reading{margin-bottom:58vh}
+}
+
+/* Übung 2 */
+.pairs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));gap:16px}
+.pair{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+.pair h3{font-family:var(--f-text);font-size:1.15rem;margin-bottom:8px}
+.mini{padding:10px 0;border-top:1px solid var(--line)}
+.mini:first-of-type{border-top:none}
+.mini .sent{font-family:var(--f-text);font-size:1.05rem;line-height:1.9;margin:0 0 8px}
+.slot{display:inline-block;min-width:2.8em;text-align:center;font-family:var(--f-ui);font-weight:700;border-bottom:2px dashed var(--muted);color:var(--muted);padding:0 4px}
+.slot.N{color:var(--tN);border:none;background:var(--tN-soft);border-radius:5px}
+.slot.U{color:var(--tU);border:none;background:var(--tU-soft);border-radius:5px}
+.slot.B{color:var(--tB);border:none;background:var(--tB-soft);border-radius:5px}
+.mini .opts .opt{padding:5px 9px;min-width:40px;font-size:.92rem}
+.mini .grp{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:5px}
+.mini .grp-l{margin:0 4px 0 0;min-width:84px}
+.expl{margin:6px 0 0;font-size:.93rem;padding:8px 10px;border-radius:8px;background:var(--ok-soft)}
+.contrast{margin:10px 0 0;padding:10px 12px;border-radius:10px;background:var(--accent-soft);font-size:.93rem}
+
+/* Übung 3 */
+.errs{display:grid;gap:14px;max-width:860px}
+.err{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 18px}
+.err .num{font-size:.78rem;font-weight:700;color:var(--muted);letter-spacing:.06em}
+.err .sent{font-family:var(--f-text);font-size:1.1rem;line-height:2;margin:4px 0 8px}
+.ph-btn{font-family:var(--f-text);font-size:1em;border:none;border-bottom:2px solid var(--accent);background:var(--accent-soft);color:var(--ink);border-radius:5px 5px 0 0;padding:0 4px;line-height:1.5}
+.ph-btn:hover:not([disabled]){background:color-mix(in srgb,var(--accent) 22%,var(--surface))}
+.ph-btn.no{border-color:var(--ok);background:var(--ok-soft);cursor:default}
+.ph-btn.hit{border-color:var(--bad);background:var(--bad-soft);text-decoration:line-through}
+.ph-btn.fixed{border-color:var(--ok);background:var(--ok-soft);text-decoration:none}
+.err .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* Regeln */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px}
+.rcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+.rcard h3{font-family:var(--f-text);font-size:1.15rem;margin-bottom:10px}
+.rcard h3 small{display:block;font-family:var(--f-ui);font-size:.8rem;font-weight:400;color:var(--muted);margin-top:2px}
+.rcard ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.rcard li{display:flex;gap:10px;align-items:flex-start}
+.rcard li b{display:block;line-height:1.3}
+.rcard li i{display:block;font-size:.9rem;color:var(--muted)}
+.notes{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 20px;max-width:880px}
+.notes h3{font-family:var(--f-text);font-size:1.15rem;margin-bottom:8px}
+.notes ul{margin:0;padding-left:1.2em;display:grid;gap:6px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Artikelgebrauch <span class="lvl">B2</span></h1>
+      <p>Nullartikel, unbestimmter oder bestimmter Artikel – und welche Regel greift?</p>
+    </div>
+    <div class="legend" aria-label="Farblegende">
+      <span class="chip N">∅ kein Artikel</span>
+      <span class="chip U">ein · eine … unbestimmt</span>
+      <span class="chip B">der · die … bestimmt</span>
+    </div>
+  </header>
+
+  <div class="bar">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-ex1" aria-selected="true" data-tab="ex1">Übung 1 · Lückentext</button>
+      <button class="tab" role="tab" id="tab-ex2" aria-selected="false" data-tab="ex2">Übung 2 · Gleiches Nomen</button>
+      <button class="tab" role="tab" id="tab-ex3" aria-selected="false" data-tab="ex3">Übung 3 · Fehlersuche</button>
+      <button class="tab" role="tab" id="tab-rules" aria-selected="false" data-tab="rules">Regeln</button>
+    </div>
+    <div class="settings">
+      <label class="toggle"><input type="checkbox" id="formmode" checked> Artikelform wählen (der / den / dem …)</label>
+      <label class="toggle" for="ruleslang">Regeln übersetzen:
+        <select id="ruleslang">
+          <option value="">nur Deutsch</option>
+          <option value="en">English</option>
+          <option value="ru">Русский</option>
+          <option value="uk">Українська</option>
+          <option value="ar">العربية</option>
+          <option value="tr">Türkçe</option>
+          <option value="fa">فارسی</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <!-- ÜBUNG 1 -->
+  <section id="ex1" data-sec>
+    <p class="intro">In diesem Text fehlen <strong>alle Artikel</strong>. Tippe auf eine Lücke. <strong>Schritt 1:</strong> Wähle, ob ein Artikel fehlt und welcher (∅ = kein Artikel). <strong>Schritt 2:</strong> Wähle die Regel, die hier greift.</p>
+    <div class="stats"><span>Gelöst: <b id="s1-done">0</b> / <b id="s1-total">0</b></span><span>Punkte: <b id="s1-pts">0</b> / <b id="s1-max">0</b></span><span class="muted">1 Punkt je Schritt, wenn er beim ersten Versuch stimmt</span></div>
+    <div class="progress"><span id="s1-bar"></span></div>
+    <div class="ex1 open" id="ex1grid">
+      <article class="reading">
+        <h2>Sonjas Sonntag</h2>
+        <div id="text"></div>
+        <div class="actions"><button class="btn ghost" id="reset1">Übung 1 neu starten</button></div>
+      </article>
+      <aside class="panel" id="panel" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <!-- ÜBUNG 2 -->
+  <section id="ex2" data-sec hidden>
+    <p class="intro">Gleiches Nomen, zwei Sätze – aber nicht immer derselbe Artikel. Ergänze den passenden Artikel (oder ∅). Danach siehst du, welche Regel greift.</p>
+    <div class="stats"><span>Gelöst: <b id="s2-done">0</b> / <b id="s2-total">0</b></span><span>Beim ersten Versuch richtig: <b id="s2-pts">0</b></span></div>
+    <div class="pairs" id="pairs"></div>
+    <div class="actions"><button class="btn ghost" id="reset2">Übung 2 neu starten</button></div>
+  </section>
+
+  <!-- ÜBUNG 3 -->
+  <section id="ex3" data-sec hidden>
+    <p class="intro">Manche Sätze enthalten <strong>einen Artikelfehler</strong>, manche sind korrekt. Tippe auf die fehlerhafte Stelle – oder auf „Kein Fehler“. Wähle dann die richtige Form.</p>
+    <div class="stats"><span>Bearbeitet: <b id="s3-done">0</b> / <b id="s3-total">0</b></span><span>Fehlerfrei gelöst: <b id="s3-pts">0</b></span></div>
+    <div class="errs" id="errs"></div>
+    <div class="actions"><button class="btn ghost" id="reset3">Übung 3 neu starten</button></div>
+  </section>
+
+  <!-- REGELN -->
+  <section id="rules" data-sec hidden>
+    <p class="intro">Vor einem Nomen steht im Deutschen normalerweise ein Artikel. Diese Regeln erklären, wann der unbestimmte, der bestimmte oder gar kein Artikel steht. Die Kürzel (U1, B3, N5 …) erscheinen auch in den Übungen.</p>
+    <div class="rgrid" id="rgrid"></div>
+    <div class="notes">
+      <h3>Gut zu wissen</h3>
+      <ul>
+        <li><b>Generalisierend</b> (die ganze Art ist gemeint): bestimmter und unbestimmter Artikel sind möglich – <i>Ein Hund braucht Bewegung. / Der Hund braucht Bewegung.</i> Im Plural geht auch der Nullartikel: <i>Hunde brauchen Bewegung.</i></li>
+        <li><b>Plural von „ein/eine“</b> ist immer der Nullartikel: <i>ein Kind – Kinder</i>.</li>
+        <li><b>Unzählbare Nomen</b> haben manchmal einen Plural mit anderer Bedeutung: <i>Zeit – in schweren Zeiten</i> (= Epochen). <i>Sonne</i> kann „Sonnenschein“ bedeuten: <i>Wir hatten viel Sonne.</i></li>
+        <li><b>Nach mit, ohne, zu</b> fehlt der Artikel nur <i>oft</i>, nicht immer: <i>zu Fuß, ohne Zucker</i> – aber <i>mit einem großen Koffer</i>.</li>
+        <li><b>Beruf mit Adjektiv</b> bekommt meist einen Artikel: <i>Er ist Lehrer.</i> – <i>Er ist ein guter Lehrer.</i></li>
+        <li><b>Einige Ländernamen</b> haben immer einen Artikel: <i>die Schweiz, die Türkei, der Iran, die Niederlande, die USA</i>.</li>
+        <li><b>Namen in der Umgangssprache:</b> Besonders im Süden (Bayern, Österreich, Schweiz) sagt man oft <i>die Lisa, der Tim</i>. In der Standardsprache steht kein Artikel.</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+"use strict";
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function capF(s){ return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+function typeOf(f){ if(f === "") return "N"; if(f.indexOf("ein") === 0) return "U"; return "B"; }
+function shuffle(a){ var b=a.slice(), i, j, t; for(i=b.length-1;i>0;i--){ j=Math.floor(Math.random()*(i+1)); t=b[i]; b[i]=b[j]; b[j]=t; } return b; }
+
+var FORMS = { U:["ein","eine","einen","einem","einer","eines"], B:["der","die","das","den","dem","des"] };
+var TYPES = { N:"kein Artikel (Nullartikel)", U:"unbestimmter Artikel", B:"bestimmter Artikel" };
+var ORDER = ["U1","U2","B1","B2","B3","B4","B5","B6","B7","N1","N2","N3","N4","N5","N6","N7"];
+
+var RULES = {
+  U1:{t:"U", l:"zum ersten Mal genannt", x:"Da steht ein Fahrrad.", q:"Wird das Nomen hier zum ersten Mal erwähnt?", d:"Das Nomen wird hier zum ersten Mal genannt."},
+  U2:{t:"U", l:"generalisierend", x:"Eine Katze ist ein Raubtier.", q:"Geht es um die ganze Art – nicht um ein bestimmtes Exemplar?", d:"Generalisierend: Gemeint ist die ganze Art, kein bestimmtes Exemplar."},
+  B1:{t:"B", l:"bekannt aus dem Text (vorher genannt)", x:"Da steht ein Fahrrad. Das Fahrrad ist rot.", q:"Wurde das Nomen im Text schon genannt?", d:"Das Nomen ist aus dem Text bekannt – es wurde vorher schon genannt."},
+  B2:{t:"B", l:"bekannt aus der Situation", x:"Wo ist das Auto? (= unser Auto)", q:"Ist aus der Situation klar, was gemeint ist?", d:"Aus der Situation ist klar, was gemeint ist."},
+  B3:{t:"B", l:"gibt es nur einmal", x:"der Mond, die Bundesregierung", q:"Gibt es das nur einmal?", d:"Das gibt es nur einmal."},
+  B4:{t:"B", l:"bei Superlativ und Daten", x:"der höchste Berg, der erste Juni", q:"Steht ein Superlativ oder ein Datum dabei?", d:"Superlativ oder Datum: bestimmter Artikel."},
+  B5:{t:"B", l:"im Satz definiert", x:"das Haus da hinten; der Mann, den ich kenne", q:"Bestimmt der Satz selbst genau, was gemeint ist (z. B. durch einen Relativsatz, einen Genitiv oder „von …“)?", d:"Der Satz selbst bestimmt genau, was gemeint ist."},
+  B6:{t:"B", l:"generalisierend", x:"Die Katze ist ein Raubtier.", q:"Geht es um die ganze Art?", d:"Generalisierend: Gemeint ist die ganze Art."},
+  B7:{t:"B", l:"Name mit Adjektiv", x:"das alte Wien, die kleine Mia", q:"Steht vor dem Namen ein Adjektiv?", d:"Name mit Adjektiv: bestimmter Artikel."},
+  N1:{t:"N", l:"Unzählbares (Wörter ohne Plural)", x:"Durst, Geld, Milch", q:"Kann man das zählen? Hat das Wort in dieser Bedeutung einen Plural?", d:"Unzählbares Nomen (kein Plural in dieser Bedeutung): kein Artikel."},
+  N2:{t:"N", l:"Name (ohne Adjektiv)", x:"Tom, Kanada, Hamburg", q:"Ist das ein Name ohne Adjektiv?", d:"Name ohne Adjektiv: kein Artikel."},
+  N3:{t:"N", l:"Berufsbezeichnung", x:"Sie ist Ärztin. Er wird Koch.", q:"Ist das ein Beruf (z. B. nach „sein“ oder „werden“)?", d:"Berufsbezeichnung: kein Artikel."},
+  N4:{t:"N", l:"oft nach ohne, mit, zu", x:"ohne Pause, mit Absicht, zu Fuß", q:"Steht das Nomen in einer festen Wendung nach „ohne“, „mit“ oder „zu“?", d:"Nach „ohne“, „mit“, „zu“ steht oft kein Artikel."},
+  N5:{t:"N", l:"Verbgefährte (feste Nomen-Verb-Verbindung)", x:"Klavier spielen, Auto fahren", q:"Bildet das Nomen mit dem Verb eine feste Verbindung (oft Hobby oder Tätigkeit)?", d:"Verbgefährte (feste Nomen-Verb-Verbindung): kein Artikel."},
+  N6:{t:"N", l:"Funktionsverbgefüge", x:"Kritik üben, Abschied nehmen", q:"Ist das ein Funktionsverbgefüge (Nomen + Verb mit fester Bedeutung)?", d:"Funktionsverbgefüge: kein Artikel."},
+  N7:{t:"N", l:"Plural von ein/eine", x:"ein Mann – Männer", q:"Ist das ein Plural, der neu ist oder allgemein gemeint ist?", d:"Plural von „ein/eine“: kein Artikel."}
+};
+
+
+/* Übersetzungen der Regeln */
+var TR = {
+ en:{U1:"mentioned for the first time",U2:"generalizing (the whole kind is meant)",B1:"known from the text (mentioned before)",B2:"known from the situation",B3:"exists only once (unique)",B4:"with superlatives and dates",B5:"defined in the sentence itself",B6:"generalizing (the whole kind is meant)",B7:"name with an adjective",N1:"uncountable (words without a plural)",N2:"name (without an adjective)",N3:"job title / profession",N4:"often after „ohne“, „mit“, „zu“",N5:"fixed noun–verb combination (e.g. „Klavier spielen“)",N6:"support-verb construction (fixed noun + verb, e.g. „Kritik üben“)",N7:"plural of „ein/eine“",h:"Which rule applies?"},
+ ru:{U1:"упоминается впервые",U2:"обобщение (имеется в виду весь вид, класс)",B1:"известно из текста (упоминалось раньше)",B2:"понятно из ситуации",B3:"существует в единственном экземпляре",B4:"при превосходной степени и датах",B5:"уточняется в самом предложении",B6:"обобщение (имеется в виду весь вид, класс)",B7:"имя собственное с прилагательным",N1:"неисчисляемое (слова без множественного числа)",N2:"имя собственное (без прилагательного)",N3:"название профессии",N4:"часто после «ohne», «mit», «zu»",N5:"устойчивое сочетание существительного с глаголом (напр. «Klavier spielen»)",N6:"устойчивое сочетание с функциональным глаголом (напр. «Kritik üben»)",N7:"множественное число от «ein/eine»",h:"Какое правило действует?"},
+ uk:{U1:"згадується вперше",U2:"узагальнення (йдеться про весь вид, клас)",B1:"відомо з тексту (згадувалося раніше)",B2:"зрозуміло із ситуації",B3:"існує в єдиному екземплярі",B4:"із найвищим ступенем порівняння та датами",B5:"уточнюється в самому реченні",B6:"узагальнення (йдеться про весь вид, клас)",B7:"власна назва з прикметником",N1:"незлічуване (слова без множини)",N2:"власна назва (без прикметника)",N3:"назва професії",N4:"часто після «ohne», «mit», «zu»",N5:"стале сполучення іменника з дієсловом (напр. «Klavier spielen»)",N6:"стале сполучення з функціональним дієсловом (напр. «Kritik üben»)",N7:"множина від «ein/eine»",h:"Яке правило діє?"},
+ ar:{U1:"يُذكر لأول مرة",U2:"تعميم (المقصود النوع كلّه)",B1:"معروف من النص (ذُكر من قبل)",B2:"معروف من الموقف",B3:"لا يوجد منه إلا واحد",B4:"مع صيغة التفضيل والتواريخ",B5:"مُحدَّد داخل الجملة نفسها",B6:"تعميم (المقصود النوع كلّه)",B7:"اسم علم مع صفة",N1:"غير معدود (كلمات ليس لها جمع)",N2:"اسم علم (بدون صفة)",N3:"اسم مهنة",N4:"غالبًا بعد ohne وmit وzu",N5:"تركيب ثابت من اسم وفعل (مثل Klavier spielen)",N6:"تركيب ثابت مع فعل مساعد (مثل Kritik üben)",N7:"جمع ein/eine",h:"أيّ قاعدة تنطبق؟"},
+ tr:{U1:"ilk kez söz ediliyor",U2:"genelleme (türün tamamı kastediliyor)",B1:"metinden biliniyor (daha önce söz edildi)",B2:"durumdan anlaşılıyor",B3:"yalnızca bir tane var",B4:"üstünlük derecesinde (en …) ve tarihlerde",B5:"cümlenin kendisinde belirleniyor",B6:"genelleme (türün tamamı kastediliyor)",B7:"sıfatlı özel isim",N1:"sayılamayan (çoğulu olmayan kelimeler)",N2:"özel isim (sıfatsız)",N3:"meslek adı",N4:"çoğu zaman „ohne“, „mit“, „zu“ sonrasında",N5:"kalıplaşmış isim–fiil birleşimi (ör. „Klavier spielen“)",N6:"yardımcı fiilli kalıp (ör. „Kritik üben“)",N7:"„ein/eine“nin çoğulu",h:"Hangi kural geçerli?"},
+ fa:{U1:"برای اولین بار ذکر می‌شود",U2:"تعمیم (منظور کلِ آن نوع است)",B1:"از متن معلوم است (قبلاً ذکر شده)",B2:"از موقعیت معلوم است",B3:"فقط یکی از آن وجود دارد",B4:"با صفت عالی و تاریخ‌ها",B5:"در خودِ جمله مشخص شده است",B6:"تعمیم (منظور کلِ آن نوع است)",B7:"اسم خاص همراه با صفت",N1:"غیرقابل‌شمارش (کلمات بدون جمع)",N2:"اسم خاص (بدون صفت)",N3:"عنوان شغل",N4:"اغلب بعد از ohne، mit، zu",N5:"ترکیب ثابتِ اسم و فعل (مثلاً Klavier spielen)",N6:"ترکیب ثابت با فعل کمکی (مثلاً Kritik üben)",N7:"جمعِ ein/eine",h:"کدام قاعده صدق می‌کند؟"}
+};
+var lang = "";
+function trHTML(key){
+  if(!lang || !TR[lang] || !TR[lang][key]) return "";
+  var rtl = (lang === "ar" || lang === "fa");
+  return '<span class="rt" lang="'+lang+'" dir="'+(rtl?'rtl':'ltr')+'">'+esc(TR[lang][key])+'</span>';
+}
+
+/* ---------- Übung 1: Lückentext ----------
+   {form:REGEL,REGEL|alternative:REGEL#Erklärung}  leere Form = Nullartikel, ^ = großschreiben */
+var TEXT = [
+ "Es war {der:B4#Bei Daten steht der bestimmte Artikel: „der dritte Mai“.} dritte Mai. {:N2#„Sonja“ ist ein Name ohne Adjektiv.} Sonja hatte endlich {:N1#„Zeit“ ist hier unzählbar (kein Plural in dieser Bedeutung).} Zeit und wollte waschen. Draußen schien {die:B3#Es gibt nur eine Sonne.} Sonne, und {der:B3,B2#Es gibt nur einen Himmel. (Auch akzeptiert: aus der Situation bekannt.)} Himmel war blau. Doch plötzlich machte {die:B2#Die Waschmaschine wird zwar zum ersten Mal genannt, aber aus der Situation ist klar: Es ist Sonjas Waschmaschine (wie „Wo ist das Auto?“ = dein Auto).} Waschmaschine {ein:U1#Das Geräusch ist neu – es wird hier zum ersten Mal genannt.} seltsames Geräusch, und {:N1#„Wasser“ ist ein Stoff und unzählbar.} Wasser lief über {den:B2#Gemeint ist der Boden in Sonjas Wohnung – klar aus der Situation.} Boden. {^die:B7#„Sonja“ ist ein Name – aber hier mit Adjektiv („arme“). Dann steht der bestimmte Artikel.} arme Sonja war verzweifelt.",
+ "Sie rief sofort {:N2} Lukas an, {einen:U1#Der Freund wird hier zum ersten Mal genannt.} alten Freund. Er ist {:N3#Berufsbezeichnung nach „sein“: kein Artikel.} Ingenieur und hat immer {:N1#„Geduld“ hat keinen Plural.} Geduld. „Kennst du {einen:U1#Sonja fragt nach irgendeinem Handwerker – noch ist keiner bekannt.} Handwerker?“, fragte {:N2} Sonja. „{^der:B5#Der Relativsatz „den ich kenne“ bestimmt genau, welcher Handwerker gemeint ist. Es ist ein anderer Handwerker als der in Sonjas Frage.} Handwerker, den ich kenne, hat nie {:N1} Zeit“, antwortete er. „Aber {der:B5#„von Frau Klein“ bestimmt im Satz, welcher Nachbar gemeint ist.} Nachbar von {:N2#„Frau Klein“: Anrede + Name, kein Artikel.} Frau Klein ist {:N3} Elektriker. {^der:B1#„Der Mann“ ist der Nachbar von Frau Klein – er wurde gerade genannt.} Mann ist sehr zuverlässig.“",
+ "Sie fand {die:B5#Der Genitiv „des Elektrikers“ bestimmt im Satz, welche Telefonnummer gemeint ist.} Telefonnummer {des:B1#Der Elektriker wurde schon genannt (der Nachbar von Frau Klein).} Elektrikers und rief ihn an. Er hieß {:N2} Ahmet Demir und stammte aus {dem:B7#Städtename mit Adjektiv („sonnigen“): bestimmter Artikel. Ohne Adjektiv hieße es „aus Izmir“.} sonnigen Izmir. Kurz danach stand er mit {einem:U1#Der Koffer wird zum ersten Mal genannt. Nach „mit“ fehlt der Artikel nur oft – hier nicht, weil ein konkreter, zählbarer Gegenstand gemeint ist.} großen Werkzeugkoffer vor {der:B2#Gemeint ist Sonjas Wohnungstür – klar aus der Situation.} Tür. Er war zu {:N4#Feste Wendung mit „zu“: „zu Fuß“.} Fuß gekommen.",
+ "{^:N2} Herr Demir sah sich {die:B1#„Die Maschine“ ist die Waschmaschine, die schon genannt wurde.} Maschine genau an. Dann holte er {:N7#Zangen werden zum ersten Mal genannt: Plural von „eine Zange“, also kein Artikel.} Zangen und {:N7#Plural von „ein Schraubenzieher“ (zum ersten Mal genannt): kein Artikel.} Schraubenzieher aus {dem:B1#Der Werkzeugkoffer wurde schon genannt.} Koffer. Bald fand er {ein:U1} kleines Loch. {^das:B1#Das Loch wurde im Satz davor genannt.} Loch war schuld. „Das ist {der:B4#Superlativ („häufigste“): bestimmter Artikel.} häufigste Fehler überhaupt“, erklärte er. „{^eine:U2|die:B6#Gemeint ist keine bestimmte Waschmaschine, sondern Waschmaschinen allgemein. Generalisierend sind „eine“ und „die“ möglich.} Waschmaschine braucht {:N1#„Pflege“ hat keinen Plural.} Pflege, genau wie {ein:U2|das:B6#Auch hier: Autos allgemein (generalisierend). „ein Auto“ und „das Auto“ sind möglich.} Auto.“",
+ "{^:N2} Sonja kochte {:N1#„Tee“ ist hier ein Stoff (unzählbar).} Tee und bat ihn, {:N6#„Platz nehmen“ (= sich setzen) ist ein Funktionsverbgefüge.} Platz zu nehmen. Er trank {den:B1#Der Tee wurde gerade genannt.} Tee ohne {:N4,N1#„ohne Zucker“: Nach „ohne“ steht oft kein Artikel. (Auch akzeptiert: Zucker ist unzählbar.)} Zucker und übte {:N6#„Kritik üben“ ist ein Funktionsverbgefüge.} Kritik an {der:B5#Der Relativsatz „die die Maschine gebaut hatte“ bestimmt genau, welche Firma gemeint ist.} Firma, die {die:B1} Maschine gebaut hatte. „{^die:B6|:N7#Gemeint sind Hersteller allgemein (generalisierend). „Die Hersteller“ und „Hersteller“ (Plural ohne Artikel) sind beide möglich.} Hersteller sparen heute überall“, sagte er.",
+ "Endlich lief {die:B1} Waschmaschine wieder. „Sie sind {der:B4#Superlativ („beste“): bestimmter Artikel.} beste Elektriker in {:N2#Städtename ohne Adjektiv: kein Artikel.} Erfurt!“, rief {:N2} Sonja. {^:N2} Herr Demir lachte: „Danke! Aber {ein:U2|der:B6#Er spricht über Handwerker allgemein (generalisierend). „ein Handwerker“ und „der Handwerker“ sind möglich.} Handwerker hat nie {:N1#„Ruhe“ hat keinen Plural.} Ruhe.“ Später fuhr sie {:N5#„Rad fahren“ ist ein Verbgefährte (feste Nomen-Verb-Verbindung).} Rad, und {:N2} Lukas spielte zu {:N4#Feste Wendung mit „zu“: „zu Hause“.} Hause {:N5#„Klavier spielen“ ist ein Verbgefährte.} Klavier."
+];
+
+function parseSpec(spec){
+  var g = { cap:false, ans:[], e:"" }, h, parts, i, c;
+  if(spec.charAt(0) === "^"){ g.cap = true; spec = spec.slice(1); }
+  h = spec.indexOf("#");
+  if(h >= 0){ g.e = spec.slice(h+1); spec = spec.slice(0,h); }
+  parts = spec.split("|");
+  for(i=0;i<parts.length;i++){
+    c = parts[i].indexOf(":");
+    var f = parts[i].slice(0,c);
+    g.ans.push({ f:f, t:typeOf(f), r:parts[i].slice(c+1).split(",") });
+  }
+  return g;
+}
+function splitGaps(s){
+  var re = /\{([^}]*)\}/g, segs = [], last = 0, m;
+  while((m = re.exec(s))){ segs.push({t:s.slice(last, m.index)}); segs.push({g:m[1]}); last = re.lastIndex; }
+  segs.push({t:s.slice(last)});
+  return segs;
+}
+function tailWords(s,n){ s = s.replace(/\s+$/,""); if(!s) return ""; var w = s.split(/\s+/); return w.slice(-n).join(" "); }
+function headWords(s,n){ s = s.replace(/^\s+/,""); if(!s) return ""; var w = s.split(/\s+/); return w.slice(0,n).join(" "); }
+function shown(g, a){ return a.f === "" ? "∅" : (g.cap ? capF(a.f) : a.f); }
+function newSt(){ return { c:-1, w1:[], t1:0, w2:[], t2:0, done:false, p1:false, p2:false, rv1:false, rv2:false, rule:null, m1:"", m2:"" }; }
+
+var GAPS = [], active = 0, simple = false, armReset1 = false;
+
+function buildText(){
+  var host = $("text"), p, k, segs, para, g, btn;
+  host.innerHTML = "";
+  GAPS = [];
+  for(p=0;p<TEXT.length;p++){
+    segs = splitGaps(TEXT[p]);
+    para = document.createElement("p");
+    for(k=0;k<segs.length;k++){
+      if(segs[k].g !== undefined){
+        g = parseSpec(segs[k].g);
+        g.before = tailWords(segs[k-1].t, 4);
+        g.after = headWords(segs[k+1].t, 3);
+        g.st = newSt();
+        g.i = GAPS.length;
+        btn = document.createElement("button");
+        btn.type = "button"; btn.className = "gap"; btn.setAttribute("data-i", g.i);
+        g.el = btn;
+        para.appendChild(btn);
+        GAPS.push(g);
+      } else {
+        para.appendChild(document.createTextNode(segs[k].t));
+      }
+    }
+    host.appendChild(para);
+  }
+}
+
+function optsHTML(g, st, act){
+  var h = "", i, f, dis;
+  if(simple){
+    h += '<div class="opts">';
+    var tt = ["N","U","B"];
+    for(i=0;i<3;i++){
+      dis = st.w1.indexOf(tt[i]) >= 0;
+      h += '<button class="opt big '+tt[i]+(dis?' wrong':'')+'" data-act="'+act+'" data-v="'+tt[i]+'"'+(dis?' disabled':'')+'>'+(tt[i]==="N"?"∅ kein Artikel":(tt[i]==="U"?"unbestimmt (ein …)":"bestimmt (der …)"))+'</button>';
+    }
+    return h + '</div>';
+  }
+  dis = st.w1.indexOf("0") >= 0;
+  h += '<div class="grp"><div class="grp-l N">kein Artikel</div><div class="opts"><button class="opt N'+(dis?' wrong':'')+'" data-act="'+act+'" data-v="0"'+(dis?' disabled':'')+' aria-label="kein Artikel">∅</button></div></div>';
+  var groups = ["U","B"];
+  for(var gi=0;gi<2;gi++){
+    var T = groups[gi];
+    h += '<div class="grp"><div class="grp-l '+T+'">'+(T==="U"?"unbestimmt":"bestimmt")+'</div><div class="opts">';
+    for(i=0;i<6;i++){
+      f = FORMS[T][i]; dis = st.w1.indexOf(f) >= 0;
+      h += '<button class="opt '+T+(dis?' wrong':'')+'" data-act="'+act+'" data-v="'+f+'"'+(dis?' disabled':'')+'>'+(g.cap?capF(f):f)+'</button>';
+    }
+    h += '</div></div>';
+  }
+  return h;
+}
+
+function matchAns(g, v){
+  for(var i=0;i<g.ans.length;i++){
+    var a = g.ans[i];
+    if(simple ? a.t === v : (v === "0" ? a.f === "" : a.f === v)) return i;
+  }
+  return -1;
+}
+function step1Wrong(g, st, v){
+  st.t1++; st.w1.push(v);
+  var vt = simple ? v : (v === "0" ? "N" : typeOf(v)), same = false, i;
+  for(i=0;i<g.ans.length;i++) if(g.ans[i].t === vt) same = true;
+  if(same && !simple) st.m1 = "Die Artikelart stimmt – aber die Form passt nicht. Prüfe Genus und Kasus.";
+  else st.m1 = "Das passt hier nicht. Versuch es noch einmal.";
+}
+function altHTML(g, st){
+  var h = "", i, a, list = [];
+  var acc = g.ans[st.c].r;
+  if(acc.length > 1){
+    var others = [];
+    for(i=0;i<acc.length;i++) if(acc[i] !== st.rule) others.push('<b>'+acc[i]+'</b> ('+RULES[acc[i]].l+')');
+    if(others.length) list.push("Als Regel auch akzeptiert: " + others.join(", ") + ".");
+  }
+  for(i=0;i<g.ans.length;i++){
+    if(i === st.c) continue;
+    a = g.ans[i];
+    list.push('Auch möglich: <b>'+esc(shown(g,a))+'</b> '+esc(g.after.split(" ")[0])+' – '+a.r[0]+' ('+RULES[a.r[0]].l+').');
+  }
+  for(i=0;i<list.length;i++) h += '<p class="alt">'+list[i]+'</p>';
+  return h;
+}
+
+function renderPanel(){
+  var panel = $("panel"), grid = $("ex1grid");
+  if(active < 0){ panel.className = "panel closed"; grid.className = "ex1"; panel.innerHTML = '<p class="muted">Tippe im Text auf eine Lücke.</p>'; return; }
+  panel.className = "panel"; grid.className = "ex1 open";
+  var g = GAPS[active], st = g.st, h = "", a = st.c >= 0 ? g.ans[st.c] : null, i;
+  h += '<div class="ph"><span class="gapno">Lücke '+(active+1)+' von '+GAPS.length+'</span><button class="x" data-act="close" aria-label="Arbeitsfeld schließen">×</button></div>';
+  h += '<p class="ctx">… '+esc(g.before)+' <span class="ctxgap'+(a?' '+a.t:'')+'">'+(a?esc(shown(g,a)):'___')+'</span> '+esc(g.after)+' …</p>';
+
+  h += '<div class="step"><h3><span class="sn">1</span> Welcher Artikel passt?</h3>';
+  if(!a){
+    h += optsHTML(g, st, "f");
+    if(st.m1) h += '<p class="msg bad">'+st.m1+'</p>';
+    if(st.t1 >= 2) h += '<p class="msg hint"><b>Tipp:</b> '+RULES[g.ans[0].r[0]].q+'</p>';
+    if(st.t1 >= 3) h += '<p style="margin:8px 0 0"><button class="link" data-act="rv1">Lösung zeigen</button></p>';
+  } else {
+    h += '<p class="res"><span class="'+(st.rv1?'muted':'tick')+'">'+(st.rv1?'Lösung:':'✓')+'</span> <span class="code '+a.t+'">'+esc(shown(g,a))+'</span> '+TYPES[a.t]+'</p>';
+  }
+  h += '</div>';
+
+  h += '<div class="step'+(a?'':' locked')+'"><h3><span class="sn">2</span> <span>Welche Regel greift?'+trHTML("h")+'</span></h3>';
+  if(a && !st.done){
+    h += '<div class="rules">';
+    for(i=0;i<ORDER.length;i++){
+      var code = ORDER[i], R = RULES[code];
+      if(R.t !== a.t) continue;
+      var dis = st.w2.indexOf(code) >= 0;
+      h += '<button class="rule'+(dis?' wrong':'')+'" data-act="r" data-v="'+code+'"'+(dis?' disabled':'')+'><span class="code '+R.t+'">'+code+'</span><span><span class="rl">'+R.l+'</span>'+trHTML(code)+'<span class="rx">'+R.x+'</span></span></button>';
+    }
+    h += '</div>';
+    if(st.m2) h += '<p class="msg bad">'+st.m2+'</p>';
+    if(st.t2 >= 1) h += '<p class="msg hint"><b>Tipp:</b> '+RULES[a.r[0]].q+'</p>';
+    if(st.t2 >= 2) h += '<p style="margin:8px 0 0"><button class="link" data-act="rv2">Lösung zeigen</button></p>';
+  } else if(st.done){
+    var R2 = RULES[st.rule];
+    h += '<p class="res"><span class="'+(st.rv2?'muted':'tick')+'">'+(st.rv2?'Lösung:':'✓')+'</span> <span class="code '+R2.t+'">'+st.rule+'</span> <span>'+R2.l+trHTML(st.rule)+'</span></p>';
+    h += '<div class="sol"><p>'+esc(g.e || R2.d)+'</p>'+altHTML(g, st)+'</div>';
+  } else {
+    h += '<p class="muted" style="margin:0">Erst Schritt 1 lösen.</p>';
+  }
+  h += '</div>';
+
+  var left = 0; for(i=0;i<GAPS.length;i++) if(!GAPS[i].st.done) left++;
+  if(st.done){
+    if(left > 0) h += '<div class="actions"><button class="btn" data-act="next">Nächste Lücke →</button></div>';
+    else h += '<div class="final"><b>Geschafft!</b> Alle Lücken sind bearbeitet. Punkte: '+score1()+' von '+(GAPS.length*2)+'.</div>';
+  }
+  panel.innerHTML = h;
+}
+function score1(){ var s=0; for(var i=0;i<GAPS.length;i++){ if(GAPS[i].st.p1) s++; if(GAPS[i].st.p2) s++; } return s; }
+
+function renderGaps(){
+  for(var i=0;i<GAPS.length;i++){
+    var g = GAPS[i], st = g.st, el = g.el, cls = "gap";
+    if(i === active) cls += " is-active";
+    if(st.done){
+      var a = g.ans[st.c];
+      cls += " is-done " + a.t;
+      el.innerHTML = esc(shown(g,a)) + '<sup>'+st.rule+'</sup>';
+      el.setAttribute("aria-label", "Lücke "+(i+1)+": "+shown(g,a)+", Regel "+st.rule);
+    } else if(st.c >= 0){
+      cls += " half";
+      el.innerHTML = esc(shown(g, g.ans[st.c])) + '<sup>?</sup>';
+      el.setAttribute("aria-label", "Lücke "+(i+1)+": Regel fehlt noch");
+    } else {
+      el.innerHTML = '<span class="gn">'+(i+1)+'</span>';
+      el.setAttribute("aria-label", "Lücke "+(i+1)+", offen");
+    }
+    el.className = cls;
+  }
+}
+function renderStats1(){
+  var d=0, i; for(i=0;i<GAPS.length;i++) if(GAPS[i].st.done) d++;
+  $("s1-done").textContent = d; $("s1-total").textContent = GAPS.length;
+  $("s1-pts").textContent = score1(); $("s1-max").textContent = GAPS.length*2;
+  $("s1-bar").style.width = (GAPS.length ? (100*d/GAPS.length) : 0) + "%";
+}
+function refresh1(){ renderGaps(); renderPanel(); renderStats1(); }
+function goTo(i, scroll){
+  active = i; refresh1();
+  $("panel").scrollTop = 0;
+  if(scroll && GAPS[i]) { try { GAPS[i].el.scrollIntoView({block:"start", behavior:"smooth"}); } catch(e){ GAPS[i].el.scrollIntoView(); } }
+}
+
+$("text").addEventListener("click", function(ev){
+  var t = ev.target; while(t && t !== this && !(t.className && String(t.className).indexOf("gap") === 0)) t = t.parentNode;
+  if(!t || t === this) return;
+  goTo(parseInt(t.getAttribute("data-i"),10), false);
+});
+$("panel").addEventListener("click", function(ev){
+  var t = ev.target; while(t && t !== this && !t.getAttribute("data-act")) t = t.parentNode;
+  if(!t || t === this || t.disabled) return;
+  var act = t.getAttribute("data-act"), v = t.getAttribute("data-v");
+  var g = GAPS[active], st = g ? g.st : null, idx, i;
+  if(act === "close"){ active = -1; refresh1(); return; }
+  if(act === "next"){
+    for(i=1;i<=GAPS.length;i++){ var j=(active+i)%GAPS.length; if(!GAPS[j].st.done){ goTo(j, true); return; } }
+    return;
+  }
+  if(act === "f"){
+    if(st.c >= 0) return;
+    idx = matchAns(g, v);
+    if(idx >= 0){ st.c = idx; st.m1 = ""; if(st.t1 === 0) st.p1 = true; }
+    else step1Wrong(g, st, v);
+  } else if(act === "rv1"){
+    st.c = 0; st.rv1 = true; st.m1 = "";
+  } else if(act === "r"){
+    var acc = g.ans[st.c].r;
+    if(acc.indexOf(v) >= 0){ st.done = true; st.rule = v; st.m2 = ""; if(st.t2 === 0) st.p2 = true; }
+    else { st.t2++; st.w2.push(v); st.m2 = "Diese Regel passt hier nicht."; }
+  } else if(act === "rv2"){
+    st.done = true; st.rule = g.ans[st.c].r[0]; st.rv2 = true; st.m2 = "";
+  }
+  refresh1();
+});
+$("reset1").addEventListener("click", function(){
+  if(!armReset1){ armReset1 = true; this.textContent = "Wirklich alles löschen? Nochmal tippen"; this.className = "btn warn"; var b=this; setTimeout(function(){ armReset1=false; b.textContent="Übung 1 neu starten"; b.className="btn ghost"; }, 4000); return; }
+  armReset1 = false; this.textContent = "Übung 1 neu starten"; this.className = "btn ghost";
+  for(var i=0;i<GAPS.length;i++) GAPS[i].st = newSt();
+  goTo(0, false); window.scrollTo(0,0);
+});
+
+/* ---------- Übung 2: Gleiches Nomen ---------- */
+var PAIRS = [
+ {n:"Kaffee", s:["Ich trinke morgens immer {:N1#„Kaffee“ als Getränk allgemein: ein Stoff, unzählbar.} Kaffee.", "{^der:B5#Der Relativsatz „den du gekocht hast“ bestimmt, welcher Kaffee gemeint ist.} Kaffee, den du gekocht hast, ist zu stark."], c:"Kaffee allgemein: kein Artikel. Ein ganz bestimmter Kaffee: bestimmter Artikel."},
+ {n:"Paris", s:["{^:N2} Paris ist die Hauptstadt von Frankreich.", "Wir lieben {das:B7} nächtliche Paris."], c:"Name allein: kein Artikel. Name mit Adjektiv: bestimmter Artikel."},
+ {n:"Arzt", s:["Mein Bruder ist {:N3} Arzt.", "Mir geht es schlecht – ich brauche dringend {einen:U1#Ein Arzt wird zum ersten Mal erwähnt; welcher, ist noch offen.} Arzt."], c:"Beruf nach „sein“: kein Artikel. Eine Person, die neu ins Gespräch kommt: unbestimmter Artikel."},
+ {n:"Auto", s:["Meine Oma fährt mit 85 noch {:N5} Auto.", "Wo ist {das:B2#Gemeint ist unser Auto – klar aus der Situation.} Auto? Ich muss los."], c:"„Auto fahren“ ist ein Verbgefährte. Ein bestimmtes, bekanntes Auto: bestimmter Artikel."},
+ {n:"Sonne", s:["{^die:B3} Sonne geht im Osten auf.", "Gestern hatten wir endlich wieder {:N1#„Sonne“ bedeutet hier „Sonnenschein“ – das ist unzählbar.} Sonne."], c:"Die Sonne als Himmelskörper gibt es nur einmal. „Sonne“ als Sonnenschein ist unzählbar."},
+ {n:"Zucker", s:["Ich trinke Tee immer ohne {:N4,N1#Nach „ohne“ steht oft kein Artikel (Zucker ist außerdem unzählbar).} Zucker.", "Kannst du mir bitte {den:B2#Gemeint ist der Zucker auf dem Tisch – klar aus der Situation.} Zucker geben?"], c:"„ohne Zucker“: feste Wendung. Der Zucker, der hier auf dem Tisch steht: bestimmter Artikel."},
+ {n:"Hunger", s:["Nach dem Sport habe ich immer {:N1} Hunger.", "{^der:B5#„in der Welt“ bestimmt im Satz, welcher Hunger gemeint ist.} Hunger in der Welt ist ein großes Problem."], c:"Unzählbares Nomen: kein Artikel – außer der Satz bestimmt es genauer."},
+ {n:"Handwerker", s:["Für das neue Bad brauchen wir {einen:U1} Handwerker.", "{^der:B5#Der Relativsatz „den du empfohlen hast“ bestimmt den Handwerker.} Handwerker, den du empfohlen hast, war super."], c:"Neu und noch unbestimmt: „einen“. Durch den Relativsatz bestimmt: „der“."},
+ {n:"Kritik", s:["Die Opposition übte {:N6#„Kritik üben“ ist ein Funktionsverbgefüge – auch mit Adjektiv ohne Artikel.} deutliche Kritik an den Plänen der Regierung.", "{^die:B5#Der Genitiv „des Chefs“ bestimmt, welche Kritik gemeint ist.} Kritik des Chefs hat mich verletzt."], c:"Im Funktionsverbgefüge kein Artikel. Eine konkrete, bestimmte Kritik: bestimmter Artikel."},
+ {n:"Klavier", s:["Mein Sohn spielt seit drei Jahren {:N5} Klavier.", "{^das:B5#„in unserem Wohnzimmer“ bestimmt, welches Klavier gemeint ist.} Klavier in unserem Wohnzimmer ist über hundert Jahre alt."], c:"„Klavier spielen“ ist ein Verbgefährte. Das Instrument als Gegenstand: Artikel."},
+ {n:"Hund", s:["{^ein:U2|der:B6#Gemeint sind Hunde allgemein (generalisierend). „Ein Hund“ und „Der Hund“ sind beide möglich.} Hund braucht jeden Tag Bewegung.", "Gestern hat mich im Park {ein:U1} Hund gebissen."], c:"Zweimal „ein“ – aber aus zwei verschiedenen Gründen: allgemein gemeint vs. zum ersten Mal genannt."},
+ {n:"Zeit", s:["Ich habe heute leider wenig {:N1} Zeit.", "{^die:B5#Der Relativsatz „die wir zusammen hatten“ bestimmt, welche Zeit gemeint ist.} Zeit, die wir zusammen hatten, war wunderschön."], c:"Achtung: Der Plural „Zeiten“ hat eine andere Bedeutung, z. B. „in schweren Zeiten“."},
+ {n:"Kinder", s:["Im Park spielen {:N7#Kinder werden zum ersten Mal genannt: Plural von „ein Kind“.} Kinder.", "{^die:B5#„von nebenan“ bestimmt, welche Kinder gemeint sind.} Kinder von nebenan sind sehr laut."], c:"Neu im Plural: kein Artikel. Bestimmte Kinder: „die“."},
+ {n:"Läufer", s:["Usain Bolt war lange {der:B4} schnellste Läufer der Welt.", "Heute Morgen hat mich im Park {ein:U1} sehr schneller Läufer überholt."], c:"Superlativ: bestimmter Artikel. Ein unbekannter Läufer, zum ersten Mal genannt: unbestimmter Artikel."}
+];
+var MINIS = [];
+
+function buildPairs(){
+  var host = $("pairs"), p, k, h = "", segs, g, id;
+  MINIS = [];
+  for(p=0;p<PAIRS.length;p++){
+    h += '<div class="pair" id="pair'+p+'"><h3>'+esc(PAIRS[p].n)+'</h3>';
+    for(k=0;k<2;k++){
+      segs = splitGaps(PAIRS[p].s[k]);
+      g = parseSpec(segs[1].g); g.pre = segs[0].t; g.post = segs[2].t; g.after = headWords(g.post,1);
+      g.st = newSt(); g.pair = p; id = MINIS.length; MINIS.push(g);
+      h += '<div class="mini" id="mini'+id+'"></div>';
+    }
+    h += '<p class="contrast" id="con'+p+'" hidden><b>Vergleich:</b> '+esc(PAIRS[p].c)+'</p></div>';
+  }
+  host.innerHTML = h;
+  for(var i=0;i<MINIS.length;i++) renderMini(i);
+  renderStats2();
+}
+function renderMini(i){
+  var g = MINIS[i], st = g.st, box = $("mini"+i), a = st.c >= 0 ? g.ans[st.c] : null, h = "";
+  h += '<p class="sent">'+esc(g.pre)+'<span class="slot'+(a?' '+a.t:'')+'">'+(a?esc(shown(g,a)):'?')+'</span>'+esc(g.post)+'</p>';
+  if(!a){
+    h += optsHTML(g, st, "m");
+    if(st.m1) h += '<p class="msg bad">'+st.m1+'</p>';
+    if(st.t1 >= 2) h += '<p class="msg hint"><b>Tipp:</b> '+RULES[g.ans[0].r[0]].q+' <button class="link" data-act="mrv">Lösung zeigen</button></p>';
+  } else {
+    var code = a.r[0], R = RULES[code];
+    h += '<p class="expl"><span class="code '+R.t+'">'+code+'</span> <b>'+R.l+'</b>'+trHTML(code)+(st.rv1?' <span class="muted">(Lösung angezeigt)</span>':'')+'<br>'+esc(g.e || R.d);
+    for(var j=0;j<g.ans.length;j++){ if(j === st.c) continue; h += '<br><span class="muted">Auch möglich: <b>'+esc(shown(g,g.ans[j]))+'</b> '+esc(g.after)+' – '+g.ans[j].r[0]+' ('+RULES[g.ans[j].r[0]].l+').</span>'; }
+    h += '</p>';
+  }
+  box.innerHTML = h;
+  box.setAttribute("data-i", i);
+  var other = MINIS[i % 2 === 0 ? i+1 : i-1];
+  $("con"+g.pair).hidden = !(st.c >= 0 && other && other.st.c >= 0);
+}
+function renderStats2(){
+  var d=0, s=0, i; for(i=0;i<MINIS.length;i++){ if(MINIS[i].st.c >= 0) d++; if(MINIS[i].st.p1) s++; }
+  $("s2-done").textContent = d; $("s2-total").textContent = MINIS.length; $("s2-pts").textContent = s;
+}
+$("pairs").addEventListener("click", function(ev){
+  var t = ev.target; while(t && t !== this && !t.getAttribute("data-act")) t = t.parentNode;
+  if(!t || t === this || t.disabled) return;
+  var box = t; while(box && !(box.className === "mini")) box = box.parentNode;
+  if(!box) return;
+  var i = parseInt(box.getAttribute("data-i"),10), g = MINIS[i], st = g.st, act = t.getAttribute("data-act");
+  if(st.c >= 0) return;
+  if(act === "m"){
+    var idx = matchAns(g, t.getAttribute("data-v"));
+    if(idx >= 0){ st.c = idx; st.m1 = ""; if(st.t1 === 0) st.p1 = true; }
+    else step1Wrong(g, st, t.getAttribute("data-v"));
+  } else if(act === "mrv"){ st.c = 0; st.rv1 = true; st.m1 = ""; }
+  renderMini(i); renderStats2();
+});
+$("reset2").addEventListener("click", function(){ buildPairs(); });
+
+/* ---------- Übung 3: Fehlersuche ---------- */
+var ERRS = [
+ {s:["Meine Schwester ist ", {p:"eine Ärztin", fix:"Ärztin", o:["die Ärztin","einer Ärztin"], r:"N3", e:"Berufsbezeichnung nach „sein“: kein Artikel."}, " und wohnt in ", {p:"Leipzig"}, "."]},
+ {s:[{p:"Der Mond"}, " steht heute hell über ", {p:"der Stadt"}, "."], ok:true, e:"Korrekt: Den Mond gibt es nur einmal (B3). „Die Stadt“ ist aus der Situation klar (B2)."},
+ {s:[{p:"Kinder"}, " brauchen ", {p:"Liebe"}, " und ", {p:"eine Geduld", fix:"Geduld", o:["die Geduld","einer Geduld"], r:"N1", e:"„Geduld“ hat keinen Plural: unzählbar, also kein Artikel."}, "."]},
+ {s:["Gestern habe ich ", {p:"ein spannendes Buch"}, " gelesen. ", {p:"Ein Buch", fix:"Das Buch", o:["Buch","Die Bücher"], r:"B1", e:"Das Buch wurde im Satz davor schon genannt: bestimmter Artikel."}, " spielt in ", {p:"Japan"}, "."]},
+ {s:["Die Zugspitze ist ", {p:"höchster Berg", fix:"der höchste Berg", o:["ein höchster Berg","höchste Berg"], r:"B4", e:"Superlativ: bestimmter Artikel."}, " ", {p:"Deutschlands"}, "."]},
+ {s:["Mein Opa erzählt gern ", {p:"vom alten Berlin"}, "."], ok:true, e:"Korrekt: Name mit Adjektiv braucht den bestimmten Artikel (B7). „vom“ = „von dem“."},
+ {s:["Am Wochenende spielt ", {p:"Tim"}, " immer ", {p:"den Fußball", fix:"Fußball", o:["einen Fußball","dem Fußball"], r:"N5", e:"„Fußball spielen“ ist ein Verbgefährte: kein Artikel."}, "."]},
+ {s:["Ich trinke ", {p:"den Kaffee"}, ", den du gekocht hast, gern ohne ", {p:"Milch"}, "."], ok:true, e:"Korrekt: Der Relativsatz bestimmt den Kaffee (B5). Nach „ohne“ steht oft kein Artikel (N4)."},
+ {s:["Die Opposition übte ", {p:"scharfe Kritik"}, " an ", {p:"der Regierung"}, "."], ok:true, e:"Korrekt: „Kritik üben“ ist ein Funktionsverbgefüge (N6). „Die Regierung“ ist eindeutig – es gibt nur eine (B3)."},
+ {s:[{p:"Die Lisa", fix:"Lisa", o:["Eine Lisa","Der Lisa"], r:"N2", e:"Name ohne Adjektiv: kein Artikel. Umgangssprachlich – besonders in Süddeutschland, Österreich und der Schweiz – hört man oft „die Lisa“. In der Standardsprache steht aber kein Artikel."}, " wohnt seit 2020 in ", {p:"Wien"}, "."]},
+ {s:["Schatz, wo ist ", {p:"ein Autoschlüssel", fix:"der Autoschlüssel", o:["Autoschlüssel","einen Autoschlüssel"], r:"B2", e:"Gemeint ist unser Autoschlüssel – klar aus der Situation."}, "? Ich muss gleich los."]},
+ {s:["Am 3. Oktober feiert ", {p:"Deutschland"}, " ", {p:"den Tag der Deutschen Einheit"}, "."], ok:true, e:"Korrekt: Ländername ohne Adjektiv (N2). Diesen Feiertag gibt es nur einmal (B3)."},
+ {s:["Vor ", {p:"der Tür"}, " steht ", {p:"Mann", fix:"ein Mann", o:["einen Mann","Männer"], r:"U1", e:"Der Mann wird zum ersten Mal genannt. Ein zählbares Nomen im Singular braucht einen Artikel."}, ", der nach dir gefragt hat."]},
+ {s:["Nach ", {p:"dem Training"}, " habe ich immer ", {p:"einen Hunger", fix:"Hunger", o:["den Hunger","einem Hunger"], r:"N1", e:"„Hunger“ ist unzählbar: kein Artikel."}, "."]},
+ {s:[{p:"Ein Smartphone"}, " ist heute für ", {p:"viele Menschen"}, " unverzichtbar."], ok:true, e:"Korrekt: generalisierend – gemeint sind Smartphones allgemein (U2)."},
+ {s:["Bitte nimm ", {p:"die Rücksicht", fix:"Rücksicht", o:["eine Rücksicht","der Rücksicht"], r:"N6", e:"„Rücksicht nehmen“ ist ein Funktionsverbgefüge: kein Artikel."}, " auf ", {p:"die Nachbarn"}, "."]}
+];
+var ESTATE = [];
+function newE(){ return { found:false, done:false, taps:[], t:0, ft:[], m:"", p:false, rv:false, opts:null }; }
+function buildErrs(){
+  ESTATE = [];
+  var host = $("errs"), h = "", i;
+  for(i=0;i<ERRS.length;i++){ ESTATE.push(newE()); h += '<div class="err" id="err'+i+'" data-i="'+i+'"></div>'; }
+  host.innerHTML = h;
+  for(i=0;i<ERRS.length;i++) renderErr(i);
+  renderStats3();
+}
+function errPhrase(E){ for(var k=0;k<E.s.length;k++) if(typeof E.s[k] === "object" && E.s[k].fix) return E.s[k]; return null; }
+function renderErr(i){
+  var E = ERRS[i], st = ESTATE[i], h = "", k, seg, ep = errPhrase(E);
+  h += '<div class="num">SATZ '+(i+1)+'</div><p class="sent">';
+  for(k=0;k<E.s.length;k++){
+    seg = E.s[k];
+    if(typeof seg === "string"){ h += esc(seg); continue; }
+    var cls = "ph-btn", label = seg.p, dis = st.done || st.found;
+    if(st.taps.indexOf(k) >= 0) cls += " no";
+    if(seg.fix && st.found){ cls += st.done ? " fixed" : " hit"; if(st.done) label = (k===0 ? seg.fix : seg.fix); }
+    if(st.taps.indexOf(k) >= 0) dis = true;
+    h += '<button class="'+cls+'" data-act="tap" data-k="'+k+'"'+(dis?' disabled':'')+'>'+esc(label)+'</button>';
+  }
+  h += '</p>';
+  if(!st.done && !st.found){
+    h += '<div class="row"><button class="btn ghost" data-act="none">Kein Fehler</button>';
+    if(st.t >= 2) h += '<button class="link" data-act="erv">Lösung zeigen</button>';
+    h += '</div>';
+  }
+  if(st.found && !st.done){
+    if(!st.opts) st.opts = shuffle([ep.fix].concat(ep.o));
+    h += '<p style="margin:0 0 6px"><b>Richtig – hier steckt der Fehler.</b> Wie heißt es korrekt?</p><div class="opts">';
+    for(k=0;k<st.opts.length;k++){
+      var d = st.ft.indexOf(st.opts[k]) >= 0;
+      h += '<button class="opt'+(d?' wrong':'')+'" data-act="fix" data-v="'+esc(st.opts[k])+'"'+(d?' disabled':'')+'>'+esc(st.opts[k])+'</button>';
+    }
+    h += '</div>';
+  }
+  if(st.m && !st.done) h += '<p class="msg bad">'+st.m+'</p>';
+  if(st.done){
+    var txt, code = E.ok ? null : ep.r;
+    if(E.ok) txt = E.e;
+    else txt = '<span class="code '+RULES[code].t+'">'+code+'</span> <b>'+RULES[code].l+'</b>'+trHTML(code)+' – „'+esc(ep.p)+'“ → „'+esc(ep.fix)+'“. '+esc(ep.e);
+    h += '<p class="expl">'+(st.rv?'<span class="muted">(Lösung angezeigt)</span> ':'')+txt+'</p>';
+  }
+  $("err"+i).innerHTML = h;
+}
+function renderStats3(){
+  var d=0, s=0, i; for(i=0;i<ESTATE.length;i++){ if(ESTATE[i].done) d++; if(ESTATE[i].p) s++; }
+  $("s3-done").textContent = d; $("s3-total").textContent = ERRS.length; $("s3-pts").textContent = s;
+}
+$("errs").addEventListener("click", function(ev){
+  var t = ev.target; while(t && t !== this && !t.getAttribute("data-act")) t = t.parentNode;
+  if(!t || t === this || t.disabled) return;
+  var box = t; while(box && !(box.className === "err")) box = box.parentNode;
+  if(!box) return;
+  var i = parseInt(box.getAttribute("data-i"),10), E = ERRS[i], st = ESTATE[i], act = t.getAttribute("data-act");
+  if(st.done) return;
+  if(act === "tap"){
+    var k = parseInt(t.getAttribute("data-k"),10), seg = E.s[k];
+    if(seg.fix){ st.found = true; st.m = ""; }
+    else { st.t++; st.taps.push(k); st.m = "Diese Stelle ist korrekt."; }
+  } else if(act === "none"){
+    if(E.ok){ st.done = true; if(st.t === 0) st.p = true; }
+    else { st.t++; st.m = "Doch – in diesem Satz steckt ein Fehler."; }
+  } else if(act === "fix"){
+    var v = t.getAttribute("data-v"), ep = errPhrase(E);
+    if(v === ep.fix){ st.done = true; if(st.t === 0 && st.ft.length === 0) st.p = true; }
+    else { st.ft.push(v); st.m = "Nicht ganz. Versuch es noch einmal."; }
+  } else if(act === "erv"){
+    st.done = true; st.rv = true; if(!E.ok) st.found = true;
+  }
+  renderErr(i); renderStats3();
+});
+$("reset3").addEventListener("click", function(){ buildErrs(); });
+
+/* ---------- Regeln ---------- */
+function buildRules(){
+  var groups = [["U","Unbestimmter Artikel","ein, eine – im Plural: kein Artikel"],["B","Bestimmter Artikel","der, die, das – Hörer oder Leser wissen, was gemeint ist"],["N","Kein Artikel (Nullartikel)","∅"]];
+  var h = "", gi, i;
+  for(gi=0;gi<3;gi++){
+    h += '<div class="rcard"><h3>'+groups[gi][1]+'<small>'+groups[gi][2]+'</small></h3><ul>';
+    for(i=0;i<ORDER.length;i++){
+      var c = ORDER[i], R = RULES[c];
+      if(R.t !== groups[gi][0]) continue;
+      h += '<li><span class="code '+R.t+'">'+c+'</span><span><b>'+R.l+'</b>'+trHTML(c)+'<i>'+R.x+'</i></span></li>';
+    }
+    h += '</ul></div>';
+  }
+  $("rgrid").innerHTML = h;
+}
+
+/* ---------- Tabs & Modus ---------- */
+var tabs = document.querySelectorAll(".tab");
+function showTab(name){
+  var secs = document.querySelectorAll("[data-sec]"), i;
+  for(i=0;i<secs.length;i++) secs[i].hidden = secs[i].id !== name;
+  for(i=0;i<tabs.length;i++) tabs[i].setAttribute("aria-selected", tabs[i].getAttribute("data-tab") === name ? "true" : "false");
+}
+for(var ti=0;ti<tabs.length;ti++) tabs[ti].addEventListener("click", function(){ showTab(this.getAttribute("data-tab")); });
+$("formmode").addEventListener("change", function(){
+  simple = !this.checked;
+  var i;
+  for(i=0;i<GAPS.length;i++){ if(GAPS[i].st.c < 0){ GAPS[i].st.w1 = []; GAPS[i].st.m1 = ""; } }
+  for(i=0;i<MINIS.length;i++){ if(MINIS[i].st.c < 0){ MINIS[i].st.w1 = []; MINIS[i].st.m1 = ""; } renderMini(i); }
+  refresh1();
+});
+
+try { var savedLang = window.localStorage.getItem("artikelB2-lang"); if(savedLang && TR[savedLang]){ lang = savedLang; $("ruleslang").value = savedLang; } } catch(e){}
+$("ruleslang").addEventListener("change", function(){
+  lang = this.value;
+  try { window.localStorage.setItem("artikelB2-lang", lang); } catch(e){}
+  buildRules(); refresh1();
+  for(var i=0;i<MINIS.length;i++) renderMini(i);
+  for(var j=0;j<ERRS.length;j++) renderErr(j);
+});
+buildText(); buildPairs(); buildErrs(); buildRules();
+simple = !$("formmode").checked;
+goTo(0, false);
+})();
+</script>
+
+</body></html>
