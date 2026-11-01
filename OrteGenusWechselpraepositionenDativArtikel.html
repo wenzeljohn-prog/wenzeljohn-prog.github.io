@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orte in der Stadt – Artikel trainieren</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:rgba(0,0,0,0)}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:#f1f5f9;color:#1c2733;font-size:17px;line-height:1.45}
+.wrap{max-width:780px;margin:0 auto;padding:12px 12px 70vh}
+h1{font-size:1.3em;margin:4px 0 8px}
+h2{font-size:1.1em;margin:0 0 6px}
+h3{margin:0 0 6px}
+.de{display:block}
+.tr{display:none;margin-top:3px;color:#25507f;font-size:.92em}
+.tr-ar,.tr-fa{font-family:"Segoe UI",Tahoma,"Geeza Pro","Noto Naskh Arabic",Arial,sans-serif;direction:rtl;text-align:right}
+.l-en .tr-en{display:block}.l-ru .tr-ru{display:block}.l-uk .tr-uk{display:block}.l-tr .tr-tr{display:block}.l-ar .tr-ar{display:block}.l-fa .tr-fa{display:block}
+.langbar{margin:0 0 10px}
+.lb{display:inline-block;margin:0 5px 6px 0;min-height:40px;padding:6px 12px;font-size:15px;border:2px solid #b5c4d6;border-radius:20px;background:#fff;color:#1c2733;-webkit-appearance:none;appearance:none;touch-action:manipulation}
+.lb.on{background:#1f5fa6;border-color:#1f5fa6;color:#fff}
+.pills{margin:0 0 10px}
+.pill{display:inline-block;min-height:44px;margin:0 5px 6px 0;padding:6px 12px;font-size:15px;border:2px solid #c6d1de;border-radius:10px;background:#fff;color:#1c2733;-webkit-appearance:none;appearance:none;touch-action:manipulation}
+.pill.on{border-color:#1f5fa6;background:#e6effa;font-weight:700}
+.screen{display:none}
+.screen.show{display:block}
+.card{background:#fff;border:1px solid #d5dee9;border-radius:14px;padding:14px;margin:0 0 12px}
+.inst{font-size:1em;margin:0 0 10px}
+.inst2{font-size:.95em;margin:0 0 10px;color:#44556a}
+.stephead{background:#fff;border:1px solid #d5dee9;border-radius:14px;padding:12px 14px;margin:0 0 10px}
+.btn{display:block;width:100%;min-height:50px;margin:10px 0 0;padding:10px 14px;font-size:17px;border:2px solid #1f5fa6;border-radius:12px;background:#fff;color:#1f5fa6;text-align:center;-webkit-appearance:none;appearance:none;touch-action:manipulation;font-family:inherit}
+.btn .tr{text-align:center}
+.btn.primary{background:#1f5fa6;color:#fff}
+.btn.primary .tr{color:#e3eefb}
+.btn.ghost{border-color:#9aa9bb;color:#44556a}
+.prog{height:8px;background:#dbe4ee;border-radius:4px;overflow:hidden}
+.bar{height:8px;width:0;background:#1f5fa6}
+.cnt{text-align:right;font-size:.9em;color:#5a6b80;margin:4px 2px 8px}
+.item{display:none;background:#fff;border:1px solid #d5dee9;border-radius:14px;padding:14px;margin:0 0 10px}
+.noun{font-size:2em;font-weight:700;text-align:center;margin:6px 0 16px}
+.sent{font-size:1.2em;line-height:1.9;margin:0 0 14px}
+.gap{display:inline-block;min-width:3.4em;padding:0 6px;border-bottom:3px solid #6a7f99;text-align:center;font-weight:700;color:#6a7f99}
+.gap.ok{color:#1c8a4b;border-color:#1c8a4b}
+.gap.bad{color:#c2362c;border-color:#c2362c}
+.opts{font-size:0}
+.opt{display:inline-block;vertical-align:top;width:49%;min-height:52px;margin:0 1% 8px 0;padding:8px 10px;font-size:18px;border:2px solid #b5c4d6;border-radius:12px;background:#fff;color:#1c2733;text-align:center;-webkit-appearance:none;appearance:none;touch-action:manipulation;font-family:inherit;line-height:1.3}
+.opt.three{}
+.opts.three .opt{width:32%;margin-right:1%;min-height:60px;font-size:22px;font-weight:700}
+.opt.nonebtn{width:99%;font-size:16px}
+.opt .tr{font-size:.85em}
+.opt .tr-ar,.opt .tr-fa{text-align:center}
+.art-der{color:#1f5fa6}
+.art-die{color:#b8326c}
+.art-das{color:#238a4c}
+.opt.ok{border-color:#1c8a4b;background:#e3f5ea}
+.opt.bad{border-color:#c2362c;background:#fdeceb}
+.fbpanel{display:none;background:#fff;border:1px solid #d5dee9;border-radius:14px;padding:12px 14px;margin:0 0 10px}
+.fbpanel.show{display:block}
+.verdict{display:none;font-weight:700;font-size:1.1em;margin:0 0 6px}
+.fbpanel.ok .v-ok{display:block;color:#1c8a4b}
+.fbpanel.bad .v-bad{display:block;color:#c2362c}
+.sol{margin:0 0 6px;font-size:1.1em}
+.solk{color:#5a6b80}
+.frage{margin:0 0 6px;font-weight:600}
+.formel{margin:0 0 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.92em;color:#33475e;background:#eef3f8;border-radius:8px;padding:6px 9px}
+.formel:empty{display:none}
+.fbpanel.ok .formel,.fbpanel.ok .frage{display:none}
+.fbpanel.ok.show .tipf{display:block}
+.wrongonly{display:block}
+.fbpanel.ok .wrongonly{display:none}
+.blk{margin:8px 0}
+.blk .lbl{color:#1f5fa6}
+.tb,.rl,.tipk{display:none;border-left:4px solid #e0a43a;background:#fff8ea;padding:7px 10px;border-radius:6px}
+.rl{border-left-color:#1f5fa6;background:#eef5fd}
+.tipk{border-left-color:#238a4c;background:#eef8f1}
+.tipk .lbl,.tb .lbl{color:#1c2733}
+.tr b.lbl,.tr .lbl{color:inherit}
+.fbpanel.t-none .tb-none{display:block}.fbpanel.t-nom .tb-nom{display:block}.fbpanel.t-akk .tb-akk{display:block}.fbpanel.t-dat .tb-dat{display:block}.fbpanel.t-nomakk .tb-nomakk{display:block}.fbpanel.t-gender .tb-gender{display:block}.fbpanel.r-SUBJ .rl-SUBJ{display:block}.fbpanel.r-OBJ .rl-OBJ{display:block}.fbpanel.r-APREP .rl-APREP{display:block}.fbpanel.r-WOHIN .rl-WOHIN{display:block}.fbpanel.r-WO .rl-WO{display:block}.fbpanel.r-DPREP .rl-DPREP{display:block}.fbpanel.tk-comp .tipk-comp{display:block}.fbpanel.tk-ung .tipk-ung{display:block}.fbpanel.tk-ei .tipk-ei{display:block}.fbpanel.tk-um .tipk-um{display:block}
+.legend{font-size:.82em;color:#6b7b8f;margin:8px 0 0}
+.result{background:#fff;border:1px solid #d5dee9;border-radius:14px;padding:14px;text-align:center}
+.score{font-size:2.2em;font-weight:700;margin:4px 0 8px}
+.allok{color:#1c8a4b;font-weight:700;margin-bottom:6px}
+.allok .tr{color:#1c6a3b}
+.help{background:#fff;border:1px solid #d5dee9;border-radius:14px;padding:8px 14px;margin:0 0 10px}
+.help summary{min-height:36px;padding:6px 0;cursor:pointer}
+.tbl{border-collapse:collapse;width:100%;margin:6px 0;font-size:.95em}
+.tbl th,.tbl td{border:1px solid #cfd9e4;padding:5px 8px;text-align:center}
+.tbl th{background:#eef3f8}
+.tbl th small{font-weight:400;color:#5a6b80}
+.hp{margin:6px 0;font-size:.92em;color:#33475e}
+</style>
+</head>
+<body class="l-de">
+<div class="wrap">
+<h1><span class="de" lang="de">Orte in der Stadt – Artikel trainieren</span><span class="tr tr-en" lang="en">Places in the city – practising articles</span><span class="tr tr-ru" lang="ru">Места в городе – тренируем артикли</span><span class="tr tr-uk" lang="uk">Місця в місті – тренуємо артиклі</span><span class="tr tr-tr" lang="tr">Şehirdeki yerler – artikel alıştırması</span><span class="tr tr-ar" lang="ar" dir="rtl">الأماكن في المدينة – التدرّب على أدوات التعريف (الأرتيكل)</span><span class="tr tr-fa" lang="fa" dir="rtl">مکان‌ها در شهر – تمرین آرتیکل</span></h1>
+<div class="langbar"><button type="button" class="lb" id="lb-de" onclick="setLang('de')">nur Deutsch</button><button type="button" class="lb" id="lb-en" onclick="setLang('en')">English</button><button type="button" class="lb" id="lb-ru" onclick="setLang('ru')">Русский</button><button type="button" class="lb" id="lb-uk" onclick="setLang('uk')">Українська</button><button type="button" class="lb" id="lb-tr" onclick="setLang('tr')">Türkçe</button><button type="button" class="lb" id="lb-ar" onclick="setLang('ar')">العربية</button><button type="button" class="lb" id="lb-fa" onclick="setLang('fa')">فارسی</button></div>
+<div class="pills">
+<button type="button" class="pill" id="pill1" onclick="startStep(1,false)">1 · Genus</button>
+<button type="button" class="pill" id="pill2" onclick="startStep(2,false)">2 · Wo? + Dativ</button>
+<button type="button" class="pill" id="pill3" onclick="startStep(3,false)">3 · N · A · D</button>
+</div>
+<section id="start" class="screen show"><p class="inst"><span class="de" lang="de">Drei Schritte: Genus – Wo? + Dativ – Nominativ, Akkusativ oder Dativ</span><span class="tr tr-en" lang="en">Three steps: gender – Where? + dative – nominative, accusative or dative</span><span class="tr tr-ru" lang="ru">Три шага: род – «Где?» + Dativ – Nominativ, Akkusativ или Dativ</span><span class="tr tr-uk" lang="uk">Три кроки: рід – «Де?» + Dativ – Nominativ, Akkusativ чи Dativ</span><span class="tr tr-tr" lang="tr">Üç adım: cins – «Nerede?» + Dativ – Nominativ, Akkusativ veya Dativ</span><span class="tr tr-ar" lang="ar" dir="rtl">ثلاث خطوات: الجنس (<bdi dir="ltr">der/die/das</bdi>) – «أين؟» + <bdi dir="ltr">Dativ</bdi> – <bdi dir="ltr">Nominativ</bdi> أو <bdi dir="ltr">Akkusativ</bdi> أو <bdi dir="ltr">Dativ</bdi></span><span class="tr tr-fa" lang="fa" dir="rtl">سه مرحله: جنسیت (<bdi dir="ltr">der/die/das</bdi>) – «کجا؟» + <bdi dir="ltr">Dativ</bdi> – <bdi dir="ltr">Nominativ</bdi>، <bdi dir="ltr">Akkusativ</bdi> یا <bdi dir="ltr">Dativ</bdi></span></p><div class="card"><h2><span class="de" lang="de">Schritt 1: Genus</span><span class="tr tr-en" lang="en">Step 1: Gender</span><span class="tr tr-ru" lang="ru">Шаг 1: род существительного</span><span class="tr tr-uk" lang="uk">Крок 1: рід іменника</span><span class="tr tr-tr" lang="tr">Adım 1: Cins</span><span class="tr tr-ar" lang="ar" dir="rtl">الخطوة <bdi dir="ltr">1</bdi>: الجنس النحوي</span><span class="tr tr-fa" lang="fa" dir="rtl">مرحلهٔ ۱: جنسیت دستوری</span></h2><button type="button" class="btn primary" onclick="startStep(1,false)"><span class="de" lang="de">Starten</span><span class="tr tr-en" lang="en">Start</span><span class="tr tr-ru" lang="ru">Начать</span><span class="tr tr-uk" lang="uk">Почати</span><span class="tr tr-tr" lang="tr">Başla</span><span class="tr tr-ar" lang="ar" dir="rtl">ابدأ</span><span class="tr tr-fa" lang="fa" dir="rtl">شروع</span></button></div><div class="card"><h2><span class="de" lang="de">Schritt 2: Wo? – Wechselpräposition + Dativ</span><span class="tr tr-en" lang="en">Step 2: Where? – two-way preposition + dative</span><span class="tr tr-ru" lang="ru">Шаг 2: «Где?» – предлог с двойным управлением + Dativ</span><span class="tr tr-uk" lang="uk">Крок 2: «Де?» – прийменник із подвійним керуванням + Dativ</span><span class="tr tr-tr" lang="tr">Adım 2: «Nerede?» – Wechselpräposition (iki yönlü edat) + Dativ</span><span class="tr tr-ar" lang="ar" dir="rtl">الخطوة <bdi dir="ltr">2</bdi>: «أين؟» – حرف الجر المتغيّر (<bdi dir="ltr">Wechselpräposition</bdi>) + <bdi dir="ltr">Dativ</bdi></span><span class="tr tr-fa" lang="fa" dir="rtl">مرحلهٔ ۲: «کجا؟» – حرف اضافهٔ دوحالته (<bdi dir="ltr">Wechselpräposition</bdi>) + <bdi dir="ltr">Dativ</bdi></span></h2><button type="button" class="btn primary" onclick="startStep(2,false)"><span class="de" lang="de">Starten</span><span class="tr tr-en" lang="en">Start</span><span class="tr tr-ru" lang="ru">Начать</span><span class="tr tr-uk" lang="uk">Почати</span><span class="tr tr-tr" lang="tr">Başla</span><span class="tr tr-ar" lang="ar" dir="rtl">ابدأ</span><span class="tr tr-fa" lang="fa" dir="rtl">شروع</span></button></div><div class="card"><h2><span class="de" lang="de">Schritt 3: Nominativ, Akkusativ oder Dativ?</span><span class="tr tr-en" lang="en">Step 3: Nominative, accusative or dative?</span><span class="tr tr-ru" lang="ru">Шаг 3: Nominativ, Akkusativ или Dativ?</span><span class="tr tr-uk" lang="uk">Крок 3: Nominativ, Akkusativ чи Dativ?</span><span class="tr tr-tr" lang="tr">Adım 3: Nominativ, Akkusativ veya Dativ?</span><span class="tr tr-ar" lang="ar" dir="rtl">الخطوة <bdi dir="ltr">3</bdi>: <bdi dir="ltr">Nominativ</bdi> أم <bdi dir="ltr">Akkusativ</bdi> أم <bdi dir="ltr">Dativ</bdi>؟</span><span class="tr tr-fa" lang="fa" dir="rtl">مرحلهٔ ۳: <bdi dir="ltr">Nominativ</bdi>، <bdi dir="ltr">Akkusativ</bdi> یا <bdi dir="ltr">Dativ</bdi>؟</span></h2><button type="button" class="btn primary" onclick="startStep(3,false)"><span class="de" lang="de">Starten</span><span class="tr tr-en" lang="en">Start</span><span class="tr tr-ru" lang="ru">Начать</span><span class="tr tr-uk" lang="uk">Почати</span><span class="tr tr-tr" lang="tr">Başla</span><span class="tr tr-ar" lang="ar" dir="rtl">ابدأ</span><span class="tr tr-fa" lang="fa" dir="rtl">شروع</span></button></div></section><section id="s1" class="screen"><div class="stephead"><h2><span class="de" lang="de">Schritt 1: Genus</span><span class="tr tr-en" lang="en">Step 1: Gender</span><span class="tr tr-ru" lang="ru">Шаг 1: род существительного</span><span class="tr tr-uk" lang="uk">Крок 1: рід іменника</span><span class="tr tr-tr" lang="tr">Adım 1: Cins</span><span class="tr tr-ar" lang="ar" dir="rtl">الخطوة <bdi dir="ltr">1</bdi>: الجنس النحوي</span><span class="tr tr-fa" lang="fa" dir="rtl">مرحلهٔ ۱: جنسیت دستوری</span></h2><p class="inst"><span class="de" lang="de">Welchen Artikel hat das Nomen? Wähle der, die oder das.</span><span class="tr tr-en" lang="en">Which article does the noun have? Choose der, die or das.</span><span class="tr tr-ru" lang="ru">Какой артикль у существительного? Выберите der, die или das.</span><span class="tr tr-uk" lang="uk">Який артикль має іменник? Виберіть der, die або das.</span><span class="tr tr-tr" lang="tr">İsmin artikeli nedir? der, die veya das seçin.</span><span class="tr tr-ar" lang="ar" dir="rtl">ما أداة التعريف (الأرتيكل) لهذا الاسم؟ اختر <bdi dir="ltr">der</bdi> أو <bdi dir="ltr">die</bdi> أو <bdi dir="ltr">das</bdi>.</span><span class="tr tr-fa" lang="fa" dir="rtl">آرتیکل این اسم چیست؟ <bdi dir="ltr">der</bdi>، <bdi dir="ltr">die</bdi> یا <bdi dir="ltr">das</bdi> را انتخاب کنید.</span></p></div><div id="q1"><div class="prog"><div class="bar" id="bar1"></div></div><div class="cnt" id="cnt1">1 / 21</div><div class="items"><div class="item" id="s1i1" data-step="1" data-id="1" data-sol="der Sportplatz" data-tk="comp" data-tip="Sport|platz → der Platz">
+<p class="noun">Sportplatz</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="1" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="0" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i2" data-step="1" data-id="2" data-sol="die Kreuzung" data-tk="ung" data-tip="Kreuz|ung → -ung → die">
+<p class="noun">Kreuzung</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="1" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i3" data-step="1" data-id="3" data-sol="der Bahnhof" data-tk="comp" data-tip="Bahn|hof → der Hof">
+<p class="noun">Bahnhof</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="1" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="0" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i4" data-step="1" data-id="4" data-sol="die Schule" data-tk="" data-tip="">
+<p class="noun">Schule</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="1" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i5" data-step="1" data-id="5" data-sol="die VHS" data-tk="comp" data-tip="VHS = Volks|hoch|schule → die Schule">
+<p class="noun">VHS</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="1" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i6" data-step="1" data-id="6" data-sol="die Haltestelle" data-tk="comp" data-tip="Halte|stelle → die Stelle">
+<p class="noun">Haltestelle</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="1" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i7" data-step="1" data-id="7" data-sol="die Arztpraxis" data-tk="comp" data-tip="Arzt|praxis → die Praxis">
+<p class="noun">Arztpraxis</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="1" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i8" data-step="1" data-id="8" data-sol="die Bäckerei" data-tk="ei" data-tip="Bäcker|ei → -ei → die">
+<p class="noun">Bäckerei</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="1" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i9" data-step="1" data-id="9" data-sol="der Parkplatz" data-tk="comp" data-tip="Park|platz → der Platz">
+<p class="noun">Parkplatz</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="1" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="0" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i10" data-step="1" data-id="10" data-sol="der Supermarkt" data-tk="comp" data-tip="Super|markt → der Markt">
+<p class="noun">Supermarkt</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="1" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="0" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i11" data-step="1" data-id="11" data-sol="der Laden" data-tk="" data-tip="">
+<p class="noun">Laden</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="1" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="0" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i12" data-step="1" data-id="12" data-sol="das Restaurant" data-tk="" data-tip="">
+<p class="noun">Restaurant</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="0" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="1" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i13" data-step="1" data-id="13" data-sol="das Café" data-tk="" data-tip="">
+<p class="noun">Café</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="0" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="1" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i14" data-step="1" data-id="14" data-sol="die Apotheke" data-tk="" data-tip="">
+<p class="noun">Apotheke</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="1" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i15" data-step="1" data-id="15" data-sol="das Museum" data-tk="um" data-tip="Muse|um → -um → das">
+<p class="noun">Museum</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="0" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="1" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i16" data-step="1" data-id="16" data-sol="die Bank" data-tk="" data-tip="">
+<p class="noun">Bank</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="1" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i17" data-step="1" data-id="17" data-sol="das Bürgerbüro" data-tk="comp" data-tip="Bürger|büro → das Büro">
+<p class="noun">Bürgerbüro</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="0" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="1" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i18" data-step="1" data-id="18" data-sol="der Kindergarten" data-tk="comp" data-tip="Kinder|garten → der Garten">
+<p class="noun">Kindergarten</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="1" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="0" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i19" data-step="1" data-id="19" data-sol="die Kita" data-tk="comp" data-tip="Kita = Kinder|tages|stätte → die Stätte">
+<p class="noun">Kita</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="1" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i20" data-step="1" data-id="20" data-sol="die Ampel" data-tk="" data-tip="">
+<p class="noun">Ampel</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="1" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div>
+<div class="item" id="s1i21" data-step="1" data-id="21" data-sol="die Tankstelle" data-tk="comp" data-tip="Tank|stelle → die Stelle">
+<p class="noun">Tankstelle</p>
+<div class="opts three">
+<button type="button" class="opt art-der" data-ok="0" data-t="x" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt art-die" data-ok="1" data-t="x" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt art-das" data-ok="0" data-t="x" data-lab="das" onclick="ans(this)">das</button>
+</div></div></div><div class="fbpanel" id="fb1"><div class="verdict v-ok"><span class="de" lang="de">Richtig!</span><span class="tr tr-en" lang="en">Correct!</span><span class="tr tr-ru" lang="ru">Верно!</span><span class="tr tr-uk" lang="uk">Правильно!</span><span class="tr tr-tr" lang="tr">Doğru!</span><span class="tr tr-ar" lang="ar" dir="rtl">صحيح!</span><span class="tr tr-fa" lang="fa" dir="rtl">درست!</span></div><div class="verdict v-bad"><span class="de" lang="de">Nicht richtig.</span><span class="tr tr-en" lang="en">Not correct.</span><span class="tr tr-ru" lang="ru">Неверно.</span><span class="tr tr-uk" lang="uk">Неправильно.</span><span class="tr tr-tr" lang="tr">Doğru değil.</span><span class="tr tr-ar" lang="ar" dir="rtl">غير صحيح.</span><span class="tr tr-fa" lang="fa" dir="rtl">درست نیست.</span></div><p class="sol"><span class="solk"><span class="de" lang="de">Richtig ist:</span><span class="tr tr-en" lang="en">Correct:</span><span class="tr tr-ru" lang="ru">Правильно:</span><span class="tr tr-uk" lang="uk">Правильно:</span><span class="tr tr-tr" lang="tr">Doğrusu:</span><span class="tr tr-ar" lang="ar" dir="rtl">الصحيح:</span><span class="tr tr-fa" lang="fa" dir="rtl">پاسخ درست:</span></span> <b id="sol1"></b></p><div class="blk tipk tipk-comp"><span class="de" lang="de"><b class="lbl">Tipp:</b> Bei zusammengesetzten Nomen bestimmt das letzte Wort den Artikel.</span><span class="tr tr-en" lang="en"><b class="lbl">Tip:</b> In compound nouns the last word determines the article.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Подсказка:</b> У сложных существительных артикль определяет последнее слово.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Підказка:</b> У складних іменників артикль визначає останнє слово.</span><span class="tr tr-tr" lang="tr"><b class="lbl">İpucu:</b> Birleşik isimlerde artikeli son sözcük belirler.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">تلميح:</b> في الأسماء المركّبة تحدّد الكلمةُ الأخيرة أداةَ التعريف.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">نکته:</b> در اسم‌های مرکب، واژهٔ آخر آرتیکل را تعیین می‌کند.</span></div><div class="blk tipk tipk-ung"><span class="de" lang="de"><b class="lbl">Tipp:</b> Nomen mit der Endung -ung sind immer feminin: die …ung.</span><span class="tr tr-en" lang="en"><b class="lbl">Tip:</b> Nouns ending in -ung are always feminine.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Подсказка:</b> Существительные с окончанием -ung всегда женского рода.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Підказка:</b> Іменники із закінченням -ung завжди жіночого роду.</span><span class="tr tr-tr" lang="tr"><b class="lbl">İpucu:</b> -ung ile biten isimler her zaman dişildir.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">تلميح:</b> الأسماء التي تنتهي بـ -<bdi dir="ltr">ung</bdi> مؤنّثة دائمًا.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">نکته:</b> اسم‌هایی که به -<bdi dir="ltr">ung</bdi> ختم می‌شوند همیشه مؤنث‌اند.</span></div><div class="blk tipk tipk-ei"><span class="de" lang="de"><b class="lbl">Tipp:</b> Nomen mit der Endung -ei sind immer feminin: die …ei.</span><span class="tr tr-en" lang="en"><b class="lbl">Tip:</b> Nouns ending in -ei are always feminine.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Подсказка:</b> Существительные с окончанием -ei всегда женского рода.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Підказка:</b> Іменники із закінченням -ei завжди жіночого роду.</span><span class="tr tr-tr" lang="tr"><b class="lbl">İpucu:</b> -ei ile biten isimler her zaman dişildir.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">تلميح:</b> الأسماء التي تنتهي بـ -<bdi dir="ltr">ei</bdi> مؤنّثة دائمًا.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">نکته:</b> اسم‌هایی که به -<bdi dir="ltr">ei</bdi> ختم می‌شوند همیشه مؤنث‌اند.</span></div><div class="blk tipk tipk-um"><span class="de" lang="de"><b class="lbl">Tipp:</b> Nomen mit der Endung -um sind meistens neutral: das …um.</span><span class="tr tr-en" lang="en"><b class="lbl">Tip:</b> Nouns ending in -um are usually neuter.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Подсказка:</b> Существительные с окончанием -um обычно среднего рода.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Підказка:</b> Іменники із закінченням -um зазвичай середнього роду.</span><span class="tr tr-tr" lang="tr"><b class="lbl">İpucu:</b> -um ile biten isimler çoğunlukla nötrdür.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">تلميح:</b> الأسماء التي تنتهي بـ -<bdi dir="ltr">um</bdi> محايدة في الغالب.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">نکته:</b> اسم‌هایی که به -<bdi dir="ltr">um</bdi> ختم می‌شوند معمولاً خنثی‌اند.</span></div><p class="formel tipf" id="tip1"></p></div><button type="button" class="btn primary nextbtn" id="next1" style="display:none" onclick="nextItem(1)"><span class="de" lang="de">Weiter</span><span class="tr tr-en" lang="en">Next</span><span class="tr tr-ru" lang="ru">Далее</span><span class="tr tr-uk" lang="uk">Далі</span><span class="tr tr-tr" lang="tr">Devam</span><span class="tr tr-ar" lang="ar" dir="rtl">التالي</span><span class="tr tr-fa" lang="fa" dir="rtl">بعدی</span></button></div><div class="result" id="res1" style="display:none"><h3><span class="de" lang="de">Ergebnis</span><span class="tr tr-en" lang="en">Result</span><span class="tr tr-ru" lang="ru">Результат</span><span class="tr tr-uk" lang="uk">Результат</span><span class="tr tr-tr" lang="tr">Sonuç</span><span class="tr tr-ar" lang="ar" dir="rtl">النتيجة</span><span class="tr tr-fa" lang="fa" dir="rtl">نتیجه</span></h3><p class="score" id="score1">0 / 0</p><div class="allok" id="allok1" style="display:none"><span class="de" lang="de">Alles richtig!</span><span class="tr tr-en" lang="en">All correct!</span><span class="tr tr-ru" lang="ru">Всё верно!</span><span class="tr tr-uk" lang="uk">Усе правильно!</span><span class="tr tr-tr" lang="tr">Hepsi doğru!</span><span class="tr tr-ar" lang="ar" dir="rtl">كل الإجابات صحيحة!</span><span class="tr tr-fa" lang="fa" dir="rtl">همه درست بود!</span></div><button type="button" class="btn" id="retry1" style="display:none" onclick="startStep(1,true)"><span class="de" lang="de">Fehler wiederholen</span><span class="tr tr-en" lang="en">Repeat the mistakes</span><span class="tr tr-ru" lang="ru">Повторить ошибки</span><span class="tr tr-uk" lang="uk">Повторити помилки</span><span class="tr tr-tr" lang="tr">Hataları tekrarla</span><span class="tr tr-ar" lang="ar" dir="rtl">إعادة الأخطاء</span><span class="tr tr-fa" lang="fa" dir="rtl">تکرار اشتباه‌ها</span></button><button type="button" class="btn" onclick="startStep(1,false)"><span class="de" lang="de">Diesen Schritt nochmal von vorn</span><span class="tr tr-en" lang="en">Do this step again from the start</span><span class="tr tr-ru" lang="ru">Пройти этот шаг заново</span><span class="tr tr-uk" lang="uk">Пройти цей крок знову</span><span class="tr tr-tr" lang="tr">Bu adımı baştan yap</span><span class="tr tr-ar" lang="ar" dir="rtl">إعادة هذه الخطوة من البداية</span><span class="tr tr-fa" lang="fa" dir="rtl">این مرحله را از اول تکرار کنید</span></button><button type="button" class="btn primary" onclick="startStep(2,false)"><span class="de" lang="de">Weiter zum nächsten Schritt</span><span class="tr tr-en" lang="en">On to the next step</span><span class="tr tr-ru" lang="ru">Перейти к следующему шагу</span><span class="tr tr-uk" lang="uk">Перейти до наступного кроку</span><span class="tr tr-tr" lang="tr">Sonraki adıma geç</span><span class="tr tr-ar" lang="ar" dir="rtl">الانتقال إلى الخطوة التالية</span><span class="tr tr-fa" lang="fa" dir="rtl">رفتن به مرحلهٔ بعد</span></button><button type="button" class="btn ghost" onclick="goStart()"><span class="de" lang="de">Zurück zum Start</span><span class="tr tr-en" lang="en">Back to start</span><span class="tr tr-ru" lang="ru">В начало</span><span class="tr tr-uk" lang="uk">На початок</span><span class="tr tr-tr" lang="tr">Başa dön</span><span class="tr tr-ar" lang="ar" dir="rtl">العودة إلى البداية</span><span class="tr tr-fa" lang="fa" dir="rtl">بازگشت به آغاز</span></button></div></section><section id="s2" class="screen"><div class="stephead"><h2><span class="de" lang="de">Schritt 2: Wo? – Wechselpräposition + Dativ</span><span class="tr tr-en" lang="en">Step 2: Where? – two-way preposition + dative</span><span class="tr tr-ru" lang="ru">Шаг 2: «Где?» – предлог с двойным управлением + Dativ</span><span class="tr tr-uk" lang="uk">Крок 2: «Де?» – прийменник із подвійним керуванням + Dativ</span><span class="tr tr-tr" lang="tr">Adım 2: «Nerede?» – Wechselpräposition (iki yönlü edat) + Dativ</span><span class="tr tr-ar" lang="ar" dir="rtl">الخطوة <bdi dir="ltr">2</bdi>: «أين؟» – حرف الجر المتغيّر (<bdi dir="ltr">Wechselpräposition</bdi>) + <bdi dir="ltr">Dativ</bdi></span><span class="tr tr-fa" lang="fa" dir="rtl">مرحلهٔ ۲: «کجا؟» – حرف اضافهٔ دوحالته (<bdi dir="ltr">Wechselpräposition</bdi>) + <bdi dir="ltr">Dativ</bdi></span></h2><p class="inst"><span class="de" lang="de">Ergänze den richtigen Artikel. Die Frage ist immer „Wo?“ – nach der Wechselpräposition steht hier der Dativ.</span><span class="tr tr-en" lang="en">Fill in the correct article. The question is always “Where?” – after the two-way preposition the dative is used here.</span><span class="tr tr-ru" lang="ru">Вставьте правильный артикль. Вопрос всегда «Где?» – после предлога с двойным управлением здесь стоит Dativ (дательный падеж).</span><span class="tr tr-uk" lang="uk">Вставте правильний артикль. Питання завжди «Де?» – після прийменника з подвійним керуванням тут стоїть Dativ (давальний відмінок).</span><span class="tr tr-tr" lang="tr">Doğru artikeli tamamlayın. Soru her zaman «Nerede?» – burada Wechselpräposition'dan sonra Dativ kullanılır.</span><span class="tr tr-ar" lang="ar" dir="rtl">أكمل بأداة التعريف الصحيحة. السؤال دائمًا «أين؟» – بعد حرف الجر المتغيّر (<bdi dir="ltr">Wechselpräposition</bdi>) تأتي هنا حالة <bdi dir="ltr">Dativ</bdi>.</span><span class="tr tr-fa" lang="fa" dir="rtl">آرتیکل درست را کامل کنید. پرسش همیشه «کجا؟» است – بعد از حرف اضافهٔ دوحالته (<bdi dir="ltr">Wechselpräposition</bdi>) در اینجا <bdi dir="ltr">Dativ</bdi> می‌آید.</span></p><p class="inst2"><span class="de" lang="de">Manchmal gehört die Präposition zur Antwort (z. B. am = an dem).</span><span class="tr tr-en" lang="en">Sometimes the preposition is part of the answer (e.g. am = an dem).</span><span class="tr tr-ru" lang="ru">Иногда предлог входит в ответ (например, am = an dem).</span><span class="tr tr-uk" lang="uk">Іноді прийменник входить у відповідь (наприклад, am = an dem).</span><span class="tr tr-tr" lang="tr">Bazen edat da cevabın bir parçasıdır (ör. am = an dem).</span><span class="tr tr-ar" lang="ar" dir="rtl">أحيانًا يكون حرف الجر جزءًا من الإجابة (مثلًا <bdi dir="ltr">am = an dem</bdi>).</span><span class="tr tr-fa" lang="fa" dir="rtl">گاهی حرف اضافه هم بخشی از پاسخ است (مثلاً <bdi dir="ltr">am = an dem</bdi>).</span></p></div><details class="help"><summary><span class="de" lang="de">Hilfe: Artikel-Tabelle</span><span class="tr tr-en" lang="en">Help: article table</span><span class="tr tr-ru" lang="ru">Помощь: таблица артиклей</span><span class="tr tr-uk" lang="uk">Допомога: таблиця артиклів</span><span class="tr tr-tr" lang="tr">Yardım: artikel tablosu</span><span class="tr tr-ar" lang="ar" dir="rtl">مساعدة: جدول أدوات التعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">راهنما: جدول آرتیکل‌ها</span></summary><table class="tbl"><tr><th></th><th>m</th><th>n</th><th>f</th></tr><tr><th>N · Nominativ<br><small>Wer? Was?</small></th><td>der</td><td>das</td><td>die</td></tr><tr><th>A · Akkusativ<br><small>Wen? Was? Wohin?</small></th><td>den</td><td>das</td><td>die</td></tr><tr><th>D · Dativ<br><small>Wem? Wo?</small></th><td>dem</td><td>dem</td><td>der</td></tr></table><p class="hp">m = maskulin · n = neutral · f = feminin</p><p class="hp"><b>an · auf · hinter · in · neben · über · unter · vor · zwischen</b></p><p class="hp">an + dem = am · in + dem = im · bei + dem = beim · von + dem = vom · zu + dem = zum · zu + der = zur · in + das = ins</p></details><div id="q2"><div class="prog"><div class="bar" id="bar2"></div></div><div class="cnt" id="cnt2">1 / 21</div><div class="items"><div class="item" id="s2i1" data-step="2" data-id="1" data-r="WO" data-sol="Wir treffen uns am Sportplatz." data-for="der Sportplatz (m): N der · A den · D dem" data-con="an + Dativ (Wo?) · an + dem = am" data-q="Wo treffen wir uns? → am Sportplatz">
+<p class="sent">Wir treffen uns <span class="gap">___</span> Sportplatz.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="an der" onclick="ans(this)">an der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="an die" onclick="ans(this)">an die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="ans" onclick="ans(this)">ans</button>
+<button type="button" class="opt" data-ok="0" data-t="akk" data-lab="an den" onclick="ans(this)">an den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="am" onclick="ans(this)">am</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i2" data-step="2" data-id="2" data-r="WO" data-sol="Das Taxi wartet an der Kreuzung." data-for="die Kreuzung (f): N die · A die · D der" data-con="an + Dativ (Wo?)" data-q="Wo wartet das Taxi? → an der Kreuzung">
+<p class="sent">Das Taxi wartet an <span class="gap">___</span> Kreuzung.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i3" data-step="2" data-id="3" data-r="WO" data-sol="Wir warten am Bahnhof." data-for="der Bahnhof (m): N der · A den · D dem" data-con="an + Dativ (Wo?) · an + dem = am" data-q="Wo warten wir? → am Bahnhof">
+<p class="sent">Wir warten <span class="gap">___</span> Bahnhof.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="an der" onclick="ans(this)">an der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="an die" onclick="ans(this)">an die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="ans" onclick="ans(this)">ans</button>
+<button type="button" class="opt" data-ok="0" data-t="akk" data-lab="an den" onclick="ans(this)">an den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="am" onclick="ans(this)">am</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i4" data-step="2" data-id="4" data-r="WO" data-sol="Meine Kinder sind den ganzen Vormittag in der Schule." data-for="die Schule (f): N die · A die · D der" data-con="in + Dativ (Wo?)" data-q="Wo sind meine Kinder? → in der Schule">
+<p class="sent">Meine Kinder sind den ganzen Vormittag in <span class="gap">___</span> Schule.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i5" data-step="2" data-id="5" data-r="WO" data-sol="Hinter der VHS ist ein Parkplatz." data-for="die VHS (f): N die · A die · D der" data-con="hinter + Dativ (Wo?)" data-q="Wo ist ein Parkplatz? → hinter der VHS">
+<p class="sent">Hinter <span class="gap">___</span> VHS ist ein Parkplatz.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i6" data-step="2" data-id="6" data-r="WO" data-sol="Ich stehe an der Haltestelle und warte auf den Bus." data-for="die Haltestelle (f): N die · A die · D der" data-con="an + Dativ (Wo?)" data-q="Wo stehe ich? → an der Haltestelle">
+<p class="sent">Ich stehe an <span class="gap">___</span> Haltestelle und warte auf den Bus.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i7" data-step="2" data-id="7" data-r="WO" data-sol="Unter der Arztpraxis ist eine Garage." data-for="die Arztpraxis (f): N die · A die · D der" data-con="unter + Dativ (Wo?)" data-q="Wo ist eine Garage? → unter der Arztpraxis">
+<p class="sent">Unter <span class="gap">___</span> Arztpraxis ist eine Garage.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i8" data-step="2" data-id="8" data-r="WO" data-sol="Meine Freundin arbeitet in der Bäckerei." data-for="die Bäckerei (f): N die · A die · D der" data-con="in + Dativ (Wo?)" data-q="Wo arbeitet meine Freundin? → in der Bäckerei">
+<p class="sent">Meine Freundin arbeitet in <span class="gap">___</span> Bäckerei.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i9" data-step="2" data-id="9" data-r="WO" data-sol="Das Auto steht auf dem Parkplatz." data-for="der Parkplatz (m): N der · A den · D dem" data-con="auf + Dativ (Wo?)" data-q="Wo steht das Auto? → auf dem Parkplatz">
+<p class="sent">Das Auto steht auf <span class="gap">___</span> Parkplatz.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="akk" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i10" data-step="2" data-id="10" data-r="WO" data-sol="Ich kaufe im Supermarkt ein." data-for="der Supermarkt (m): N der · A den · D dem" data-con="in + Dativ (Wo?) · in + dem = im" data-q="Wo kaufe ich ein? → im Supermarkt">
+<p class="sent">Ich kaufe <span class="gap">___</span> Supermarkt ein.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="in der" onclick="ans(this)">in der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in die" onclick="ans(this)">in die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="ins" onclick="ans(this)">ins</button>
+<button type="button" class="opt" data-ok="0" data-t="akk" data-lab="in den" onclick="ans(this)">in den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="im" onclick="ans(this)">im</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i11" data-step="2" data-id="11" data-r="WO" data-sol="Vor dem Laden wartet ein Hund." data-for="der Laden (m): N der · A den · D dem" data-con="vor + Dativ (Wo?)" data-q="Wo wartet ein Hund? → vor dem Laden">
+<p class="sent">Vor <span class="gap">___</span> Laden wartet ein Hund.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="akk" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i12" data-step="2" data-id="12" data-r="WO" data-sol="Wir essen heute im Restaurant." data-for="das Restaurant (n): N das · A das · D dem" data-con="in + Dativ (Wo?) · in + dem = im" data-q="Wo essen wir heute? → im Restaurant">
+<p class="sent">Wir essen heute <span class="gap">___</span> Restaurant.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in der" onclick="ans(this)">in der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in die" onclick="ans(this)">in die</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="ins" onclick="ans(this)">ins</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in den" onclick="ans(this)">in den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="im" onclick="ans(this)">im</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i13" data-step="2" data-id="13" data-r="WO" data-sol="Hinter dem Café sitzt eine Katze." data-for="das Café (n): N das · A das · D dem" data-con="hinter + Dativ (Wo?)" data-q="Wo sitzt eine Katze? → hinter dem Café">
+<p class="sent">Hinter <span class="gap">___</span> Café sitzt eine Katze.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i14" data-step="2" data-id="14" data-r="WO" data-sol="Die Bank ist zwischen der Apotheke und dem Supermarkt." data-for="die Apotheke (f): N die · A die · D der" data-con="zwischen + Dativ (Wo?)" data-q="Wo ist die Bank? → zwischen der Apotheke">
+<p class="sent">Die Bank ist zwischen <span class="gap">___</span> Apotheke und dem Supermarkt.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i15" data-step="2" data-id="15" data-r="WO" data-sol="Die Schüler stehen vor dem Museum." data-for="das Museum (n): N das · A das · D dem" data-con="vor + Dativ (Wo?)" data-q="Wo stehen die Schüler? → vor dem Museum">
+<p class="sent">Die Schüler stehen vor <span class="gap">___</span> Museum.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i16" data-step="2" data-id="16" data-r="WO" data-sol="Über der Bank hängt eine große Uhr." data-for="die Bank (f): N die · A die · D der" data-con="über + Dativ (Wo?)" data-q="Wo hängt eine große Uhr? → über der Bank">
+<p class="sent">Über <span class="gap">___</span> Bank hängt eine große Uhr.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i17" data-step="2" data-id="17" data-r="WO" data-sol="Meine Mutter arbeitet im Bürgerbüro." data-for="das Bürgerbüro (n): N das · A das · D dem" data-con="in + Dativ (Wo?) · in + dem = im" data-q="Wo arbeitet meine Mutter? → im Bürgerbüro">
+<p class="sent">Meine Mutter arbeitet <span class="gap">___</span> Bürgerbüro.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in der" onclick="ans(this)">in der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in die" onclick="ans(this)">in die</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="ins" onclick="ans(this)">ins</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in den" onclick="ans(this)">in den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="im" onclick="ans(this)">im</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i18" data-step="2" data-id="18" data-r="WO" data-sol="Neben dem Kindergarten ist ein Spielplatz." data-for="der Kindergarten (m): N der · A den · D dem" data-con="neben + Dativ (Wo?)" data-q="Wo ist ein Spielplatz? → neben dem Kindergarten">
+<p class="sent">Neben <span class="gap">___</span> Kindergarten ist ein Spielplatz.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="akk" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i19" data-step="2" data-id="19" data-r="WO" data-sol="Mein Sohn ist in der Kita." data-for="die Kita (f): N die · A die · D der" data-con="in + Dativ (Wo?)" data-q="Wo ist mein Sohn? → in der Kita">
+<p class="sent">Mein Sohn ist in <span class="gap">___</span> Kita.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i20" data-step="2" data-id="20" data-r="WO" data-sol="Das Auto steht vor der Ampel." data-for="die Ampel (f): N die · A die · D der" data-con="vor + Dativ (Wo?)" data-q="Wo steht das Auto? → vor der Ampel">
+<p class="sent">Das Auto steht vor <span class="gap">___</span> Ampel.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s2i21" data-step="2" data-id="21" data-r="WO" data-sol="Der Supermarkt ist neben der Tankstelle." data-for="die Tankstelle (f): N die · A die · D der" data-con="neben + Dativ (Wo?)" data-q="Wo ist der Supermarkt? → neben der Tankstelle">
+<p class="sent">Der Supermarkt ist neben <span class="gap">___</span> Tankstelle.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div></div><div class="fbpanel" id="fb2"><div class="verdict v-ok"><span class="de" lang="de">Richtig!</span><span class="tr tr-en" lang="en">Correct!</span><span class="tr tr-ru" lang="ru">Верно!</span><span class="tr tr-uk" lang="uk">Правильно!</span><span class="tr tr-tr" lang="tr">Doğru!</span><span class="tr tr-ar" lang="ar" dir="rtl">صحيح!</span><span class="tr tr-fa" lang="fa" dir="rtl">درست!</span></div><div class="verdict v-bad"><span class="de" lang="de">Nicht richtig.</span><span class="tr tr-en" lang="en">Not correct.</span><span class="tr tr-ru" lang="ru">Неверно.</span><span class="tr tr-uk" lang="uk">Неправильно.</span><span class="tr tr-tr" lang="tr">Doğru değil.</span><span class="tr tr-ar" lang="ar" dir="rtl">غير صحيح.</span><span class="tr tr-fa" lang="fa" dir="rtl">درست نیست.</span></div><p class="sol"><span class="solk"><span class="de" lang="de">Richtig ist:</span><span class="tr tr-en" lang="en">Correct:</span><span class="tr tr-ru" lang="ru">Правильно:</span><span class="tr tr-uk" lang="uk">Правильно:</span><span class="tr tr-tr" lang="tr">Doğrusu:</span><span class="tr tr-ar" lang="ar" dir="rtl">الصحيح:</span><span class="tr tr-fa" lang="fa" dir="rtl">پاسخ درست:</span></span> <b id="sol2"></b></p><p class="frage" id="qline2"></p><p class="formel" id="for2"></p><p class="formel" id="con2"></p><div class="wrongonly"><div class="blk tb tb-none"><span class="de" lang="de"><b class="lbl">Dein Fehler:</b> Hier braucht das Nomen einen Artikel: Es steht im Singular und meint einen bestimmten Ort. Nomen im Singular stehen fast nie ohne Artikel – auch nicht nach einer Präposition.</span><span class="tr tr-en" lang="en"><b class="lbl">Your mistake:</b> The noun needs an article here: it is singular and refers to one specific place. Singular nouns almost never stand without an article – not even after a preposition.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Ваша ошибка:</b> Здесь существительному нужен артикль: оно стоит в единственном числе и обозначает конкретное место. Существительные в единственном числе почти никогда не употребляются без артикля – даже после предлога.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Ваша помилка:</b> Тут іменнику потрібен артикль: він стоїть в однині й означає конкретне місце. Іменники в однині майже ніколи не вживаються без артикля – навіть після прийменника.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Hatanız:</b> Burada isim artikel ister: tekil ve belirli bir yeri anlatıyor. Tekil isimler neredeyse hiçbir zaman artikelsiz kullanılmaz – edattan sonra bile.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">خطؤك:</b> يحتاج الاسم هنا إلى أداة تعريف: فهو مفرد ويدلّ على مكان محدد. الأسماء المفردة لا تأتي تقريبًا أبدًا بدون أداة تعريف – حتى بعد حرف الجر.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">اشتباه شما:</b> اینجا اسم به آرتیکل نیاز دارد: مفرد است و به یک مکان مشخص اشاره می‌کند. اسم‌های مفرد تقریباً هرگز بدون آرتیکل نمی‌آیند – حتی بعد از حرف اضافه.</span></div><div class="blk tb tb-nom"><span class="de" lang="de"><b class="lbl">Dein Fehler:</b> „der“ ist hier Nominativ (Wer? / Was? – das Subjekt). In diesem Satz fragen wir aber „Wo?“ – das ist der Ort, nicht das Subjekt.</span><span class="tr tr-en" lang="en"><b class="lbl">Your mistake:</b> “der” is nominative here (Who? / What? – the subject). But this sentence asks “Where?” – that is the place, not the subject.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Ваша ошибка:</b> «der» здесь – Nominativ (Кто? / Что? – подлежащее). Но в этом предложении вопрос «Где?» – это место, а не подлежащее.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Ваша помилка:</b> «der» тут – Nominativ (Хто? / Що? – підмет). Але в цьому реченні питання «Де?» – це місце, а не підмет.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Hatanız:</b> “der” burada Nominativ'dir (Kim? / Ne? – özne). Oysa bu cümlede soru «Nerede?» – bu yer bildirir, özne değildir.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">خطؤك:</b> «<bdi dir="ltr">der</bdi>» هنا هو <bdi dir="ltr">Nominativ</bdi> (مَن؟ / ما؟ – الفاعل). لكن السؤال في هذه الجملة «أين؟» – أي المكان وليس الفاعل.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">اشتباه شما:</b> «<bdi dir="ltr">der</bdi>» اینجا <bdi dir="ltr">Nominativ</bdi> است (چه کسی؟ / چه چیزی؟ – نهاد). اما پرسش این جمله «کجا؟» است – یعنی مکان، نه نهاد.</span></div><div class="blk tb tb-akk"><span class="de" lang="de"><b class="lbl">Dein Fehler:</b> „den“ ist Akkusativ (Wen? / Was? / Wohin?). In diesem Satz fragen wir aber „Wo?“ – es gibt keine Bewegung zu einem Ziel. Dann steht der Dativ.</span><span class="tr tr-en" lang="en"><b class="lbl">Your mistake:</b> “den” is accusative (Whom? / What? / Where to?). But this sentence asks “Where?” – there is no movement towards a goal. Then the dative is used.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Ваша ошибка:</b> «den» – Akkusativ (Кого? / Что? / Куда?). Но здесь вопрос «Где?» – нет движения к цели. Тогда стоит Dativ.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Ваша помилка:</b> «den» – Akkusativ (Кого? / Що? / Куди?). Але тут питання «Де?» – немає руху до мети. Тоді стоїть Dativ.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Hatanız:</b> “den” Akkusativ'dir (Kimi? / Neyi? / Nereye?). Ama bu cümlede soru «Nerede?» – bir hedefe doğru hareket yok. O zaman Dativ kullanılır.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">خطؤك:</b> «<bdi dir="ltr">den</bdi>» هو <bdi dir="ltr">Akkusativ</bdi> (مَن؟ / ماذا؟ / إلى أين؟). لكن السؤال هنا «أين؟» – لا توجد حركة نحو هدف. عندها نستخدم <bdi dir="ltr">Dativ</bdi>.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">اشتباه شما:</b> «<bdi dir="ltr">den</bdi>» <bdi dir="ltr">Akkusativ</bdi> است (چه کسی را؟ / چه چیزی را؟ / به کجا؟). اما پرسش اینجا «کجا؟» است – حرکتی به سوی مقصد وجود ندارد. در این حالت <bdi dir="ltr">Dativ</bdi> می‌آید.</span></div><div class="blk tb tb-nomakk"><span class="de" lang="de"><b class="lbl">Dein Fehler:</b> Bei diesem Nomen ist diese Form Nominativ oder Akkusativ. In diesem Satz fragen wir aber „Wo?“ – nach der Wechselpräposition steht dann der Dativ.</span><span class="tr tr-en" lang="en"><b class="lbl">Your mistake:</b> For this noun this form is nominative or accusative. But this sentence asks “Where?” – after the two-way preposition the dative is used.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Ваша ошибка:</b> У этого существительного такая форма – Nominativ или Akkusativ. Но здесь вопрос «Где?» – после предлога с двойным управлением стоит Dativ.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Ваша помилка:</b> У цього іменника така форма – Nominativ або Akkusativ. Але тут питання «Де?» – після прийменника з подвійним керуванням стоїть Dativ.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Hatanız:</b> Bu isimde bu biçim Nominativ veya Akkusativ'dir. Ama bu cümlede soru «Nerede?» – Wechselpräposition'dan sonra Dativ kullanılır.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">خطؤك:</b> مع هذا الاسم يكون هذا الشكل <bdi dir="ltr">Nominativ</bdi> أو <bdi dir="ltr">Akkusativ</bdi>. لكن السؤال هنا «أين؟» – بعد حرف الجر المتغيّر تأتي حالة <bdi dir="ltr">Dativ</bdi>.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">اشتباه شما:</b> برای این اسم، این شکل <bdi dir="ltr">Nominativ</bdi> یا <bdi dir="ltr">Akkusativ</bdi> است. اما پرسش اینجا «کجا؟» است – بعد از حرف اضافهٔ دوحالته <bdi dir="ltr">Dativ</bdi> می‌آید.</span></div><div class="blk tb tb-gender"><span class="de" lang="de"><b class="lbl">Dein Fehler:</b> Dieser Artikel passt nicht zum Genus des Nomens. Dativ: maskulin und neutral „dem“, feminin „der“. Schau auf die Zeile mit N · A · D.</span><span class="tr tr-en" lang="en"><b class="lbl">Your mistake:</b> This article does not match the gender of the noun. Dative: masculine and neuter “dem”, feminine “der”. Look at the line with N · A · D.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Ваша ошибка:</b> Этот артикль не подходит к роду существительного. Dativ: мужской и средний род – «dem», женский – «der». Посмотрите на строку с N · A · D.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Ваша помилка:</b> Цей артикль не відповідає роду іменника. Dativ: чоловічий і середній рід – «dem», жіночий – «der». Подивіться на рядок із N · A · D.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Hatanız:</b> Bu artikel ismin cinsine uymuyor. Dativ: eril ve nötr «dem», dişil «der». N · A · D satırına bakın.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">خطؤك:</b> هذه الأداة لا تناسب جنس الاسم. في <bdi dir="ltr">Dativ</bdi>: المذكّر والمحايد «<bdi dir="ltr">dem</bdi>»، والمؤنّث «<bdi dir="ltr">der</bdi>». انظر إلى السطر <bdi dir="ltr">N · A · D</bdi>.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">اشتباه شما:</b> این آرتیکل با جنسیت اسم نمی‌خواند. در <bdi dir="ltr">Dativ</bdi>: مذکر و خنثی «<bdi dir="ltr">dem</bdi>»، مؤنث «<bdi dir="ltr">der</bdi>». به خط <bdi dir="ltr">N · A · D</bdi> نگاه کنید.</span></div><div class="blk rl rl-WO"><span class="de" lang="de"><b class="lbl">Regel:</b> Die Wechselpräpositionen an, auf, hinter, in, neben, über, unter, vor, zwischen stehen mit Dativ, wenn die Frage „Wo?“ ist (Ort, keine Bewegung zu einem Ziel). Dativ: maskulin dem · neutral dem · feminin der. Manchmal verschmelzen Präposition und Artikel: an + dem = am, in + dem = im.</span><span class="tr tr-en" lang="en"><b class="lbl">Rule:</b> The two-way prepositions an, auf, hinter, in, neben, über, unter, vor, zwischen take the dative when the question is “Where?” (a place, no movement towards a goal). Dative: masculine dem · neuter dem · feminine der. Sometimes preposition and article merge: an + dem = am, in + dem = im.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Правило:</b> Предлоги с двойным управлением an, auf, hinter, in, neben, über, unter, vor, zwischen употребляются с Dativ, если вопрос «Где?» (место, нет движения к цели). Dativ: мужской род dem · средний род dem · женский род der. Иногда предлог и артикль сливаются: an + dem = am, in + dem = im.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Правило:</b> Прийменники з подвійним керуванням an, auf, hinter, in, neben, über, unter, vor, zwischen вживаються з Dativ, якщо питання «Де?» (місце, немає руху до мети). Dativ: чоловічий рід dem · середній рід dem · жіночий рід der. Іноді прийменник і артикль зливаються: an + dem = am, in + dem = im.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Kural:</b> an, auf, hinter, in, neben, über, unter, vor, zwischen gibi Wechselpräposition'lar, soru «Nerede?» olduğunda (yer; bir hedefe doğru hareket yok) Dativ ile kullanılır. Dativ: eril dem · nötr dem · dişil der. Bazen edat ve artikel birleşir: an + dem = am, in + dem = im.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">القاعدة:</b> حروف الجر المتغيّرة <bdi dir="ltr">an</bdi> و<bdi dir="ltr">auf</bdi> و<bdi dir="ltr">hinter</bdi> و<bdi dir="ltr">in</bdi> و<bdi dir="ltr">neben</bdi> و<bdi dir="ltr">über</bdi> و<bdi dir="ltr">unter</bdi> و<bdi dir="ltr">vor</bdi> و<bdi dir="ltr">zwischen</bdi> تأتي مع <bdi dir="ltr">Dativ</bdi> عندما يكون السؤال «أين؟» (مكان، دون حركة نحو هدف). في <bdi dir="ltr">Dativ</bdi>: المذكّر <bdi dir="ltr">dem</bdi> · المحايد <bdi dir="ltr">dem</bdi> · المؤنّث <bdi dir="ltr">der</bdi>. أحيانًا يندمج حرف الجر مع أداة التعريف: <bdi dir="ltr">an + dem = am</bdi> و<bdi dir="ltr">in + dem = im</bdi>.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">قاعده:</b> حروف اضافهٔ دوحالته <bdi dir="ltr">an</bdi>، <bdi dir="ltr">auf</bdi>، <bdi dir="ltr">hinter</bdi>، <bdi dir="ltr">in</bdi>، <bdi dir="ltr">neben</bdi>، <bdi dir="ltr">über</bdi>، <bdi dir="ltr">unter</bdi>، <bdi dir="ltr">vor</bdi>، <bdi dir="ltr">zwischen</bdi> وقتی پرسش «کجا؟» باشد (مکان، بدون حرکت به سوی مقصد) با <bdi dir="ltr">Dativ</bdi> می‌آیند. <bdi dir="ltr">Dativ</bdi>: مذکر <bdi dir="ltr">dem</bdi> · خنثی <bdi dir="ltr">dem</bdi> · مؤنث <bdi dir="ltr">der</bdi>. گاهی حرف اضافه و آرتیکل ادغام می‌شوند: <bdi dir="ltr">an + dem = am</bdi>، <bdi dir="ltr">in + dem = im</bdi>.</span></div><p class="legend">m = maskulin · f = feminin · n = neutral · N = Nominativ · A = Akkusativ · D = Dativ</p></div></div><button type="button" class="btn primary nextbtn" id="next2" style="display:none" onclick="nextItem(2)"><span class="de" lang="de">Weiter</span><span class="tr tr-en" lang="en">Next</span><span class="tr tr-ru" lang="ru">Далее</span><span class="tr tr-uk" lang="uk">Далі</span><span class="tr tr-tr" lang="tr">Devam</span><span class="tr tr-ar" lang="ar" dir="rtl">التالي</span><span class="tr tr-fa" lang="fa" dir="rtl">بعدی</span></button></div><div class="result" id="res2" style="display:none"><h3><span class="de" lang="de">Ergebnis</span><span class="tr tr-en" lang="en">Result</span><span class="tr tr-ru" lang="ru">Результат</span><span class="tr tr-uk" lang="uk">Результат</span><span class="tr tr-tr" lang="tr">Sonuç</span><span class="tr tr-ar" lang="ar" dir="rtl">النتيجة</span><span class="tr tr-fa" lang="fa" dir="rtl">نتیجه</span></h3><p class="score" id="score2">0 / 0</p><div class="allok" id="allok2" style="display:none"><span class="de" lang="de">Alles richtig!</span><span class="tr tr-en" lang="en">All correct!</span><span class="tr tr-ru" lang="ru">Всё верно!</span><span class="tr tr-uk" lang="uk">Усе правильно!</span><span class="tr tr-tr" lang="tr">Hepsi doğru!</span><span class="tr tr-ar" lang="ar" dir="rtl">كل الإجابات صحيحة!</span><span class="tr tr-fa" lang="fa" dir="rtl">همه درست بود!</span></div><button type="button" class="btn" id="retry2" style="display:none" onclick="startStep(2,true)"><span class="de" lang="de">Fehler wiederholen</span><span class="tr tr-en" lang="en">Repeat the mistakes</span><span class="tr tr-ru" lang="ru">Повторить ошибки</span><span class="tr tr-uk" lang="uk">Повторити помилки</span><span class="tr tr-tr" lang="tr">Hataları tekrarla</span><span class="tr tr-ar" lang="ar" dir="rtl">إعادة الأخطاء</span><span class="tr tr-fa" lang="fa" dir="rtl">تکرار اشتباه‌ها</span></button><button type="button" class="btn" onclick="startStep(2,false)"><span class="de" lang="de">Diesen Schritt nochmal von vorn</span><span class="tr tr-en" lang="en">Do this step again from the start</span><span class="tr tr-ru" lang="ru">Пройти этот шаг заново</span><span class="tr tr-uk" lang="uk">Пройти цей крок знову</span><span class="tr tr-tr" lang="tr">Bu adımı baştan yap</span><span class="tr tr-ar" lang="ar" dir="rtl">إعادة هذه الخطوة من البداية</span><span class="tr tr-fa" lang="fa" dir="rtl">این مرحله را از اول تکرار کنید</span></button><button type="button" class="btn primary" onclick="startStep(3,false)"><span class="de" lang="de">Weiter zum nächsten Schritt</span><span class="tr tr-en" lang="en">On to the next step</span><span class="tr tr-ru" lang="ru">Перейти к следующему шагу</span><span class="tr tr-uk" lang="uk">Перейти до наступного кроку</span><span class="tr tr-tr" lang="tr">Sonraki adıma geç</span><span class="tr tr-ar" lang="ar" dir="rtl">الانتقال إلى الخطوة التالية</span><span class="tr tr-fa" lang="fa" dir="rtl">رفتن به مرحلهٔ بعد</span></button><button type="button" class="btn ghost" onclick="goStart()"><span class="de" lang="de">Zurück zum Start</span><span class="tr tr-en" lang="en">Back to start</span><span class="tr tr-ru" lang="ru">В начало</span><span class="tr tr-uk" lang="uk">На початок</span><span class="tr tr-tr" lang="tr">Başa dön</span><span class="tr tr-ar" lang="ar" dir="rtl">العودة إلى البداية</span><span class="tr tr-fa" lang="fa" dir="rtl">بازگشت به آغاز</span></button></div></section><section id="s3" class="screen"><div class="stephead"><h2><span class="de" lang="de">Schritt 3: Nominativ, Akkusativ oder Dativ?</span><span class="tr tr-en" lang="en">Step 3: Nominative, accusative or dative?</span><span class="tr tr-ru" lang="ru">Шаг 3: Nominativ, Akkusativ или Dativ?</span><span class="tr tr-uk" lang="uk">Крок 3: Nominativ, Akkusativ чи Dativ?</span><span class="tr tr-tr" lang="tr">Adım 3: Nominativ, Akkusativ veya Dativ?</span><span class="tr tr-ar" lang="ar" dir="rtl">الخطوة <bdi dir="ltr">3</bdi>: <bdi dir="ltr">Nominativ</bdi> أم <bdi dir="ltr">Akkusativ</bdi> أم <bdi dir="ltr">Dativ</bdi>؟</span><span class="tr tr-fa" lang="fa" dir="rtl">مرحلهٔ ۳: <bdi dir="ltr">Nominativ</bdi>، <bdi dir="ltr">Akkusativ</bdi> یا <bdi dir="ltr">Dativ</bdi>؟</span></h2><p class="inst"><span class="de" lang="de">Ergänze den richtigen Artikel. Entscheide selbst: Nominativ, Akkusativ oder Dativ?</span><span class="tr tr-en" lang="en">Fill in the correct article. Decide for yourself: nominative, accusative or dative?</span><span class="tr tr-ru" lang="ru">Вставьте правильный артикль. Определите сами: Nominativ, Akkusativ или Dativ?</span><span class="tr tr-uk" lang="uk">Вставте правильний артикль. Визначте самі: Nominativ, Akkusativ чи Dativ?</span><span class="tr tr-tr" lang="tr">Doğru artikeli tamamlayın. Kendiniz karar verin: Nominativ, Akkusativ mı, Dativ mi?</span><span class="tr tr-ar" lang="ar" dir="rtl">أكمل بأداة التعريف الصحيحة. قرّر بنفسك: <bdi dir="ltr">Nominativ</bdi> أم <bdi dir="ltr">Akkusativ</bdi> أم <bdi dir="ltr">Dativ</bdi>؟</span><span class="tr tr-fa" lang="fa" dir="rtl">آرتیکل درست را کامل کنید. خودتان تشخیص دهید: <bdi dir="ltr">Nominativ</bdi>، <bdi dir="ltr">Akkusativ</bdi> یا <bdi dir="ltr">Dativ</bdi>؟</span></p><p class="inst2"><span class="de" lang="de">Manchmal gehört die Präposition zur Antwort (z. B. am = an dem).</span><span class="tr tr-en" lang="en">Sometimes the preposition is part of the answer (e.g. am = an dem).</span><span class="tr tr-ru" lang="ru">Иногда предлог входит в ответ (например, am = an dem).</span><span class="tr tr-uk" lang="uk">Іноді прийменник входить у відповідь (наприклад, am = an dem).</span><span class="tr tr-tr" lang="tr">Bazen edat da cevabın bir parçasıdır (ör. am = an dem).</span><span class="tr tr-ar" lang="ar" dir="rtl">أحيانًا يكون حرف الجر جزءًا من الإجابة (مثلًا <bdi dir="ltr">am = an dem</bdi>).</span><span class="tr tr-fa" lang="fa" dir="rtl">گاهی حرف اضافه هم بخشی از پاسخ است (مثلاً <bdi dir="ltr">am = an dem</bdi>).</span></p></div><details class="help"><summary><span class="de" lang="de">Hilfe: Artikel-Tabelle</span><span class="tr tr-en" lang="en">Help: article table</span><span class="tr tr-ru" lang="ru">Помощь: таблица артиклей</span><span class="tr tr-uk" lang="uk">Допомога: таблиця артиклів</span><span class="tr tr-tr" lang="tr">Yardım: artikel tablosu</span><span class="tr tr-ar" lang="ar" dir="rtl">مساعدة: جدول أدوات التعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">راهنما: جدول آرتیکل‌ها</span></summary><table class="tbl"><tr><th></th><th>m</th><th>n</th><th>f</th></tr><tr><th>N · Nominativ<br><small>Wer? Was?</small></th><td>der</td><td>das</td><td>die</td></tr><tr><th>A · Akkusativ<br><small>Wen? Was? Wohin?</small></th><td>den</td><td>das</td><td>die</td></tr><tr><th>D · Dativ<br><small>Wem? Wo?</small></th><td>dem</td><td>dem</td><td>der</td></tr></table><p class="hp">m = maskulin · n = neutral · f = feminin</p><p class="hp">an + dem = am · in + dem = im · bei + dem = beim · von + dem = vom · zu + dem = zum · zu + der = zur · in + das = ins</p></details><div id="q3"><div class="prog"><div class="bar" id="bar3"></div></div><div class="cnt" id="cnt3">1 / 35</div><div class="items"><div class="item" id="s3i1" data-step="3" data-id="1" data-r="SUBJ" data-sol="Leider hat die Bank heute geschlossen." data-for="die Bank (f): N die · A die · D der" data-con="Subjekt = Nominativ (Wer? Was?)" data-q="">
+<p class="sent">Leider hat <span class="gap">___</span> Bank heute geschlossen.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i2" data-step="3" data-id="2" data-r="SUBJ" data-sol="Dort vorne ist die Haltestelle für den Bus 5." data-for="die Haltestelle (f): N die · A die · D der" data-con="Subjekt = Nominativ (Wer? Was?)" data-q="">
+<p class="sent">Dort vorne ist <span class="gap">___</span> Haltestelle für den Bus 5.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i3" data-step="3" data-id="3" data-r="SUBJ" data-sol="Am Montag ist das Museum geschlossen." data-for="das Museum (n): N das · A das · D dem" data-con="Subjekt = Nominativ (Wer? Was?)" data-q="">
+<p class="sent">Am Montag ist <span class="gap">___</span> Museum geschlossen.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i4" data-step="3" data-id="4" data-r="SUBJ" data-sol="Heute ist der Parkplatz voll." data-for="der Parkplatz (m): N der · A den · D dem" data-con="Subjekt = Nominativ (Wer? Was?)" data-q="">
+<p class="sent">Heute ist <span class="gap">___</span> Parkplatz voll.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="akk" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i5" data-step="3" data-id="5" data-r="SUBJ" data-sol="Zum Glück ist das Restaurant noch offen." data-for="das Restaurant (n): N das · A das · D dem" data-con="Subjekt = Nominativ (Wer? Was?)" data-q="">
+<p class="sent">Zum Glück ist <span class="gap">___</span> Restaurant noch offen.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i6" data-step="3" data-id="6" data-r="SUBJ" data-sol="Jeden Morgen öffnet der Kindergarten um 7 Uhr." data-for="der Kindergarten (m): N der · A den · D dem" data-con="Subjekt = Nominativ (Wer? Was?)" data-q="">
+<p class="sent">Jeden Morgen öffnet <span class="gap">___</span> Kindergarten um 7 Uhr.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="akk" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i7" data-step="3" data-id="7" data-r="SUBJ" data-sol="Um 8 Uhr beginnt die Schule." data-for="die Schule (f): N die · A die · D der" data-con="Subjekt = Nominativ (Wer? Was?)" data-q="">
+<p class="sent">Um 8 Uhr beginnt <span class="gap">___</span> Schule.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i8" data-step="3" data-id="8" data-r="SUBJ" data-sol="Plötzlich wird die Ampel rot." data-for="die Ampel (f): N die · A die · D der" data-con="Subjekt = Nominativ (Wer? Was?)" data-q="">
+<p class="sent">Plötzlich wird <span class="gap">___</span> Ampel rot.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i9" data-step="3" data-id="9" data-r="OBJ" data-sol="Wir suchen schon lange den Parkplatz." data-for="der Parkplatz (m): N der · A den · D dem" data-con="suchen + Akkusativ (Wen? Was?)" data-q="">
+<p class="sent">Wir suchen schon lange <span class="gap">___</span> Parkplatz.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i10" data-step="3" data-id="10" data-r="OBJ" data-sol="Ich finde den Laden nicht." data-for="der Laden (m): N der · A den · D dem" data-con="finden + Akkusativ (Wen? Was?)" data-q="">
+<p class="sent">Ich finde <span class="gap">___</span> Laden nicht.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i11" data-step="3" data-id="11" data-r="OBJ" data-sol="Entschuldigung, wo finde ich die Apotheke?" data-for="die Apotheke (f): N die · A die · D der" data-con="finden + Akkusativ (Wen? Was?)" data-q="">
+<p class="sent">Entschuldigung, wo finde ich <span class="gap">___</span> Apotheke?</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i12" data-step="3" data-id="12" data-r="OBJ" data-sol="Wir kennen das Restaurant sehr gut." data-for="das Restaurant (n): N das · A das · D dem" data-con="kennen + Akkusativ (Wen? Was?)" data-q="">
+<p class="sent">Wir kennen <span class="gap">___</span> Restaurant sehr gut.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i13" data-step="3" data-id="13" data-r="OBJ" data-sol="Wir suchen das Bürgerbüro." data-for="das Bürgerbüro (n): N das · A das · D dem" data-con="suchen + Akkusativ (Wen? Was?)" data-q="">
+<p class="sent">Wir suchen <span class="gap">___</span> Bürgerbüro.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i14" data-step="3" data-id="14" data-r="OBJ" data-sol="Siehst du die Bäckerei dort?" data-for="die Bäckerei (f): N die · A die · D der" data-con="sehen + Akkusativ (Wen? Was?)" data-q="">
+<p class="sent">Siehst du <span class="gap">___</span> Bäckerei dort?</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i15" data-step="3" data-id="15" data-r="APREP" data-sol="Wir sammeln Geld für die Kita." data-for="die Kita (f): N die · A die · D der" data-con="für + Akkusativ" data-q="">
+<p class="sent">Wir sammeln Geld für <span class="gap">___</span> Kita.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i16" data-step="3" data-id="16" data-r="WOHIN" data-sol="Am Wochenende gehen wir ins Museum." data-for="das Museum (n): N das · A das · D dem" data-con="in + Akkusativ (Wohin?) · in + das = ins" data-q="">
+<p class="sent">Am Wochenende gehen wir <span class="gap">___</span> Museum.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in der" onclick="ans(this)">in der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in die" onclick="ans(this)">in die</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="ins" onclick="ans(this)">ins</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in den" onclick="ans(this)">in den</button>
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="im" onclick="ans(this)">im</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i17" data-step="3" data-id="17" data-r="WOHIN" data-sol="Wollen wir ins Café gehen?" data-for="das Café (n): N das · A das · D dem" data-con="in + Akkusativ (Wohin?) · in + das = ins" data-q="">
+<p class="sent">Wollen wir <span class="gap">___</span> Café gehen?</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in der" onclick="ans(this)">in der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in die" onclick="ans(this)">in die</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="ins" onclick="ans(this)">ins</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in den" onclick="ans(this)">in den</button>
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="im" onclick="ans(this)">im</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i18" data-step="3" data-id="18" data-r="WOHIN" data-sol="Heute gehen wir alle auf den Sportplatz." data-for="der Sportplatz (m): N der · A den · D dem" data-con="auf + Akkusativ (Wohin?)" data-q="">
+<p class="sent">Heute gehen wir alle auf <span class="gap">___</span> Sportplatz.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i19" data-step="3" data-id="19" data-r="WOHIN" data-sol="Fahren Sie geradeaus über die Kreuzung." data-for="die Kreuzung (f): N die · A die · D der" data-con="über + Akkusativ (Wohin?)" data-q="">
+<p class="sent">Fahren Sie geradeaus über <span class="gap">___</span> Kreuzung.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i20" data-step="3" data-id="20" data-r="WOHIN" data-sol="Ich gehe schnell in den Supermarkt." data-for="der Supermarkt (m): N der · A den · D dem" data-con="in + Akkusativ (Wohin?)" data-q="">
+<p class="sent">Ich gehe schnell in <span class="gap">___</span> Supermarkt.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i21" data-step="3" data-id="21" data-r="WOHIN" data-sol="Morgen gehe ich in die VHS." data-for="die VHS (f): N die · A die · D der" data-con="in + Akkusativ (Wohin?)" data-q="">
+<p class="sent">Morgen gehe ich in <span class="gap">___</span> VHS.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i22" data-step="3" data-id="22" data-r="WOHIN" data-sol="Ich gehe heute in die Arztpraxis." data-for="die Arztpraxis (f): N die · A die · D der" data-con="in + Akkusativ (Wohin?)" data-q="">
+<p class="sent">Ich gehe heute in <span class="gap">___</span> Arztpraxis.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="dat" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i23" data-step="3" data-id="23" data-r="WO" data-sol="Wir sitzen schon im Café." data-for="das Café (n): N das · A das · D dem" data-con="in + Dativ (Wo?) · in + dem = im" data-q="">
+<p class="sent">Wir sitzen schon <span class="gap">___</span> Café.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in der" onclick="ans(this)">in der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in die" onclick="ans(this)">in die</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="ins" onclick="ans(this)">ins</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in den" onclick="ans(this)">in den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="im" onclick="ans(this)">im</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i24" data-step="3" data-id="24" data-r="WO" data-sol="Mein Sohn ist den ganzen Tag im Kindergarten." data-for="der Kindergarten (m): N der · A den · D dem" data-con="in + Dativ (Wo?) · in + dem = im" data-q="">
+<p class="sent">Mein Sohn ist den ganzen Tag <span class="gap">___</span> Kindergarten.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="in der" onclick="ans(this)">in der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="in die" onclick="ans(this)">in die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="ins" onclick="ans(this)">ins</button>
+<button type="button" class="opt" data-ok="0" data-t="akk" data-lab="in den" onclick="ans(this)">in den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="im" onclick="ans(this)">im</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i25" data-step="3" data-id="25" data-r="WO" data-sol="Vor dem Museum steht eine lange Schlange." data-for="das Museum (n): N das · A das · D dem" data-con="vor + Dativ (Wo?)" data-q="">
+<p class="sent">Vor <span class="gap">___</span> Museum steht eine lange Schlange.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i26" data-step="3" data-id="26" data-r="WO" data-sol="Auf dem Sportplatz sind viele Kinder." data-for="der Sportplatz (m): N der · A den · D dem" data-con="auf + Dativ (Wo?)" data-q="">
+<p class="sent">Auf <span class="gap">___</span> Sportplatz sind viele Kinder.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="akk" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i27" data-step="3" data-id="27" data-r="WO" data-sol="An der Haltestelle steht ein Mann." data-for="die Haltestelle (f): N die · A die · D der" data-con="an + Dativ (Wo?)" data-q="">
+<p class="sent">An <span class="gap">___</span> Haltestelle steht ein Mann.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i28" data-step="3" data-id="28" data-r="WO" data-sol="Die Kinder warten vor der Schule." data-for="die Schule (f): N die · A die · D der" data-con="vor + Dativ (Wo?)" data-q="">
+<p class="sent">Die Kinder warten vor <span class="gap">___</span> Schule.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i29" data-step="3" data-id="29" data-r="DPREP" data-sol="Ich fahre kurz zur Tankstelle." data-for="die Tankstelle (f): N die · A die · D der" data-con="zu + Dativ · zu + der = zur" data-q="">
+<p class="sent">Ich fahre kurz <span class="gap">___</span> Tankstelle.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="zur" onclick="ans(this)">zur</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="zu die" onclick="ans(this)">zu die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="zu das" onclick="ans(this)">zu das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="zu den" onclick="ans(this)">zu den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="zum" onclick="ans(this)">zum</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i30" data-step="3" data-id="30" data-r="DPREP" data-sol="Meine Tante arbeitet bei der Bank." data-for="die Bank (f): N die · A die · D der" data-con="bei + Dativ" data-q="">
+<p class="sent">Meine Tante arbeitet bei <span class="gap">___</span> Bank.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i31" data-step="3" data-id="31" data-r="DPREP" data-sol="Ich fahre mit dem Bus zum Bahnhof." data-for="der Bahnhof (m): N der · A den · D dem" data-con="zu + Dativ · zu + dem = zum" data-q="">
+<p class="sent">Ich fahre mit dem Bus <span class="gap">___</span> Bahnhof.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="zur" onclick="ans(this)">zur</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="zu die" onclick="ans(this)">zu die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="zu das" onclick="ans(this)">zu das</button>
+<button type="button" class="opt" data-ok="0" data-t="akk" data-lab="zu den" onclick="ans(this)">zu den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="zum" onclick="ans(this)">zum</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i32" data-step="3" data-id="32" data-r="DPREP" data-sol="Ich komme gerade vom Supermarkt." data-for="der Supermarkt (m): N der · A den · D dem" data-con="von + Dativ · von + dem = vom" data-q="">
+<p class="sent">Ich komme gerade <span class="gap">___</span> Supermarkt.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="0" data-t="nom" data-lab="von der" onclick="ans(this)">von der</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="von die" onclick="ans(this)">von die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="von das" onclick="ans(this)">von das</button>
+<button type="button" class="opt" data-ok="0" data-t="akk" data-lab="von den" onclick="ans(this)">von den</button>
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="vom" onclick="ans(this)">vom</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i33" data-step="3" data-id="33" data-r="DPREP" data-sol="Meine Nachbarin kommt gerade aus der VHS." data-for="die VHS (f): N die · A die · D der" data-con="aus + Dativ" data-q="">
+<p class="sent">Meine Nachbarin kommt gerade aus <span class="gap">___</span> VHS.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i34" data-step="3" data-id="34" data-r="DPREP" data-sol="Nach der Ampel müssen Sie links abbiegen." data-for="die Ampel (f): N die · A die · D der" data-con="nach + Dativ" data-q="">
+<p class="sent">Nach <span class="gap">___</span> Ampel müssen Sie links abbiegen.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div>
+<div class="item" id="s3i35" data-step="3" data-id="35" data-r="DPREP" data-sol="Ich hole meine Tochter von der Kita ab." data-for="die Kita (f): N die · A die · D der" data-con="von + Dativ" data-q="">
+<p class="sent">Ich hole meine Tochter von <span class="gap">___</span> Kita ab.</p>
+<div class="opts">
+<button type="button" class="opt" data-ok="1" data-t="ok" data-lab="der" onclick="ans(this)">der</button>
+<button type="button" class="opt" data-ok="0" data-t="nomakk" data-lab="die" onclick="ans(this)">die</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="das" onclick="ans(this)">das</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="den" onclick="ans(this)">den</button>
+<button type="button" class="opt" data-ok="0" data-t="gender" data-lab="dem" onclick="ans(this)">dem</button>
+<button type="button" class="opt nonebtn" data-ok="0" data-t="none" data-lab="Ø" onclick="ans(this)"><span class="de">wir brauchen keinen Artikel</span><span class="tr tr-en" lang="en">we don't need an article</span><span class="tr tr-ru" lang="ru">артикль не нужен</span><span class="tr tr-uk" lang="uk">артикль не потрібен</span><span class="tr tr-tr" lang="tr">artikele gerek yok</span><span class="tr tr-ar" lang="ar" dir="rtl">لا نحتاج إلى أداة تعريف</span><span class="tr tr-fa" lang="fa" dir="rtl">به آرتیکل نیازی نیست</span></button>
+</div></div></div><div class="fbpanel" id="fb3"><div class="verdict v-ok"><span class="de" lang="de">Richtig!</span><span class="tr tr-en" lang="en">Correct!</span><span class="tr tr-ru" lang="ru">Верно!</span><span class="tr tr-uk" lang="uk">Правильно!</span><span class="tr tr-tr" lang="tr">Doğru!</span><span class="tr tr-ar" lang="ar" dir="rtl">صحيح!</span><span class="tr tr-fa" lang="fa" dir="rtl">درست!</span></div><div class="verdict v-bad"><span class="de" lang="de">Nicht richtig.</span><span class="tr tr-en" lang="en">Not correct.</span><span class="tr tr-ru" lang="ru">Неверно.</span><span class="tr tr-uk" lang="uk">Неправильно.</span><span class="tr tr-tr" lang="tr">Doğru değil.</span><span class="tr tr-ar" lang="ar" dir="rtl">غير صحيح.</span><span class="tr tr-fa" lang="fa" dir="rtl">درست نیست.</span></div><p class="sol"><span class="solk"><span class="de" lang="de">Richtig ist:</span><span class="tr tr-en" lang="en">Correct:</span><span class="tr tr-ru" lang="ru">Правильно:</span><span class="tr tr-uk" lang="uk">Правильно:</span><span class="tr tr-tr" lang="tr">Doğrusu:</span><span class="tr tr-ar" lang="ar" dir="rtl">الصحيح:</span><span class="tr tr-fa" lang="fa" dir="rtl">پاسخ درست:</span></span> <b id="sol3"></b></p><p class="formel" id="for3"></p><p class="formel" id="con3"></p><div class="wrongonly"><div class="blk tb tb-none"><span class="de" lang="de"><b class="lbl">Dein Fehler:</b> Hier braucht das Nomen einen Artikel: Es steht im Singular und meint einen bestimmten Ort oder eine bestimmte Sache. Nomen im Singular stehen fast nie ohne Artikel – nicht nach einer Präposition und nicht nach einem Verb.</span><span class="tr tr-en" lang="en"><b class="lbl">Your mistake:</b> The noun needs an article here: it is singular and refers to one specific place or thing. Singular nouns almost never stand without an article – not after a preposition and not after a verb either.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Ваша ошибка:</b> Здесь существительному нужен артикль: оно стоит в единственном числе и обозначает конкретное место или предмет. Существительные в единственном числе почти никогда не употребляются без артикля – ни после предлога, ни после глагола.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Ваша помилка:</b> Тут іменнику потрібен артикль: він стоїть в однині й означає конкретне місце чи предмет. Іменники в однині майже ніколи не вживаються без артикля – ні після прийменника, ні після дієслова.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Hatanız:</b> Burada isim artikel ister: tekil ve belirli bir yeri ya da şeyi anlatıyor. Tekil isimler neredeyse hiçbir zaman artikelsiz kullanılmaz – ne edattan sonra ne de fiilden sonra.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">خطؤك:</b> يحتاج الاسم هنا إلى أداة تعريف: فهو مفرد ويدلّ على مكان أو شيء محدد. الأسماء المفردة لا تأتي تقريبًا أبدًا بدون أداة تعريف – لا بعد حرف الجر ولا بعد الفعل.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">اشتباه شما:</b> اینجا اسم به آرتیکل نیاز دارد: مفرد است و به یک مکان یا چیز مشخص اشاره می‌کند. اسم‌های مفرد تقریباً هرگز بدون آرتیکل نمی‌آیند – نه بعد از حرف اضافه و نه بعد از فعل.</span></div><div class="blk tb tb-nom"><span class="de" lang="de"><b class="lbl">Dein Fehler:</b> Du hast eine Nominativform gewählt (Wer? / Was? – Subjekt). Dieser Satz braucht aber einen anderen Kasus – lies die Regel.</span><span class="tr tr-en" lang="en"><b class="lbl">Your mistake:</b> You chose a nominative form (Who? / What? – subject). But this sentence needs a different case – read the rule.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Ваша ошибка:</b> Вы выбрали форму Nominativ (Кто? / Что? – подлежащее). Но в этом предложении нужен другой падеж – прочитайте правило.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Ваша помилка:</b> Ви вибрали форму Nominativ (Хто? / Що? – підмет). Але в цьому реченні потрібен інший відмінок – прочитайте правило.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Hatanız:</b> Nominativ biçimini seçtiniz (Kim? / Ne? – özne). Ama bu cümle başka bir hâl ister – kuralı okuyun.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">خطؤك:</b> اخترت صيغة <bdi dir="ltr">Nominativ</bdi> (مَن؟ / ما؟ – الفاعل). لكن هذه الجملة تحتاج إلى حالة أخرى – اقرأ القاعدة.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">اشتباه شما:</b> شما شکل <bdi dir="ltr">Nominativ</bdi> را انتخاب کردید (چه کسی؟ / چه چیزی؟ – نهاد). اما این جمله به حالت دیگری نیاز دارد – قاعده را بخوانید.</span></div><div class="blk tb tb-akk"><span class="de" lang="de"><b class="lbl">Dein Fehler:</b> Du hast eine Akkusativform gewählt (Wen? / Was? / Wohin?). Dieser Satz braucht aber einen anderen Kasus – lies die Regel.</span><span class="tr tr-en" lang="en"><b class="lbl">Your mistake:</b> You chose an accusative form (Whom? / What? / Where to?). But this sentence needs a different case – read the rule.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Ваша ошибка:</b> Вы выбрали форму Akkusativ (Кого? / Что? / Куда?). Но в этом предложении нужен другой падеж – прочитайте правило.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Ваша помилка:</b> Ви вибрали форму Akkusativ (Кого? / Що? / Куди?). Але в цьому реченні потрібен інший відмінок – прочитайте правило.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Hatanız:</b> Akkusativ biçimini seçtiniz (Kimi? / Neyi? / Nereye?). Ama bu cümle başka bir hâl ister – kuralı okuyun.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">خطؤك:</b> اخترت صيغة <bdi dir="ltr">Akkusativ</bdi> (مَن؟ / ماذا؟ / إلى أين؟). لكن هذه الجملة تحتاج إلى حالة أخرى – اقرأ القاعدة.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">اشتباه شما:</b> شما شکل <bdi dir="ltr">Akkusativ</bdi> را انتخاب کردید (چه کسی را؟ / چه چیزی را؟ / به کجا؟). اما این جمله به حالت دیگری نیاز دارد – قاعده را بخوانید.</span></div><div class="blk tb tb-dat"><span class="de" lang="de"><b class="lbl">Dein Fehler:</b> Du hast eine Dativform gewählt (Wem? / Wo?). Dieser Satz braucht aber einen anderen Kasus – lies die Regel.</span><span class="tr tr-en" lang="en"><b class="lbl">Your mistake:</b> You chose a dative form (To whom? / Where?). But this sentence needs a different case – read the rule.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Ваша ошибка:</b> Вы выбрали форму Dativ (Кому? / Где?). Но в этом предложении нужен другой падеж – прочитайте правило.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Ваша помилка:</b> Ви вибрали форму Dativ (Кому? / Де?). Але в цьому реченні потрібен інший відмінок – прочитайте правило.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Hatanız:</b> Dativ biçimini seçtiniz (Kime? / Nerede?). Ama bu cümle başka bir hâl ister – kuralı okuyun.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">خطؤك:</b> اخترت صيغة <bdi dir="ltr">Dativ</bdi> (لمن؟ / أين؟). لكن هذه الجملة تحتاج إلى حالة أخرى – اقرأ القاعدة.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">اشتباه شما:</b> شما شکل <bdi dir="ltr">Dativ</bdi> را انتخاب کردید (به چه کسی؟ / کجا؟). اما این جمله به حالت دیگری نیاز دارد – قاعده را بخوانید.</span></div><div class="blk tb tb-nomakk"><span class="de" lang="de"><b class="lbl">Dein Fehler:</b> Bei diesem Nomen ist diese Form Nominativ oder Akkusativ. Dieser Satz braucht aber den Dativ – lies die Regel.</span><span class="tr tr-en" lang="en"><b class="lbl">Your mistake:</b> For this noun this form is nominative or accusative. But this sentence needs the dative – read the rule.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Ваша ошибка:</b> У этого существительного такая форма – Nominativ или Akkusativ. Но в этом предложении нужен Dativ – прочитайте правило.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Ваша помилка:</b> У цього іменника така форма – Nominativ або Akkusativ. Але в цьому реченні потрібен Dativ – прочитайте правило.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Hatanız:</b> Bu isimde bu biçim Nominativ veya Akkusativ'dir. Ama bu cümle Dativ ister – kuralı okuyun.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">خطؤك:</b> مع هذا الاسم يكون هذا الشكل <bdi dir="ltr">Nominativ</bdi> أو <bdi dir="ltr">Akkusativ</bdi>. لكن هذه الجملة تحتاج إلى <bdi dir="ltr">Dativ</bdi> – اقرأ القاعدة.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">اشتباه شما:</b> برای این اسم، این شکل <bdi dir="ltr">Nominativ</bdi> یا <bdi dir="ltr">Akkusativ</bdi> است. اما این جمله به <bdi dir="ltr">Dativ</bdi> نیاز دارد – قاعده را بخوانید.</span></div><div class="blk tb tb-gender"><span class="de" lang="de"><b class="lbl">Dein Fehler:</b> Dieser Artikel passt nicht zum Genus des Nomens. Schau auf die Zeile mit N · A · D: So sieht dieses Nomen in jedem Kasus aus.</span><span class="tr tr-en" lang="en"><b class="lbl">Your mistake:</b> This article does not match the gender of the noun. Look at the line with N · A · D: it shows this noun in each case.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Ваша ошибка:</b> Этот артикль не подходит к роду существительного. Посмотрите на строку с N · A · D: там показано это существительное в каждом падеже.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Ваша помилка:</b> Цей артикль не відповідає роду іменника. Подивіться на рядок із N · A · D: там показано цей іменник у кожному відмінку.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Hatanız:</b> Bu artikel ismin cinsine uymuyor. N · A · D satırına bakın: bu ismin her hâlde nasıl göründüğü orada yazıyor.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">خطؤك:</b> هذه الأداة لا تناسب جنس الاسم. انظر إلى السطر <bdi dir="ltr">N · A · D</bdi>: يعرض هذا الاسم في كل حالة.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">اشتباه شما:</b> این آرتیکل با جنسیت اسم نمی‌خواند. به خط <bdi dir="ltr">N · A · D</bdi> نگاه کنید: این اسم را در هر حالت نشان می‌دهد.</span></div><div class="blk rl rl-SUBJ"><span class="de" lang="de"><b class="lbl">Regel:</b> Das Nomen ist das Subjekt des Satzes (Wer? / Was?). Das Subjekt steht im Nominativ.</span><span class="tr tr-en" lang="en"><b class="lbl">Rule:</b> The noun is the subject of the sentence (Who? / What?). The subject is in the nominative.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Правило:</b> Существительное – подлежащее предложения (Кто? / Что?). Подлежащее стоит в Nominativ.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Правило:</b> Іменник – підмет речення (Хто? / Що?). Підмет стоїть у Nominativ.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Kural:</b> İsim cümlenin öznesidir (Kim? / Ne?). Özne Nominativ'de durur.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">القاعدة:</b> الاسم هو فاعل الجملة (مَن؟ / ما؟). الفاعل يكون في حالة <bdi dir="ltr">Nominativ</bdi>.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">قاعده:</b> این اسم نهاد جمله است (چه کسی؟ / چه چیزی؟). نهاد در حالت <bdi dir="ltr">Nominativ</bdi> می‌آید.</span></div><div class="blk rl rl-OBJ"><span class="de" lang="de"><b class="lbl">Regel:</b> Das Nomen ist das Objekt nach dem Verb (Wen? / Was?). Das direkte Objekt steht im Akkusativ. Nur maskulin ändert sich: der → den.</span><span class="tr tr-en" lang="en"><b class="lbl">Rule:</b> The noun is the object of the verb (Whom? / What?). The direct object is in the accusative. Only the masculine changes: der → den.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Правило:</b> Существительное – прямое дополнение при глаголе (Кого? / Что?). Прямое дополнение стоит в Akkusativ. Меняется только мужской род: der → den.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Правило:</b> Іменник – пряме додаток при дієслові (Кого? / Що?). Пряме додаток стоїть в Akkusativ. Змінюється лише чоловічий рід: der → den.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Kural:</b> İsim, fiilin nesnesidir (Kimi? / Neyi?). Doğrudan nesne Akkusativ'de durur. Yalnızca eril değişir: der → den.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">القاعدة:</b> الاسم هو المفعول به للفعل (مَن؟ / ماذا؟). المفعول به المباشر يكون في حالة <bdi dir="ltr">Akkusativ</bdi>. المذكّر فقط يتغيّر: <bdi dir="ltr">der → den</bdi>.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">قاعده:</b> این اسم مفعول فعل است (چه کسی را؟ / چه چیزی را؟). مفعول مستقیم در حالت <bdi dir="ltr">Akkusativ</bdi> می‌آید. فقط مذکر تغییر می‌کند: <bdi dir="ltr">der → den</bdi>.</span></div><div class="blk rl rl-APREP"><span class="de" lang="de"><b class="lbl">Regel:</b> Die Präpositionen durch, für, gegen, ohne, um stehen immer mit dem Akkusativ.</span><span class="tr tr-en" lang="en"><b class="lbl">Rule:</b> The prepositions durch, für, gegen, ohne, um always take the accusative.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Правило:</b> Предлоги durch, für, gegen, ohne, um всегда употребляются с Akkusativ.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Правило:</b> Прийменники durch, für, gegen, ohne, um завжди вживаються з Akkusativ.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Kural:</b> durch, für, gegen, ohne, um edatları her zaman Akkusativ ile kullanılır.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">القاعدة:</b> حروف الجر <bdi dir="ltr">durch</bdi> و<bdi dir="ltr">für</bdi> و<bdi dir="ltr">gegen</bdi> و<bdi dir="ltr">ohne</bdi> و<bdi dir="ltr">um</bdi> تأتي دائمًا مع <bdi dir="ltr">Akkusativ</bdi>.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">قاعده:</b> حروف اضافهٔ <bdi dir="ltr">durch</bdi>، <bdi dir="ltr">für</bdi>، <bdi dir="ltr">gegen</bdi>، <bdi dir="ltr">ohne</bdi>، <bdi dir="ltr">um</bdi> همیشه با <bdi dir="ltr">Akkusativ</bdi> می‌آیند.</span></div><div class="blk rl rl-WOHIN"><span class="de" lang="de"><b class="lbl">Regel:</b> Bei den Wechselpräpositionen (an, auf, hinter, in, neben, über, unter, vor, zwischen) steht der Akkusativ, wenn die Frage „Wohin?“ ist (Bewegung zu einem Ziel). Verschmelzung: in + das = ins.</span><span class="tr tr-en" lang="en"><b class="lbl">Rule:</b> With two-way prepositions (an, auf, hinter, in, neben, über, unter, vor, zwischen) the accusative is used when the question is “Where to?” (movement towards a goal). Contraction: in + das = ins.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Правило:</b> После предлогов с двойным управлением (an, auf, hinter, in, neben, über, unter, vor, zwischen) стоит Akkusativ, если вопрос «Куда?» (движение к цели). Слияние: in + das = ins.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Правило:</b> Після прийменників із подвійним керуванням (an, auf, hinter, in, neben, über, unter, vor, zwischen) стоїть Akkusativ, якщо питання «Куди?» (рух до мети). Злиття: in + das = ins.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Kural:</b> Wechselpräposition'larda (an, auf, hinter, in, neben, über, unter, vor, zwischen) soru «Nereye?» olduğunda (bir hedefe doğru hareket) Akkusativ kullanılır. Birleşme: in + das = ins.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">القاعدة:</b> مع حروف الجر المتغيّرة (<bdi dir="ltr">an</bdi> و<bdi dir="ltr">auf</bdi> و<bdi dir="ltr">hinter</bdi> و<bdi dir="ltr">in</bdi> و<bdi dir="ltr">neben</bdi> و<bdi dir="ltr">über</bdi> و<bdi dir="ltr">unter</bdi> و<bdi dir="ltr">vor</bdi> و<bdi dir="ltr">zwischen</bdi>) تأتي حالة <bdi dir="ltr">Akkusativ</bdi> عندما يكون السؤال «إلى أين؟» (حركة نحو هدف). اندماج: <bdi dir="ltr">in + das = ins</bdi>.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">قاعده:</b> با حروف اضافهٔ دوحالته (<bdi dir="ltr">an</bdi>، <bdi dir="ltr">auf</bdi>، <bdi dir="ltr">hinter</bdi>، <bdi dir="ltr">in</bdi>، <bdi dir="ltr">neben</bdi>، <bdi dir="ltr">über</bdi>، <bdi dir="ltr">unter</bdi>، <bdi dir="ltr">vor</bdi>، <bdi dir="ltr">zwischen</bdi>) وقتی پرسش «به کجا؟» باشد (حرکت به سوی مقصد) <bdi dir="ltr">Akkusativ</bdi> می‌آید. ادغام: <bdi dir="ltr">in + das = ins</bdi>.</span></div><div class="blk rl rl-WO"><span class="de" lang="de"><b class="lbl">Regel:</b> Die Wechselpräpositionen an, auf, hinter, in, neben, über, unter, vor, zwischen stehen mit Dativ, wenn die Frage „Wo?“ ist (Ort, keine Bewegung zu einem Ziel). Dativ: maskulin dem · neutral dem · feminin der. Manchmal verschmelzen Präposition und Artikel: an + dem = am, in + dem = im.</span><span class="tr tr-en" lang="en"><b class="lbl">Rule:</b> The two-way prepositions an, auf, hinter, in, neben, über, unter, vor, zwischen take the dative when the question is “Where?” (a place, no movement towards a goal). Dative: masculine dem · neuter dem · feminine der. Sometimes preposition and article merge: an + dem = am, in + dem = im.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Правило:</b> Предлоги с двойным управлением an, auf, hinter, in, neben, über, unter, vor, zwischen употребляются с Dativ, если вопрос «Где?» (место, нет движения к цели). Dativ: мужской род dem · средний род dem · женский род der. Иногда предлог и артикль сливаются: an + dem = am, in + dem = im.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Правило:</b> Прийменники з подвійним керуванням an, auf, hinter, in, neben, über, unter, vor, zwischen вживаються з Dativ, якщо питання «Де?» (місце, немає руху до мети). Dativ: чоловічий рід dem · середній рід dem · жіночий рід der. Іноді прийменник і артикль зливаються: an + dem = am, in + dem = im.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Kural:</b> an, auf, hinter, in, neben, über, unter, vor, zwischen gibi Wechselpräposition'lar, soru «Nerede?» olduğunda (yer; bir hedefe doğru hareket yok) Dativ ile kullanılır. Dativ: eril dem · nötr dem · dişil der. Bazen edat ve artikel birleşir: an + dem = am, in + dem = im.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">القاعدة:</b> حروف الجر المتغيّرة <bdi dir="ltr">an</bdi> و<bdi dir="ltr">auf</bdi> و<bdi dir="ltr">hinter</bdi> و<bdi dir="ltr">in</bdi> و<bdi dir="ltr">neben</bdi> و<bdi dir="ltr">über</bdi> و<bdi dir="ltr">unter</bdi> و<bdi dir="ltr">vor</bdi> و<bdi dir="ltr">zwischen</bdi> تأتي مع <bdi dir="ltr">Dativ</bdi> عندما يكون السؤال «أين؟» (مكان، دون حركة نحو هدف). في <bdi dir="ltr">Dativ</bdi>: المذكّر <bdi dir="ltr">dem</bdi> · المحايد <bdi dir="ltr">dem</bdi> · المؤنّث <bdi dir="ltr">der</bdi>. أحيانًا يندمج حرف الجر مع أداة التعريف: <bdi dir="ltr">an + dem = am</bdi> و<bdi dir="ltr">in + dem = im</bdi>.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">قاعده:</b> حروف اضافهٔ دوحالته <bdi dir="ltr">an</bdi>، <bdi dir="ltr">auf</bdi>، <bdi dir="ltr">hinter</bdi>، <bdi dir="ltr">in</bdi>، <bdi dir="ltr">neben</bdi>، <bdi dir="ltr">über</bdi>، <bdi dir="ltr">unter</bdi>، <bdi dir="ltr">vor</bdi>، <bdi dir="ltr">zwischen</bdi> وقتی پرسش «کجا؟» باشد (مکان، بدون حرکت به سوی مقصد) با <bdi dir="ltr">Dativ</bdi> می‌آیند. <bdi dir="ltr">Dativ</bdi>: مذکر <bdi dir="ltr">dem</bdi> · خنثی <bdi dir="ltr">dem</bdi> · مؤنث <bdi dir="ltr">der</bdi>. گاهی حرف اضافه و آرتیکل ادغام می‌شوند: <bdi dir="ltr">an + dem = am</bdi>، <bdi dir="ltr">in + dem = im</bdi>.</span></div><div class="blk rl rl-DPREP"><span class="de" lang="de"><b class="lbl">Regel:</b> Die Präpositionen aus, bei, mit, nach, seit, von, zu stehen immer mit dem Dativ. Verschmelzung: bei + dem = beim, von + dem = vom, zu + dem = zum, zu + der = zur.</span><span class="tr tr-en" lang="en"><b class="lbl">Rule:</b> The prepositions aus, bei, mit, nach, seit, von, zu always take the dative. Contractions: bei + dem = beim, von + dem = vom, zu + dem = zum, zu + der = zur.</span><span class="tr tr-ru" lang="ru"><b class="lbl">Правило:</b> Предлоги aus, bei, mit, nach, seit, von, zu всегда употребляются с Dativ. Слияния: bei + dem = beim, von + dem = vom, zu + dem = zum, zu + der = zur.</span><span class="tr tr-uk" lang="uk"><b class="lbl">Правило:</b> Прийменники aus, bei, mit, nach, seit, von, zu завжди вживаються з Dativ. Злиття: bei + dem = beim, von + dem = vom, zu + dem = zum, zu + der = zur.</span><span class="tr tr-tr" lang="tr"><b class="lbl">Kural:</b> aus, bei, mit, nach, seit, von, zu edatları her zaman Dativ ile kullanılır. Birleşmeler: bei + dem = beim, von + dem = vom, zu + dem = zum, zu + der = zur.</span><span class="tr tr-ar" lang="ar" dir="rtl"><b class="lbl">القاعدة:</b> حروف الجر <bdi dir="ltr">aus</bdi> و<bdi dir="ltr">bei</bdi> و<bdi dir="ltr">mit</bdi> و<bdi dir="ltr">nach</bdi> و<bdi dir="ltr">seit</bdi> و<bdi dir="ltr">von</bdi> و<bdi dir="ltr">zu</bdi> تأتي دائمًا مع <bdi dir="ltr">Dativ</bdi>. اندماجات: <bdi dir="ltr">bei + dem = beim</bdi> و<bdi dir="ltr">von + dem = vom</bdi> و<bdi dir="ltr">zu + dem = zum</bdi> و<bdi dir="ltr">zu + der = zur</bdi>.</span><span class="tr tr-fa" lang="fa" dir="rtl"><b class="lbl">قاعده:</b> حروف اضافهٔ <bdi dir="ltr">aus</bdi>، <bdi dir="ltr">bei</bdi>، <bdi dir="ltr">mit</bdi>، <bdi dir="ltr">nach</bdi>، <bdi dir="ltr">seit</bdi>، <bdi dir="ltr">von</bdi>، <bdi dir="ltr">zu</bdi> همیشه با <bdi dir="ltr">Dativ</bdi> می‌آیند. ادغام‌ها: <bdi dir="ltr">bei + dem = beim</bdi>، <bdi dir="ltr">von + dem = vom</bdi>، <bdi dir="ltr">zu + dem = zum</bdi>، <bdi dir="ltr">zu + der = zur</bdi>.</span></div><p class="legend">m = maskulin · f = feminin · n = neutral · N = Nominativ · A = Akkusativ · D = Dativ</p></div></div><button type="button" class="btn primary nextbtn" id="next3" style="display:none" onclick="nextItem(3)"><span class="de" lang="de">Weiter</span><span class="tr tr-en" lang="en">Next</span><span class="tr tr-ru" lang="ru">Далее</span><span class="tr tr-uk" lang="uk">Далі</span><span class="tr tr-tr" lang="tr">Devam</span><span class="tr tr-ar" lang="ar" dir="rtl">التالي</span><span class="tr tr-fa" lang="fa" dir="rtl">بعدی</span></button></div><div class="result" id="res3" style="display:none"><h3><span class="de" lang="de">Ergebnis</span><span class="tr tr-en" lang="en">Result</span><span class="tr tr-ru" lang="ru">Результат</span><span class="tr tr-uk" lang="uk">Результат</span><span class="tr tr-tr" lang="tr">Sonuç</span><span class="tr tr-ar" lang="ar" dir="rtl">النتيجة</span><span class="tr tr-fa" lang="fa" dir="rtl">نتیجه</span></h3><p class="score" id="score3">0 / 0</p><div class="allok" id="allok3" style="display:none"><span class="de" lang="de">Alles richtig!</span><span class="tr tr-en" lang="en">All correct!</span><span class="tr tr-ru" lang="ru">Всё верно!</span><span class="tr tr-uk" lang="uk">Усе правильно!</span><span class="tr tr-tr" lang="tr">Hepsi doğru!</span><span class="tr tr-ar" lang="ar" dir="rtl">كل الإجابات صحيحة!</span><span class="tr tr-fa" lang="fa" dir="rtl">همه درست بود!</span></div><button type="button" class="btn" id="retry3" style="display:none" onclick="startStep(3,true)"><span class="de" lang="de">Fehler wiederholen</span><span class="tr tr-en" lang="en">Repeat the mistakes</span><span class="tr tr-ru" lang="ru">Повторить ошибки</span><span class="tr tr-uk" lang="uk">Повторити помилки</span><span class="tr tr-tr" lang="tr">Hataları tekrarla</span><span class="tr tr-ar" lang="ar" dir="rtl">إعادة الأخطاء</span><span class="tr tr-fa" lang="fa" dir="rtl">تکرار اشتباه‌ها</span></button><button type="button" class="btn" onclick="startStep(3,false)"><span class="de" lang="de">Diesen Schritt nochmal von vorn</span><span class="tr tr-en" lang="en">Do this step again from the start</span><span class="tr tr-ru" lang="ru">Пройти этот шаг заново</span><span class="tr tr-uk" lang="uk">Пройти цей крок знову</span><span class="tr tr-tr" lang="tr">Bu adımı baştan yap</span><span class="tr tr-ar" lang="ar" dir="rtl">إعادة هذه الخطوة من البداية</span><span class="tr tr-fa" lang="fa" dir="rtl">این مرحله را از اول تکرار کنید</span></button><button type="button" class="btn ghost" onclick="goStart()"><span class="de" lang="de">Zurück zum Start</span><span class="tr tr-en" lang="en">Back to start</span><span class="tr tr-ru" lang="ru">В начало</span><span class="tr tr-uk" lang="uk">На початок</span><span class="tr tr-tr" lang="tr">Başa dön</span><span class="tr tr-ar" lang="ar" dir="rtl">العودة إلى البداية</span><span class="tr tr-fa" lang="fa" dir="rtl">بازگشت به آغاز</span></button></div></section>
+</div>
+<script>
+var ITEMS={1:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],2:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],3:[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]};
+var S={1:{},2:{},3:{}};
+var LG=['de','en','ru','uk','tr','ar','fa'];
+function g(i){return document.getElementById(i);}
+function hc(e,c){return (' '+e.className+' ').indexOf(' '+c+' ')>-1;}
+function ac(e,c){if(!hc(e,c)){e.className=(e.className?e.className+' ':'')+c;}}
+function rc(e,c){var s=(' '+e.className+' ').split(' '+c+' ').join(' ');e.className=s.replace(/^\s+|\s+$/g,'').replace(/\s+/g,' ');}
+function shuffle(a){var i,j,t;for(i=a.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function setLang(l){
+  document.body.className='l-'+l;
+  document.documentElement.setAttribute('data-lang',l);
+  for(var i=0;i<LG.length;i++){var b=g('lb-'+LG[i]);if(b){if(LG[i]===l){ac(b,'on');}else{rc(b,'on');}}}
+}
+function showScreen(id){
+  var ids=['start','s1','s2','s3'],i;
+  for(i=0;i<ids.length;i++){g(ids[i]).className='screen'+(ids[i]===id?' show':'');}
+  for(i=1;i<=3;i++){var p=g('pill'+i);if(('s'+i)===id){ac(p,'on');}else{rc(p,'on');}}
+  window.scrollTo(0,0);
+}
+function goStart(){showScreen('start');}
+function startStep(n,only){
+  var ids=(only&&S[n].wrong&&S[n].wrong.length)?S[n].wrong.slice():ITEMS[n].slice();
+  shuffle(ids);
+  S[n]={order:ids,pos:0,right:0,wrong:[]};
+  g('res'+n).style.display='none';
+  g('q'+n).style.display='block';
+  showScreen('s'+n);
+  showItem(n);
+}
+function showItem(n){
+  var all=ITEMS[n],i,e;
+  for(i=0;i<all.length;i++){g('s'+n+'i'+all[i]).style.display='none';}
+  var id=S[n].order[S[n].pos];
+  var it=g('s'+n+'i'+id);
+  it.style.display='block';
+  rc(it,'answered');
+  var bs=it.getElementsByTagName('button');
+  for(i=0;i<bs.length;i++){rc(bs[i],'ok');rc(bs[i],'bad');}
+  var gp=it.querySelector('.gap');
+  if(gp){gp.textContent='___';gp.className='gap';}
+  g('fb'+n).className='fbpanel';
+  g('next'+n).style.display='none';
+  g('cnt'+n).textContent=(S[n].pos+1)+' / '+S[n].order.length;
+  g('bar'+n).style.width=Math.round(S[n].pos/S[n].order.length*100)+'%';
+}
+function ans(btn){
+  var it=btn.parentNode;
+  while(it&&!hc(it,'item')){it=it.parentNode;}
+  if(!it||hc(it,'answered')){return;}
+  ac(it,'answered');
+  var n=parseInt(it.getAttribute('data-step'),10);
+  var id=parseInt(it.getAttribute('data-id'),10);
+  var ok=btn.getAttribute('data-ok')==='1';
+  ac(btn,ok?'ok':'bad');
+  var bs=it.getElementsByTagName('button'),i;
+  if(!ok){for(i=0;i<bs.length;i++){if(bs[i].getAttribute('data-ok')==='1'){ac(bs[i],'ok');}}}
+  var gp=it.querySelector('.gap');
+  if(gp){gp.textContent=btn.getAttribute('data-lab');ac(gp,ok?'ok':'bad');}
+  if(ok){S[n].right++;}else{S[n].wrong.push(id);}
+  var cls='fbpanel show '+(ok?'ok':'bad');
+  g('sol'+n).textContent=it.getAttribute('data-sol');
+  if(n===1){
+    var tk=it.getAttribute('data-tk');
+    cls+=' tk-'+(tk?tk:'none');
+    g('tip1').textContent=it.getAttribute('data-tip')||'';
+  }else{
+    cls+=' t-'+btn.getAttribute('data-t')+' r-'+it.getAttribute('data-r');
+    g('for'+n).textContent=it.getAttribute('data-for')||'';
+    g('con'+n).textContent=it.getAttribute('data-con')||'';
+    if(n===2){g('qline2').textContent=it.getAttribute('data-q')||'';}
+  }
+  g('fb'+n).className=cls;
+  g('next'+n).style.display='block';
+  if(g('next'+n).scrollIntoView){g('next'+n).scrollIntoView(false);}
+}
+function nextItem(n){
+  S[n].pos++;
+  if(S[n].pos>=S[n].order.length){finish(n);}else{showItem(n);var qe=g('q'+n);if(qe.scrollIntoView){qe.scrollIntoView(true);}else{window.scrollTo(0,0);}}
+}
+function finish(n){
+  g('q'+n).style.display='none';
+  g('res'+n).style.display='block';
+  g('score'+n).textContent=S[n].right+' / '+S[n].order.length;
+  g('allok'+n).style.display=(S[n].wrong.length===0)?'block':'none';
+  g('retry'+n).style.display=(S[n].wrong.length>0)?'block':'none';
+  window.scrollTo(0,0);
+}
+document.addEventListener('DOMContentLoaded',function(){setLang('de');showScreen('start');});
+</script>
+</body>
+</html>
