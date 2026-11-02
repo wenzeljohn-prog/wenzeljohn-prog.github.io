@@ -1,0 +1,1921 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>passen, stehen, gefallen – Dativ-Trainer (A1)</title>
+<style>
+:root{--ink:#14213d;--paper:#e9eff6;--card:#ffffff;--nom:#2f4fb5;--nom2:rgba(47,79,181,.12);--dat:#c2255c;--dat2:rgba(194,37,92,.11);--ok:#17774a;--ok2:rgba(23,119,74,.13);--bad:#b42318;--bad2:rgba(180,35,24,.1);--line:rgba(20,33,61,.2);--mute:rgba(20,33,61,.68);--thread:rgba(194,37,92,.6)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#e9eff6;color:#14213d;font:17px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;touch-action:manipulation}
+button,input,select{font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
+button{cursor:pointer}
+button:focus,input:focus,select:focus{outline:3px solid rgba(47,79,181,.5);outline-offset:2px}
+.wrap{max-width:780px;margin:0 auto;padding:10px 14px 80px}
+.top{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between;padding:6px 0 4px}
+.brand{font-family:Georgia,"Times New Roman",serif;font-size:21px;font-weight:700;border:0;background:none;padding:8px 0;text-align:left;color:#14213d}
+.sel{font-size:16px;min-height:44px;padding:6px 30px 6px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' fill='none' stroke='%2314213d' stroke-width='2'/></svg>") no-repeat right 10px center}
+.nav{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:0 -4px 8px}
+.chip{margin:4px;min-height:44px;padding:8px 16px;border:1.5px solid var(--ink);background:transparent;border-radius:22px;font-size:16px;font-weight:600}
+.chip.on{background:var(--ink);color:#fff}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0}
+.card.hero{border-style:dashed;border-color:rgba(194,37,92,.5)}
+.sent{font-family:Georgia,"Times New Roman",serif;font-size:22px;line-height:1.6;margin:6px 0}
+.sent.small{font-size:19px}
+.hl{padding:0 .2em;border-radius:5px;font-weight:700}
+.hl-n{background:var(--nom2);color:var(--nom)}
+.hl-d{background:var(--dat2);color:var(--dat)}
+.hl-s{border-bottom:2.5px dashed #14213d;border-radius:0;padding:0 .05em}
+.gap{display:inline-block;min-width:3.4em;border-bottom:2.5px dashed #14213d;text-align:center;padding:0 .25em}
+.gap.ok{border-bottom-style:solid;color:var(--ok);font-weight:700}
+.gap.bad{border-bottom-style:solid;color:var(--bad);font-weight:700}
+.de{font-family:Georgia,"Times New Roman",serif;font-weight:600;unicode-bidi:isolate}
+.nw{white-space:nowrap}
+.c-de .de,.c-nom .de,.c-dat .de{font-weight:inherit}
+.l1{line-height:1.6}
+.l1blk p{margin:.55em 0}
+.l1blk h3{margin:1.1em 0 .3em;font-size:18px}
+.q{font-weight:600;margin-bottom:6px}
+.bigdat{font-family:Georgia,serif;font-size:34px;margin:2px 0 6px}
+.opts{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:8px -4px 0}
+.opt{margin:4px;min-height:48px;min-width:56px;padding:8px 16px;border:1.5px solid var(--line);background:#fff;border-radius:12px;font-size:19px;font-family:Georgia,serif;text-align:center}
+.opt small{display:block;font:12px/1.1 -apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--mute);margin-top:2px}
+.opt.ok{border-color:var(--ok);background:var(--ok2)}
+.opt.bad{border-color:var(--bad);background:var(--bad2)}
+.opt.dis{opacity:.55}
+.opt.sel{border-color:var(--nom);background:var(--nom2)}
+.opt.l1o{font-family:inherit;font-size:17px}
+.btn{min-height:48px;padding:10px 22px;border:0;border-radius:12px;background:var(--ink);color:#fff;font-weight:600;font-size:17px;margin:6px 8px 6px 0}
+.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn[disabled]{opacity:.4}
+.inp{font-size:20px;font-family:Georgia,serif;border:0;border-bottom:2.5px dashed #14213d;background:rgba(233,239,246,.7);padding:4px 6px;text-align:center;width:5em;border-radius:5px 5px 0 0;margin:0 2px}
+.inp.ok{border-bottom:2.5px solid var(--ok);background:var(--ok2)}
+.inp.bad{border-bottom:2.5px solid var(--bad);background:var(--bad2)}
+.fb{margin-top:12px;padding:10px 12px;border-radius:10px}
+.fbok{background:var(--ok2);border-left:4px solid var(--ok)}
+.fbbad{background:var(--bad2);border-left:4px solid var(--bad)}
+.fbneu{background:var(--nom2);border-left:4px solid var(--nom)}
+.hint{margin-top:6px;font-size:16px}
+.note{padding:10px 12px;border-radius:10px;margin:10px 0}
+.warn{background:rgba(180,35,24,.08);border-left:4px solid var(--bad)}
+.tip{background:var(--nom2);border-left:4px solid var(--nom)}
+[dir=rtl] .warn,[dir=rtl] .tip,[dir=rtl] .fbok,[dir=rtl] .fbbad,[dir=rtl] .fbneu{border-left:0}
+[dir=rtl] .warn,[dir=rtl] .fbbad{border-right:4px solid var(--bad)}
+[dir=rtl] .tip,[dir=rtl] .fbneu{border-right:4px solid var(--nom)}
+[dir=rtl] .fbok{border-right:4px solid var(--ok)}
+.tbl{border-collapse:collapse;width:100%;margin:8px 0}
+.tbl th{font-size:14px;color:var(--mute);font-weight:600;text-align:left;padding:4px 8px}
+.tbl td{padding:7px 8px;border-top:1px solid var(--line);vertical-align:top}
+[dir=rtl] .tbl th{text-align:right}
+.c-nom{color:var(--nom);font-weight:700;font-family:Georgia,serif;font-size:19px}
+.c-dat{color:var(--dat);font-weight:700;font-family:Georgia,serif;font-size:19px}
+.c-de{font-family:Georgia,serif;font-size:18px}
+.pair{display:-webkit-inline-flex;display:inline-flex;-webkit-align-items:center;align-items:center;margin:5px 14px 5px 0}
+.tag{padding:6px 12px;font-weight:700;font-family:Georgia,serif;font-size:20px;line-height:1.2}
+.tag.n{background:var(--nom2);border:1.5px solid var(--nom);color:var(--nom);border-radius:12px 5px 5px 12px}
+.tag.d{background:var(--dat2);border:1.5px solid var(--dat);color:var(--dat);border-radius:5px 12px 12px 5px}
+.stitch{display:inline-block;width:24px;border-top:2.5px dashed var(--thread)}
+.pair.new .stitch{-webkit-animation:sew .7s ease-out;animation:sew .7s ease-out}
+@-webkit-keyframes sew{from{width:0}to{width:24px}}
+@keyframes sew{from{width:0}to{width:24px}}
+@media (prefers-reduced-motion:reduce){.pair.new .stitch{-webkit-animation:none;animation:none}}
+.pairs{margin-top:6px}
+.bar{height:8px;border-radius:6px;background:rgba(20,33,61,.13);overflow:hidden;margin:6px 0 10px}
+.bar i{display:block;height:100%;background:var(--nom)}
+.stg{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-left:5px dashed var(--line);border-radius:14px;padding:14px 16px;margin:10px 0;min-height:64px}
+.stg.done{border-left:5px solid var(--ok)}
+.stg.part{border-left:5px dashed var(--nom)}
+.stg .st{font-weight:700;font-size:18px}
+.stg .sd{color:var(--mute);font-size:15px;margin-top:2px}
+.stg .sg{font-family:Georgia,serif;font-size:14px;color:var(--mute)}
+.prt{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between}
+.stat{font-size:14px;color:var(--mute);white-space:nowrap;margin-left:10px}
+.stat.ok{color:var(--ok);font-weight:700}
+.ptop{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center}
+.pt{font-weight:700;margin-left:6px}
+.ins{background:var(--nom2);border-radius:12px;padding:10px 14px;margin:8px 0}
+.tile{margin:4px;padding:8px 14px;border:1.5px solid var(--ink);border-radius:10px;background:#fff;font-family:Georgia,serif;font-size:20px;min-height:46px}
+.tile.on{background:var(--nom2);border-color:var(--nom)}
+.line{min-height:64px;border-bottom:2.5px dashed #14213d;padding:6px 0;margin-bottom:10px}
+.pool{min-height:56px}
+.mcols{display:-webkit-flex;display:flex}
+.mcol{-webkit-flex:1;flex:1;margin:0 5px}
+.mcol .opt{display:block;width:100%;margin:6px 0}
+.trow{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;margin:8px 0}
+.langpage{text-align:center;padding-top:30px}
+.langpage .brand{font-size:30px;text-align:center}
+.lbtn{display:block;width:100%;max-width:360px;margin:10px auto;min-height:54px;padding:10px 16px;border:1.5px solid var(--ink);background:#fff;border-radius:14px;font-size:20px;font-weight:600}
+.pick{color:var(--mute);font-size:15px;margin:14px 0 18px;line-height:1.8}
+.small{font-size:14px;color:var(--mute)}
+.lnk{background:none;border:0;color:var(--mute);text-decoration:underline;padding:10px 0;font-size:15px;min-height:44px}
+.nxt{margin-top:12px}
+.help{margin-top:10px}
+@media (max-width:480px){.sent{font-size:20px}.bigdat{font-size:30px}.opt{font-size:18px;padding:8px 12px}}
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var LANGS={};
+LANGS.de={code:'de',lang:'de',dir:'ltr',
+ui:{
+name:'Deutsch',menu:'Menü',bridgeBtn:'Regeln und Tabellen',bridgeTitle:'Regeln und Tabellen',
+next:'Weiter',check:'Prüfen',again:'Wiederholen',backStage:'Zur Stufe',nextStage:'Nächste Stufe',undo:'Zurück',
+stage:'Stufe',part:'Teil',task:'Aufgabe',ok:'Richtig!',bad:'Nicht ganz.',tryAgain:'Versuche es noch einmal.',
+showTable:'Tabelle zeigen',hideTable:'Tabelle verstecken',firstTry:'beim ersten Versuch richtig',repeatWrong:'Fehler wiederholen',partDone:'Teil geschafft!',
+right:'richtig',wrong:'falsch',pickFix:'Wie ist es richtig?',sg:'Sg.',pl:'Pl.',formal:'höflich',nom:'Nominativ',dat:'Dativ',
+trap:'Stolperfalle:',reset:'Fortschritt löschen',resetAsk:'Wirklich den ganzen Fortschritt löschen?',
+discQ:'Zu welchem Pronomen im Nominativ gehört das rote Wort?',myTable:'Meine Tabelle',
+capHint:'Achtung: ‹Ihnen› (höflich, großes I) ist nicht ‹ihnen› (sie, mehrere).',umlaut:'Besser mit ä schreiben: ‹gefällt›.',
+pos:'Position: Wo ist es?',look:'Aussehen: gut oder schlecht an der Person',
+homeIntro:'Rot = Dativ (Wem?). Gestrichelt = Subjekt, die Sache. Blau = Nominativ.',
+s1intro:'Lies zwei Sätze. Das rote Wort ist ein Pronomen im Dativ. Zu welchem Pronomen im Nominativ (blau) gehört es? Deine Tabelle wächst mit.',
+verbsGloss:'‹passen› = die Größe oder der Termin ist gut. ‹stehen› (gut) = gut aussehen. ‹gefallen› = schön finden. Genau lernst du das in Stufe 3.',
+b_pron:'Die Pronomen',b_verbs:'Die drei Verben',b_order:'Satzbau',b_noun:'Dativ bei Nomen',b_traps:'Stolperfallen'
+},
+stages:[
+{t:'Entdecken: Wer ist „mir“?',d:'Finde die Pronomen im Dativ selbst.'},
+{t:'Pronomen üben',d:'Zuordnen, wählen, schreiben.'},
+{t:'passen, stehen, gefallen',d:'Was bedeuten die drei Verben?'},
+{t:'Subjekt, Verbform, Satzbau',d:'Die Sache ist das Subjekt. Die Person steht im Dativ.'},
+{t:'Dativ bei Namen und Nomen',d:'dem Mann, der Frau, dem Kind, den Kindern.'},
+{t:'Nomen durch Pronomen ersetzen',d:'Aus „dem Mann“ wird „ihm“.'},
+{t:'Stolperfallen',d:'Finde die typischen Fehler.'},
+{t:'Alles zusammen',d:'Kleine Dialoge mit Verb und Pronomen.'}
+],
+parts:{
+disc:['Pronomen entdecken','Lies die Sätze. Welches Pronomen im Nominativ (blau) gehört zum Dativ-Wort (rot)? Tippe es an.'],
+match:['Paare finden','Tippe links ein Pronomen an. Tippe dann rechts das Pronomen im Dativ.'],
+choose:['Das richtige Pronomen wählen','Wähle das Pronomen für die Lücke.'],
+type:['Pronomen schreiben','Schreibe das Pronomen im Dativ in die Lücke.'],
+table:['Die Tabelle ausfüllen','Schreibe zu jedem Pronomen das Pronomen im Dativ. Achte auf ihnen und Ihnen.'],
+verbMean:['Welches Verb passt?','Lies die Situation. Wähle das Verb: passen, stehen oder gefallen.'],
+stehen2:['stehen: zwei Bedeutungen','Ist das Position (Wo?) oder Aussehen (gut oder schlecht an der Person)?'],
+subj:['Das Subjekt finden','Wer oder was ist das Subjekt (Nominativ)? Wähle.'],
+form:['Die richtige Verbform','Wähle die richtige Form: eine Sache oder mehrere Sachen?'],
+formType:['Die Verbform schreiben','Schreibe die Form von passen, stehen oder gefallen in die Lücke.'],
+order:['Sätze bauen','Tippe die Wörter nacheinander an. Baue einen Satz.'],
+artChoose:['Der Artikel im Dativ','Wähle den Artikel im Dativ.'],
+artType:['Den Artikel schreiben','Schreibe den Artikel (und das -n bei Kindern).'],
+names:['Namen im Dativ','Wie heißt der Name im Dativ? Wähle.'],
+replace:['Nomen durch Pronomen ersetzen','Ersetze die rote Person durch ein Pronomen im Dativ.'],
+wem:['Wem? Antworten','Lies den Text und die Frage. Antworte mit einem Pronomen.'],
+who:['Mit wem? Über wen?','Du sprichst mit der Person (dir, euch, Ihnen) oder über die Person (ihm, ihr, ihnen). Schreibe das Pronomen.'],
+detect:['Fehler-Detektiv','Ist der Satz richtig oder falsch? Wenn er falsch ist: Wie ist es richtig?'],
+dialog:['Kleine Dialoge','Ergänze das Pronomen und das Verb. In [ ] steht der Hinweis.']
+},
+fb:{
+pron:'Schau auf die Person im ersten Satz. Welches Pronomen im Dativ gehört zu ihr? Hilfe: die Tabelle.',
+akk:'Nach passen, stehen und gefallen steht der Dativ: ‹mir›, ‹dir›, ‹ihm› … (nicht ‹mich›, ‹dich›, ‹ihn›).',
+nom:'Das ist ein Pronomen im Nominativ (‹ich›, ‹du›, ‹er› …). Hier brauchst du den Dativ.',
+ihmihr:'‹ihm› = er und es. ‹ihr› = sie (eine Frau).',
+ihmEs:'‹ihm› gehört zu ‹er› und zu ‹es›. Merke: das Kind = es → ‹ihm›.',
+ihrnom:'Achtung: Zu ‹ihr› (Nominativ, ihr Kinder) gehört ‹euch›. Das Dativ-Pronomen ‹ihr› gehört zu ‹sie› (eine Frau).',
+ihrdat:'Hier ist ‹ihr› ein Dativ (= sie, eine Frau). Das Subjekt ist ‹das Kleid›: ‹gefällt›.',
+sieSie:'‹ihnen› (klein) = sie, mehrere Personen. ‹Ihnen› (großes I) = Sie, höflich.',
+verbmean:'‹passen› = die Größe oder der Termin ist gut. ‹stehen› = gut oder schlecht aussehen. ‹gefallen› = ich finde es schön.',
+subj:'Die Sache ist das Subjekt (Nominativ). Die Person steht im Dativ. Bei ‹mögen› ist die Person das Subjekt.',
+sgpl:'Das Verb passt zum Subjekt, zur Sache: eine Sache → ‹passt / steht / gefällt›, mehrere Sachen → ‹passen / stehen / gefallen›.',
+umlaut:'Bei ‹gefallen› gibt es einen Umlaut: er, sie, es ‹gefällt›.',
+order:'Das Verb steht auf Position 2. Das Pronomen steht vor dem Nomen: ‹Gefällt dir das Kleid?›',
+dativart:'Dativ: ‹der Mann → dem Mann›, ‹die Frau → der Frau›, ‹das Kind → dem Kind›, ‹die Kinder → den Kindern›.',
+pln:'Dativ Plural: ‹den› + Nomen + ‹-n› (den Kindern).',
+name:'Namen bleiben im Dativ gleich: ‹Das Kleid steht Anna gut.›',
+stehpos:'‹stehen› mit einer Person im Dativ = Aussehen. Ohne Person (‹Das Auto steht dort.›) = Position.',
+addr:'Du sprichst mit der Person: ‹dir / euch / Ihnen›. Du sprichst über die Person: ‹ihm / ihr / ihnen›.'
+},
+bridge:{
+pron:[
+{k:'p',h:'Im Dativ haben die Pronomen neue Formen. Du hast sie in Stufe 1 selbst gefunden.'},
+{k:'t',head:['Nominativ','Dativ'],cols:['nom','dat'],rows:[['ich','mir'],['du','dir'],['er','ihm'],['sie (Sg.)','ihr'],['es','ihm'],['wir','uns'],['ihr','euch'],['sie (Pl.)','ihnen'],['Sie (höflich)','Ihnen']]},
+{k:'w',h:'‹ihm› gehört zu ‹er› und zu ‹es›.'},
+{k:'w',h:'‹ihr› hat zwei Funktionen: Nominativ (‹ihr habt›) und Dativ von ‹sie› (‹steht ihr gut›).'},
+{k:'w',h:'‹ihnen› = sie (mehrere). ‹Ihnen› mit großem I = Sie (höflich).'}
+],
+verbs:[
+{k:'p',h:'Die Verben ‹passen›, ‹stehen› und ‹gefallen› brauchen eine Person im Dativ. Die Frage heißt: ‹Wem?›'},
+{k:'t',head:['Situation','Satz'],cols:['','de'],rows:[['Die Größe stimmt.','Die Hose passt mir.'],['Der Termin ist gut.','Montag passt mir.'],['Du siehst gut aus.','Das Kleid steht dir gut.'],['Ich finde es schön.','Die Jacke gefällt mir.']]},
+{k:'tip',h:'Die Sache ist das Subjekt. Die Person steht im Dativ. Das Verb passt zur Sache: ‹Die Schuhe passen mir.›'},
+{k:'w',h:'‹stehen› hat zwei Bedeutungen: ‹Das Auto steht dort.› (Position, keine Person im Dativ) und ‹Das Kleid steht dir.› (Aussehen).'},
+{k:'w',h:'‹Ich mag die Jacke.› = ich bin das Subjekt. ‹Die Jacke gefällt mir.› = die Jacke ist das Subjekt.'}
+],
+order:[
+{k:'p',h:'Das Verb steht auf Position 2: ‹Das Kleid steht dir gut.› oder ‹Dir steht das Kleid gut.›'},
+{k:'p',h:'Das Pronomen im Dativ steht vor dem Nomen: ‹Gefällt dir das Kleid?›'},
+{k:'p',h:'‹nicht› und ‹gut› stehen nach der Person: ‹Die Hose passt mir nicht.› ‹Das Kleid steht dir gut.›'},
+{k:'tip',h:'Wem? → Dativ. Wer oder was? → Nominativ (Subjekt).'}
+],
+noun:[
+{k:'p',h:'Auch Nomen haben im Dativ eine neue Form (Artikel). Ein Pronomen ersetzt sie: ‹dem Mann → ihm›.'},
+{k:'w',h:'Im Plural bekommt das Nomen ein -n: ‹den Kindern›.'},
+{k:'w',h:'Namen ändern sich nicht: ‹Das Kleid steht Anna gut.›'}
+],
+traps:[
+{k:'w',h:'‹Ich gefalle die Jacke.› ist falsch. Richtig: ‹Die Jacke gefällt mir.›'},
+{k:'w',h:'‹mich›, ‹dich›, ‹ihn› sind Akkusativ. Nach diesen drei Verben brauchst du ‹mir›, ‹dir›, ‹ihm›.'},
+{k:'w',h:'‹ihm› (er, es) ist nicht ‹ihr› (sie). ‹ihr› ist auch ein Nominativ (‹ihr habt›).'},
+{k:'w',h:'‹ihnen› (sie, mehrere) ist nicht ‹Ihnen› (Sie, höflich).'},
+{k:'w',h:'Eine Sache → ‹gefällt›. Mehrere Sachen → ‹gefallen›.'}
+]
+},
+trapItems:[],trapWhy:{}
+};
+
+LANGS.pl={code:'pl',lang:'pl',dir:'ltr',
+ui:{
+name:'Polski',menu:'Menu',bridgeBtn:'Niemiecki i polski',bridgeTitle:'Niemiecki a polski: reguły i tabele',
+next:'Dalej',check:'Sprawdź',again:'Jeszcze raz',backStage:'Do etapu',nextStage:'Następny etap',undo:'Cofnij',
+stage:'Etap',part:'Część',task:'Zadanie',ok:'Dobrze!',bad:'Nie całkiem.',tryAgain:'Spróbuj jeszcze raz.',
+showTable:'Pokaż tabelę',hideTable:'Ukryj tabelę',firstTry:'poprawnie za pierwszym razem',repeatWrong:'Powtórz błędy',partDone:'Część zaliczona!',
+right:'dobrze',wrong:'źle',pickFix:'Jak jest poprawnie?',sg:'l. poj.',pl:'l. mn.',formal:'grzecznościowo',nom:'Nominativ (mianownik)',dat:'Dativ (celownik)',
+trap:'Pułapka:',reset:'Usuń postępy',resetAsk:'Naprawdę usunąć wszystkie postępy?',
+discQ:'Do którego zaimka w Nominativ (mianowniku) należy czerwone słowo?',myTable:'Moja tabela',
+capHint:'Uwaga: ‹Ihnen› (grzecznościowo, duże I) to nie to samo co ‹ihnen› (oni, one).',umlaut:'Lepiej napisać z ä: ‹gefällt›.',
+pos:'Pozycja: gdzie to jest?',look:'Wygląd: dobrze lub źle na osobie',
+homeIntro:'Czerwony = Dativ (komu?). Linia przerywana = podmiot, czyli rzecz. Niebieski = Nominativ.',
+s1intro:'Przeczytaj dwa zdania. Czerwone słowo to zaimek w Dativie (celowniku). Do którego zaimka w Nominativie (niebieski) należy? Twoja tabela rośnie razem z tobą.',
+verbsGloss:'‹passen› = pasować (rozmiar, termin). ‹stehen› (gut) = dobrze wyglądać na kimś. ‹gefallen› = podobać się. Dokładnie poznasz to w etapie 3.',
+b_pron:'Zaimki',b_verbs:'Trzy czasowniki',b_order:'Szyk zdania',b_noun:'Celownik przy rzeczownikach',b_traps:'Pułapki'
+},
+stages:[
+{t:'Odkrywanie: kto to „mir”?',d:'Sam znajdź zaimki w Dativie.'},
+{t:'Ćwiczenie zaimków',d:'Łączenie, wybieranie, pisanie.'},
+{t:'passen, stehen, gefallen',d:'Co znaczą te trzy czasowniki?'},
+{t:'Podmiot, forma czasownika, szyk',d:'Rzecz jest podmiotem. Osoba stoi w Dativie.'},
+{t:'Dativ przy imionach i rzeczownikach',d:'dem Mann, der Frau, dem Kind, den Kindern.'},
+{t:'Zaimek zamiast rzeczownika',d:'Z „dem Mann” robi się „ihm”.'},
+{t:'Pułapki',d:'Znajdź typowe błędy.'},
+{t:'Wszystko razem',d:'Krótkie dialogi z czasownikiem i zaimkiem.'}
+],
+parts:{
+disc:['Odkrywanie zaimków','Przeczytaj zdania. Który zaimek w Nominativie (niebieski) należy do słowa w Dativie (czerwone)? Dotknij go.'],
+match:['Szukanie par','Dotknij po lewej zaimka, potem po prawej zaimka w Dativie.'],
+choose:['Wybór zaimka','Wybierz zaimek do luki.'],
+type:['Pisanie zaimków','Wpisz do luki zaimek w Dativie.'],
+table:['Wypełnij tabelę','Do każdego zaimka wpisz zaimek w Dativie. Uważaj na ihnen i Ihnen.'],
+verbMean:['Który czasownik pasuje?','Przeczytaj sytuację. Wybierz czasownik: passen, stehen albo gefallen.'],
+stehen2:['stehen: dwa znaczenia','Czy to pozycja (gdzie?), czy wygląd (dobrze lub źle na osobie)?'],
+subj:['Znajdź podmiot','Kto lub co jest podmiotem (Nominativ)? Wybierz.'],
+form:['Właściwa forma czasownika','Wybierz właściwą formę: jedna rzecz czy kilka rzeczy?'],
+formType:['Wpisz formę czasownika','Wpisz w lukę formę czasownika passen, stehen lub gefallen.'],
+order:['Budowanie zdań','Dotykaj kolejno słów i ułóż zdanie.'],
+artChoose:['Rodzajnik w Dativie','Wybierz rodzajnik w Dativie.'],
+artType:['Wpisz rodzajnik','Wpisz rodzajnik (i końcówkę -n przy Kindern).'],
+names:['Imiona w Dativie','Jak brzmi imię w Dativie? Wybierz.'],
+replace:['Zaimek zamiast rzeczownika','Zastąp czerwoną osobę zaimkiem w Dativie.'],
+wem:['Komu? Odpowiedzi','Przeczytaj tekst i pytanie. Odpowiedz zaimkiem.'],
+who:['Z kim rozmawiasz? O kim?','Mówisz do osoby (dir, euch, Ihnen) albo o osobie (ihm, ihr, ihnen). Wpisz zaimek.'],
+detect:['Detektyw błędów','Czy zdanie jest dobre, czy złe? Jeśli złe: jak jest poprawnie?'],
+dialog:['Krótkie dialogi','Uzupełnij zaimek i czasownik. W [ ] jest podpowiedź.']
+},
+fb:{
+pron:'Spójrz na osobę w pierwszym zdaniu. Który zaimek w Dativie do niej należy? Pomoc: tabela.',
+akk:'Po passen, stehen i gefallen stoi Dativ (celownik): ‹mir›, ‹dir›, ‹ihm› … (nie ‹mich›, ‹dich›, ‹ihn›). Polskie „mnie” bywa celownikiem i biernikiem, a niemieckie ‹mir› i ‹mich› to dwa różne słowa.',
+nom:'To zaimek w Nominativie (mianowniku): ‹ich›, ‹du›, ‹er› … Tu potrzebujesz Dativu.',
+ihmihr:'‹ihm› = er i es (on, ono). ‹ihr› = sie (ona).',
+ihmEs:'‹ihm› należy do ‹er› i do ‹es›. Zapamiętaj: das Kind = es → ‹ihm›.',
+ihrnom:'Uwaga: do ‹ihr› (Nominativ, „wy”) należy ‹euch›. Zaimek ‹ihr› w Dativie to „jej” (od ‹sie›, ona).',
+ihrdat:'Tu ‹ihr› jest w Dativie („jej”). Podmiotem jest ‹das Kleid›, dlatego ‹gefällt›.',
+sieSie:'‹ihnen› (małe i) = „im” (oni, kilka osób). ‹Ihnen› (duże I) = „Panu / Pani / Państwu”, grzecznościowo.',
+verbmean:'‹passen› = rozmiar albo termin pasuje. ‹stehen› = dobrze lub źle wyglądać. ‹gefallen› = podoba mi się. Po polsku „pasuje” bywa jednym i drugim, po niemiecku to dwa czasowniki.',
+subj:'Rzecz jest podmiotem (Nominativ). Osoba stoi w Dativie. Przy ‹mögen› („lubić”) podmiotem jest osoba.',
+sgpl:'Czasownik pasuje do podmiotu, czyli do rzeczy: jedna rzecz → ‹passt / steht / gefällt›, kilka rzeczy → ‹passen / stehen / gefallen›.',
+umlaut:'‹gefallen› ma umlaut: er, sie, es ‹gefällt›.',
+order:'Czasownik stoi na drugim miejscu. Zaimek stoi przed rzeczownikiem: ‹Gefällt dir das Kleid?›',
+dativart:'Dativ: ‹der Mann → dem Mann›, ‹die Frau → der Frau›, ‹das Kind → dem Kind›, ‹die Kinder → den Kindern›.',
+pln:'Dativ liczby mnogiej: ‹den› + rzeczownik + ‹-n› (den Kindern).',
+name:'Imiona w Dativie się nie zmieniają: ‹Das Kleid steht Anna gut.› (po polsku: Annie).',
+stehpos:'‹stehen› z osobą w Dativie = wygląd. Bez osoby (‹Das Auto steht dort.›) = pozycja.',
+addr:'Mówisz do osoby: ‹dir / euch / Ihnen›. Mówisz o osobie: ‹ihm / ihr / ihnen›.'
+},
+bridge:{
+pron:[
+{k:'p',h:'Polski ma celownik, więc ta idea jest ci znajoma. Niemiecki ma dla każdego zaimka tylko jedną formę w Dativie, bez par typu „mi / mnie”.'},
+{k:'t',head:['Nominativ','Dativ','po polsku (mianownik → celownik)'],cols:['nom','dat',''],rows:[['ich','mir','ja → mi / mnie'],['du','dir','ty → ci / tobie'],['er','ihm','on → mu / jemu'],['sie (Sg.)','ihr','ona → jej'],['es','ihm','ono → mu / jemu'],['wir','uns','my → nam'],['ihr','euch','wy → wam'],['sie (Pl.)','ihnen','oni, one → im'],['Sie (höflich)','Ihnen','Pan, Pani, Państwo → Panu, Pani, Państwu']]},
+{k:'w',h:'Po niemiecku jest jedna forma: ‹mir›, ‹dir›, ‹ihm›. A ‹mich› to Akkusativ (biernik), nie celownik. Po passen, stehen i gefallen go nie używaj.'},
+{k:'w',h:'Fałszywi przyjaciele: niemieckie ‹ihr› w Dativie znaczy „jej”, ale ‹ihr› w Nominativie znaczy „wy”. Polskie „im” (oni) to niemieckie ‹ihnen›, a niemieckie ‹ihm› znaczy „mu”.'},
+{k:'w',h:'Grzecznościowo (Pan, Pani, Państwo) zawsze mówisz ‹Ihnen› z dużym I, niezależnie od liczby osób.'}
+],
+verbs:[
+{k:'p',h:'Dobra wiadomość: polski ma tę samą konstrukcję. W obu językach osoba stoi w celowniku, a rzecz jest podmiotem.'},
+{k:'t',head:['po niemiecku','po polsku'],cols:['de',''],rows:[['Die Jacke gefällt mir.','Podoba mi się ta kurtka.'],['Die Schuhe gefallen mir.','Podobają mi się te buty.'],['Die Jacke passt mir nicht.','Ta kurtka mi nie pasuje. (rozmiar)'],['Montag passt mir.','Poniedziałek mi pasuje.'],['Das Kleid steht dir gut.','Do twarzy ci w tej sukience. / Ta sukienka ci pasuje.']]},
+{k:'tip',h:'W obu językach czasownik zgadza się z rzeczą: ‹gefällt› = „podoba się”, ‹gefallen› = „podobają się”. W niemieckim nie ma jednak „się”: ‹gefallen› bez ‹sich›.'},
+{k:'w',h:'Po polsku „pasować” znaczy i rozmiar, i wygląd, i termin. Po niemiecku masz dwa czasowniki: ‹passen› = rozmiar albo termin, ‹stehen› = wygląd (jak „do twarzy”).'},
+{k:'w',h:'„Lubić” to nie ‹gefallen›. „Lubię tę kurtkę” = ‹Ich mag die Jacke.› (ja jestem podmiotem). „Podoba mi się ta kurtka” = ‹Die Jacke gefällt mir.›'},
+{k:'w',h:'‹stehen› znaczy też „stać”: ‹Das Auto steht dort.› Tu nie ma osoby w Dativie.'}
+],
+order:[
+{k:'p',h:'W polskim szyk jest swobodny („Mi się podoba ta kurtka” i „Ta kurtka mi się podoba”). W niemieckim czasownik stoi zawsze na drugim miejscu: ‹Mir gefällt die Jacke.› / ‹Die Jacke gefällt mir.›'},
+{k:'p',h:'Krótki zaimek stoi przed rzeczownikiem: ‹Gefällt dir das Kleid?› („Podoba ci się ta sukienka?”).'},
+{k:'p',h:'‹nicht› stoi po osobie: ‹Die Hose passt mir nicht.› Po polsku „nie” stoi przed czasownikiem: „nie pasuje”.'},
+{k:'tip',h:'Komu? → Dativ. Kto? Co? → Nominativ (podmiot, czyli rzecz).'}
+],
+noun:[
+{k:'p',h:'Tak jak w polskim, rzeczowniki też mają celownik. W niemieckim zmienia się jednak prawie tylko rodzajnik.'},
+{k:'t',head:['Nominativ','Dativ','po polsku (celownik)'],cols:['nom','dat',''],rows:[['der Mann','dem Mann','mężczyźnie'],['die Frau','der Frau','kobiecie'],['das Kind','dem Kind','dziecku'],['die Kinder','den Kindern','dzieciom']]},
+{k:'w',h:'Polski ma wiele końcówek (-owi, -u, -om), niemiecki tylko rodzajnik i w liczbie mnogiej ‹-n›: ‹den Kindern›.'},
+{k:'w',h:'Imiona w niemieckim się nie zmieniają: ‹Anna›, ‹Tom› (po polsku Annie, Tomowi).'}
+],
+traps:[
+{k:'w',h:'Nie dodawaj „się”: ‹Die Jacke gefällt mir.›, nie ‹gefällt sich mir›.'},
+{k:'w',h:'Polskie „mnie” bywa celownikiem i biernikiem. Po niemiecku ‹mir› (celownik) to nie ‹mich› (biernik). Po passen, stehen, gefallen zawsze ‹mir›, ‹dir›, ‹ihm›.'},
+{k:'w',h:'Polskie „pasuje” to dwa niemieckie czasowniki: ‹passen› (rozmiar, termin) i ‹stehen› (wygląd).'},
+{k:'w',h:'„Spodnie” są po polsku w liczbie mnogiej, ale ‹die Hose› po niemiecku w pojedynczej: ‹Die Hose passt mir.›'},
+{k:'w',h:'‹ihnen› (oni) to nie ‹Ihnen› (Pan, Pani, Państwo).'}
+]
+},
+trapItems:['sich','gefMich'],
+trapWhy:{
+sich:'W polskim jest „się” (podoba mi się). W niemieckim nie ma ‹sich›: ‹Das Kleid gefällt mir.›',
+gefMich:'Polskie „mnie” bywa biernikiem, ale po ‹gefallen› potrzebujesz celownika: ‹mir›.'
+}
+};
+
+LANGS.en={code:'en',lang:'en',dir:'ltr',
+ui:{
+name:'English',menu:'Menu',bridgeBtn:'German and English',bridgeTitle:'German and English: rules and tables',
+next:'Next',check:'Check',again:'Again',backStage:'Back to stage',nextStage:'Next stage',undo:'Undo',
+stage:'Stage',part:'Part',task:'Task',ok:'Correct!',bad:'Not quite.',tryAgain:'Try once more.',
+showTable:'Show table',hideTable:'Hide table',firstTry:'right on the first try',repeatWrong:'Repeat mistakes',partDone:'Part complete!',
+right:'correct',wrong:'wrong',pickFix:'What is the correct sentence?',sg:'sg.',pl:'pl.',formal:'formal',nom:'Nominativ',dat:'Dativ',
+trap:'Watch out:',reset:'Delete progress',resetAsk:'Really delete all progress?',
+discQ:'Which Nominativ pronoun does the red word belong to?',myTable:'My table',
+capHint:'Careful: ‹Ihnen› (formal, capital I) is not ‹ihnen› (them, several people).',umlaut:'Better to write it with ä: ‹gefällt›.',
+pos:'Position: where is it?',look:'Looks: good or bad on the person',
+homeIntro:'Red = Dativ (to whom?). Dashed = subject, the thing. Blue = Nominativ.',
+s1intro:'Read the two sentences. The red word is a Dativ pronoun. Which Nominativ pronoun (blue) does it belong to? Your table grows as you go.',
+verbsGloss:'‹passen› = to fit (size) or to suit (a date). ‹stehen› (gut) = to look good on. ‹gefallen› = to please, to be liked. You learn the details in stage 3.',
+b_pron:'The pronouns',b_verbs:'The three verbs',b_order:'Sentence structure',b_noun:'Dativ with nouns',b_traps:'Watch out'
+},
+stages:[
+{t:'Discover: who is “mir”?',d:'Find the Dativ pronouns yourself.'},
+{t:'Practise the pronouns',d:'Match, choose, write.'},
+{t:'passen, stehen, gefallen',d:'What do the three verbs mean?'},
+{t:'Subject, verb form, word order',d:'The thing is the subject. The person is in the Dativ.'},
+{t:'Dativ with names and nouns',d:'dem Mann, der Frau, dem Kind, den Kindern.'},
+{t:'Replace nouns with pronouns',d:'“dem Mann” becomes “ihm”.'},
+{t:'Watch out',d:'Spot the typical mistakes.'},
+{t:'Everything together',d:'Short dialogues with verb and pronoun.'}
+],
+parts:{
+disc:['Discover the pronouns','Read the sentences. Which Nominativ pronoun (blue) belongs to the Dativ word (red)? Tap it.'],
+match:['Find the pairs','Tap a pronoun on the left, then the Dativ pronoun on the right.'],
+choose:['Choose the right pronoun','Choose the pronoun for the gap.'],
+type:['Write the pronoun','Write the Dativ pronoun in the gap.'],
+table:['Fill in the table','Write the Dativ pronoun next to each pronoun. Watch ihnen and Ihnen.'],
+verbMean:['Which verb fits?','Read the situation. Choose the verb: passen, stehen or gefallen.'],
+stehen2:['stehen: two meanings','Is it position (where?) or looks (good or bad on the person)?'],
+subj:['Find the subject','Who or what is the subject (Nominativ)? Choose.'],
+form:['The right verb form','Choose the right form: one thing or several things?'],
+formType:['Write the verb form','Write the form of passen, stehen or gefallen in the gap.'],
+order:['Build sentences','Tap the words one after another to build a sentence.'],
+artChoose:['The article in the Dativ','Choose the article in the Dativ.'],
+artType:['Write the article','Write the article (and the -n on Kindern).'],
+names:['Names in the Dativ','How does the name look in the Dativ? Choose.'],
+replace:['Replace nouns with pronouns','Replace the red person with a Dativ pronoun.'],
+wem:['To whom? Answers','Read the text and the question. Answer with a pronoun.'],
+who:['Talking to or about?','You talk to the person (dir, euch, Ihnen) or about the person (ihm, ihr, ihnen). Write the pronoun.'],
+detect:['Mistake detective','Is the sentence right or wrong? If wrong: what is correct?'],
+dialog:['Short dialogues','Fill in the pronoun and the verb. The hint is in [ ].']
+},
+fb:{
+pron:'Look at the person in the first sentence. Which Dativ pronoun belongs to them? Help: the table.',
+akk:'After passen, stehen and gefallen you need the Dativ: ‹mir›, ‹dir›, ‹ihm› … (not ‹mich›, ‹dich›, ‹ihn›). English “me” covers both, German keeps them apart.',
+nom:'That is a Nominativ pronoun (‹ich›, ‹du›, ‹er› …). Here you need the Dativ.',
+ihmihr:'‹ihm› = he/him and it. ‹ihr› = she/her.',
+ihmEs:'‹ihm› belongs to ‹er› and to ‹es›. Remember: das Kind = es → ‹ihm› (English “it”).',
+ihrnom:'Careful: the Dativ of ‹ihr› (“you all”, Nominativ) is ‹euch›. The Dativ pronoun ‹ihr› belongs to ‹sie› (she).',
+ihrdat:'Here ‹ihr› is a Dativ (= her). The subject is ‹das Kleid›, so: ‹gefällt›.',
+sieSie:'‹ihnen› (small i) = them, several people. ‹Ihnen› (capital I) = you, formal.',
+verbmean:'‹passen› = the size is right or the date is good. ‹stehen› = looks good or bad on you. ‹gefallen› = I find it nice. English “suit” covers two German verbs.',
+subj:'The thing is the subject (Nominativ). The person is in the Dativ. With ‹mögen› (to like) the person is the subject.',
+sgpl:'The verb agrees with the subject, the thing: one thing → ‹passt / steht / gefällt›, several things → ‹passen / stehen / gefallen›.',
+umlaut:'‹gefallen› has an umlaut: er, sie, es ‹gefällt›.',
+order:'The verb is in position 2. The pronoun comes before the noun: ‹Gefällt dir das Kleid?›',
+dativart:'Dativ: ‹der Mann → dem Mann›, ‹die Frau → der Frau›, ‹das Kind → dem Kind›, ‹die Kinder → den Kindern›.',
+pln:'Dativ plural: ‹den› + noun + ‹-n› (den Kindern).',
+name:'Names stay the same in the Dativ: ‹Das Kleid steht Anna gut.›',
+stehpos:'‹stehen› with a person in the Dativ = looks. Without a person (‹Das Auto steht dort.›) = position.',
+addr:'Talking to the person: ‹dir / euch / Ihnen›. Talking about the person: ‹ihm / ihr / ihnen›.'
+},
+bridge:{
+pron:[
+{k:'p',h:'English has no Dativ case. But English has object pronouns (me, him, her …), and they fill the same slot: “It suits me” = ‹Es steht mir.›'},
+{k:'t',head:['Nominativ','Dativ','English'],cols:['nom','dat',''],rows:[['ich','mir','I → me'],['du','dir','you → you'],['er','ihm','he → him'],['sie (Sg.)','ihr','she → her'],['es','ihm','it → it'],['wir','uns','we → us'],['ihr','euch','you (all) → you'],['sie (Pl.)','ihnen','they → them'],['Sie (höflich)','Ihnen','you (formal) → you']]},
+{k:'w',h:'English uses one form (me, him, her, us, them) for both Akkusativ and Dativ. German splits them: ‹mich› ≠ ‹mir›, ‹ihn› ≠ ‹ihm›. After passen, stehen and gefallen use the Dativ.'},
+{k:'w',h:'English “it” never changes. In German a child (‹das Kind›, ‹es›) becomes ‹ihm›. English “you” can be ‹dir›, ‹euch› or ‹Ihnen›.'},
+{k:'w',h:'German ‹ihr› (Dativ) means “her”, but ‹ihr› (Nominativ) means “you all”. And ‹ihnen› (them) ≠ ‹Ihnen› (formal you).'}
+],
+verbs:[
+{k:'p',h:'English also marks the person who is affected, only without an ending: “It fits me.” German marks that person with the Dativ.'},
+{k:'t',head:['German','English'],cols:['de',''],rows:[['Die Jacke passt mir.','The jacket fits me.'],['Montag passt mir.','Monday suits me.'],['Das Kleid steht dir gut.','The dress suits you. / The dress looks good on you.'],['Die Jacke gefällt mir.','I like the jacket. (literally: The jacket pleases me.)'],['Die Schuhe gefallen mir.','I like the shoes.']]},
+{k:'tip',h:'‹gefallen› works like “to please”: the jacket pleases me. The jacket is the subject, the person is in the Dativ. That is why ‹Ich gefalle die Jacke.› is wrong.'},
+{k:'w',h:'English “suit” does two jobs. “Monday suits me” = ‹Montag passt mir›. “The dress suits you” = ‹Das Kleid steht dir›. English “fit” = ‹passen› only for size.'},
+{k:'w',h:'‹stehen› also means “to stand”: ‹Das Auto steht dort.› Here there is no person in the Dativ.'}
+],
+order:[
+{k:'p',h:'English word order is fixed: subject first. German allows the Dativ first, but the verb stays in position 2: ‹Die Jacke gefällt mir.› / ‹Mir gefällt die Jacke.›'},
+{k:'p',h:'In questions the verb comes first: ‹Gefällt dir das Kleid?› (“Do you like the dress?”). The short pronoun comes before the noun.'},
+{k:'p',h:'‹nicht› and ‹gut› come after the person: ‹Die Jacke passt mir nicht.› (not “passt nicht mir”).'},
+{k:'tip',h:'To whom? → Dativ. Who or what? → Nominativ (the subject, the thing).'}
+],
+noun:[
+{k:'p',h:'English shows the Dativ with “to” (give it to the man). German shows it with the article: ‹dem Mann›. A pronoun replaces it: ‹ihm›.'},
+{k:'t',head:['Nominativ','Dativ','English'],cols:['nom','dat',''],rows:[['der Mann','dem Mann','the man'],['die Frau','der Frau','the woman'],['das Kind','dem Kind','the child'],['die Kinder','den Kindern','the children']]},
+{k:'w',h:'In the plural the noun also gets -n: ‹den Kindern›.'},
+{k:'w',h:'Names do not change: ‹Das Kleid steht Anna gut.›'}
+],
+traps:[
+{k:'w',h:'Do not translate word by word: “I like the jacket” is ‹Die Jacke gefällt mir.› (or ‹Ich mag die Jacke.›), never ‹Ich gefalle die Jacke.›'},
+{k:'w',h:'English “me” is both ‹mich› and ‹mir›. After these three verbs it is always ‹mir›, ‹dir›, ‹ihm›.'},
+{k:'w',h:'English “it” does not change. In German the child (‹es›) becomes ‹ihm› in the Dativ.'},
+{k:'w',h:'English “you” can be ‹dir›, ‹euch› or ‹Ihnen›. Ask yourself: one person you know, several people, or formal?'},
+{k:'w',h:'‹ihm› (he, it) ≠ ‹ihr› (she). ‹ihnen› (they) ≠ ‹Ihnen› (formal you).'}
+]
+},
+trapItems:['es','siSie'],
+trapWhy:{
+es:'English “it” never changes, but German does: es → ihm. For “das Kind” you need ‹ihm›.',
+siSie:'English “you” is always “you”. In German, to a polite “Sie” you say ‹Ihnen›, not ‹euch› or ‹dir›.'
+}
+};
+
+LANGS.ar={code:'ar',lang:'ar',dir:'rtl',
+ui:{
+name:'العربية',menu:'القائمة',bridgeBtn:'الألمانية والعربية',bridgeTitle:'الألمانية والعربية: قواعد وجداول',
+next:'التالي',check:'تحقق',again:'مرة أخرى',backStage:'العودة إلى المرحلة',nextStage:'المرحلة التالية',undo:'تراجع',
+stage:'المرحلة',part:'الجزء',task:'التمرين',ok:'صحيح!',bad:'ليس تمامًا.',tryAgain:'حاول مرة أخرى.',
+showTable:'أظهر الجدول',hideTable:'أخفِ الجدول',firstTry:'صحيح من المحاولة الأولى',repeatWrong:'كرّر الأخطاء',partDone:'أنهيت الجزء!',
+right:'صحيح',wrong:'خطأ',pickFix:'ما الصحيح؟',sg:'مفرد',pl:'جمع',formal:'رسمي',nom:'Nominativ (مَن؟ ما؟)',dat:'Dativ (لِمَن؟)',
+trap:'فخ:',reset:'حذف التقدّم',resetAsk:'هل تريد حذف كل التقدّم فعلًا؟',
+discQ:'إلى أي ضمير في Nominativ تنتمي الكلمة الحمراء؟',myTable:'جدولي',
+capHint:'انتبه: ‹Ihnen› (رسمي، حرف I كبير) ليس ‹ihnen› (لهم).',umlaut:'الأفضل الكتابة بحرف ä: ‹gefällt›.',
+pos:'المكان: أين هو؟',look:'المظهر: جيّد أو سيّئ على الشخص',
+homeIntro:'الأحمر = Dativ (لِمَن؟). الخط المتقطّع = الفاعل، أي الشيء. الأزرق = Nominativ.',
+s1intro:'اقرأ الجملتين. الكلمة الحمراء ضمير في Dativ. إلى أي ضمير في Nominativ (الأزرق) تنتمي؟ جدولك يكبر مع تقدّمك.',
+verbsGloss:'‹passen› = يناسب (المقاس، الموعد). ‹stehen› (gut) = يليق بـ، يبدو جميلًا على. ‹gefallen› = يعجب. التفاصيل في المرحلة 3.',
+b_pron:'الضمائر',b_verbs:'الأفعال الثلاثة',b_order:'ترتيب الجملة',b_noun:'Dativ مع الأسماء',b_traps:'أخطاء شائعة'
+},
+stages:[
+{t:'اكتشف: مَن هو «mir»؟',d:'اعثر على ضمائر Dativ بنفسك.'},
+{t:'تمرّن على الضمائر',d:'اربط، اختر، اكتب.'},
+{t:'passen, stehen, gefallen',d:'ماذا تعني هذه الأفعال الثلاثة؟'},
+{t:'الفاعل وصيغة الفعل وترتيب الجملة',d:'الشيء هو الفاعل. الشخص في Dativ.'},
+{t:'Dativ مع الأسماء والأعلام',d:'dem Mann, der Frau, dem Kind, den Kindern.'},
+{t:'استبدل الاسم بالضمير',d:'من «dem Mann» نصل إلى «ihm».'},
+{t:'أخطاء شائعة',d:'اكتشف الأخطاء المعتادة.'},
+{t:'كل شيء معًا',d:'حوارات قصيرة بفعل وضمير.'}
+],
+parts:{
+disc:['اكتشف الضمائر','اقرأ الجمل. أي ضمير في Nominativ (الأزرق) يخصّ كلمة Dativ (الحمراء)؟ المسه.'],
+match:['ابحث عن الأزواج','المس ضميرًا على اليسار، ثم ضمير Dativ على اليمين.'],
+choose:['اختر الضمير الصحيح','اختر الضمير المناسب للفراغ.'],
+type:['اكتب الضمير','اكتب ضمير Dativ في الفراغ.'],
+table:['أكمل الجدول','اكتب بجانب كل ضمير ضمير Dativ. انتبه إلى ihnen وIhnen.'],
+verbMean:['أي فعل يناسب؟','اقرأ الموقف. اختر الفعل: passen أو stehen أو gefallen.'],
+stehen2:['stehen: معنيان','هل هو مكان (أين؟) أم مظهر (جيّد أو سيّئ على الشخص)؟'],
+subj:['اعثر على الفاعل','من أو ما هو الفاعل (Nominativ)؟ اختر.'],
+form:['صيغة الفعل الصحيحة','اختر الصيغة الصحيحة: شيء واحد أم عدّة أشياء؟'],
+formType:['اكتب صيغة الفعل','اكتب في الفراغ صيغة الفعل passen أو stehen أو gefallen.'],
+order:['كوّن جملًا','المس الكلمات واحدة بعد الأخرى لتكوّن جملة.'],
+artChoose:['أداة التعريف في Dativ','اختر أداة التعريف في Dativ.'],
+artType:['اكتب أداة التعريف','اكتب أداة التعريف (وحرف n في Kindern).'],
+names:['الأسماء في Dativ','كيف يكون الاسم في Dativ؟ اختر.'],
+replace:['استبدل الاسم بضمير','استبدل الشخص الأحمر بضمير في Dativ.'],
+wem:['لِمَن؟ إجابات','اقرأ النص والسؤال. أجب بضمير.'],
+who:['مع مَن؟ عن مَن؟','أنت تتكلم مع الشخص (dir, euch, Ihnen) أو عن الشخص (ihm, ihr, ihnen). اكتب الضمير.'],
+detect:['محقّق الأخطاء','هل الجملة صحيحة أم خاطئة؟ إن كانت خاطئة: ما الصحيح؟'],
+dialog:['حوارات قصيرة','أكمل الضمير والفعل. التلميح بين [ ].']
+},
+fb:{
+pron:'انظر إلى الشخص في الجملة الأولى. أي ضمير في Dativ يخصّه؟ مساعدة: الجدول.',
+akk:'بعد passen وstehen وgefallen يأتي Dativ: ‹mir› و‹dir› و‹ihm› … (وليس ‹mich› و‹dich› و‹ihn›). في العربية الضمير المتصل «ـني» واحد دائمًا، أما الألمانية فتفرّق بين ‹mir› و‹mich›.',
+nom:'هذا ضمير في Nominativ (‹ich› و‹du› و‹er› …). هنا تحتاج إلى Dativ.',
+ihmihr:'‹ihm› = er وes (هو، وما ليس مؤنثًا). ‹ihr› = sie (هي).',
+ihmEs:'‹ihm› يخصّ ‹er› و‹es› معًا. تذكّر: das Kind = es → ‹ihm›.',
+ihrnom:'انتبه: ضمير Dativ لـ ‹ihr› (Nominativ، «أنتم») هو ‹euch›. أما ‹ihr› في Dativ فيخصّ ‹sie› (هي).',
+ihrdat:'هنا ‹ihr› في Dativ (= لها). الفاعل هو ‹das Kleid›، لذلك ‹gefällt›.',
+sieSie:'‹ihnen› (i صغيرة) = لهم، عدّة أشخاص. ‹Ihnen› (I كبيرة) = لكم أو لحضرتك، رسمي.',
+verbmean:'‹passen› = المقاس أو الموعد مناسب. ‹stehen› = يليق أو لا يليق بالشخص. ‹gefallen› = يعجبني.',
+subj:'الشيء هو الفاعل (Nominativ). الشخص في Dativ. مع ‹mögen› (يحب) يكون الشخص هو الفاعل.',
+sgpl:'الفعل يتبع الفاعل، أي الشيء: شيء واحد → ‹passt / steht / gefällt›، عدّة أشياء → ‹passen / stehen / gefallen›. (في العربية يبقى الفعل مفردًا مع جمع غير العاقل، أما في الألمانية فيتغيّر.)',
+umlaut:'‹gefallen› فيه أوملاوت: er وsie وes ‹gefällt›.',
+order:'الفعل في المركز الثاني. الضمير يأتي قبل الاسم: ‹Gefällt dir das Kleid?›',
+dativart:'Dativ: ‹der Mann → dem Mann›، ‹die Frau → der Frau›، ‹das Kind → dem Kind›، ‹die Kinder → den Kindern›.',
+pln:'جمع Dativ: ‹den› + اسم + ‹-n› (den Kindern).',
+name:'الأعلام لا تتغيّر في Dativ: ‹Das Kleid steht Anna gut.›',
+stehpos:'‹stehen› مع شخص في Dativ = المظهر. بلا شخص (‹Das Auto steht dort.›) = المكان.',
+addr:'أنت تتكلم مع الشخص: ‹dir / euch / Ihnen›. أنت تتكلم عن الشخص: ‹ihm / ihr / ihnen›.'
+},
+bridge:{
+pron:[
+{k:'p',h:'العربية لا فيها حالة Dativ. لكنها تؤدّي المعنى نفسه بحرف الجر «لِـ» مع الضمير المتصل: لي، لك، له، لها، لنا، لكم، لهم.'},
+{k:'t',head:['Nominativ','Dativ','بالعربية'],cols:['nom','dat',''],rows:[['ich','mir','أنا ← لي'],['du','dir','أنتَ / أنتِ ← لك'],['er','ihm','هو ← له'],['sie (Sg.)','ihr','هي ← لها'],['es','ihm','هو / هي (حسب الاسم) ← له / لها'],['wir','uns','نحن ← لنا'],['ihr','euch','أنتم ← لكم'],['sie (Pl.)','ihnen','هم ← لهم'],['Sie (höflich)','Ihnen','لا ضمير خاص للاحترام: أنتَ / أنتم ← لك / لكم']]},
+{k:'w',h:'في الألمانية لا فرق بين مخاطَب مذكّر ومخاطَبة مؤنّثة: ‹dir› لك أنتَ ولك أنتِ.'},
+{k:'w',h:'‹es› ليس له مقابل ثابت في العربية: ‹das Kind› → ‹es› → ‹ihm›.'},
+{k:'w',h:'للاحترام تقول في الألمانية ‹Ihnen› بحرف I كبير، حتى لشخص واحد. و‹ihr› في Dativ تعني «لها»، لكن ‹ihr› في Nominativ تعني «أنتم». و‹ihnen› (لهم) ≠ ‹Ihnen› (رسمي).'}
+],
+verbs:[
+{k:'p',h:'الفكرة قريبة من العربية: الشيء هو الفاعل والشخص ضمير متصل أو «لِـ». في «تعجبني السترة» السترة فاعل، و«ـني» هو الشخص.'},
+{k:'t',head:['الألمانية','العربية'],cols:['de',''],rows:[['Die Jacke gefällt mir.','تعجبني السترة.'],['Die Schuhe gefallen mir.','تعجبني الأحذية.'],['Die Jacke passt mir.','تناسبني السترة. / السترة مناسبة لي.'],['Montag passt mir.','يناسبني يوم الاثنين.'],['Das Kleid steht dir gut.','يليق بك هذا الفستان. / يناسبك هذا الفستان.']]},
+{k:'tip',h:'‹gefällt mir› = «تعجبني». الشيء هو الفاعل والشخص في Dativ. لا تقل ‹Ich gefalle die Jacke›.'},
+{k:'w',h:'في الألمانية ‹stehen› + Dativ = «يليق بـ» (المظهر). و‹passen› = «يناسب» (المقاس أو الموعد). في العربية «يناسب» تشمل الاثنين، لذلك انتبه.'},
+{k:'w',h:'‹stehen› تعني أيضًا «يقف»: ‹Das Auto steht dort.› هنا لا يوجد شخص في Dativ.'},
+{k:'w',h:'«أحبّ هذه السترة» = ‹Ich mag die Jacke.› (أنا الفاعل). «تعجبني السترة» = ‹Die Jacke gefällt mir.›'}
+],
+order:[
+{k:'p',h:'في العربية غالبًا يأتي الفعل أولًا («تعجبني السترة»). في الألمانية الفعل في المركز الثاني: ‹Die Jacke gefällt mir.› أو ‹Mir gefällt die Jacke.›'},
+{k:'p',h:'في السؤال يأتي الفعل أولًا، والضمير قبل الاسم: ‹Gefällt dir das Kleid?›'},
+{k:'p',h:'‹nicht› و‹gut› بعد الشخص: ‹Die Hose passt mir nicht.›'},
+{k:'tip',h:'لِمَن؟ → Dativ. مَن؟ ما؟ → Nominativ (الفاعل، أي الشيء).'}
+],
+noun:[
+{k:'p',h:'في العربية: «لِـ» + الاسم («للرجل»). في الألمانية تتغيّر أداة التعريف: ‹dem Mann›. ويحلّ محلّه الضمير ‹ihm›.'},
+{k:'t',head:['Nominativ','Dativ','بالعربية'],cols:['nom','dat',''],rows:[['der Mann','dem Mann','للرجل'],['die Frau','der Frau','للمرأة'],['das Kind','dem Kind','للطفل'],['die Kinder','den Kindern','للأطفال']]},
+{k:'w',h:'في الجمع يأخذ الاسم حرف -n: ‹den Kindern›.'},
+{k:'w',h:'الأعلام لا تتغيّر: ‹Das Kleid steht Anna gut.›'}
+],
+traps:[
+{k:'w',h:'«ـني» تعني ‹mir› و‹mich› معًا. بعد هذه الأفعال الثلاثة دائمًا ‹mir› و‹dir› و‹ihm›.'},
+{k:'w',h:'لا تقل ‹Die Jacke passt für mich›. قل: ‹Die Jacke passt mir.› (لا نستعمل ‹für› هنا كما نستعمل «لِـ»).'},
+{k:'w',h:'في العربية جمع غير العاقل يأخذ فعلًا مفردًا («تعجبني الأحذية»). في الألمانية: ‹Die Schuhe gefallen mir.›'},
+{k:'w',h:'الفعل في المركز الثاني، والفاعل قد يأتي بعده: ‹Mir gefällt die Jacke.›'}
+]
+},
+trapItems:['fuer','gefMich'],
+trapWhy:{
+fuer:'في العربية «لي» (لِـ) حرف جر. في الألمانية لا تقل ‹für mich›: ‹Die Jacke passt mir.›',
+gefMich:'في العربية الضمير «ـني» (تعجبني) هو نفسه دائمًا. في الألمانية ‹gefallen› يحتاج Dativ: ‹mir›، وليس ‹mich›.'
+}
+};
+
+LANGS.tr={code:'tr',lang:'tr',dir:'ltr',
+ui:{
+name:'Türkçe',menu:'Menü',bridgeBtn:'Almanca ve Türkçe',bridgeTitle:'Almanca ve Türkçe: kurallar ve tablolar',
+next:'İleri',check:'Kontrol et',again:'Tekrar',backStage:'Aşamaya dön',nextStage:'Sonraki aşama',undo:'Geri al',
+stage:'Aşama',part:'Bölüm',task:'Alıştırma',ok:'Doğru!',bad:'Tam değil.',tryAgain:'Bir daha dene.',
+showTable:'Tabloyu göster',hideTable:'Tabloyu gizle',firstTry:'ilk denemede doğru',repeatWrong:'Hataları tekrarla',partDone:'Bölüm tamam!',
+right:'doğru',wrong:'yanlış',pickFix:'Doğrusu nasıl?',sg:'tekil',pl:'çoğul',formal:'saygılı',nom:'Nominativ (yalın hâl)',dat:'Dativ (-e hâli)',
+trap:'Tuzak:',reset:'İlerlemeyi sil',resetAsk:'Tüm ilerleme gerçekten silinsin mi?',
+discQ:'Kırmızı kelime hangi Nominativ zamirine ait?',myTable:'Benim tablom',
+capHint:'Dikkat: ‹Ihnen› (saygılı, büyük I) ile ‹ihnen› (onlara) aynı değil.',umlaut:'Daha iyisi ä ile yazmak: ‹gefällt›.',
+pos:'Konum: Nerede?',look:'Görünüş: kişiye iyi ya da kötü yakışıyor',
+homeIntro:'Kırmızı = Dativ (kime?). Kesik çizgi = özne, yani şey. Mavi = Nominativ.',
+s1intro:'İki cümleyi oku. Kırmızı kelime Dativ’de bir zamir. Hangi Nominativ zamirine (mavi) ait? Tablon, buldukça büyür.',
+verbsGloss:'‹passen› = uymak (beden, randevu). ‹stehen› (gut) = yakışmak. ‹gefallen› = hoşuna gitmek. Ayrıntılar 3. aşamada.',
+b_pron:'Zamirler',b_verbs:'Üç fiil',b_order:'Cümle yapısı',b_noun:'İsimlerde Dativ',b_traps:'Tuzaklar'
+},
+stages:[
+{t:'Keşfet: “mir” kim?',d:'Dativ zamirlerini kendin bul.'},
+{t:'Zamirleri çalış',d:'Eşleştir, seç, yaz.'},
+{t:'passen, stehen, gefallen',d:'Bu üç fiil ne demek?'},
+{t:'Özne, fiil biçimi, cümle sırası',d:'Şey özne olur. Kişi Dativ’de durur.'},
+{t:'İsimlerde ve adlarda Dativ',d:'dem Mann, der Frau, dem Kind, den Kindern.'},
+{t:'İsmi zamirle değiştir',d:'“dem Mann” yerine “ihm”.'},
+{t:'Tuzaklar',d:'Tipik hataları bul.'},
+{t:'Hepsi bir arada',d:'Fiil ve zamirli kısa diyaloglar.'}
+],
+parts:{
+disc:['Zamirleri keşfet','Cümleleri oku. Dativ’deki kelime (kırmızı) hangi Nominativ zamirine (mavi) ait? Dokun.'],
+match:['Çiftleri bul','Solda bir zamire, sonra sağda Dativ zamirine dokun.'],
+choose:['Doğru zamiri seç','Boşluk için zamiri seç.'],
+type:['Zamiri yaz','Boşluğa Dativ zamirini yaz.'],
+table:['Tabloyu doldur','Her zamirin yanına Dativ zamirini yaz. ihnen ve Ihnen’e dikkat.'],
+verbMean:['Hangi fiil uyuyor?','Durumu oku. Fiili seç: passen, stehen ya da gefallen.'],
+stehen2:['stehen: iki anlam','Konum mu (nerede?), görünüş mü (kişiye iyi ya da kötü yakışıyor)?'],
+subj:['Özneyi bul','Özne (Nominativ) kim ya da ne? Seç.'],
+form:['Doğru fiil biçimi','Doğru biçimi seç: bir şey mi, birkaç şey mi?'],
+formType:['Fiil biçimini yaz','Boşluğa passen, stehen ya da gefallen fiilinin biçimini yaz.'],
+order:['Cümle kur','Kelimelere sırayla dokun ve cümle kur.'],
+artChoose:['Dativ’de artikel','Dativ’deki artikeli seç.'],
+artType:['Artikeli yaz','Artikeli yaz (Kindern’de -n de).'],
+names:['Dativ’de adlar','Ad Dativ’de nasıl olur? Seç.'],
+replace:['İsmi zamirle değiştir','Kırmızı kişiyi Dativ zamiriyle değiştir.'],
+wem:['Kime? Cevaplar','Metni ve soruyu oku. Zamirle cevap ver.'],
+who:['Kiminle? Kim hakkında?','Kişiyle konuşuyorsun (dir, euch, Ihnen) ya da kişi hakkında (ihm, ihr, ihnen). Zamiri yaz.'],
+detect:['Hata dedektifi','Cümle doğru mu, yanlış mı? Yanlışsa doğrusu nedir?'],
+dialog:['Kısa diyaloglar','Zamiri ve fiili tamamla. [ ] içinde ipucu var.']
+},
+fb:{
+pron:'İlk cümledeki kişiye bak. Hangi Dativ zamiri ona ait? Yardım: tablo.',
+akk:'passen, stehen ve gefallen’den sonra Dativ gelir: ‹mir›, ‹dir›, ‹ihm› … (‹mich›, ‹dich›, ‹ihn› değil). Türkçedeki “-e” hâli gibi düşün: bana, sana, ona.',
+nom:'Bu bir Nominativ zamiri (‹ich›, ‹du›, ‹er› …). Burada Dativ lazım.',
+ihmihr:'‹ihm› = er ve es (o, erkek ve nötr). ‹ihr› = sie (o, kadın). Türkçede hepsi “ona”, Almancada ayrılır.',
+ihmEs:'‹ihm› hem ‹er› hem ‹es› için kullanılır. Hatırla: das Kind = es → ‹ihm›.',
+ihrnom:'Dikkat: ‹ihr› (Nominativ, “siz arkadaşlar”) için Dativ ‹euch›. Dativ ‹ihr› ise ‹sie› (kadın) içindir.',
+ihrdat:'Burada ‹ihr› Dativ’dir (= ona, kadına). Özne ‹das Kleid›, bu yüzden ‹gefällt›.',
+sieSie:'‹ihnen› (küçük i) = onlara, birkaç kişi. ‹Ihnen› (büyük I) = size, saygılı.',
+verbmean:'‹passen› = beden ya da randevu uyuyor. ‹stehen› = iyi ya da kötü yakışıyor. ‹gefallen› = hoşuma gidiyor.',
+subj:'Şey özne olur (Nominativ). Kişi Dativ’de durur. ‹mögen› (sevmek) ile kişi özne olur.',
+sgpl:'Fiil özneye, yani şeye uyar: bir şey → ‹passt / steht / gefällt›, birkaç şey → ‹passen / stehen / gefallen›.',
+umlaut:'‹gefallen›’de ünlü değişir: er, sie, es ‹gefällt›.',
+order:'Fiil ikinci sırada durur (Türkçede fiil sondadır!). Zamir isimden önce gelir: ‹Gefällt dir das Kleid?›',
+dativart:'Dativ: ‹der Mann → dem Mann›, ‹die Frau → der Frau›, ‹das Kind → dem Kind›, ‹die Kinder → den Kindern›.',
+pln:'Çoğulda Dativ: ‹den› + isim + ‹-n› (den Kindern).',
+name:'Adlar Dativ’de değişmez: ‹Das Kleid steht Anna gut.› (Türkçe: Anna’ya).',
+stehpos:'Dativ’de kişiyle ‹stehen› = görünüş. Kişi yoksa (‹Das Auto steht dort.›) = konum.',
+addr:'Kişiyle konuşuyorsun: ‹dir / euch / Ihnen›. Kişi hakkında konuşuyorsun: ‹ihm / ihr / ihnen›.'
+},
+bridge:{
+pron:[
+{k:'p',h:'Türkçede Dativ’in karşılığı var: yönelme hâli (-e / -a). Zamirlerde: bana, sana, ona … Bu yüzden fikir sana tanıdık.'},
+{k:'t',head:['Nominativ','Dativ','Türkçe'],cols:['nom','dat',''],rows:[['ich','mir','ben → bana'],['du','dir','sen → sana'],['er','ihm','o → ona'],['sie (Sg.)','ihr','o → ona'],['es','ihm','o → ona'],['wir','uns','biz → bize'],['ihr','euch','siz → size'],['sie (Pl.)','ihnen','onlar → onlara'],['Sie (höflich)','Ihnen','siz → size']]},
+{k:'w',h:'Türkçede cinsiyet yok: erkek, kadın, çocuk için hep “ona”. Almancada ayrılır: ‹ihm› (er, es) ve ‹ihr› (sie). Önce kişinin erkek mi kadın mı olduğuna bak.'},
+{k:'w',h:'“size” iki Almanca zamire denk gelir: ‹euch› (siz arkadaşlar) ve ‹Ihnen› (saygılı Sie, büyük I).'},
+{k:'w',h:'‹ihr› iki iş yapar: Nominativ (“siz”) ve ‹sie›’nin Dativ’i (“ona”, kadın). ‹ihnen› (onlara) ile ‹Ihnen› (size, saygılı) farklıdır.'}
+],
+verbs:[
+{k:'p',h:'Türkçede de şey özne olabilir, kişi -e hâlinde durur. Bu üç fiil Türkçede benzer bir yapıyla karşılanır.'},
+{k:'t',head:['Almanca','Türkçe'],cols:['de',''],rows:[['Die Jacke passt mir.','Ceket bana uyuyor. / Ceket bana tam oldu.'],['Montag passt mir.','Pazartesi bana uyuyor.'],['Das Kleid steht dir gut.','Elbise sana yakışıyor.'],['Die Jacke gefällt mir.','Ceket hoşuma gidiyor.']]},
+{k:'tip',h:'‹hoşuma gidiyor› ile ‹gefällt mir› aynı yapıdadır: şey özne, kişi “-a” ile (hoş-um-a). Fiil şeye uyar: ‹Die Schuhe gefallen mir.›'},
+{k:'w',h:'“Ceketi beğendim” veya “ceketi seviyorum” = ‹Ich mag die Jacke.› (ben özneyim). ‹Ich gefalle die Jacke› yanlıştır. “Hoşuma gidiyor” yapısını kullan: ‹Die Jacke gefällt mir.›'},
+{k:'w',h:'Türkçede “uymak” hem beden hem randevu için, “yakışmak” görünüş için. Almancada da iki fiil var: ‹passen› (uymak) ve ‹stehen› (yakışmak).'},
+{k:'w',h:'‹stehen› “durmak” demektir de: ‹Das Auto steht dort.› Burada Dativ’de kişi yok.'}
+],
+order:[
+{k:'p',h:'Türkçede fiil sonda durur: “Elbise sana yakışıyor.” Almancada fiil ikinci sırada: ‹Das Kleid steht dir gut.› ya da ‹Dir steht das Kleid gut.›'},
+{k:'p',h:'Soruda fiil başa gelir, kısa zamir isimden önce: ‹Gefällt dir das Kleid?› (“Elbise hoşuna gitti mi?”).'},
+{k:'p',h:'‹nicht› ve ‹gut› kişiden sonra gelir: ‹Die Hose passt mir nicht.›'},
+{k:'tip',h:'Kime? → Dativ. Kim? Ne? → Nominativ (özne, yani şey).'}
+],
+noun:[
+{k:'p',h:'Türkçe -e / -a ekini isme ekler (adama, kadına, çocuğa). Almanca ek eklemez, artikeli değiştirir.'},
+{k:'t',head:['Nominativ','Dativ','Türkçe'],cols:['nom','dat',''],rows:[['der Mann','dem Mann','adama'],['die Frau','der Frau','kadına'],['das Kind','dem Kind','çocuğa'],['die Kinder','den Kindern','çocuklara']]},
+{k:'w',h:'Çoğulda isim de -n alır: ‹den Kindern›.'},
+{k:'w',h:'Adlar değişmez: ‹Das Kleid steht Anna gut.› (Türkçe: Anna’ya).'}
+],
+traps:[
+{k:'w',h:'‹beğenmek› ile ‹gefallen› aynı değil. “Ceketi beğendim” (ben özneyim) = ‹Ich mag die Jacke.› “Ceket hoşuma gitti” = ‹Die Jacke gefällt mir.›'},
+{k:'w',h:'“o” her kişi için aynıdır. Almancada erkek → ‹ihm›, kadın → ‹ihr›, çocuk → ‹ihm›.'},
+{k:'w',h:'“size” → ‹euch› mı, ‹Ihnen› mi? Arkadaşlarla konuşuyorsan ‹euch›, saygılı konuşuyorsan ‹Ihnen›.'},
+{k:'w',h:'Fiil ikinci sırada: ‹Die Jacke passt mir.› (Türkçedeki gibi sonda değil).'}
+]
+},
+trapItems:['ihm_ihr','siSie'],
+trapWhy:{
+ihm_ihr:'Türkçede “ona” hem kadın hem erkek için kullanılır. Almancada kadın için ‹ihr›: Anna → ‹ihr›.',
+siSie:'Türkçede “size” hem arkadaşlar (euch) hem saygılı “siz” (Ihnen) için kullanılır. Frau Meier’e saygıyla: ‹Ihnen›.'
+}
+};
+
+LANGS.fa={code:'fa',lang:'fa',dir:'rtl',
+ui:{
+name:'فارسی',menu:'منو',bridgeBtn:'آلمانی و فارسی',bridgeTitle:'آلمانی و فارسی: قاعده‌ها و جدول‌ها',
+next:'بعدی',check:'بررسی',again:'دوباره',backStage:'بازگشت به مرحله',nextStage:'مرحلهٔ بعدی',undo:'برگشت',
+stage:'مرحله',part:'بخش',task:'تمرین',ok:'درست!',bad:'کاملاً درست نیست.',tryAgain:'یک بار دیگر امتحان کن.',
+showTable:'نمایش جدول',hideTable:'پنهان کردن جدول',firstTry:'درست در تلاش اول',repeatWrong:'تکرار اشتباه‌ها',partDone:'بخش تمام شد!',
+right:'درست',wrong:'غلط',pickFix:'شکل درست کدام است؟',sg:'مفرد',pl:'جمع',formal:'رسمی',nom:'Nominativ (چه کسی؟ چه چیزی؟)',dat:'Dativ (به چه کسی؟)',
+trap:'دام:',reset:'پاک کردن پیشرفت',resetAsk:'واقعاً همهٔ پیشرفت پاک شود؟',
+discQ:'کلمهٔ قرمز به کدام ضمیر Nominativ تعلق دارد؟',myTable:'جدول من',
+capHint:'دقت: ‹Ihnen› (رسمی، I بزرگ) با ‹ihnen› (به آن‌ها) فرق دارد.',umlaut:'بهتر است با ä بنویسی: ‹gefällt›.',
+pos:'مکان: کجاست؟',look:'ظاهر: روی آن شخص خوب یا بد است',
+homeIntro:'قرمز = Dativ (به چه کسی؟). خط‌چین = نهاد، یعنی چیز. آبی = Nominativ.',
+s1intro:'دو جمله را بخوان. کلمهٔ قرمز ضمیر Dativ است. به کدام ضمیر Nominativ (آبی) تعلق دارد؟ جدول تو با پیشرفتت بزرگ می‌شود.',
+verbsGloss:'‹passen› = جور بودن (اندازه، وقت). ‹stehen› (gut) = خوب به کسی آمدن. ‹gefallen› = خوش آمدن. جزئیات در مرحلهٔ ۳.',
+b_pron:'ضمیرها',b_verbs:'سه فعل',b_order:'ساختار جمله',b_noun:'Dativ با اسم‌ها',b_traps:'دام‌ها'
+},
+stages:[
+{t:'کشف کن: «mir» یعنی چه کسی؟',d:'ضمیرهای Dativ را خودت پیدا کن.'},
+{t:'تمرین ضمیرها',d:'وصل کن، انتخاب کن، بنویس.'},
+{t:'passen, stehen, gefallen',d:'این سه فعل چه معنایی دارند؟'},
+{t:'نهاد، شکل فعل، ترتیب جمله',d:'چیز نهاد است. شخص در Dativ می‌آید.'},
+{t:'Dativ با نام‌ها و اسم‌ها',d:'dem Mann, der Frau, dem Kind, den Kindern.'},
+{t:'جایگزینی اسم با ضمیر',d:'از «dem Mann» می‌شود «ihm».'},
+{t:'دام‌ها',d:'اشتباه‌های رایج را پیدا کن.'},
+{t:'همه با هم',d:'گفت‌وگوهای کوتاه با فعل و ضمیر.'}
+],
+parts:{
+disc:['کشف ضمیرها','جمله‌ها را بخوان. کدام ضمیر Nominativ (آبی) به کلمهٔ Dativ (قرمز) تعلق دارد؟ رویش بزن.'],
+match:['پیدا کردن جفت‌ها','سمت چپ روی یک ضمیر بزن، بعد سمت راست روی ضمیر Dativ.'],
+choose:['انتخاب ضمیر درست','ضمیر مناسب جای خالی را انتخاب کن.'],
+type:['نوشتن ضمیر','ضمیر Dativ را در جای خالی بنویس.'],
+table:['پر کردن جدول','کنار هر ضمیر، ضمیر Dativ را بنویس. مواظب ihnen و Ihnen باش.'],
+verbMean:['کدام فعل مناسب است؟','موقعیت را بخوان. فعل را انتخاب کن: passen، stehen یا gefallen.'],
+stehen2:['stehen: دو معنی','مکان است (کجا؟) یا ظاهر (روی شخص خوب یا بد است)؟'],
+subj:['پیدا کردن نهاد','نهاد (Nominativ) چه کسی یا چه چیزی است؟ انتخاب کن.'],
+form:['شکل درست فعل','شکل درست را انتخاب کن: یک چیز یا چند چیز؟'],
+formType:['نوشتن شکل فعل','شکل فعل passen، stehen یا gefallen را در جای خالی بنویس.'],
+order:['ساختن جمله','به ترتیب روی کلمه‌ها بزن و جمله بساز.'],
+artChoose:['حرف تعریف در Dativ','حرف تعریف Dativ را انتخاب کن.'],
+artType:['نوشتن حرف تعریف','حرف تعریف را بنویس (و -n در Kindern).'],
+names:['نام‌ها در Dativ','نام در Dativ چه شکلی دارد؟ انتخاب کن.'],
+replace:['جایگزینی اسم با ضمیر','شخص قرمز را با ضمیر Dativ عوض کن.'],
+wem:['به چه کسی؟ پاسخ‌ها','متن و سؤال را بخوان. با یک ضمیر جواب بده.'],
+who:['با چه کسی؟ دربارهٔ چه کسی؟','با شخص حرف می‌زنی (dir، euch، Ihnen) یا دربارهٔ او (ihm، ihr، ihnen). ضمیر را بنویس.'],
+detect:['کارآگاه اشتباه‌ها','جمله درست است یا غلط؟ اگر غلط است: شکل درست چیست؟'],
+dialog:['گفت‌وگوهای کوتاه','ضمیر و فعل را کامل کن. راهنما در [ ] است.']
+},
+fb:{
+pron:'به شخصِ جملهٔ اول نگاه کن. کدام ضمیر Dativ به او تعلق دارد؟ کمک: جدول.',
+akk:'بعد از passen و stehen و gefallen باید Dativ بیاید: ‹mir›، ‹dir›، ‹ihm› … (نه ‹mich›، ‹dich›، ‹ihn›). در فارسی «من» همان «من» است، اما در آلمانی ‹mir› و ‹mich› دو شکل جدا هستند.',
+nom:'این ضمیر Nominativ است (‹ich›، ‹du›، ‹er› …). اینجا Dativ لازم است.',
+ihmihr:'‹ihm› = er و es (او، مرد و خنثی). ‹ihr› = sie (او، زن). در فارسی «او» جنسیت ندارد، در آلمانی دارد.',
+ihmEs:'‹ihm› هم برای ‹er› است هم برای ‹es›. یادت باشد: das Kind = es → ‹ihm›.',
+ihrnom:'دقت: Dativ ‹ihr› (Nominativ، «شما») می‌شود ‹euch›. ضمیر ‹ihr› در Dativ مالِ ‹sie› (یک زن) است.',
+ihrdat:'اینجا ‹ihr› Dativ است (= به او، زن). نهاد ‹das Kleid› است، پس ‹gefällt›.',
+sieSie:'‹ihnen› (i کوچک) = به آن‌ها، چند نفر. ‹Ihnen› (I بزرگ) = به شما، رسمی.',
+verbmean:'‹passen› = اندازه یا قرار جور است. ‹stehen› = خوب یا بد به کسی می‌آید. ‹gefallen› = خوشم می‌آید.',
+subj:'چیز نهاد است (Nominativ). شخص در Dativ می‌آید. با ‹mögen› (دوست داشتن) شخص نهاد است.',
+sgpl:'فعل با نهاد، یعنی با چیز، هماهنگ می‌شود: یک چیز → ‹passt / steht / gefällt›، چند چیز → ‹passen / stehen / gefallen›.',
+umlaut:'‹gefallen› اوملاوت دارد: er و sie و es ‹gefällt›.',
+order:'فعل در جای دوم می‌آید (در فارسی فعل آخر جمله است). ضمیر قبل از اسم می‌آید: ‹Gefällt dir das Kleid?›',
+dativart:'Dativ: ‹der Mann → dem Mann›، ‹die Frau → der Frau›، ‹das Kind → dem Kind›، ‹die Kinder → den Kindern›.',
+pln:'جمع در Dativ: ‹den› + اسم + ‹-n› (den Kindern).',
+name:'نام‌ها در Dativ تغییر نمی‌کنند: ‹Das Kleid steht Anna gut.›',
+stehpos:'‹stehen› با شخص در Dativ = ظاهر. بدون شخص (‹Das Auto steht dort.›) = مکان.',
+addr:'با شخص حرف می‌زنی: ‹dir / euch / Ihnen›. دربارهٔ شخص حرف می‌زنی: ‹ihm / ihr / ihnen›.'
+},
+bridge:{
+pron:[
+{k:'p',h:'فارسی حالت Dativ ندارد. جایش را حرف اضافهٔ «به» همراه ضمیر می‌گیرد: به من، به تو، به او … (در گفتار: بهم، بهت، بهش).'},
+{k:'t',head:['Nominativ','Dativ','فارسی'],cols:['nom','dat',''],rows:[['ich','mir','من ← به من (بهم)'],['du','dir','تو ← به تو (بهت)'],['er','ihm','او ← به او (بهش)'],['sie (Sg.)','ihr','او ← به او (بهش)'],['es','ihm','او / آن ← به او / به آن'],['wir','uns','ما ← به ما (بهمون)'],['ihr','euch','شما ← به شما (بهتون)'],['sie (Pl.)','ihnen','آن‌ها ← به آن‌ها (بهشون)'],['Sie (höflich)','Ihnen','شما ← به شما']]},
+{k:'w',h:'در فارسی «او» برای مرد و زن یکی است. در آلمانی جداست: مرد ← ‹ihm›، زن ← ‹ihr›، بچه (das Kind) ← ‹ihm›. اول ببین شخص کیست.'},
+{k:'w',h:'«شما» در فارسی دو ضمیر آلمانی دارد: ‹euch› (چند دوست) و ‹Ihnen› (رسمی، با I بزرگ).'},
+{k:'w',h:'‹ihr› دو کار می‌کند: Nominativ («شما») و Dativ برای ‹sie› («به او»، زن). ‹ihnen› (به آن‌ها) با ‹Ihnen› (به شما، رسمی) فرق دارد.'}
+],
+verbs:[
+{k:'p',h:'در فارسی هم شخص با «به» یا ضمیر چسبان می‌آید، اما ساختارها با آلمانی یکی نیستند. این فرق‌ها را ببین:'},
+{k:'t',head:['آلمانی','فارسی'],cols:['de',''],rows:[['Das Kleid steht dir gut.','این لباس به تو می‌آید. (بهت میاد)'],['Die Jacke passt mir.','این کت اندازهٔ من است.'],['Montag passt mir.','دوشنبه برای من مناسب است.'],['Die Jacke gefällt mir.','از این کت خوشم می‌آید.']]},
+{k:'tip',h:'آلمانی: چیز نهاد است و شخص Dativ: ‹Die Jacke gefällt mir.› فارسی: شخص کنار «خوش» می‌چسبد: «خوشم می‌آید». «این کت را دوست دارم» به ‹Ich mag die Jacke.› می‌ماند (من نهادم).'},
+{k:'w',h:'فارسی «به تو می‌آید» را برای ظاهر به کار می‌برد، آلمانی فعل ‹stehen› را: ‹Das Kleid steht dir.› نگو ‹kommt dir›.'},
+{k:'w',h:'‹passen› برای اندازه و قرار است (فارسی: اندازه بودن، مناسب بودن). ‹stehen› برای ظاهر است. دو فعل جدا.'},
+{k:'w',h:'‹stehen› یعنی «ایستادن» هم: ‹Das Auto steht dort.› اینجا شخصی در Dativ نیست.'}
+],
+order:[
+{k:'p',h:'در فارسی فعل آخر جمله می‌آید. در آلمانی فعل جای دوم است: ‹Das Kleid steht dir gut.› یا ‹Dir steht das Kleid gut.›'},
+{k:'p',h:'در سؤال فعل اول می‌آید و ضمیر کوتاه قبل از اسم: ‹Gefällt dir das Kleid?›'},
+{k:'p',h:'‹nicht› و ‹gut› بعد از شخص می‌آیند: ‹Die Hose passt mir nicht.›'},
+{k:'tip',h:'به چه کسی؟ ← Dativ. چه کسی؟ چه چیزی؟ ← Nominativ (نهاد، یعنی چیز).'}
+],
+noun:[
+{k:'p',h:'فارسی «به» + اسم می‌گذارد (به مرد، به زن، به بچه). آلمانی حرف تعریف را عوض می‌کند: ‹dem Mann›. ضمیر جایش می‌آید: ‹ihm›.'},
+{k:'t',head:['Nominativ','Dativ','فارسی'],cols:['nom','dat',''],rows:[['der Mann','dem Mann','به مرد'],['die Frau','der Frau','به زن'],['das Kind','dem Kind','به بچه'],['die Kinder','den Kindern','به بچه‌ها']]},
+{k:'w',h:'در جمع اسم هم -n می‌گیرد: ‹den Kindern›.'},
+{k:'w',h:'نام‌ها تغییر نمی‌کنند: ‹Das Kleid steht Anna gut.›'}
+],
+traps:[
+{k:'w',h:'‹kommt dir› غلط است. فارسی «به تو می‌آید» ← آلمانی ‹steht dir›.'},
+{k:'w',h:'«برای من» ← ‹für mich› نیست. ‹Der Termin passt mir.›، نه ‹passt für mich›.'},
+{k:'w',h:'‹mir› با ‹mich› فرق دارد. بعد از این سه فعل همیشه ‹mir›، ‹dir›، ‹ihm›.'},
+{k:'w',h:'«او» جنسیت ندارد، ولی ‹ihm› و ‹ihr› دارند. و فعل آخر جمله نیست: ‹Die Jacke passt mir.›'}
+]
+},
+trapItems:['kommt','fuer','ihm_ihr'],
+trapWhy:{
+kommt:'فارسی: «به تو می‌آید» (آمدن). آلمانی: ‹stehen›، نه ‹kommen›: ‹Das Kleid steht dir.›',
+fuer:'فارسی: «برای من مناسب است». آلمانی: ‹passt mir›، بدون ‹für›.',
+ihm_ihr:'فارسی «او» برای مرد و زن یکی است. آلمانی برای زن (Anna) می‌گوید ‹ihr›.'
+}
+};
+
+LANGS.ku={code:'ku',lang:'ku',dir:'ltr',
+ui:{
+name:'Kurdî (Kurmancî)',menu:'Menû',bridgeBtn:'Almanî û Kurdî',bridgeTitle:'Almanî û Kurdî: rêzik û tablo',
+next:'Bidomîne',check:'Kontrol bike',again:'Dîsa',backStage:'Vegere astê',nextStage:'Astê din',undo:'Vegere',
+stage:'Ast',part:'Beş',task:'Çalakî',ok:'Rast e!',bad:'Ne tam.',tryAgain:'Careke din biceribîne.',
+showTable:'Tabloyê nîşan bide',hideTable:'Tabloyê veşêre',firstTry:'di cara yekem de rast',repeatWrong:'Şaşiyan dubare bike',partDone:'Beş qediya!',
+right:'rast',wrong:'şaş',pickFix:'Rast çawa ye?',sg:'yekjimar',pl:'pirjimar',formal:'bi rêz',nom:'Nominativ (ez, tu, ew …)',dat:'Dativ (ji … re)',
+trap:'Xefik:',reset:'Pêşketinê jê bibe',resetAsk:'Bi rastî hemû pêşketin were jêbirin?',
+discQ:'Peyva sor ji kîjan cînavka Nominativ e?',myTable:'Tabloya min',
+capHint:'Hay jê hebe: ‹Ihnen› (bi rêz, I ya mezin) ne ‹ihnen› (ew, çend kes) e.',umlaut:'Baştir e bi ä binivîsî: ‹gefällt›.',
+pos:'Cih: li ku ye?',look:'Xuyabûn: li ser mirov baş an xerab e',
+homeIntro:'Sor = Dativ (ji kê re?). Xeta têkşikestî = Subjekt, tişt. Şîn = Nominativ.',
+s1intro:'Her du hevokan bixwîne. Peyva sor cînavkeke Dativ e. Ji kîjan cînavka Nominativ (şîn) e? Tabloya te bi pêşketina te mezin dibe.',
+verbsGloss:'‹passen› = li hatin (mezinahî, dem). ‹stehen› (gut) = li hatin, li ser kesî baş xuya bûn. ‹gefallen› = nêzîkî «hez kirin ji». Berfirehtir di astê 3 de.',
+b_pron:'Cînavk',b_verbs:'Sê lêker',b_order:'Rêzkirina hevokê',b_noun:'Dativ bi navdêran',b_traps:'Xefik'
+},
+stages:[
+{t:'Keşf bike: «mir» kî ye?',d:'Cînavkên Dativ bi xwe bibîne.'},
+{t:'Cînavkan temrîn bike',d:'Bike cot, hilbijêre, binivîse.'},
+{t:'passen, stehen, gefallen',d:'Wateya van sê lêkeran çi ye?'},
+{t:'Subjekt, forma lêkerê, rêza peyvan',d:'Tişt Subjekt e. Mirov di Dativ de ye.'},
+{t:'Dativ bi nav û navdêran',d:'dem Mann, der Frau, dem Kind, den Kindern.'},
+{t:'Cînavk li şûna navdêran',d:'Ji «dem Mann» dibe «ihm».'},
+{t:'Xefik',d:'Şaşiyên berbelav bibîne.'},
+{t:'Hemû bi hev re',d:'Diyalogên kurt bi lêker û cînavk.'}
+],
+parts:{
+disc:['Cînavkan keşf bike','Hevokan bixwîne. Kîjan cînavka Nominativ (şîn) ji peyva Dativ (sor) re ye? Li ser bitikîne.'],
+match:['Cotan bibîne','Li çepê li cînavkekê bitikîne, paşê li rastê li cînavka Dativ.'],
+choose:['Cînavka rast hilbijêre','Cînavka guncav ji bo valahiyê hilbijêre.'],
+type:['Cînavkê binivîse','Cînavka Dativ di valahiyê de binivîse.'],
+table:['Tabloyê tije bike','Li kêleka her cînavkê cînavka Dativ binivîse. Hay ji ihnen û Ihnen hebe.'],
+verbMean:['Kîjan lêker dikeve?','Rewşê bixwîne. Lêkerê hilbijêre: passen, stehen an gefallen.'],
+stehen2:['stehen: du wate','Ev cih e (li ku?) an xuyabûn e (li ser mirov baş an xerab)?'],
+subj:['Subjektê bibîne','Kî an çi Subjekt (Nominativ) e? Hilbijêre.'],
+form:['Forma rast a lêkerê','Forma rast hilbijêre: tiştek an çend tişt?'],
+formType:['Forma lêkerê binivîse','Forma passen, stehen an gefallen di valahiyê de binivîse.'],
+order:['Hevokan ava bike','Li peyvan li pey hev bitikîne û hevokekê ava bike.'],
+artChoose:['Artîkel di Dativ de','Artîkela Dativ hilbijêre.'],
+artType:['Artîkelê binivîse','Artîkelê binivîse (û -n ya Kindern).'],
+names:['Nav di Dativ de','Nav di Dativ de çawa ye? Hilbijêre.'],
+replace:['Navdêrê bi cînavkê biguherîne','Kesê sor bi cînavkeke Dativ biguherîne.'],
+wem:['Ji kê re? Bersiv','Nivîs û pirsê bixwîne. Bi cînavkekê bersiv bide.'],
+who:['Bi kê re? Derbarê kê de?','Tu bi mirov re diaxivî (dir, euch, Ihnen) an derbarê wî de (ihm, ihr, ihnen). Cînavkê binivîse.'],
+detect:['Detektîfê şaşiyan','Hevok rast e an şaş e? Heke şaş e: rast çawa ye?'],
+dialog:['Diyalogên kurt','Cînavk û lêkerê temam bike. Nîşan di [ ] de ye.']
+},
+fb:{
+pron:'Li kesê di hevoka yekem de binêre. Kîjan cînavka Dativ ji wî re ye? Alîkarî: tablo.',
+akk:'Piştî passen, stehen û gefallen Dativ tê: ‹mir›, ‹dir›, ‹ihm› … (ne ‹mich›, ‹dich›, ‹ihn›). Di Kurdî de ‹min› yek e, di Almanî de ‹mir› û ‹mich› du form in.',
+nom:'Ev cînavkeke Nominativ e (‹ich›, ‹du›, ‹er› …). Li vir Dativ divê.',
+ihmihr:'‹ihm› = er û es. ‹ihr› = sie (jin). Di Kurdî de ‹ew› ji bo hemûyan e, di Almanî de na.',
+ihmEs:'‹ihm› hem ji bo ‹er› e hem ji bo ‹es›. Bi bîr bîne: das Kind = es → ‹ihm›.',
+ihrnom:'Hay jê hebe: ji bo ‹ihr› (Nominativ, «hûn») Dativ ‹euch› e. Cînavka ‹ihr› di Dativ de ji bo ‹sie› (jin) e.',
+ihrdat:'Li vir ‹ihr› Dativ e (= jê re, jin). Subjekt ‹das Kleid› e, ji ber vê ‹gefällt›.',
+sieSie:'‹ihnen› (i ya biçûk) = ji wan re, çend kes. ‹Ihnen› (I ya mezin) = ji we re, bi rêz.',
+verbmean:'‹passen› = mezinahî an dem baş e. ‹stehen› = li ser mirov baş an xerab xuya dibe. ‹gefallen› = nêzîkî «hez kirin ji», lê tişt Subjekt e.',
+subj:'Tişt Subjekt e (Nominativ). Mirov di Dativ de ye. Bi ‹mögen› (hez kirin) mirov Subjekt e.',
+sgpl:'Lêker bi Subjekt re, yanî bi tişt re, li hev tê: tiştek → ‹passt / steht / gefällt›, çend tişt → ‹passen / stehen / gefallen›. (Di Kurdî de jî: ‹tê› / ‹tên›.)',
+umlaut:'‹gefallen› umlaut heye: er, sie, es ‹gefällt›.',
+order:'Lêker di cihê duyem de ye (di Kurdî de lêker bi gelemperî di dawiyê de ye). Cînavk beriya navdêrê tê: ‹Gefällt dir das Kleid?›',
+dativart:'Dativ: ‹der Mann → dem Mann›, ‹die Frau → der Frau›, ‹das Kind → dem Kind›, ‹die Kinder → den Kindern›.',
+pln:'Dativ di pirjimariyê de: ‹den› + navdêr + ‹-n› (den Kindern).',
+name:'Nav di Dativ de nayên guhertin: ‹Das Kleid steht Anna gut.›',
+stehpos:'‹stehen› bi mirovek di Dativ de = xuyabûn. Bê mirov (‹Das Auto steht dort.›) = cih.',
+addr:'Tu bi mirov re diaxivî: ‹dir / euch / Ihnen›. Tu derbarê mirov de diaxivî: ‹ihm / ihr / ihnen›.'
+},
+bridge:{
+pron:[
+{k:'p',h:'Kurmancî Dativa Almanî nîne, lê cînavkên wê du formên xwe hene: yên rasterast (ez, tu, ew …) û yên oblîk (min, te, wî, wê, me, we, wan). Oblîk bi lêker û pêşdaçekan tê, û bi «ji … re» wateya «ji bo / ji … re» dide.'},
+{k:'t',head:['Nominativ','Dativ','Kurmancî (rasterast → oblîk)'],cols:['nom','dat',''],rows:[['ich','mir','ez → min'],['du','dir','tu → te'],['er','ihm','ew → wî'],['sie (Sg.)','ihr','ew → wê'],['es','ihm','ew → wî / wê'],['wir','uns','em → me'],['ihr','euch','hûn → we'],['sie (Pl.)','ihnen','ew → wan'],['Sie (höflich)','Ihnen','hûn → we']]},
+{k:'w',h:'Di Kurdî de ‹ew› ji bo mêr, jin û zarokan e, lê oblîk cuda ye: ‹wî› (mêr) û ‹wê› (jin). Di Almanî de: mêr → ‹ihm›, jin → ‹ihr›, zarok (das Kind) → ‹ihm›.'},
+{k:'w',h:'«we» du cînavkên Almanî ye: ‹euch› (çend heval) û ‹Ihnen› (bi rêz, bi I ya mezin).'},
+{k:'w',h:'Hay jê hebe: di dema borî de ‹min› dibe Subjekt (Min çivîkek dît = ‹Ich habe einen Vogel gesehen›). Di Almanî de ‹mir› Subjekt nabe. Û ‹ihr› di Nominativ de «hûn» e, di Dativ de «jê re» (jin).'}
+],
+verbs:[
+{k:'p',h:'Kurmancî ji bo «passen» û «stehen» lêkera «li … hatin» bi kar tîne: mirov bi ‹li› û cînavka oblîk e, tişt Subjekt e. Lêker bi tişt re li hev tê: ‹tê› (yek) û ‹tên› (çend).'},
+{k:'t',head:['Almanî','Kurmancî'],cols:['de',''],rows:[['Der Schuh passt mir.','Ev sol li min tê.'],['Die Schuhe passen mir.','Ev sol li min tên.'],['Die Schuhe passen mir nicht.','Ev sol li min nayên.'],['Die Schuhe stehen dir (gut).','Ev sol li te tên. (bi çarçoveyê)'],['Ich mag die Schuhe. / Die Schuhe gefallen mir.','Ez jê hez dikim. (hez kirin ji)']]},
+{k:'tip',h:'Kurmancî: «ez jê hez dikim», ez Subjekt im. Almanî ‹gefallen›: tişt Subjekt e û mirov Dativ e: ‹Die Jacke gefällt mir.› Ji bo «ez hez dikim» di Almanî de du rê hene: ‹Ich mag die Jacke.› (ich = Subjekt) an ‹Die Jacke gefällt mir.›'},
+{k:'w',h:'«li min tê» di Kurdî de hem ji bo mezinahiyê hem ji bo xuyabûnê ye. Almanî du lêker hene: ‹passen› (mezinahî, dem) û ‹stehen› (xuyabûn, «li ser kesî baş xuya dibe»).'},
+{k:'w',h:'‹stehen› tê wateya «sekinîn» jî: ‹Das Auto steht dort.› Li vir mirovek di Dativ de tune.'}
+],
+order:[
+{k:'p',h:'Di Kurdî de lêker bi gelemperî di dawiyê de ye. Di Almanî de lêker di cihê duyem de ye: ‹Die Jacke gefällt mir.› an ‹Mir gefällt die Jacke.›'},
+{k:'p',h:'Di pirsê de lêker pêşî tê, cînavka kurt beriya navdêrê: ‹Gefällt dir das Kleid?›'},
+{k:'p',h:'‹nicht› û ‹gut› piştî mirov tên: ‹Die Hose passt mir nicht.›'},
+{k:'tip',h:'Ji kê re? → Dativ. Kî? Çi? → Nominativ (Subjekt, yanî tişt).'}
+],
+noun:[
+{k:'p',h:'Kurmancî «ji … re» bi navdêrê re bi kar tîne û navdêr jî diguhere. Di Almanî de artîkel diguhere: ‹dem Mann›. Cînavk dewsa wê digire: ‹ihm›.'},
+{k:'t',head:['Nominativ','Dativ','Kurmancî'],cols:['nom','dat',''],rows:[['der Mann','dem Mann','ji zilamî re'],['die Frau','der Frau','ji jinê re'],['das Kind','dem Kind','ji zarokî re'],['die Kinder','den Kindern','ji zarokan re']]},
+{k:'w',h:'Di pirjimariyê de navdêr -n digire: ‹den Kindern›.'},
+{k:'w',h:'Nav nayên guhertin: ‹Das Kleid steht Anna gut.›'}
+],
+traps:[
+{k:'w',h:'‹kommt dir› şaş e. Kurmancî «li te tê» (hatin) → Almanî ‹steht dir›.'},
+{k:'w',h:'Di Kurdî de «ew» ji bo hemûyan e. Di Almanî de: mêr → ‹ihm›, jin → ‹ihr›.'},
+{k:'w',h:'«we» → ‹euch› an ‹Ihnen›? Bi hevalan re ‹euch›, bi rêz ‹Ihnen›.'},
+{k:'w',h:'‹mir› û ‹mich› du form in. Piştî van sê lêkeran her dem ‹mir›, ‹dir›, ‹ihm›.'}
+]
+},
+trapItems:['kommt','ihm_ihr','siSie'],
+trapWhy:{
+kommt:'Kurmancî: «li te tê» (hatin). Almanî ‹stehen›, ne ‹kommen›: ‹Das Kleid steht dir.›',
+ihm_ihr:'Di Kurdî de «ew» ji bo hemûyan e. Ji bo jinê (Anna) Almanî ‹ihr› dibêje.',
+siSie:'Kurmancî «we» ji bo hevalan û ji bo rêzê ye. Bi Frau Meier re bi rêz: ‹Ihnen›.'
+}
+};
+
+LANGS.ru={code:'ru',lang:'ru',dir:'ltr',
+ui:{
+name:'Русский',menu:'Меню',bridgeBtn:'Немецкий и русский',bridgeTitle:'Немецкий и русский: правила и таблицы',
+next:'Дальше',check:'Проверить',again:'Ещё раз',backStage:'К этапу',nextStage:'Следующий этап',undo:'Назад',
+stage:'Этап',part:'Часть',task:'Задание',ok:'Правильно!',bad:'Не совсем.',tryAgain:'Попробуйте ещё раз.',
+showTable:'Показать таблицу',hideTable:'Скрыть таблицу',firstTry:'правильно с первой попытки',repeatWrong:'Повторить ошибки',partDone:'Часть пройдена!',
+right:'правильно',wrong:'неправильно',pickFix:'Как правильно?',sg:'ед. ч.',pl:'мн. ч.',formal:'вежливо',nom:'Nominativ (именительный)',dat:'Dativ (дательный)',
+trap:'Ловушка:',reset:'Удалить прогресс',resetAsk:'Действительно удалить весь прогресс?',
+discQ:'К какому местоимению в Nominativ относится красное слово?',myTable:'Моя таблица',
+capHint:'Внимание: ‹Ihnen› (вежливая форма, большая I) — это не ‹ihnen› (им, они).',umlaut:'Лучше писать с ä: ‹gefällt›.',
+pos:'Положение: где это?',look:'Внешний вид: хорошо или плохо на человеке',
+homeIntro:'Красный = Dativ (кому?). Пунктир = подлежащее, то есть вещь. Синий = Nominativ.',
+s1intro:'Прочитайте два предложения. Красное слово — местоимение в Dativ. К какому местоимению в Nominativ (синему) оно относится? Ваша таблица растёт вместе с вами.',
+verbsGloss:'‹passen› = подходить (размер, время). ‹stehen› (gut) = идти, хорошо смотреться на ком-то. ‹gefallen› = нравиться. Подробно — на этапе 3.',
+b_pron:'Местоимения',b_verbs:'Три глагола',b_order:'Порядок слов',b_noun:'Dativ у существительных',b_traps:'Ловушки'
+},
+stages:[
+{t:'Открываем: кто такое «mir»?',d:'Найдите местоимения в Dativ сами.'},
+{t:'Тренируем местоимения',d:'Соединить, выбрать, написать.'},
+{t:'passen, stehen, gefallen',d:'Что значат эти три глагола?'},
+{t:'Подлежащее, форма глагола, порядок слов',d:'Вещь — подлежащее. Человек стоит в Dativ.'},
+{t:'Dativ у имён и существительных',d:'dem Mann, der Frau, dem Kind, den Kindern.'},
+{t:'Заменяем существительные местоимениями',d:'Из «dem Mann» получается «ihm».'},
+{t:'Ловушки',d:'Найдите типичные ошибки.'},
+{t:'Всё вместе',d:'Короткие диалоги с глаголом и местоимением.'}
+],
+parts:{
+disc:['Открываем местоимения','Прочитайте предложения. Какое местоимение в Nominativ (синее) относится к слову в Dativ (красному)? Нажмите на него.'],
+match:['Найти пары','Нажмите слева на местоимение, потом справа на местоимение в Dativ.'],
+choose:['Выбрать местоимение','Выберите местоимение для пропуска.'],
+type:['Написать местоимение','Напишите в пропуск местоимение в Dativ.'],
+table:['Заполнить таблицу','Напишите к каждому местоимению местоимение в Dativ. Следите за ihnen и Ihnen.'],
+verbMean:['Какой глагол подходит?','Прочитайте ситуацию. Выберите глагол: passen, stehen или gefallen.'],
+stehen2:['stehen: два значения','Это положение (где?) или внешний вид (хорошо или плохо на человеке)?'],
+subj:['Найти подлежащее','Кто или что является подлежащим (Nominativ)? Выберите.'],
+form:['Правильная форма глагола','Выберите правильную форму: одна вещь или несколько вещей?'],
+formType:['Написать форму глагола','Напишите в пропуск форму глагола passen, stehen или gefallen.'],
+order:['Составить предложения','Нажимайте на слова по очереди и составьте предложение.'],
+artChoose:['Артикль в Dativ','Выберите артикль в Dativ.'],
+artType:['Написать артикль','Напишите артикль (и -n у Kindern).'],
+names:['Имена в Dativ','Как выглядит имя в Dativ? Выберите.'],
+replace:['Заменить существительное местоимением','Замените красного человека местоимением в Dativ.'],
+wem:['Кому? Ответы','Прочитайте текст и вопрос. Ответьте местоимением.'],
+who:['С кем говорим? О ком?','Вы говорите с человеком (dir, euch, Ihnen) или о человеке (ihm, ihr, ihnen). Напишите местоимение.'],
+detect:['Детектив ошибок','Предложение правильное или неправильное? Если неправильное: как правильно?'],
+dialog:['Короткие диалоги','Вставьте местоимение и глагол. В [ ] подсказка.']
+},
+fb:{
+pron:'Посмотрите на человека в первом предложении. Какое местоимение в Dativ к нему относится? Помощь: таблица.',
+akk:'После passen, stehen и gefallen нужен Dativ: ‹mir›, ‹dir›, ‹ihm› … (не ‹mich›, ‹dich›, ‹ihn›). Это как «мне, тебе, ему», а не «меня, тебя, его».',
+nom:'Это местоимение в Nominativ (‹ich›, ‹du›, ‹er› …). Здесь нужен Dativ.',
+ihmihr:'‹ihm› = он и оно (er, es). ‹ihr› = она (sie). Не путайте с русским «им» — это ‹ihnen›.',
+ihmEs:'‹ihm› относится и к ‹er›, и к ‹es›. Запомните: das Kind = es → ‹ihm›.',
+ihrnom:'Внимание: к ‹ihr› («вы», Nominativ) относится ‹euch›. Местоимение ‹ihr› в Dativ — это «ей» (от ‹sie›).',
+ihrdat:'Здесь ‹ihr› — Dativ («ей»). Подлежащее — ‹das Kleid›, поэтому ‹gefällt›.',
+sieSie:'‹ihnen› (маленькая i) = «им» (они). ‹Ihnen› (большая I) = «Вам», вежливо.',
+verbmean:'‹passen› = подходит размер или время. ‹stehen› = хорошо или плохо выглядит (по-русски «идёт»). ‹gefallen› = нравится.',
+subj:'Вещь — подлежащее (Nominativ). Человек стоит в Dativ. У ‹mögen› («любить») подлежащее — человек.',
+sgpl:'Глагол согласуется с подлежащим, то есть с вещью: одна вещь → ‹passt / steht / gefällt›, несколько вещей → ‹passen / stehen / gefallen›.',
+umlaut:'У ‹gefallen› есть умлаут: er, sie, es ‹gefällt›.',
+order:'Глагол стоит на втором месте. Местоимение стоит перед существительным: ‹Gefällt dir das Kleid?›',
+dativart:'Dativ: ‹der Mann → dem Mann›, ‹die Frau → der Frau›, ‹das Kind → dem Kind›, ‹die Kinder → den Kindern›.',
+pln:'Dativ множественного числа: ‹den› + существительное + ‹-n› (den Kindern).',
+name:'Имена в Dativ не меняются: ‹Das Kleid steht Anna gut.› (по-русски: Анне).',
+stehpos:'‹stehen› с человеком в Dativ = внешний вид. Без человека (‹Das Auto steht dort.›) = положение.',
+addr:'Вы говорите с человеком: ‹dir / euch / Ihnen›. Вы говорите о человеке: ‹ihm / ihr / ihnen›.'
+},
+bridge:{
+pron:[
+{k:'p',h:'В русском есть дательный падеж, поэтому вам знакома эта идея: «Мне нравится куртка», «Тебе идёт платье».'},
+{k:'t',head:['Nominativ','Dativ','по-русски'],cols:['nom','dat',''],rows:[['ich','mir','я → мне'],['du','dir','ты → тебе'],['er','ihm','он → ему'],['sie (Sg.)','ihr','она → ей'],['es','ihm','оно → ему'],['wir','uns','мы → нам'],['ihr','euch','вы → вам'],['sie (Pl.)','ihnen','они → им'],['Sie (höflich)','Ihnen','Вы → Вам']]},
+{k:'w',h:'Ложные друзья: русское «им» (они) — это немецкое ‹ihnen›. А немецкое ‹ihm› — это «ему».'},
+{k:'w',h:'Русское «вы» — это два немецких местоимения: ‹ihr› → ‹euch› (вы все, друзья) и ‹Sie› → ‹Ihnen› (вежливо, с большой буквы).'},
+{k:'w',h:'Немецкое ‹ihr› в Dativ значит «ей», а в Nominativ — «вы». Это одно и то же слово с разными функциями.'}
+],
+verbs:[
+{k:'p',h:'Хорошая новость: русская конструкция почти такая же. Человек стоит в дательном падеже, вещь — подлежащее, глагол согласуется с вещью.'},
+{k:'t',head:['по-немецки','по-русски'],cols:['de',''],rows:[['Die Jacke gefällt mir.','Мне нравится куртка.'],['Die Schuhe gefallen mir.','Мне нравятся туфли.'],['Die Jacke passt mir.','Куртка мне подходит. / Куртка мне как раз.'],['Montag passt mir.','Понедельник мне подходит.'],['Das Kleid steht dir gut.','Тебе идёт платье.']]},
+{k:'tip',h:'‹gefällt› — это «нравится»: подлежащее — вещь, человек стоит в Dativ. Совсем как по-русски. Но в немецком нет «-ся»: ‹gefällt›, а не ‹gefällt sich›.'},
+{k:'w',h:'Русское «идёт» (Тебе идёт платье) по-немецки — ‹stehen›, а не ‹gehen›: ‹Das Kleid steht dir.› (не ‹geht dir›).'},
+{k:'w',h:'Русское «подходит» — это два немецких глагола: ‹passen› (размер, время) и ‹stehen› (внешний вид, когда «идёт»).'},
+{k:'w',h:'«Любить» и «нравиться»: «Я люблю эту куртку» = ‹Ich mag die Jacke.› (я — подлежащее). «Мне нравится куртка» = ‹Die Jacke gefällt mir.›'},
+{k:'w',h:'‹stehen› — это ещё и «стоять»: ‹Das Auto steht dort.› Здесь нет человека в Dativ.'}
+],
+order:[
+{k:'p',h:'В русском порядок слов свободный («Мне нравится куртка» и «Куртка мне нравится»). В немецком глагол всегда на втором месте: ‹Mir gefällt die Jacke.› или ‹Die Jacke gefällt mir.›'},
+{k:'p',h:'В вопросе глагол стоит первым, а короткое местоимение — перед существительным: ‹Gefällt dir das Kleid?› («Тебе нравится платье?»).'},
+{k:'p',h:'‹nicht› стоит после человека: ‹Die Hose passt mir nicht.› В русском «не» стоит перед глаголом: «не подходит».'},
+{k:'tip',h:'Кому? → Dativ. Кто? Что? → Nominativ (подлежащее, то есть вещь).'}
+],
+noun:[
+{k:'p',h:'Как и в русском, существительные имеют дательный падеж. Но в немецком меняется почти только артикль.'},
+{k:'t',head:['Nominativ','Dativ','по-русски'],cols:['nom','dat',''],rows:[['der Mann','dem Mann','мужчине'],['die Frau','der Frau','женщине'],['das Kind','dem Kind','ребёнку'],['die Kinder','den Kindern','детям']]},
+{k:'w',h:'В русском много окончаний (-у, -е, -ам), в немецком — артикль и в множественном числе ‹-n›: ‹den Kindern›.'},
+{k:'w',h:'Имена в немецком не меняются: ‹Anna›, ‹Tom› (по-русски: Анне, Тому).'}
+],
+traps:[
+{k:'w',h:'Не добавляйте «sich» (русское «-ся»): ‹Die Jacke gefällt mir.›, а не ‹gefällt sich mir›.'},
+{k:'w',h:'‹gehen› не подходит для «идёт» о вещи: ‹Das Kleid steht dir.›, а не ‹Das Kleid geht dir.›'},
+{k:'w',h:'Не путайте: ‹ihm› (он, оно) — это не «им» (они). «Им» по-немецки ‹ihnen›.'},
+{k:'w',h:'‹ihnen› (они) — это не ‹Ihnen› (Вам). Вежливое ‹Ihnen› всегда с большой буквы.'},
+{k:'w',h:'‹Die Hose› в немецком в единственном числе: ‹Die Hose passt mir.› Русское «брюки» всегда во множественном.'}
+]
+},
+trapItems:['geht','sich'],
+trapWhy:{
+geht:'По-русски «Тебе идёт платье» (идти), но по-немецки так не говорят: ‹Das Kleid steht dir.›',
+sich:'По-русски «нравится» заканчивается на «-ся». В немецком нет ‹sich›: ‹Das Kleid gefällt mir.›'
+}
+};
+
+LANGS.uk={code:'uk',lang:'uk',dir:'ltr',
+ui:{
+name:'Українська',menu:'Меню',bridgeBtn:'Німецька й українська',bridgeTitle:'Німецька й українська: правила й таблиці',
+next:'Далі',check:'Перевірити',again:'Ще раз',backStage:'До етапу',nextStage:'Наступний етап',undo:'Назад',
+stage:'Етап',part:'Частина',task:'Завдання',ok:'Правильно!',bad:'Не зовсім.',tryAgain:'Спробуйте ще раз.',
+showTable:'Показати таблицю',hideTable:'Сховати таблицю',firstTry:'правильно з першої спроби',repeatWrong:'Повторити помилки',partDone:'Частину пройдено!',
+right:'правильно',wrong:'неправильно',pickFix:'Як правильно?',sg:'одн.',pl:'мн.',formal:'ввічливо',nom:'Nominativ (називний)',dat:'Dativ (давальний)',
+trap:'Пастка:',reset:'Видалити прогрес',resetAsk:'Справді видалити весь прогрес?',
+discQ:'До якого займенника в Nominativ належить червоне слово?',myTable:'Моя таблиця',
+capHint:'Увага: ‹Ihnen› (ввічливо, велика I) — це не ‹ihnen› (їм, вони).',umlaut:'Краще писати з ä: ‹gefällt›.',
+pos:'Розташування: де це?',look:'Вигляд: добре чи погано на людині',
+homeIntro:'Червоний = Dativ (кому?). Пунктир = підмет, тобто річ. Синій = Nominativ.',
+s1intro:'Прочитайте два речення. Червоне слово — займенник у Dativ. До якого займенника в Nominativ (синього) воно належить? Ваша таблиця зростає разом з вами.',
+verbsGloss:'‹passen› = пасувати (розмір, час). ‹stehen› (gut) = личити, добре виглядати на комусь. ‹gefallen› = подобатися. Докладно — на етапі 3.',
+b_pron:'Займенники',b_verbs:'Три дієслова',b_order:'Порядок слів',b_noun:'Dativ в іменників',b_traps:'Пастки'
+},
+stages:[
+{t:'Відкриваємо: хто такий «mir»?',d:'Знайдіть займенники в Dativ самі.'},
+{t:'Тренуємо займенники',d:'З’єднати, вибрати, написати.'},
+{t:'passen, stehen, gefallen',d:'Що означають ці три дієслова?'},
+{t:'Підмет, форма дієслова, порядок слів',d:'Річ — підмет. Людина стоїть у Dativ.'},
+{t:'Dativ в іменах та іменниках',d:'dem Mann, der Frau, dem Kind, den Kindern.'},
+{t:'Замінюємо іменники займенниками',d:'З «dem Mann» виходить «ihm».'},
+{t:'Пастки',d:'Знайдіть типові помилки.'},
+{t:'Усе разом',d:'Короткі діалоги з дієсловом і займенником.'}
+],
+parts:{
+disc:['Відкриваємо займенники','Прочитайте речення. Який займенник у Nominativ (синій) належить до слова в Dativ (червоного)? Натисніть на нього.'],
+match:['Знайти пари','Натисніть ліворуч на займенник, потім праворуч на займенник у Dativ.'],
+choose:['Вибрати займенник','Виберіть займенник для пропуску.'],
+type:['Написати займенник','Напишіть у пропуск займенник у Dativ.'],
+table:['Заповнити таблицю','Напишіть до кожного займенника займенник у Dativ. Стежте за ihnen та Ihnen.'],
+verbMean:['Яке дієслово підходить?','Прочитайте ситуацію. Виберіть дієслово: passen, stehen або gefallen.'],
+stehen2:['stehen: два значення','Це розташування (де?) чи вигляд (добре або погано на людині)?'],
+subj:['Знайти підмет','Хто або що є підметом (Nominativ)? Виберіть.'],
+form:['Правильна форма дієслова','Виберіть правильну форму: одна річ чи кілька речей?'],
+formType:['Написати форму дієслова','Напишіть у пропуск форму дієслова passen, stehen або gefallen.'],
+order:['Складати речення','Натискайте на слова по черзі й складіть речення.'],
+artChoose:['Артикль у Dativ','Виберіть артикль у Dativ.'],
+artType:['Написати артикль','Напишіть артикль (і -n у Kindern).'],
+names:['Імена в Dativ','Як виглядає ім’я в Dativ? Виберіть.'],
+replace:['Замінити іменник займенником','Замініть червону особу займенником у Dativ.'],
+wem:['Кому? Відповіді','Прочитайте текст і запитання. Дайте відповідь займенником.'],
+who:['З ким говоримо? Про кого?','Ви говорите з людиною (dir, euch, Ihnen) або про людину (ihm, ihr, ihnen). Напишіть займенник.'],
+detect:['Детектив помилок','Речення правильне чи неправильне? Якщо неправильне: як правильно?'],
+dialog:['Короткі діалоги','Вставте займенник і дієслово. У [ ] підказка.']
+},
+fb:{
+pron:'Подивіться на людину в першому реченні. Який займенник у Dativ до неї належить? Допомога: таблиця.',
+akk:'Після passen, stehen і gefallen потрібен Dativ: ‹mir›, ‹dir›, ‹ihm› … (не ‹mich›, ‹dich›, ‹ihn›). Це як «мені, тобі, йому», а не «мене, тебе, його».',
+nom:'Це займенник у Nominativ (‹ich›, ‹du›, ‹er› …). Тут потрібен Dativ.',
+ihmihr:'‹ihm› = він і воно (er, es). ‹ihr› = вона (sie). Не плутайте з українським «їм» — це ‹ihnen›.',
+ihmEs:'‹ihm› належить і до ‹er›, і до ‹es›. Запам’ятайте: das Kind = es → ‹ihm›.',
+ihrnom:'Увага: до ‹ihr› («ви», Nominativ) належить ‹euch›. Займенник ‹ihr› у Dativ — це «їй» (від ‹sie›).',
+ihrdat:'Тут ‹ihr› — Dativ («їй»). Підмет — ‹das Kleid›, тому ‹gefällt›.',
+sieSie:'‹ihnen› (мала i) = «їм» (вони). ‹Ihnen› (велика I) = «Вам», ввічливо.',
+verbmean:'‹passen› = підходить розмір або час. ‹stehen› = добре чи погано виглядає (українською «личить»). ‹gefallen› = подобається.',
+subj:'Річ — підмет (Nominativ). Людина стоїть у Dativ. У ‹mögen› («любити») підмет — людина.',
+sgpl:'Дієслово узгоджується з підметом, тобто з річчю: одна річ → ‹passt / steht / gefällt›, кілька речей → ‹passen / stehen / gefallen›.',
+umlaut:'У ‹gefallen› є умлаут: er, sie, es ‹gefällt›.',
+order:'Дієслово стоїть на другому місці. Займенник стоїть перед іменником: ‹Gefällt dir das Kleid?›',
+dativart:'Dativ: ‹der Mann → dem Mann›, ‹die Frau → der Frau›, ‹das Kind → dem Kind›, ‹die Kinder → den Kindern›.',
+pln:'Dativ множини: ‹den› + іменник + ‹-n› (den Kindern).',
+name:'Імена в Dativ не змінюються: ‹Das Kleid steht Anna gut.› (українською: Анні).',
+stehpos:'‹stehen› з людиною в Dativ = вигляд. Без людини (‹Das Auto steht dort.›) = розташування.',
+addr:'Ви говорите з людиною: ‹dir / euch / Ihnen›. Ви говорите про людину: ‹ihm / ihr / ihnen›.'
+},
+bridge:{
+pron:[
+{k:'p',h:'В українській є давальний відмінок, тож ця ідея вам знайома: «Мені подобається куртка», «Тобі личить сукня».'},
+{k:'t',head:['Nominativ','Dativ','українською'],cols:['nom','dat',''],rows:[['ich','mir','я → мені'],['du','dir','ти → тобі'],['er','ihm','він → йому'],['sie (Sg.)','ihr','вона → їй'],['es','ihm','воно → йому'],['wir','uns','ми → нам'],['ihr','euch','ви → вам'],['sie (Pl.)','ihnen','вони → їм'],['Sie (höflich)','Ihnen','Ви → Вам']]},
+{k:'w',h:'Хибні друзі: українське «їм» (вони) — це німецьке ‹ihnen›. А німецьке ‹ihm› — це «йому».'},
+{k:'w',h:'Українське «ви» — це два німецькі займенники: ‹ihr› → ‹euch› (ви всі, друзі) і ‹Sie› → ‹Ihnen› (ввічливо, з великої літери).'},
+{k:'w',h:'Німецьке ‹ihr› у Dativ означає «їй», а в Nominativ — «ви». Це те саме слово з різними функціями.'}
+],
+verbs:[
+{k:'p',h:'Гарна новина: українська конструкція майже така сама. Людина стоїть у давальному відмінку, річ — підмет, дієслово узгоджується з річчю.'},
+{k:'t',head:['німецькою','українською'],cols:['de',''],rows:[['Die Jacke gefällt mir.','Мені подобається куртка.'],['Die Schuhe gefallen mir.','Мені подобаються черевики.'],['Die Jacke passt mir.','Куртка мені підходить. / Куртка мені якраз.'],['Montag passt mir.','Понеділок мені підходить.'],['Das Kleid steht dir gut.','Тобі личить сукня. / Сукня тобі пасує.']]},
+{k:'tip',h:'‹gefällt› — це «подобається»: підмет — річ, людина стоїть у Dativ. Як в українській. Але в німецькій немає «-ся»: ‹gefällt›, а не ‹gefällt sich›.'},
+{k:'w',h:'В українській «пасує» може означати і розмір, і вигляд. У німецькій два дієслова: ‹passen› (розмір, час) і ‹stehen› (вигляд, «личить»).'},
+{k:'w',h:'«Тобі йде сукня» теж не перекладається дієсловом ‹gehen›: ‹Das Kleid steht dir.›'},
+{k:'w',h:'«Любити» і «подобатися»: «Я люблю цю куртку» = ‹Ich mag die Jacke.› (я — підмет). «Мені подобається куртка» = ‹Die Jacke gefällt mir.›'},
+{k:'w',h:'‹stehen› — це ще й «стояти»: ‹Das Auto steht dort.› Тут немає людини в Dativ.'}
+],
+order:[
+{k:'p',h:'В українській порядок слів вільний («Мені подобається куртка» і «Куртка мені подобається»). У німецькій дієслово завжди на другому місці: ‹Mir gefällt die Jacke.› або ‹Die Jacke gefällt mir.›'},
+{k:'p',h:'У запитанні дієслово стоїть першим, а короткий займенник — перед іменником: ‹Gefällt dir das Kleid?› («Тобі подобається сукня?»).'},
+{k:'p',h:'‹nicht› стоїть після людини: ‹Die Hose passt mir nicht.› В українській «не» стоїть перед дієсловом: «не підходить».'},
+{k:'tip',h:'Кому? → Dativ. Хто? Що? → Nominativ (підмет, тобто річ).'}
+],
+noun:[
+{k:'p',h:'Як і в українській, іменники мають давальний відмінок. Але в німецькій змінюється майже лише артикль.'},
+{k:'t',head:['Nominativ','Dativ','українською'],cols:['nom','dat',''],rows:[['der Mann','dem Mann','чоловікові'],['die Frau','der Frau','жінці'],['das Kind','dem Kind','дитині'],['die Kinder','den Kindern','дітям']]},
+{k:'w',h:'В українській багато закінчень (-ові, -і, -ам), у німецькій — артикль і в множині ‹-n›: ‹den Kindern›.'},
+{k:'w',h:'Імена в німецькій не змінюються: ‹Anna›, ‹Tom› (українською: Анні, Томові).'}
+],
+traps:[
+{k:'w',h:'Не додавайте «sich» (українське «-ся»): ‹Die Jacke gefällt mir.›, а не ‹gefällt sich mir›.'},
+{k:'w',h:'‹gehen› не підходить для «йде / пасує» про річ: ‹Das Kleid steht dir.›, а не ‹Das Kleid geht dir.›'},
+{k:'w',h:'Не плутайте: ‹ihm› (він, воно) — це не «їм» (вони). «Їм» німецькою ‹ihnen›.'},
+{k:'w',h:'‹ihnen› (вони) — це не ‹Ihnen› (Вам). Ввічливе ‹Ihnen› завжди з великої літери.'},
+{k:'w',h:'‹Die Hose› у німецькій в однині: ‹Die Hose passt mir.› Українське «штани» завжди у множині.'}
+]
+},
+trapItems:['geht','sich'],
+trapWhy:{
+geht:'Українською «Тобі йде сукня» теж не перекладається дієсловом «gehen». Німецькою: ‹Das Kleid steht dir.›',
+sich:'Українське «подобається» закінчується на «-ся». У німецькій немає ‹sich›: ‹Das Kleid gefällt mir.›'
+}
+};
+
+
+/* ===== Daten: Pronomen, Aufgaben (alles Deutsch, A1) ===== */
+var P=[
+{id:'ich',n:'ich',d:'mir'},
+{id:'du',n:'du',d:'dir'},
+{id:'er',n:'er',d:'ihm'},
+{id:'sie',n:'sie',d:'ihr',lab:'sg'},
+{id:'es',n:'es',d:'ihm'},
+{id:'wir',n:'wir',d:'uns'},
+{id:'ihr',n:'ihr',d:'euch'},
+{id:'siepl',n:'sie',d:'ihnen',lab:'pl'},
+{id:'Sie',n:'Sie',d:'Ihnen',lab:'formal'}
+];
+function PI(id){var i;for(i=0;i<P.length;i++){if(P[i].id===id)return P[i];}return null;}
+
+/* Stufe 1: Entdecken */
+var DISC=[
+{id:'ich',dat:'mir',s1:'Tom sagt: „{n:Ich} habe eine neue Hose.“',s2:'Tom sagt: „Die Hose passt {d:mir}.“',who:'Tom spricht über sich selbst: Tom = ich.'},
+{id:'du',dat:'dir',s1:'Tom sagt zu Anna: „{n:Du} hast ein neues Kleid.“',s2:'Tom sagt zu Anna: „Das Kleid steht {d:dir} gut.“',who:'Tom spricht mit Anna: Anna = du.'},
+{id:'er',dat:'ihm',s1:'Das ist Tom. {n:Er} hat eine neue Jacke.',s2:'Die Jacke gefällt {d:ihm}.',who:'Tom ist ein Mann: Tom = er.'},
+{id:'sie',dat:'ihr',s1:'Das ist Anna. {n:Sie} hat eine neue Mütze.',s2:'Die Mütze steht {d:ihr} gut.',who:'Anna ist eine Frau: Anna = sie.'},
+{id:'es',dat:'ihm',s1:'Das ist das Kind. {n:Es} hat neue Schuhe.',s2:'Die Schuhe gefallen {d:ihm}.',who:'Das Kind = es.'},
+{id:'wir',dat:'uns',s1:'Tom und Anna sagen: „{n:Wir} haben neue Jacken.“',s2:'Tom und Anna sagen: „Die Jacken gefallen {d:uns}.“',who:'Tom und Anna sprechen über sich: wir.'},
+{id:'ihr',dat:'euch',s1:'Lena sagt zu Tom und Anna: „{n:Ihr} habt neue Jacken.“',s2:'Lena sagt zu Tom und Anna: „Die Jacken passen {d:euch} super.“',who:'Lena spricht mit Tom und Anna: Tom und Anna = ihr.'},
+{id:'siepl',dat:'ihnen',s1:'Das sind Tom und Anna. {n:Sie} haben neue Schuhe.',s2:'Die Schuhe gefallen {d:ihnen}.',who:'Tom und Anna, mehrere Personen = sie (Plural).'},
+{id:'Sie',dat:'Ihnen',s1:'Die Verkäuferin sagt zu Frau Meier: „{n:Sie} haben eine neue Jacke.“',s2:'Die Verkäuferin sagt zu Frau Meier: „Die Jacke steht {d:Ihnen} gut.“',who:'Die Verkäuferin spricht höflich mit Frau Meier: Sie.'}
+];
+
+/* Stufe 2 */
+var CHOOSE=[
+{pre:'Ich habe eine neue Hose. Die Hose passt ___ nicht.',opts:['mir','mich','ich','dir'],ans:'mir',full:'Die Hose passt mir nicht.',tags:{mich:'akk',ich:'nom'},tag:'pron'},
+{pre:'Du hast ein neues Kleid. Das Kleid steht ___ gut.',opts:['dir','dich','du','mir'],ans:'dir',full:'Das Kleid steht dir gut.',tags:{dich:'akk',du:'nom'},tag:'pron'},
+{pre:'Er hat eine neue Jacke. Die Jacke gefällt ___ .',opts:['ihm','ihn','er','ihr'],ans:'ihm',full:'Die Jacke gefällt ihm.',tags:{ihn:'akk',er:'nom',ihr:'ihmihr'},tag:'pron'},
+{pre:'Sie hat eine neue Mütze. Die Mütze steht ___ gut. (sie = Anna)',opts:['ihr','sie','ihm','ihnen'],ans:'ihr',full:'Die Mütze steht ihr gut.',tags:{sie:'nom',ihm:'ihmihr'},tag:'pron'},
+{pre:'Es hat neue Schuhe. Die Schuhe gefallen ___ . (es = das Kind)',opts:['ihm','ihr','es','ihnen'],ans:'ihm',full:'Die Schuhe gefallen ihm.',tags:{ihr:'ihmihr',es:'nom'},tag:'pron'},
+{pre:'Wir haben neue Jacken. Die Jacken passen ___ gut.',opts:['uns','wir','euch','ihnen'],ans:'uns',full:'Die Jacken passen uns gut.',tags:{wir:'nom'},tag:'pron'},
+{pre:'Ihr habt neue Schuhe. Die Schuhe gefallen ___ .',opts:['euch','ihr','uns','ihnen'],ans:'euch',full:'Die Schuhe gefallen euch.',tags:{ihr:'ihrnom'},tag:'pron'},
+{pre:'Sie haben neue Jacken. Die Jacken stehen ___ gut. (sie = Tom und Anna)',opts:['ihnen','Ihnen','ihm','ihr'],ans:'ihnen',full:'Die Jacken stehen ihnen gut.',tags:{Ihnen:'sieSie'},tag:'pron'},
+{pre:'Frau Meier, Sie haben ein neues Kleid. Das Kleid steht ___ gut.',opts:['Ihnen','ihnen','ihr','Sie'],ans:'Ihnen',full:'Das Kleid steht Ihnen gut.',tags:{ihnen:'sieSie',Sie:'nom'},tag:'pron'},
+{pre:'Ich habe eine Brille. Die Brille steht ___ gut.',opts:['mir','mich','ich','uns'],ans:'mir',full:'Die Brille steht mir gut.',tags:{mich:'akk',ich:'nom'},tag:'pron'},
+{pre:'Du hast einen Schal. Der Schal gefällt ___ .',opts:['dir','dich','du','euch'],ans:'dir',full:'Der Schal gefällt dir.',tags:{dich:'akk',du:'nom'},tag:'pron'},
+{pre:'Wir haben ein neues Auto. Das Auto gefällt ___ .',opts:['uns','wir','euch','ihnen'],ans:'uns',full:'Das Auto gefällt uns.',tags:{wir:'nom'},tag:'pron'}
+];
+var TYPE=[
+{lines:['Du hast eine Brille. Die Brille steht {#1} gut.'],g:[{a:['dir']}],full:'Die Brille steht dir gut.',tag:'pron'},
+{lines:['Er hat einen Mantel. Der Mantel passt {#1} nicht.'],g:[{a:['ihm']}],full:'Der Mantel passt ihm nicht.',tag:'ihmihr'},
+{lines:['Wir haben ein Haus. Das Haus gefällt {#1} .'],g:[{a:['uns']}],full:'Das Haus gefällt uns.',tag:'pron'},
+{lines:['Sie (Anna) hat eine Uhr. Die Uhr gefällt {#1} .'],g:[{a:['ihr']}],full:'Die Uhr gefällt ihr.',tag:'ihmihr'},
+{lines:['Ihr habt ein Auto. Das Auto gefällt {#1} .'],g:[{a:['euch']}],full:'Das Auto gefällt euch.',tag:'ihrnom'},
+{lines:['Sie (Tom und Anna) haben eine Wohnung. Die Wohnung gefällt {#1} .'],g:[{a:['ihnen'],cs:true}],full:'Die Wohnung gefällt ihnen.',tag:'sieSie'},
+{lines:['Frau Meier, wie gefällt {#1} die Wohnung?'],g:[{a:['Ihnen'],cs:true}],full:'Frau Meier, wie gefällt Ihnen die Wohnung?',tag:'sieSie'},
+{lines:['Ich habe einen Schal. Der Schal passt {#1} super.'],g:[{a:['mir']}],full:'Der Schal passt mir super.',tag:'pron'},
+{lines:['Es (das Kind) hat eine Mütze. Die Mütze steht {#1} gut.'],g:[{a:['ihm']}],full:'Die Mütze steht ihm gut.',tag:'ihmihr'},
+{lines:['Du hast ein T-Shirt. Gefällt {#1} das T-Shirt?'],g:[{a:['dir']}],full:'Gefällt dir das T-Shirt?',tag:'pron'},
+{lines:['Ihr habt neue Schuhe. Passen {#1} die Schuhe?'],g:[{a:['euch']}],full:'Passen euch die Schuhe?',tag:'ihrnom'},
+{lines:['Wir haben neue Jacken. Stehen {#1} die Jacken gut?'],g:[{a:['uns']}],full:'Stehen uns die Jacken gut?',tag:'pron'}
+];
+
+/* Stufe 3 */
+var VM=['passen','stehen','gefallen'];
+var VERBMEAN=[
+{pre:'Die Hose ist zu klein. Die Hose ___ mir nicht.',opts:VM,fix:1,ans:'passen',full:'Die Hose passt mir nicht.',tag:'verbmean'},
+{pre:'Die Schuhe sind zu groß. Die Schuhe ___ ihr nicht.',opts:VM,fix:1,ans:'passen',full:'Die Schuhe passen ihr nicht.',tag:'verbmean'},
+{pre:'Das T-Shirt ist nicht zu klein und nicht zu groß. Das T-Shirt ___ dir.',opts:VM,fix:1,ans:'passen',full:'Das T-Shirt passt dir.',tag:'verbmean'},
+{pre:'Anna hat am Montag keine Zeit. Montag ___ ihr nicht.',opts:VM,fix:1,ans:'passen',full:'Montag passt ihr nicht.',tag:'verbmean'},
+{pre:'Ich habe um 10 Uhr Zeit. 10 Uhr ___ mir.',opts:VM,fix:1,ans:'passen',full:'10 Uhr passt mir.',tag:'verbmean'},
+{pre:'Alle sagen zu Anna: „Du siehst im Kleid super aus!“ Das Kleid ___ ihr gut.',opts:VM,fix:1,ans:'stehen',full:'Das Kleid steht ihr gut.',tag:'verbmean'},
+{pre:'Tom trägt eine Mütze. Er sieht damit gut aus. Die Mütze ___ ihm gut.',opts:VM,fix:1,ans:'stehen',full:'Die Mütze steht ihm gut.',tag:'verbmean'},
+{pre:'Mit der Brille siehst du nicht gut aus. Die Brille ___ dir nicht.',opts:VM,fix:1,ans:'stehen',full:'Die Brille steht dir nicht.',tag:'verbmean'},
+{pre:'Du siehst in Rot super aus. Rot ___ dir gut.',opts:VM,fix:1,ans:'stehen',full:'Rot steht dir gut.',tag:'verbmean'},
+{pre:'Ich finde die Jacke toll. Die Jacke ___ mir.',opts:VM,fix:1,ans:'gefallen',full:'Die Jacke gefällt mir.',tag:'verbmean'},
+{pre:'Tom findet das Auto super. Das Auto ___ ihm.',opts:VM,fix:1,ans:'gefallen',full:'Das Auto gefällt ihm.',tag:'verbmean'},
+{pre:'Wir finden die Wohnung schön. Die Wohnung ___ uns.',opts:VM,fix:1,ans:'gefallen',full:'Die Wohnung gefällt uns.',tag:'verbmean'},
+{pre:'Anna findet die Schuhe nicht schön. Die Schuhe ___ ihr nicht.',opts:VM,fix:1,ans:'gefallen',full:'Die Schuhe gefallen ihr nicht.',tag:'verbmean'}
+];
+var STEHEN2=[
+{pre:'Die Mütze steht dir gut.',opts:['@pos','@look'],fix:1,ans:'@look',tag:'stehpos'},
+{pre:'Das Auto steht dort.',opts:['@pos','@look'],fix:1,ans:'@pos',tag:'stehpos'},
+{pre:'Das Kleid steht ihr nicht.',opts:['@pos','@look'],fix:1,ans:'@look',tag:'stehpos'},
+{pre:'Die Schuhe stehen hier.',opts:['@pos','@look'],fix:1,ans:'@pos',tag:'stehpos'},
+{pre:'Die Brille steht Tom gut.',opts:['@pos','@look'],fix:1,ans:'@look',tag:'stehpos'},
+{pre:'Anna steht dort.',opts:['@pos','@look'],fix:1,ans:'@pos',tag:'stehpos'}
+];
+
+/* Stufe 4 */
+var SUBJ=[
+{pre:'Die Jacke gefällt mir.',opts:['die Jacke','mir'],ans:'die Jacke',tag:'subj'},
+{pre:'Mir gefällt die Jacke.',opts:['mir','die Jacke'],ans:'die Jacke',tag:'subj'},
+{pre:'Ich mag die Jacke.',opts:['ich','die Jacke'],ans:'ich',tag:'subj'},
+{pre:'Dem Kind gefällt die Mütze.',opts:['dem Kind','die Mütze'],ans:'die Mütze',tag:'subj'},
+{pre:'Die Schuhe passen Anna nicht.',opts:['die Schuhe','Anna'],ans:'die Schuhe',tag:'subj'},
+{pre:'Dir steht das Kleid gut.',opts:['dir','das Kleid'],ans:'das Kleid',tag:'subj'},
+{pre:'Gefällt euch die Wohnung?',opts:['euch','die Wohnung'],ans:'die Wohnung',tag:'subj'},
+{pre:'Passt Ihnen Montag?',opts:['Ihnen','Montag'],ans:'Montag',tag:'subj'},
+{pre:'Wir mögen das Auto.',opts:['wir','das Auto'],ans:'wir',tag:'subj'},
+{pre:'Das Auto gefällt uns.',opts:['das Auto','uns'],ans:'das Auto',tag:'subj'}
+];
+var FORM=[
+{pre:'Die Jacke ___ mir.',opts:['gefällt','gefallen'],ans:'gefällt',full:'Die Jacke gefällt mir.',tag:'sgpl'},
+{pre:'Die Schuhe ___ mir nicht.',opts:['passt','passen'],ans:'passen',full:'Die Schuhe passen mir nicht.',tag:'sgpl'},
+{pre:'Das Kleid ___ dir gut.',opts:['steht','stehen'],ans:'steht',full:'Das Kleid steht dir gut.',tag:'sgpl'},
+{pre:'Die Jacken ___ uns.',opts:['gefällt','gefallen'],ans:'gefallen',full:'Die Jacken gefallen uns.',tag:'sgpl'},
+{pre:'Die Mütze ___ ihr gut.',opts:['steht','stehen'],ans:'steht',full:'Die Mütze steht ihr gut.',tag:'sgpl'},
+{pre:'Die Brillen ___ ihm gut.',opts:['steht','stehen'],ans:'stehen',full:'Die Brillen stehen ihm gut.',tag:'sgpl'},
+{pre:'Das Auto ___ ihnen.',opts:['gefällt','gefallen'],ans:'gefällt',full:'Das Auto gefällt ihnen.',tag:'sgpl'},
+{pre:'Die Hosen ___ euch nicht.',opts:['passt','passen'],ans:'passen',full:'Die Hosen passen euch nicht.',tag:'sgpl'},
+{pre:'Mir ___ die Schuhe.',opts:['gefällt','gefallen'],ans:'gefallen',full:'Mir gefallen die Schuhe.',tag:'sgpl'},
+{pre:'Dir ___ das T-Shirt.',opts:['gefällt','gefallen'],ans:'gefällt',full:'Dir gefällt das T-Shirt.',tag:'sgpl'},
+{pre:'Ihnen ___ die Wohnung.',opts:['gefällt','gefallen'],ans:'gefällt',full:'Ihnen gefällt die Wohnung.',tag:'sgpl'},
+{pre:'Uns ___ die Farben.',opts:['gefällt','gefallen'],ans:'gefallen',full:'Uns gefallen die Farben.',tag:'sgpl'}
+];
+var FORMTYPE=[
+{lines:['Das Auto {#1} mir. (gefallen)'],g:[{a:['gefällt'],tag:'umlaut'}],full:'Das Auto gefällt mir.',tag:'sgpl'},
+{lines:['Die Schuhe {#1} dir nicht. (passen)'],g:[{a:['passen']}],full:'Die Schuhe passen dir nicht.',tag:'sgpl'},
+{lines:['Die Mütze {#1} ihm gut. (stehen)'],g:[{a:['steht']}],full:'Die Mütze steht ihm gut.',tag:'sgpl'},
+{lines:['Die Jacken {#1} uns. (gefallen)'],g:[{a:['gefallen']}],full:'Die Jacken gefallen uns.',tag:'sgpl'},
+{lines:['Das T-Shirt {#1} ihr nicht. (passen)'],g:[{a:['passt']}],full:'Das T-Shirt passt ihr nicht.',tag:'sgpl'},
+{lines:['Die Hosen {#1} euch gut. (stehen)'],g:[{a:['stehen']}],full:'Die Hosen stehen euch gut.',tag:'sgpl'},
+{lines:['Die Wohnung {#1} Ihnen. (gefallen)'],g:[{a:['gefällt'],tag:'umlaut'}],full:'Die Wohnung gefällt Ihnen.',tag:'sgpl'},
+{lines:['Mir {#1} die Schuhe. (gefallen)'],g:[{a:['gefallen']}],full:'Mir gefallen die Schuhe.',tag:'sgpl'},
+{lines:['Wie {#1} dir das Kleid? (gefallen)'],g:[{a:['gefällt'],tag:'umlaut'}],full:'Wie gefällt dir das Kleid?',tag:'sgpl'},
+{lines:['Montag {#1} mir leider nicht. (passen)'],g:[{a:['passt']}],full:'Montag passt mir leider nicht.',tag:'sgpl'},
+{lines:['Wem {#1} die Brille? (gefallen)'],g:[{a:['gefällt'],tag:'umlaut'}],full:'Wem gefällt die Brille?',tag:'sgpl'},
+{lines:['Die Farben {#1} mir. (gefallen)'],g:[{a:['gefallen']}],full:'Die Farben gefallen mir.',tag:'sgpl'}
+];
+var ORD=[
+{pool:['die Jacke','passt','mir','nicht'],end:'.',ok:['Die Jacke passt mir nicht.','Mir passt die Jacke nicht.'],tag:'order'},
+{pool:['das Kleid','steht','dir','gut'],end:'.',ok:['Das Kleid steht dir gut.','Dir steht das Kleid gut.'],tag:'order'},
+{pool:['gefällt','dir','das Kleid'],end:'?',ok:['Gefällt dir das Kleid?'],tag:'order'},
+{pool:['passt','Ihnen','Montag'],end:'?',ok:['Passt Ihnen Montag?'],tag:'order'},
+{pool:['die Schuhe','gefallen','mir','sehr'],end:'.',ok:['Die Schuhe gefallen mir sehr.','Mir gefallen die Schuhe sehr.'],tag:'order'},
+{pool:['das Auto','gefällt','ihm'],end:'.',ok:['Das Auto gefällt ihm.','Ihm gefällt das Auto.'],tag:'order'},
+{pool:['steht','mir','die Hose','gut'],end:'?',ok:['Steht mir die Hose gut?'],tag:'order'},
+{pool:['wem','gefällt','das Kleid'],end:'?',ok:['Wem gefällt das Kleid?'],tag:'order'},
+{pool:['das Kleid','gefällt','Anna','nicht'],end:'.',ok:['Das Kleid gefällt Anna nicht.','Anna gefällt das Kleid nicht.'],tag:'order'},
+{pool:['die Mütze','steht','dir','nicht'],end:'.',ok:['Die Mütze steht dir nicht.','Dir steht die Mütze nicht.'],tag:'order'}
+];
+
+/* Stufe 5 */
+var ARTCHOOSE=[
+{pre:'Die Jacke passt ___ Mann.',opts:['dem','der','den','die'],ans:'dem',full:'Die Jacke passt dem Mann.',tags:{der:'dativart',die:'dativart'},tag:'dativart'},
+{pre:'Das Kleid steht ___ Frau gut.',opts:['der','dem','den','die'],ans:'der',full:'Das Kleid steht der Frau gut.',tag:'dativart'},
+{pre:'Die Mütze gefällt ___ Kind.',opts:['dem','der','den','das'],ans:'dem',full:'Die Mütze gefällt dem Kind.',tag:'dativart'},
+{pre:'Die Schuhe gefallen ___ Kindern.',opts:['den','dem','der','die'],ans:'den',full:'Die Schuhe gefallen den Kindern.',tag:'pln'},
+{pre:'Das Auto gefällt ___ Mann.',opts:['dem','der','den','die'],ans:'dem',full:'Das Auto gefällt dem Mann.',tag:'dativart'},
+{pre:'Die Brille steht ___ Frau gut.',opts:['der','dem','den','die'],ans:'der',full:'Die Brille steht der Frau gut.',tag:'dativart'},
+{pre:'Die Hose passt ___ Kind nicht.',opts:['dem','der','den','das'],ans:'dem',full:'Die Hose passt dem Kind nicht.',tag:'dativart'},
+{pre:'Die Jacken passen ___ Kindern.',opts:['den','dem','der','die'],ans:'den',full:'Die Jacken passen den Kindern.',tag:'pln'}
+];
+var ARTTYPE=[
+{lines:['Die Mütze steht {#1} Mann gut.'],g:[{a:['dem']}],full:'Die Mütze steht dem Mann gut.',tag:'dativart'},
+{lines:['Das Kleid gefällt {#1} Frau.'],g:[{a:['der']}],full:'Das Kleid gefällt der Frau.',tag:'dativart'},
+{lines:['Die Schuhe passen {#1} Kind nicht.'],g:[{a:['dem']}],full:'Die Schuhe passen dem Kind nicht.',tag:'dativart'},
+{lines:['Die Jacken gefallen {#1} Kinder{#2} .'],g:[{a:['den']},{a:['n'],tag:'pln'}],full:'Die Jacken gefallen den Kindern.',tag:'dativart'},
+{lines:['Die Brille steht {#1} Frau nicht.'],g:[{a:['der']}],full:'Die Brille steht der Frau nicht.',tag:'dativart'},
+{lines:['Das Auto gefällt {#1} Mann nicht.'],g:[{a:['dem']}],full:'Das Auto gefällt dem Mann nicht.',tag:'dativart'},
+{lines:['Die Hosen passen {#1} Kinder{#2} nicht.'],g:[{a:['den']},{a:['n'],tag:'pln'}],full:'Die Hosen passen den Kindern nicht.',tag:'dativart'},
+{lines:['Wem gefällt die Jacke?','– {#1} Frau.'],g:[{a:['der']}],full:'Wem gefällt die Jacke? – Der Frau.',tag:'dativart'}
+];
+var NAMES=[
+{pre:'Die Jacke passt ___ . (Tom)',opts:['Tom','Toms','dem Tom','Tomen'],ans:'Tom',full:'Die Jacke passt Tom.',tag:'name'},
+{pre:'Das Kleid steht ___ gut. (Anna)',opts:['Anna','Annas','Annan','der Anna'],ans:'Anna',full:'Das Kleid steht Anna gut.',tag:'name'},
+{pre:'Die Schuhe gefallen ___ . (Lena)',opts:['Lena','Lenas','Lenan','der Lena'],ans:'Lena',full:'Die Schuhe gefallen Lena.',tag:'name'},
+{pre:'Das Auto gefällt ___ . (Ali)',opts:['Ali','Alis','dem Ali','Alien'],ans:'Ali',full:'Das Auto gefällt Ali.',tag:'name'}
+];
+
+/* Stufe 6 */
+var REPLACE=[
+{lines:['Die Jacke passt {d:dem Mann}.','Die Jacke passt {#1} .'],g:[{a:['ihm']}],full:'Die Jacke passt ihm.',tag:'ihmihr'},
+{lines:['Das Kleid steht {d:der Frau} gut.','Das Kleid steht {#1} gut.'],g:[{a:['ihr']}],full:'Das Kleid steht ihr gut.',tag:'ihmihr'},
+{lines:['Die Mütze gefällt {d:dem Kind}.','Die Mütze gefällt {#1} .'],g:[{a:['ihm']}],full:'Die Mütze gefällt ihm.',tag:'ihmihr'},
+{lines:['Die Schuhe gefallen {d:den Kindern}.','Die Schuhe gefallen {#1} .'],g:[{a:['ihnen'],cs:true}],full:'Die Schuhe gefallen ihnen.',tag:'sieSie'},
+{lines:['Das Auto gefällt {d:Tom}.','Das Auto gefällt {#1} .'],g:[{a:['ihm']}],full:'Das Auto gefällt ihm.',tag:'ihmihr'},
+{lines:['Die Brille steht {d:Anna} gut.','Die Brille steht {#1} gut.'],g:[{a:['ihr']}],full:'Die Brille steht ihr gut.',tag:'ihmihr'},
+{lines:['Die Wohnung gefällt {d:Tom und Anna}.','Die Wohnung gefällt {#1} .'],g:[{a:['ihnen'],cs:true}],full:'Die Wohnung gefällt ihnen.',tag:'sieSie'},
+{lines:['Die Jacken passen {d:Tom und mir}.','Die Jacken passen {#1} .'],g:[{a:['uns']}],full:'Die Jacken passen uns.',tag:'pron'},
+{lines:['Der Mantel steht {d:der Frau} nicht.','Der Mantel steht {#1} nicht.'],g:[{a:['ihr']}],full:'Der Mantel steht ihr nicht.',tag:'ihmihr'},
+{lines:['Die Hose passt {d:dem Mann} nicht.','Die Hose passt {#1} nicht.'],g:[{a:['ihm']}],full:'Die Hose passt ihm nicht.',tag:'ihmihr'},
+{lines:['Der Film gefällt {d:den Kindern} nicht.','Der Film gefällt {#1} nicht.'],g:[{a:['ihnen'],cs:true}],full:'Der Film gefällt ihnen nicht.',tag:'sieSie'},
+{lines:['Die Stadt gefällt {d:Anna} sehr.','Die Stadt gefällt {#1} sehr.'],g:[{a:['ihr']}],full:'Die Stadt gefällt ihr sehr.',tag:'ihmihr'}
+];
+var WEM=[
+{lines:['Tom findet das Auto super.','Wem gefällt das Auto?','– Das Auto gefällt {#1} .'],g:[{a:['ihm']}],full:'Das Auto gefällt ihm.',tag:'ihmihr'},
+{lines:['Anna hat am Montag keine Zeit.','Wem passt Montag nicht?','– Montag passt {#1} nicht.'],g:[{a:['ihr']}],full:'Montag passt ihr nicht.',tag:'ihmihr'},
+{lines:['Das Kind findet die Mütze toll.','Wem gefällt die Mütze?','– Die Mütze gefällt {#1} .'],g:[{a:['ihm']}],full:'Die Mütze gefällt ihm.',tag:'ihmihr'},
+{lines:['Tom und Anna finden die Schuhe schön.','Wem gefallen die Schuhe?','– Die Schuhe gefallen {#1} .'],g:[{a:['ihnen'],cs:true}],full:'Die Schuhe gefallen ihnen.',tag:'sieSie'},
+{lines:['Wir finden das Haus schön.','Wem gefällt das Haus?','– Das Haus gefällt {#1} .'],g:[{a:['uns']}],full:'Das Haus gefällt uns.',tag:'pron'},
+{lines:['Lena sieht in der Brille super aus.','Wem steht die Brille?','– Die Brille steht {#1} gut.'],g:[{a:['ihr']}],full:'Die Brille steht ihr gut.',tag:'ihmihr'},
+{lines:['Ich habe um 9 Uhr Zeit.','Wem passt 9 Uhr?','– 9 Uhr passt {#1} .'],g:[{a:['mir']}],full:'9 Uhr passt mir.',tag:'pron'},
+{lines:['Du findest den Schal schön.','Wem gefällt der Schal?','– Der Schal gefällt {#1} .'],g:[{a:['dir']}],full:'Der Schal gefällt dir.',tag:'pron'}
+];
+var WHO=[
+{lines:['Die Verkäuferin spricht mit Frau Meier:','„Das Kleid steht {#1} gut.“'],g:[{a:['Ihnen'],cs:true}],full:'Das Kleid steht Ihnen gut.',tag:'addr'},
+{lines:['Die Verkäuferin spricht mit Tom über Frau Meier:','„Das Kleid steht {#1} gut.“'],g:[{a:['ihr']}],full:'Das Kleid steht ihr gut.',tag:'addr'},
+{lines:['Tom spricht mit Anna und Lena:','„Die Jacke passt {#1} nicht.“'],g:[{a:['euch']}],full:'Die Jacke passt euch nicht.',tag:'addr'},
+{lines:['Tom spricht über Anna und Lena:','„Die Jacke passt {#1} nicht.“'],g:[{a:['ihnen'],cs:true}],full:'Die Jacke passt ihnen nicht.',tag:'addr'},
+{lines:['Der Chef spricht mit Herrn und Frau Weber:','„Passt {#1} Montag?“'],g:[{a:['Ihnen'],cs:true}],full:'Passt Ihnen Montag?',tag:'addr'},
+{lines:['Tom spricht mit seiner Freundin Anna:','„Gefällt {#1} das Kleid?“'],g:[{a:['dir']}],full:'Gefällt dir das Kleid?',tag:'addr'}
+];
+
+/* Stufe 7 */
+var DETECT=[
+{s:'Die Jacke passt mich nicht.',good:false,fix:'Die Jacke passt mir nicht.',alts:['Die Jacke passt ich nicht.','Die Jacke passen mir nicht.'],tag:'akk'},
+{s:'Ich gefalle die Jacke.',good:false,fix:'Die Jacke gefällt mir.',alts:['Die Jacke gefällt ich.','Die Jacke gefallen mir.'],tag:'subj'},
+{s:'Die Schuhe gefällt ihm.',good:false,fix:'Die Schuhe gefallen ihm.',alts:['Die Schuhe gefällt ihn.','Die Schuhe gefallen er.'],tag:'sgpl'},
+{s:'Das Kleid steht dir gut.',good:true,tag:'pron'},
+{s:'Die Mütze steht ihn gut.',good:false,fix:'Die Mütze steht ihm gut.',alts:['Die Mütze steht er gut.','Die Mütze stehen ihm gut.'],tag:'akk'},
+{s:'Mir gefällt das Auto.',good:true,tag:'order'},
+{s:'Das Kleid steht ihr gut.',good:true,tag:'ihmihr'},
+{s:'Ihr gefällt das Kleid.',good:true,tag:'ihrdat'},
+{s:'Die Hose passt ich nicht.',good:false,fix:'Die Hose passt mir nicht.',alts:['Die Hose passt mich nicht.','Die Hose passe mir nicht.'],tag:'nom'},
+{s:'Der Mantel gefällt Ihnen.',good:true,tag:'sieSie'},
+{s:'Die Brille steht dem Frau gut.',good:false,fix:'Die Brille steht der Frau gut.',alts:['Die Brille steht die Frau gut.','Die Brille steht den Frau gut.'],tag:'dativart'},
+{s:'Die Schuhe passen den Kinder.',good:false,fix:'Die Schuhe passen den Kindern.',alts:['Die Schuhe passen die Kinder.','Die Schuhe passt den Kindern.'],tag:'pln'},
+{s:'Das Auto gefällt uns.',good:true,tag:'pron'},
+{s:'Die Jacke passt euch.',good:true,tag:'pron'},
+{s:'Montag passt mir nicht.',good:true,tag:'verbmean'},
+{s:'Das Kleid steht Annas gut.',good:false,fix:'Das Kleid steht Anna gut.',alts:['Das Kleid steht Annan gut.','Das Kleid stehen Anna gut.'],tag:'name'}
+];
+var TRAPDEF={
+geht:{s:'Das Kleid geht dir gut.',fix:'Das Kleid steht dir gut.',alts:['Das Kleid steht dich gut.','Das Kleid stehen dir gut.']},
+sich:{s:'Das Kleid gefällt sich mir.',fix:'Das Kleid gefällt mir.',alts:['Das Kleid gefällt sich ich.','Das Kleid gefallen mir.']},
+es:{s:'Die Mütze steht es gut. (es = das Kind)',fix:'Die Mütze steht ihm gut.',alts:['Die Mütze steht ihn gut.','Die Mütze steht sie gut.']},
+ihm_ihr:{s:'Anna hat ein Kleid. Das Kleid steht ihm gut.',fix:'Anna hat ein Kleid. Das Kleid steht ihr gut.',alts:['Anna hat ein Kleid. Das Kleid steht sie gut.','Anna hat ein Kleid. Das Kleid steht er gut.']},
+siSie:{s:'Frau Meier, der Mantel steht euch gut.',fix:'Frau Meier, der Mantel steht Ihnen gut.',alts:['Frau Meier, der Mantel steht ihnen gut.','Frau Meier, der Mantel steht dir gut.']},
+fuer:{s:'Die Jacke passt für mich.',fix:'Die Jacke passt mir.',alts:['Die Jacke passt für mir.','Die Jacke passt zu mich.']},
+kommt:{s:'Das Kleid kommt dir gut.',fix:'Das Kleid steht dir gut.',alts:['Das Kleid kommt dich gut.','Das Kleid stehen dir gut.']},
+gefMich:{s:'Die Jacke gefällt mich.',fix:'Die Jacke gefällt mir.',alts:['Die Jacke gefällt ich.','Die Jacke gefallen mir.']}
+};
+function langTraps(){
+  var l=LG(),out=[],ids=l.trapItems||[],i,d;
+  for(i=0;i<ids.length;i++){
+    d=TRAPDEF[ids[i]];
+    if(d){out.push({s:d.s,good:false,fix:d.fix,alts:d.alts,tag:'trap_'+ids[i],lang:true});}
+  }
+  return out;
+}
+
+/* Stufe 8 */
+var DIALOG=[
+{lines:['A: „Passt {#1} [du] die Hose?“','B: „Nein, sie {#2} [passen] mir leider nicht.“'],g:[{a:['dir']},{a:['passt']}],full:'A: „Passt dir die Hose?“ B: „Nein, sie passt mir leider nicht.“',tag:'pron'},
+{lines:['A: „Das Kleid {#1} [stehen] dir super!“','B: „Danke! Es {#2} [gefallen] mir auch.“'],g:[{a:['steht']},{a:['gefällt'],tag:'umlaut'}],full:'A: „Das Kleid steht dir super!“ B: „Danke! Es gefällt mir auch.“',tag:'sgpl'},
+{lines:['A: „Wie {#1} [gefallen] euch die Wohnung?“','B: „Sie {#2} [gefallen] uns sehr gut.“'],g:[{a:['gefällt'],tag:'umlaut'},{a:['gefällt'],tag:'umlaut'}],full:'A: „Wie gefällt euch die Wohnung?“ B: „Sie gefällt uns sehr gut.“',tag:'sgpl'},
+{lines:['Verkäuferin: „Die Jacke steht {#1} [Sie] gut.“','Kundin: „Danke, aber die Jacke {#2} [passen] mir nicht.“'],g:[{a:['Ihnen'],cs:true},{a:['passt']}],full:'Verkäuferin: „Die Jacke steht Ihnen gut.“ Kundin: „Danke, aber die Jacke passt mir nicht.“',tag:'sieSie'},
+{lines:['A: „Passt {#1} [Sie] Montag um 10 Uhr?“','B: „Nein, Montag {#2} [passen] mir nicht.“'],g:[{a:['Ihnen'],cs:true},{a:['passt']}],full:'A: „Passt Ihnen Montag um 10 Uhr?“ B: „Nein, Montag passt mir nicht.“',tag:'sieSie'},
+{lines:['A: „Die Schuhe {#1} [gefallen] mir sehr. Und dir?“'],g:[{a:['gefallen']}],full:'A: „Die Schuhe gefallen mir sehr. Und dir?“',tag:'sgpl'},
+{lines:['A: „Tom, die Mütze {#1} [stehen] {#2} [du] gut!“'],g:[{a:['steht']},{a:['dir']}],full:'A: „Tom, die Mütze steht dir gut!“',tag:'sgpl'},
+{lines:['A: „Anna hat eine neue Jacke.“','B: „Ja, sie {#1} [stehen] {#2} [sie, Anna] super!“'],g:[{a:['steht']},{a:['ihr']}],full:'B: „Ja, sie steht ihr super!“',tag:'sgpl'},
+{lines:['A: „Gefallen {#1} [ihr] die Schuhe?“','B: „Ja, sie {#2} [gefallen] uns.“'],g:[{a:['euch']},{a:['gefallen']}],full:'A: „Gefallen euch die Schuhe?“ B: „Ja, sie gefallen uns.“',tag:'sgpl'},
+{lines:['A: „Die Brille {#1} [passen] mir nicht.“','B: „Aber sie {#2} [stehen] {#3} [du] gut!“'],g:[{a:['passt']},{a:['steht']},{a:['dir']}],full:'A: „Die Brille passt mir nicht.“ B: „Aber sie steht dir gut!“',tag:'verbmean'},
+{lines:['A: „Wir haben ein Haus. Es {#1} [gefallen] {#2} [wir] sehr.“'],g:[{a:['gefällt'],tag:'umlaut'},{a:['uns']}],full:'A: „Wir haben ein Haus. Es gefällt uns sehr.“',tag:'sgpl'},
+{lines:['A: „Frau Meier, wie {#1} [gefallen] {#2} [Sie] das Hotel?“'],g:[{a:['gefällt'],tag:'umlaut'},{a:['Ihnen'],cs:true}],full:'A: „Frau Meier, wie gefällt Ihnen das Hotel?“',tag:'sieSie'}
+];
+
+/* Stufen und Teile */
+var STAGES=[
+{parts:['disc'],intro:null},
+{parts:['match','choose','type','table'],intro:'pron'},
+{parts:['verbMean','stehen2'],intro:'verbs'},
+{parts:['subj','form','formType','order'],intro:'order'},
+{parts:['artChoose','artType','names'],intro:'noun',nounTable:true},
+{parts:['replace','wem','who'],intro:null},
+{parts:['detect'],intro:'traps'},
+{parts:['dialog'],intro:null}
+];
+var PARTS={
+disc:{type:'disc',build:function(){return DISC.slice();}},
+match:{type:'match',build:function(){return P.slice();}},
+choose:{type:'mc',build:function(){return shuffle(CHOOSE);}},
+type:{type:'ty',help:true,build:function(){return shuffle(TYPE);}},
+table:{type:'tbl',help:false,build:function(){return P.slice();}},
+verbMean:{type:'mc',build:function(){return shuffle(VERBMEAN);}},
+stehen2:{type:'mc',build:function(){return shuffle(STEHEN2);}},
+subj:{type:'mc',build:function(){return shuffle(SUBJ);}},
+form:{type:'mc',build:function(){return shuffle(FORM);}},
+formType:{type:'ty',build:function(){return shuffle(FORMTYPE);}},
+order:{type:'ord',build:function(){return shuffle(ORD);}},
+artChoose:{type:'mc',build:function(){return shuffle(ARTCHOOSE);}},
+artType:{type:'ty',build:function(){return shuffle(ARTTYPE);}},
+names:{type:'mc',build:function(){return shuffle(NAMES);}},
+replace:{type:'ty',help:true,build:function(){return shuffle(REPLACE);}},
+wem:{type:'ty',help:true,build:function(){return shuffle(WEM);}},
+who:{type:'ty',help:true,build:function(){return shuffle(WHO);}},
+detect:{type:'det',build:function(){return shuffle(DETECT.concat(langTraps()));}},
+dialog:{type:'ty',help:true,build:function(){return shuffle(DIALOG);}}
+};
+
+/* ===== Engine (ES5, Inline-onclick, kein externer Code) ===== */
+var KEY='dativPSG_v1';
+var ST={lang:null,prog:{}};
+var view='lang';
+var cur={si:0};
+var run=null;
+var HELP=false;
+var SAVED={};
+var LANG_ORDER=['de','pl','en','ar','tr','fa','ku','ru','uk'];
+var LANG_NAMES={de:'Deutsch',pl:'Polski',en:'English',ar:'العربية',tr:'Türkçe',fa:'فارسی',ku:'Kurdî (Kurmancî)',ru:'Русский',uk:'Українська'};
+
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function shuffle(a){var b=a.slice(),i,j,t;for(i=b.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function LG(){return LANGS[ST.lang]||LANGS.de;}
+function T(k){var u=LG().ui;if(u&&u[k]!==undefined){return u[k];}var d=LANGS.de.ui[k];return d===undefined?k:d;}
+var LATIN=/[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß0-9]*(?:[ ,\-\/]{1,2}[A-Za-zÄÖÜäöüß0-9]+)*/g;
+function de(s,raw){
+  s=String(s);
+  if(!raw&&LG().dir==='rtl'){
+    s=s.split(/(‹[^›]*›)/).map(function(p,i){return i%2?p:p.replace(LATIN,'‹$&›');}).join('');
+  }
+  return s.replace(/‹([^›]*)›/g,function(m,t){return '<bdi class="de'+(t.length<=30?' nw':'')+'" dir="ltr" lang="de">'+t+'</bdi>';});
+}
+function mk(s){return String(s).replace(/\{([dns]):([^}]*)\}/g,'<span class="hl hl-$1">$2</span>');}
+function A(){var l=LG();return ' dir="'+l.dir+'" lang="'+l.lang+'"';}
+function L1(html,cls){var l=LG();return '<div class="l1 '+(cls||'')+'" dir="'+l.dir+'" lang="'+l.lang+'">'+de(html)+'</div>';}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({lang:ST.lang,prog:ST.prog}));}catch(e){}}
+function load(){try{var s=localStorage.getItem(KEY);if(s){var o=JSON.parse(s);if(o&&o.lang&&LANGS[o.lang]){ST.lang=o.lang;}if(o&&o.prog){ST.prog=o.prog;}}}catch(e){}}
+
+/* ---------- Bausteine ---------- */
+function tagPair(p,isNew){return '<span class="pair'+(isNew?' new':'')+'"><span class="tag n">'+esc(p.n)+'</span><span class="stitch"></span><span class="tag d">'+esc(p.d)+'</span></span>';}
+function pairsHtml(ids,newId){var h='<div class="pairs">',i,p;for(i=0;i<P.length;i++){p=P[i];if(!ids||ids.indexOf(p.id)>=0){h+=tagPair(p,p.id===newId);}}return h+'</div>';}
+function pLabel(p){return p.lab?T(p.lab):'';}
+function hintHtml(tg){
+  var l=LG(),t=null;
+  if(!tg){return '';}
+  if(tg.indexOf('trap_')===0){t=l.trapWhy&&l.trapWhy[tg.slice(5)];}
+  else{t=(l.fb&&l.fb[tg])||(LANGS.de.fb&&LANGS.de.fb[tg]);}
+  if(!t){return '';}
+  return '<div class="hint l1" dir="'+l.dir+'" lang="'+l.lang+'">'+de(t)+'</div>';
+}
+function blocks(arr){
+  var l=LG(),h='',i,b,r,c,cls,j,k;
+  if(!arr){return '';}
+  for(i=0;i<arr.length;i++){
+    b=arr[i];
+    if(b.k==='p'){h+='<p>'+de(b.h)+'</p>';}
+    else if(b.k==='h'){h+='<h3>'+de(b.h)+'</h3>';}
+    else if(b.k==='w'){h+='<div class="note warn"><b>'+T('trap')+'</b> '+de(b.h)+'</div>';}
+    else if(b.k==='tip'){h+='<div class="note tip">'+de(b.h)+'</div>';}
+    else if(b.k==='t'){
+      h+='<table class="tbl">';
+      if(b.head){h+='<tr>';for(j=0;j<b.head.length;j++){h+='<th>'+de(b.head[j])+'</th>';}h+='</tr>';}
+      for(r=0;r<b.rows.length;r++){
+        h+='<tr>';
+        for(c=0;c<b.rows[r].length;c++){
+          cls=b.cols&&b.cols[c]?b.cols[c]:'';
+          h+='<td class="'+(cls?'c-'+cls:'')+'"'+((cls==='nom'||cls==='dat'||cls==='de')?' dir="ltr"':'')+'>'+de(b.rows[r][c],(cls==='nom'||cls==='dat'||cls==='de'))+'</td>';
+        }
+        h+='</tr>';
+      }
+      h+='</table>';
+    }
+  }
+  return '<div class="l1blk" dir="'+l.dir+'" lang="'+l.lang+'">'+h+'</div>';
+}
+function nounTableHtml(){
+  var rows=[['der Mann','dem Mann','ihm'],['die Frau','der Frau','ihr'],['das Kind','dem Kind','ihm'],['die Kinder','den Kindern','ihnen'],['Tom / Anna','Tom / Anna','ihm / ihr']];
+  var h='<table class="tbl"><tr><th>'+T('nom')+'</th><th>'+T('dat')+'</th><th>= </th></tr>',i;
+  for(i=0;i<rows.length;i++){h+='<tr><td class="c-nom">'+rows[i][0]+'</td><td class="c-dat">'+rows[i][1]+'</td><td class="c-dat">'+rows[i][2]+'</td></tr>';}
+  return '<div class="card">'+h+'</table></div>';
+}
+function helpHtml(){return '<div class="card help">'+pairsHtml(null,null)+'</div>';}
+
+/* ---------- Navigation ---------- */
+function go(v){
+  if(view==='part'&&v!=='part'&&run&&!run.finished&&run.P.type!=='match'&&run.P.type!=='tbl'){SAVED[run.id]=run;}
+  view=v;render();
+}
+function render(keep){
+  var h='';
+  if(view==='lang'){h=vLang();}
+  else{
+    h=hdr();
+    if(view==='home'){h+=vHome();}
+    else if(view==='stage'){h+=vStage();}
+    else if(view==='part'){h+=vPart();}
+    else if(view==='result'){h+=vResult();}
+    else if(view==='bridge'){h+=vBridge();}
+  }
+  $('app').innerHTML='<div class="wrap">'+h+'</div>';
+  document.documentElement.lang=ST.lang?LG().lang:'de';
+  if(!keep){window.scrollTo(0,0);}
+  if(view==='part'){setTimeout(function(){var f=$('g1');if(f&&!f.disabled){try{f.focus();}catch(e){}}},60);}
+}
+function chooseLang(c){ST.lang=c;save();go('home');}
+function setLang(c){ST.lang=c;save();if(view==='part'){openStage(cur.si);return;}if(view==='result'){view='stage';}render(true);}
+function hdr(){
+  var o='',i,c,l=LG();
+  for(i=0;i<LANG_ORDER.length;i++){c=LANG_ORDER[i];o+='<option value="'+c+'"'+(c===ST.lang?' selected':'')+'>'+LANG_NAMES[c]+'</option>';}
+  return '<div class="top"><button class="brand" onclick="go(\'home\')">passen, stehen, gefallen</button><select class="sel" onchange="setLang(this.value)" aria-label="Sprache / Language">'+o+'</select></div>'+
+  '<div class="nav"><button class="chip'+(view==='home'?' on':'')+'" dir="'+l.dir+'" onclick="go(\'home\')">'+T('menu')+'</button><button class="chip'+(view==='bridge'?' on':'')+'" dir="'+l.dir+'" onclick="go(\'bridge\')">'+T('bridgeBtn')+'</button></div>';
+}
+function vLang(){
+  var h='<div class="langpage"><h1 class="brand">passen, stehen, gefallen</h1><div class="pick">Sprache wählen<br>Wybierz język<br>Choose your language<br><span dir="rtl">اختر اللغة</span><br>Dil seçin<br><span dir="rtl">زبان را انتخاب کنید</span><br>Ziman hilbijêre<br>Выберите язык<br>Оберіть мову</div>',i,c;
+  for(i=0;i<LANG_ORDER.length;i++){c=LANG_ORDER[i];h+='<button class="lbtn" lang="'+LANGS[c].lang+'" dir="'+LANGS[c].dir+'" onclick="chooseLang(\''+c+'\')">'+LANG_NAMES[c]+'</button>';}
+  return h+'</div>';
+}
+
+/* ---------- Fortschritt ---------- */
+function stageStats(si){
+  var ps=STAGES[si].parts,n=0,i;
+  for(i=0;i<ps.length;i++){if(ST.prog[ps[i]]&&ST.prog[ps[i]].done){n++;}}
+  return {done:n,total:ps.length};
+}
+function vHome(){
+  var l=LG(),h,i,s,cls;
+  h='<div class="card hero"><div class="sent">'+mk('{s:Die Hose} passt {d:mir} nicht.')+'</div><div class="sent">'+mk('{s:Das Kleid} steht {d:dir} gut.')+'</div><div class="sent">'+mk('{s:Der Mantel} gefällt {d:Ihnen}.')+'</div>'+L1(T('homeIntro'),'small')+'</div>';
+  for(i=0;i<STAGES.length;i++){
+    s=stageStats(i);
+    cls=s.done===s.total?' done':(s.done>0?' part':'');
+    h+='<button class="stg'+cls+'" onclick="openStage('+i+')"><div class="prt"><div><div class="st" dir="'+l.dir+'" lang="'+l.lang+'">'+T('stage')+' '+(i+1)+': '+de(l.stages[i].t)+'</div>'+(ST.lang!=='de'?'<div class="sg" lang="de">'+LANGS.de.stages[i].t+'</div>':'')+'<div class="sd" dir="'+l.dir+'" lang="'+l.lang+'">'+de(l.stages[i].d)+'</div></div><div class="stat'+(s.done===s.total?' ok':'')+'">'+s.done+'/'+s.total+'</div></div></button>';
+  }
+  h+='<div><button class="lnk"'+A()+' onclick="resetAll()">'+T('reset')+'</button></div>';
+  return h;
+}
+function resetAll(){if(window.confirm(T('resetAsk'))){ST.prog={};save();render(true);}}
+function openStage(si){
+  if(view==='part'&&run&&!run.finished&&run.P.type!=='match'&&run.P.type!=='tbl'){SAVED[run.id]=run;}
+  cur.si=si;HELP=false;go('stage');
+}
+function vStage(){
+  var si=cur.si,st=STAGES[si],l=LG(),h,i,id,p,stt;
+  h='<div class="card"><div class="st" dir="'+l.dir+'" lang="'+l.lang+'"><b>'+T('stage')+' '+(si+1)+': '+de(l.stages[si].t)+'</b></div>'+L1(l.stages[si].d,'small');
+  if(si===0){h+=L1(T('s1intro'))+'<div class="note tip" dir="'+l.dir+'" lang="'+l.lang+'">'+de(T('verbsGloss'))+'</div>';}
+  if(st.intro){h+=blocks(l.bridge[st.intro]);}
+  h+='</div>';
+  if(st.nounTable){h+=nounTableHtml();}
+  for(i=0;i<st.parts.length;i++){
+    id=st.parts[i];p=ST.prog[id];
+    stt=p&&p.done?('<span class="stat ok">'+p.best+'%</span>'):'';
+    if(SAVED[id]){stt='<span class="stat">'+(SAVED[id].idx+1)+'/'+SAVED[id].items.length+'</span>';}
+    h+='<button class="stg'+(p&&p.done?' done':'')+'" onclick="openPart(\''+id+'\')"><div class="prt"><div class="st" dir="'+l.dir+'" lang="'+l.lang+'">'+T('part')+' '+(i+1)+': '+de(l.parts[id][0])+'</div>'+stt+'</div></button>';
+  }
+  if(si+1<STAGES.length&&stageStats(si).done===stageStats(si).total){h+='<div class="nxt"><button class="btn" '+A()+' onclick="openStage('+(si+1)+')">'+T('nextStage')+'</button></div>';}
+  return h;
+}
+function vBridge(){
+  var l=LG(),h='<div class="card"><div class="st"><b>'+de(T('bridgeTitle'))+'</b></div>',keys=['pron','verbs','order','noun','traps'],i;
+  for(i=0;i<keys.length;i++){h+='<h3 dir="'+l.dir+'" lang="'+l.lang+'" style="margin:18px 0 4px">'+de(T('b_'+keys[i]))+'</h3>'+blocks(l.bridge[keys[i]]);if(keys[i]==='noun'){h+=nounTableHtml();}}
+  return h+'</div>';
+}
+
+/* ---------- Teil starten ---------- */
+function openPart(id){
+  var sv=SAVED[id],P_=PARTS[id],items;
+  if(sv){
+    delete SAVED[id];
+    run=sv;HELP=false;
+    if(run.locked){run.idx++;}
+    if(run.idx>=run.items.length){finish();return;}
+    prepItem();go('part');return;
+  }
+  items=P_.build();
+  run={id:id,P:P_,items:items,idx:0,ok1:0,wrongs:[],rep:false,found:[],newId:null};
+  if(P_.type==='match'){run.m={sel:-1,done:{},rdone:{},ro:shuffle([0,1,2,3,4,5,6,7,8]),mist:0,msg:''};}
+  if(P_.type==='tbl'){run.t={att:0,locked:false};}
+  HELP=false;
+  prepItem();
+  go('part');
+}
+function prepItem(){
+  var it=run.items[run.idx],t=run.P.type;
+  run.att=0;run.firstDone=false;run.step=1;run.locked=false;
+  if(t==='mc'){run.opts=it.fix?it.opts.slice():shuffle(it.opts);}
+  if(t==='ord'){run.o={tk:shuffle(it.pool),sel:[]};}
+}
+function first(ok){
+  if(run.firstDone){return;}
+  run.firstDone=true;
+  if(ok){run.ok1++;}else{run.wrongs.push(run.items[run.idx]);}
+}
+function nextItem(){
+  run.idx++;
+  if(run.idx>=run.items.length){finish();return;}
+  prepItem();
+  render();
+}
+function finish(){
+  var N=run.items.length,pct=Math.round(100*run.ok1/N),old=ST.prog[run.id];
+  if(run.P.type==='match'||run.P.type==='tbl'){N=9;pct=Math.round(100*run.ok1/9);}
+  run.pct=pct;run.finished=true;delete SAVED[run.id];
+  if(!run.rep){ST.prog[run.id]={done:true,best:Math.max(pct,old&&old.best?old.best:0)};}
+  else if(!old||!old.done){ST.prog[run.id]={done:true,best:old&&old.best?old.best:0};}
+  save();
+  go('result');
+}
+function vResult(){
+  var l=LG(),N=(run.P.type==='match'||run.P.type==='tbl')?9:run.items.length,h,si=cur.si,st=STAGES[si],pi=st.parts.indexOf(run.id),nx=pi>=0&&pi+1<st.parts.length?st.parts[pi+1]:null;
+  h='<div class="card"><div class="st"'+A()+'><b>'+T('partDone')+'</b></div><div class="bigdat" style="font-family:inherit">'+run.ok1+' / '+N+'</div>'+L1(T('firstTry'),'small');
+  if(run.id==='disc'){h+='<div class="note tip">'+pairsHtml(null,null)+'</div>';}
+  h+='<div class="nxt">';
+  if(run.wrongs.length>0){h+='<button class="btn" onclick="repeatWrong()">'+T('repeatWrong')+'</button>';}
+  if(nx){h+='<button class="btn" onclick="openPart(\''+nx+'\')">'+T('next')+'</button>';}
+  else if(si+1<STAGES.length){h+='<button class="btn" '+A()+' onclick="openStage('+(si+1)+')">'+T('nextStage')+'</button>';}
+  h+='<button class="btn alt" onclick="openPart(\''+run.id+'\')">'+T('again')+'</button><button class="btn alt" onclick="openStage('+si+')">'+T('backStage')+'</button></div></div>';
+  return h;
+}
+function repeatWrong(){
+  var w=run.wrongs.slice(),id=run.id,P_=run.P;
+  run={id:id,P:P_,items:shuffle(w),idx:0,ok1:0,wrongs:[],rep:true,found:[],newId:null};
+  prepItem();
+  go('part');
+}
+
+/* ---------- Teil anzeigen ---------- */
+function vPart(){
+  var l=LG(),N=run.items.length,t=run.P.type,h,pct;
+  if(t==='match'||t==='tbl'){N=1;}
+  pct=Math.round(100*run.idx/N);
+  h='<div class="ptop"><button class="chip" onclick="openStage('+cur.si+')" dir="'+l.dir+'">'+T('backStage')+'</button><div class="pt" dir="'+l.dir+'" lang="'+l.lang+'">'+de(l.parts[run.id][0])+'</div></div>';
+  h+='<div class="bar"><i style="width:'+pct+'%"></i></div>';
+  h+='<div class="ins l1" dir="'+l.dir+'" lang="'+l.lang+'">'+de(l.parts[run.id][1])+'</div>';
+  if(N>1||t==='disc'){h+='<div class="small"'+A()+'>'+T('task')+' '+(run.idx+1)+' / '+N+'</div>';}
+  if(run.P.help){h+='<div><button class="lnk" id="helpbtn" onclick="toggleHelp()">'+(HELP?T('hideTable'):T('showTable'))+'</button></div><div id="helpbox">'+(HELP?helpHtml():'')+'</div>';}
+  if(t==='disc'){h+=rDisc();}
+  else if(t==='mc'){h+=rMC();}
+  else if(t==='ty'){h+=rTY();}
+  else if(t==='ord'){h+=rOrd();}
+  else if(t==='det'){h+=rDet();}
+  else if(t==='match'){h+=rMatch();}
+  else if(t==='tbl'){h+=rTbl();}
+  return h;
+}
+function toggleHelp(){HELP=!HELP;$('helpbox').innerHTML=HELP?helpHtml():'';$('helpbtn').innerHTML=HELP?T('hideTable'):T('showTable');}
+function nxtBtn(){return '<div class="nxt"><button class="btn" id="nxbtn" onclick="nextItem()">'+T('next')+'</button></div>';}
+function banner(ok){return '<div class="fb '+(ok?'fbok':'fbbad')+'" dir="'+LG().dir+'"><b>'+(ok?T('ok'):T('bad'))+'</b>';}
+
+/* ---------- Entdecken ---------- */
+function rDisc(){
+  var it=run.items[run.idx],i,h,p;
+  h='<div class="card"><div class="sent">'+mk(it.s1)+'</div><div class="sent">'+mk(it.s2)+'</div></div>';
+  h+='<div class="card">'+L1(T('discQ'),'q')+'<div class="bigdat"><span class="hl hl-d">'+esc(it.dat)+'</span></div><div class="opts" id="dopts">';
+  for(i=0;i<P.length;i++){p=P[i];h+='<button class="opt" id="d'+i+'" onclick="pickDisc('+i+')">'+esc(p.n)+(p.lab?'<small>'+esc(pLabel(p))+'</small>':'')+'</button>';}
+  h+='</div><div id="fb"></div></div>';
+  h+='<div class="card"><div class="small"'+A()+'>'+T('myTable')+'</div><div id="found">'+pairsHtml(run.found,run.newId)+'</div></div>';
+  return h;
+}
+function pickDisc(i){
+  var it=run.items[run.idx],ok,b,fb,j;
+  if(run.locked){return;}
+  ok=(P[i].id===it.id);
+  b=$('d'+i);
+  if(ok){
+    run.locked=true;
+    first(run.att===0);
+    run.found.push(it.id);run.newId=it.id;
+    $('found').innerHTML=pairsHtml(run.found,run.newId);
+    for(j=0;j<P.length;j++){if(j!==i&&$('d'+j).className.indexOf('bad')<0){$('d'+j).className='opt dis';}}
+    b.className='opt ok';
+    fb=banner(true)+' <span class="hl hl-n">'+esc(PI(it.id).n)+'</span> &rarr; <span class="hl hl-d">'+esc(it.dat)+'</span>';
+    if(it.id==='es'){fb+=hintHtml('ihmEs');}
+    if(it.id==='ihr'){fb+=hintHtml('ihrnom');}
+    if(it.id==='siepl'||it.id==='Sie'){fb+=hintHtml('sieSie');}
+    fb+='</div>'+nxtBtn();
+    $('fb').innerHTML=fb;
+  }else{
+    run.att++;
+    first(false);
+    b.className='opt bad dis';
+    $('fb').innerHTML=banner(false)+'<div class="sent small">'+esc(it.who)+'</div>'+hintHtml('pron')+'</div>';
+  }
+}
+
+/* ---------- Multiple Choice ---------- */
+function optLabel(o){return o.charAt(0)==='@'?T(o.slice(1)):o;}
+function rMC(){
+  var it=run.items[run.idx],h,i,pre;
+  pre=mk(it.pre).replace(/___/g,'<span class="gap" id="gap">&nbsp;</span>');
+  h='<div class="card"><div class="sent">'+pre+'</div><div class="opts">';
+  for(i=0;i<run.opts.length;i++){h+='<button class="opt'+(run.opts[i].charAt(0)==='@'?' l1o':'')+'" id="o'+i+'" onclick="pickMC('+i+')" '+(run.opts[i].charAt(0)==='@'?'dir="'+LG().dir+'" lang="'+LG().lang+'"':'')+'>'+de(optLabel(run.opts[i]))+'</button>';}
+  return h+'</div><div id="fb"></div></div>';
+}
+function pickMC(i){
+  var it=run.items[run.idx],ch=run.opts[i],ok=(ch===it.ans),j,g,fb,tg;
+  if(run.locked){return;}
+  run.locked=true;
+  first(ok);
+  for(j=0;j<run.opts.length;j++){
+    $('o'+j).className='opt'+(run.opts[j].charAt(0)==='@'?' l1o':'')+(run.opts[j]===it.ans?' ok':(j===i?' bad':' dis'));
+  }
+  g=$('gap');
+  if(g){g.innerHTML=esc(ok?ch:it.ans);g.className='gap '+(ok?'ok':'bad');}
+  fb=banner(ok);
+  if(it.full){fb+=' <span class="sent small">'+mk(it.full)+'</span>';}
+  if(!ok){tg=(it.tags&&it.tags[ch])||it.tag;fb+=hintHtml(tg);}
+  fb+='</div>'+nxtBtn();
+  $('fb').innerHTML=fb;
+}
+
+/* ---------- Tippen ---------- */
+function fold(s){return s.toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss');}
+function evalGap(val,g){
+  var v=val.replace(/^\s+|\s+$/g,'').replace(/[.!?]+$/,''),i,a,cap=false;
+  for(i=0;i<g.a.length;i++){
+    a=g.a[i];
+    if(g.cs){
+      if(v===a){return 'ok';}
+      if(v.toLowerCase()===a.toLowerCase()){cap=true;}
+    }else{
+      if(v.toLowerCase()===a.toLowerCase()){return 'ok';}
+      if(fold(v)===fold(a)){return 'tr';}
+    }
+  }
+  return cap?'cap':'bad';
+}
+function inputHtml(n,len,id){
+  var w=len<=2?2.6:Math.max(5.2,len*0.62+1.8);
+  return '<input class="inp" id="'+id+'" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="width:'+w.toFixed(1)+'em" onkeydown="return tyKey(event)">';
+}
+function tyKey(e){if(e.keyCode===13){tyCheck();return false;}return true;}
+function rTY(){
+  var it=run.items[run.idx],h='<div class="card">',i,s;
+  for(i=0;i<it.lines.length;i++){
+    s=mk(it.lines[i]).replace(/\{#(\d)\}/g,function(m,n){return inputHtml(n,it.g[parseInt(n,10)-1].a[0].length,'g'+n);});
+    h+='<div class="sent">'+s+'</div>';
+  }
+  return h+'<div class="nxt" id="act"><button class="btn" onclick="tyCheck()">'+T('check')+'</button></div><div id="fb"></div></div>';
+}
+function tyCheck(){
+  var it=run.items[run.idx],i,inp,res=[],allok=true,hasCap=false,hasTr=false,tags=[],fb='',r;
+  if(run.locked){return;}
+  for(i=0;i<it.g.length;i++){
+    inp=$('g'+(i+1));
+    if(inp.disabled){res.push('ok');continue;}
+    r=evalGap(inp.value,it.g[i]);
+    res.push(r);
+    if(r==='cap'){hasCap=true;}
+    if(r==='tr'){hasTr=true;}
+    if(r==='bad'||r==='cap'){allok=false;if(it.g[i].tag){tags.push(it.g[i].tag);}}
+  }
+  if(allok){
+    run.locked=true;
+    first(run.att===0);
+    for(i=0;i<it.g.length;i++){inp=$('g'+(i+1));inp.className='inp ok';inp.disabled=true;if(res[i]==='tr'){inp.value=it.g[i].a[0];}}
+    fb=banner(true)+' <span class="sent small">'+mk(it.full)+'</span>';
+    if(hasTr){fb+='<div class="hint">'+T('umlaut')+'</div>';}
+    $('fb').innerHTML=fb+'</div>';
+    $('act').innerHTML='<button class="btn" id="nxbtn" onclick="nextItem()">'+T('next')+'</button>';
+    return;
+  }
+  run.att++;
+  first(false);
+  for(i=0;i<it.g.length;i++){
+    inp=$('g'+(i+1));
+    if(res[i]==='ok'||res[i]==='tr'){inp.className='inp ok';inp.disabled=true;if(res[i]==='tr'){inp.value=it.g[i].a[0];}}
+    else{inp.className='inp bad';}
+  }
+  if(run.att>=2){
+    run.locked=true;
+    for(i=0;i<it.g.length;i++){inp=$('g'+(i+1));if(!inp.disabled){inp.value=it.g[i].a[0];inp.className='inp bad';inp.disabled=true;}}
+    fb=banner(false)+' <span class="sent small">'+mk(it.full)+'</span>'+(tags.length?hintHtml(tags[0]):hintHtml(it.tag))+'</div>';
+    $('fb').innerHTML=fb;
+    $('act').innerHTML='<button class="btn" id="nxbtn" onclick="nextItem()">'+T('next')+'</button>';
+  }else{
+    fb=banner(false)+' '+T('tryAgain')+(hasCap?'<div class="hint">'+T('capHint')+'</div>':'')+(tags.length?hintHtml(tags[0]):hintHtml(it.tag))+'</div>';
+    $('fb').innerHTML=fb;
+    for(i=0;i<it.g.length;i++){inp=$('g'+(i+1));if(!inp.disabled){try{inp.focus();}catch(e){}break;}}
+  }
+}
+
+/* ---------- Satz bauen ---------- */
+function ordHtml(){
+  var o=run.o,h='<div class="line">',k,i;
+  for(k=0;k<o.sel.length;k++){h+='<button class="tile on" '+(run.locked?'disabled ':'')+'onclick="ordRem('+k+')">'+esc(o.tk[o.sel[k]])+'</button>';}
+  h+='</div><div class="pool">';
+  for(i=0;i<o.tk.length;i++){if(o.sel.indexOf(i)<0){h+='<button class="tile" '+(run.locked?'disabled ':'')+'onclick="ordAdd('+i+')">'+esc(o.tk[i])+'</button>';}}
+  return h+'</div>';
+}
+function rOrd(){
+  return '<div class="card"><div id="obox">'+ordHtml()+'</div><div class="nxt" id="act"><button class="btn" onclick="ordCheck()">'+T('check')+'</button><button class="btn alt" onclick="ordUndo()">'+T('undo')+'</button></div><div id="fb"></div></div>';
+}
+function ordRefresh(){$('obox').innerHTML=ordHtml();}
+function ordAdd(i){if(run.locked){return;}run.o.sel.push(i);ordRefresh();}
+function ordRem(k){if(run.locked){return;}run.o.sel.splice(k,1);ordRefresh();}
+function ordUndo(){if(run.locked){return;}run.o.sel.pop();ordRefresh();}
+function ordCheck(){
+  var it=run.items[run.idx],o=run.o,parts=[],k,built,i,hit=null,fb;
+  if(run.locked||o.sel.length===0){return;}
+  for(k=0;k<o.sel.length;k++){parts.push(o.tk[o.sel[k]]);}
+  built=(parts.join(' ')+it.end).toLowerCase();
+  for(i=0;i<it.ok.length;i++){if(it.ok[i].toLowerCase()===built){hit=it.ok[i];}}
+  if(hit){
+    run.locked=true;first(run.att===0);
+    ordRefresh();
+    fb=banner(true)+' <span class="sent small">'+esc(hit)+'</span></div>';
+    if(it.ok.length>1){fb+='<div class="small">'+esc(it.ok.join('  /  '))+'</div>';}
+    $('fb').innerHTML=fb;
+    $('act').innerHTML='<button class="btn" id="nxbtn" onclick="nextItem()">'+T('next')+'</button>';
+  }else{
+    run.att++;first(false);
+    if(run.att>=2){
+      run.locked=true;ordRefresh();
+      $('fb').innerHTML=banner(false)+' <span class="sent small">'+esc(it.ok.join('  /  '))+'</span>'+hintHtml(it.tag)+'</div>';
+      $('act').innerHTML='<button class="btn" id="nxbtn" onclick="nextItem()">'+T('next')+'</button>';
+    }else{
+      $('fb').innerHTML=banner(false)+' '+T('tryAgain')+hintHtml(it.tag)+'</div>';
+    }
+  }
+}
+
+/* ---------- Fehlerdetektiv ---------- */
+function rDet(){
+  var it=run.items[run.idx];
+  return '<div class="card"><div class="sent">'+esc(it.s)+'</div><div id="dbox" class="opts">'+detStep1()+'</div><div id="fb"></div></div>';
+}
+function detStep1(){return '<button class="opt l1o" id="r1" dir="'+LG().dir+'" onclick="detPick(true)">'+T('right')+'</button><button class="opt l1o" id="r2" dir="'+LG().dir+'" onclick="detPick(false)">'+T('wrong')+'</button>';}
+function detPick(v){
+  var it=run.items[run.idx],ok=(v===it.good),fb;
+  if(run.locked||run.step!==1){return;}
+  if(!ok){
+    run.locked=true;first(false);
+    $('r1').className='opt l1o '+(it.good?'ok':'dis');$('r2').className='opt l1o '+(it.good?'dis':'ok');
+    fb=banner(false);
+    if(!it.good){fb+=' <span class="sent small">'+esc(it.fix)+'</span>';}
+    fb+=hintHtml(it.tag)+'</div>'+nxtBtn();
+    $('fb').innerHTML=fb;return;
+  }
+  if(it.good){
+    run.locked=true;first(run.att===0);
+    $('r1').className='opt l1o ok';$('r2').className='opt l1o dis';
+    $('fb').innerHTML=banner(true)+hintHtml(it.tag==='pron'||it.tag==='order'||it.tag==='verbmean'?null:it.tag)+'</div>'+nxtBtn();return;
+  }
+  run.step=2;
+  run.dopts=shuffle([it.fix].concat(it.alts));
+  var h='',i;
+  h+='<div class="small" style="width:100%" dir="'+LG().dir+'">'+T('pickFix')+'</div>';
+  for(i=0;i<run.dopts.length;i++){h+='<button class="opt" style="font-size:18px;text-align:left" id="f'+i+'" onclick="detFix('+i+')">'+esc(run.dopts[i])+'</button>';}
+  $('dbox').innerHTML=h;
+}
+function detFix(i){
+  var it=run.items[run.idx],ok=(run.dopts[i]===it.fix),j,fb;
+  if(run.locked){return;}
+  run.locked=true;first(ok);
+  for(j=0;j<run.dopts.length;j++){$('f'+j).className='opt '+(run.dopts[j]===it.fix?'ok':(j===i?'bad':'dis'));$('f'+j).style.fontSize='18px';$('f'+j).style.textAlign='left';}
+  fb=banner(ok)+' <span class="sent small">'+esc(it.fix)+'</span>'+hintHtml(it.tag)+'</div>'+nxtBtn();
+  $('fb').innerHTML=fb;
+}
+
+/* ---------- Zuordnen (Paare) ---------- */
+function matchHtml(){
+  var m=run.m,h='<div class="mcols"><div class="mcol">',i,p,k,cls;
+  for(i=0;i<P.length;i++){
+    p=P[i];cls='opt'+(m.done[i]?' ok dis':(m.sel===i?' sel':''));
+    h+='<button class="'+cls+'" onclick="mL('+i+')">'+esc(p.n)+(p.lab?'<small>'+esc(pLabel(p))+'</small>':'')+'</button>';
+  }
+  h+='</div><div class="mcol">';
+  for(k=0;k<9;k++){
+    p=P[m.ro[k]];cls='opt'+(m.rdone[k]?' ok dis':'');
+    h+='<button class="'+cls+'" onclick="mR('+k+')">'+esc(p.d)+'</button>';
+  }
+  return h+'</div></div>';
+}
+function rMatch(){return '<div class="card"><div id="mbox">'+matchHtml()+'</div><div id="fb"></div></div>';}
+function mL(i){var m=run.m;if(m.done[i]){return;}m.sel=i;$('mbox').innerHTML=matchHtml();}
+function mR(k){
+  var m=run.m,n=0,key,ok,fb;
+  if(m.rdone[k]){return;}
+  if(m.sel<0){return;}
+  ok=(P[m.sel].d===P[m.ro[k]].d);
+  if(ok){
+    m.done[m.sel]=true;m.rdone[k]=true;m.sel=-1;
+    for(key in m.done){if(m.done.hasOwnProperty(key)){n++;}}
+    $('mbox').innerHTML=matchHtml();
+    $('fb').innerHTML='';
+    if(n===9){
+      run.ok1=Math.max(0,9-m.mist);
+      $('fb').innerHTML=banner(true)+'</div>'+pairsHtml(null,null)+'<div class="nxt"><button class="btn" onclick="finish()">'+T('next')+'</button></div>';
+    }
+  }else{
+    m.mist++;
+    $('fb').innerHTML=banner(false)+hintHtml('pron')+'</div>';
+    m.sel=-1;
+    $('mbox').innerHTML=matchHtml();
+  }
+}
+
+/* ---------- Tabelle ausfuellen ---------- */
+function rTbl(){
+  var h='<div class="card">',i,p;
+  for(i=0;i<P.length;i++){
+    p=P[i];
+    h+='<div class="trow"><span class="tag n">'+esc(p.n)+(p.lab?' <small style="font:13px Arial">'+esc(pLabel(p))+'</small>':'')+'</span><span class="stitch"></span>'+inputHtml(i,p.d.length,'t'+i)+'</div>';
+  }
+  return h+'<div class="nxt" id="act"><button class="btn" onclick="tblCheck()">'+T('check')+'</button></div><div id="fb"></div></div>';
+}
+function tblCheck(){
+  var t=run.t,i,inp,r,okn=0,cap=false,fb;
+  if(t.locked){return;}
+  t.att++;
+  for(i=0;i<P.length;i++){
+    inp=$('t'+i);
+    if(inp.disabled){okn++;continue;}
+    r=evalGap(inp.value,{a:[P[i].d],cs:(P[i].id==='siepl'||P[i].id==='Sie')});
+    if(r==='ok'||r==='tr'){inp.className='inp ok';inp.disabled=true;okn++;}
+    else{inp.className='inp bad';if(r==='cap'){cap=true;}}
+  }
+  if(t.att===1){run.ok1=okn;}
+  if(okn===9){
+    t.locked=true;
+    $('fb').innerHTML=banner(true)+'</div>'+pairsHtml(null,null);
+    $('act').innerHTML='<button class="btn" onclick="finish()">'+T('next')+'</button>';
+  }else if(t.att>=3){
+    t.locked=true;
+    for(i=0;i<P.length;i++){inp=$('t'+i);if(!inp.disabled){inp.value=P[i].d;inp.disabled=true;}}
+    $('fb').innerHTML=banner(false)+'</div>'+pairsHtml(null,null);
+    $('act').innerHTML='<button class="btn" onclick="finish()">'+T('next')+'</button>';
+  }else{
+    $('fb').innerHTML=banner(false)+' '+T('tryAgain')+(cap?'<div class="hint">'+T('capHint')+'</div>':'')+'</div>';
+  }
+}
+
+/* ---------- Start ---------- */
+load();
+view=ST.lang?'home':'lang';
+render();
+
+</script>
+</body>
+</html>
