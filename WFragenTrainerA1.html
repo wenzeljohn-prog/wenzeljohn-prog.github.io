@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>W-Fragen-Trainer A1</title>
+<style>
+  :root {
+    --bg:#f4f6fa; --card:#fff; --text:#1d2433; --muted:#5b667a; --line:#d5dbe6;
+    --accent:#2b5fd9; --accent-text:#fff; --chip:#e9eef8;
+    --der:#1f5fbf; --der-bg:#e3ecfb; --die:#b3303f; --die-bg:#fbe4e7; --das:#1f7a4d; --das-bg:#e0f3e8;
+    --ok:#1f7a4d; --ok-bg:#e0f3e8; --bad:#b3303f; --bad-bg:#fbe4e7; --warn-bg:#fff4d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#12161f; --card:#1b2130; --text:#e8ecf5; --muted:#9aa5ba; --line:#30394d;
+      --accent:#6b97ff; --accent-text:#0b1226; --chip:#252d40;
+      --der:#7fb0ff; --der-bg:#1b2c4a; --die:#ff8a98; --die-bg:#42202a; --das:#6fd6a2; --das-bg:#183427;
+      --ok:#6fd6a2; --ok-bg:#183427; --bad:#ff8a98; --bad-bg:#42202a; --warn-bg:#3a3118;
+    }
+  }
+  * { box-sizing:border-box; }
+  html,body { margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; line-height:1.45; min-height:100vh; }
+  .wrap { max-width:900px; margin:0 auto; padding:14px; }
+  h1 { font-size:1.2rem; margin:2px 0 10px; }
+  .tabs { display:flex; gap:6px; margin-bottom:12px; }
+  .tab { flex:1; min-height:48px; border-radius:12px; border:2px solid var(--line); background:var(--card); color:var(--text); font-size:1rem; cursor:pointer; font-weight:600; }
+  .tab.on { border-color:var(--accent); background:var(--chip); }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+  .panel h2 { font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 8px; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .chip { display:inline-flex; align-items:center; gap:6px; min-height:44px; padding:6px 14px; border-radius:999px; background:var(--chip); border:2px solid transparent; cursor:pointer; user-select:none; font-size:.95rem; }
+  .chip input { position:absolute; opacity:0; pointer-events:none; }
+  .chip.on { border-color:var(--accent); font-weight:700; }
+  .chip:focus-within { outline:3px solid var(--accent); outline-offset:2px; }
+  .chip small { color:var(--muted); font-weight:400; }
+  .small { color:var(--muted); font-size:.86rem; margin-top:6px; }
+  .linkbtn { background:none; border:none; color:var(--accent); cursor:pointer; font-size:.92rem; padding:6px 4px; min-height:44px; }
+  select, input[type=search] { min-height:44px; border-radius:10px; border:2px solid var(--line); background:var(--card); color:var(--text); font-size:1rem; padding:6px 10px; }
+  label.opt { display:flex; align-items:center; gap:8px; min-height:44px; }
+  button.main { width:100%; min-height:56px; border-radius:14px; border:none; cursor:pointer; font-size:1.15rem; font-weight:700; background:var(--accent); color:var(--accent-text); }
+  button.main:disabled { opacity:.4; cursor:default; }
+  button.sec { min-height:48px; padding:0 18px; border-radius:12px; cursor:pointer; font-size:1rem; background:var(--card); color:var(--text); border:2px solid var(--line); }
+  button:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  .bar { height:10px; background:var(--chip); border-radius:999px; overflow:hidden; }
+  .bar > i { display:block; height:100%; background:var(--accent); }
+  .top { display:flex; justify-content:space-between; font-size:.9rem; color:var(--muted); margin-bottom:6px; }
+  .qcard { text-align:center; padding:22px 10px 12px; }
+  .qlesson { font-size:.8rem; color:var(--muted); }
+  .qword { font-size:clamp(2rem,9vw,3.4rem); font-weight:800; margin:10px 0 4px; word-wrap:break-word; overflow-wrap:anywhere; }
+  .qmean { font-size:1.15rem; color:var(--muted); min-height:1.6em; }
+  .art { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0 8px; }
+  .art button { min-height:72px; border-radius:14px; border:3px solid var(--line); background:var(--card); color:var(--text); font-size:1.5rem; font-weight:800; cursor:pointer; }
+  .art button small { display:block; font-size:.7rem; font-weight:500; color:var(--muted); }
+  .art button[data-a=der] { border-color:var(--der); color:var(--der); }
+  .art button[data-a=die] { border-color:var(--die); color:var(--die); }
+  .art button[data-a=das] { border-color:var(--das); color:var(--das); }
+  .art button.right { background:var(--ok-bg); border-color:var(--ok); color:var(--ok); }
+  .art button.wrong { background:var(--bad-bg); border-color:var(--bad); color:var(--bad); }
+  .art button:disabled { cursor:default; }
+  .art button:disabled:not(.right):not(.wrong) { opacity:.45; }
+  .fb { border-radius:12px; padding:12px 14px; margin-top:6px; text-align:left; }
+  .fb.ok { background:var(--ok-bg); } .fb.bad { background:var(--bad-bg); }
+  .fb .big { font-size:1.25rem; font-weight:800; }
+  .fb .hint { margin-top:6px; padding:8px 10px; border-radius:10px; background:var(--warn-bg); font-size:.95rem; }
+  .fb .hint .ex { margin-top:4px; color:var(--muted); font-size:.9rem; }
+  .hint b.exc { color:var(--bad); }
+  .g-der { color:var(--der); font-weight:800; } .g-die { color:var(--die); font-weight:800; } .g-das { color:var(--das); font-weight:800; }
+  .score { font-size:2.2rem; font-weight:800; text-align:center; }
+  .rev { list-style:none; margin:8px 0 0; padding:0; }
+  .rev li { padding:10px 0; border-top:1px solid var(--line); }
+  .rev .pl { color:var(--muted); font-size:.92rem; }
+  .cols { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .col { border-radius:12px; padding:8px 10px; }
+  .col h3 { margin:0 0 6px; font-size:1.05rem; }
+  .col.der { background:var(--der-bg); } .col.die { background:var(--die-bg); } .col.das { background:var(--das-bg); }
+  .col ul { list-style:none; margin:0; padding:0; }
+  .col li { padding:2px 0; font-size:.95rem; }
+  .col li small { color:var(--muted); }
+  .rowbar { display:flex; height:14px; border-radius:999px; overflow:hidden; background:var(--chip); }
+  .rowbar i { display:block; height:100%; }
+  .seg-s { background:var(--ok); } .seg-g { background:#e0a526; }
+  table.prog { width:100%; border-collapse:collapse; font-size:.95rem; }
+  table.prog td { padding:6px 4px; border-top:1px solid var(--line); vertical-align:middle; }
+  table.prog td.n { width:56px; font-weight:700; white-space:nowrap; }
+  table.prog td.c { width:110px; text-align:right; color:var(--muted); font-size:.85rem; white-space:nowrap; }
+  details summary { cursor:pointer; font-weight:600; min-height:44px; display:flex; align-items:center; }
+  .rules li { margin:4px 0; }
+  .hidden { display:none !important; }
+  [dir=rtl] { direction:rtl; unicode-bidi:isolate; }
+  @media (max-width:560px) { .cols { grid-template-columns:1fr; } .wrap { padding:10px; } }
+
+  .tabs .tab { font-size:.95rem; }
+  .langbar { display:flex; align-items:center; gap:8px; margin:0 0 10px; }
+  .langbar label { color:var(--muted); font-size:.9rem; }
+  .lead { font-size:1.02rem; margin:0 0 10px; }
+  .de { unicode-bidi:isolate; }
+  .modebtn { display:block; width:100%; text-align:start; margin:0 0 10px; padding:12px 14px; border-radius:14px; border:2px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; font-size:1rem; }
+  .modebtn:hover:not(:disabled) { border-color:var(--accent); }
+  .modebtn:disabled { opacity:.5; cursor:default; }
+  .modebtn .mt { font-size:1.15rem; font-weight:800; }
+  .modebtn .md { color:var(--muted); font-size:.9rem; margin:2px 0 8px; }
+  .modebtn .ms { color:var(--muted); font-size:.8rem; margin-top:4px; }
+  .modebtn:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  .chipbtn { min-height:44px; padding:6px 14px; border-radius:999px; border:2px solid var(--line); background:var(--chip); color:var(--text); cursor:pointer; font-size:.95rem; }
+  .ans { margin:6px 0 4px; color:var(--muted); font-size:1.05rem; }
+  .ans .de { color:var(--text); font-weight:600; }
+  .opts { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0 8px; }
+  .opts.two { grid-template-columns:1fr 1fr; }
+  .opt-b { min-height:64px; border-radius:14px; border:3px solid var(--line); background:var(--card); color:var(--text); font-size:1.15rem; font-weight:700; cursor:pointer; padding:6px 8px; position:relative; }
+  .opt-b small { position:absolute; top:4px; inset-inline-end:8px; font-weight:500; font-size:.7rem; color:var(--muted); }
+  .opt-b.right { background:var(--ok-bg); border-color:var(--ok); color:var(--ok); }
+  .opt-b.wrong { background:var(--bad-bg); border-color:var(--bad); color:var(--bad); }
+  .opt-b:disabled { cursor:default; }
+  .opt-b:disabled:not(.right):not(.wrong) { opacity:.45; }
+  .opt-b:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  .fb .hint { margin-top:6px; padding:8px 10px; border-radius:10px; background:var(--warn-bg); font-size:.95rem; }
+  .fb .small { margin-top:4px; }
+  .fb table.wt { margin-top:8px; }
+  .tilearea { min-height:62px; border:2px dashed var(--line); border-radius:14px; padding:8px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; margin:12px 0 10px; direction:ltr; }
+  .tilebank { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:12px; direction:ltr; min-height:52px; }
+  .tile { min-height:48px; padding:6px 14px; border-radius:12px; border:2px solid var(--accent); background:var(--chip); color:var(--text); font-size:1.1rem; font-weight:700; cursor:pointer; }
+  .tile.in { background:var(--card); }
+  .tile:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  .qm { font-size:1.4rem; font-weight:800; color:var(--muted); }
+  .row.center { justify-content:center; }
+  .demo { background:var(--chip); border-radius:12px; padding:10px 14px; margin-bottom:12px; font-size:1.2rem; }
+  .p1 { color:var(--die); } .p2 { color:var(--der); }
+  .wcard { border-top:1px solid var(--line); padding:10px 0; }
+  .wh { display:flex; flex-wrap:wrap; gap:6px 12px; align-items:baseline; }
+  .wde { font-size:1.3rem; font-weight:800; color:var(--accent); }
+  .wtr { font-size:1.05rem; font-weight:600; }
+  .exb { margin-top:6px; padding:8px 10px; background:var(--chip); border-radius:10px; }
+  .gbox { margin-bottom:10px; } .gbox h3 { margin:0 0 4px; font-size:1rem; }
+  .gbox ul { margin:0; padding-inline-start:20px; } .gbox li { margin:3px 0; }
+  .cmp { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:10px 0; }
+  .cbox { border:2px solid var(--line); border-radius:12px; padding:10px; }
+  .cbox h3 { margin:0 0 6px; font-size:1.15rem; color:var(--accent); }
+  .cbox .tag { font-size:.85rem; color:var(--muted); margin-bottom:2px; }
+  .cbox .cex { margin-top:6px; font-size:.95rem; }
+  .cex { margin:6px 0; }
+  .xbad { color:var(--bad); font-weight:700; } .xgood { color:var(--ok); font-weight:700; }
+  .panel h2 { text-transform:none; }
+  table.wt { width:100%; border-collapse:collapse; margin:10px 0; text-align:center; direction:ltr; table-layout:fixed; }
+  table.wt th:first-child { width:21%; }
+  table.wt td b { font-size:.78rem; white-space:nowrap; }
+  table.wt td { padding:6px 1px; }
+  table.wt th { font-size:.68rem; overflow-wrap:anywhere; }
+  table.wt th { font-size:.8rem; color:var(--muted); font-weight:600; padding:4px; }
+  table.wt td { border:1px solid var(--line); padding:6px 4px; }
+  table.wt td b { display:block; }
+  table.wt td small { color:var(--muted); font-size:.8rem; }
+  table.wt td.hi { background:var(--ok-bg); border:2px solid var(--ok); }
+  table.wt td.chg { background:var(--warn-bg); }
+  table.wt th.rowh { text-align:start; color:var(--text); font-size:.85rem; }
+  .refh { margin:18px 0 8px; font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+  .steps { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+  .step { font-size:.8rem; padding:4px 10px; border-radius:999px; background:var(--chip); color:var(--muted); }
+  .step.on { background:var(--accent); color:var(--accent-text); font-weight:700; }
+  .exwrap { display:grid; gap:8px; }
+  .exb2 { background:var(--chip); border-radius:12px; padding:8px 12px; }
+  .exh { font-size:.78rem; color:var(--muted); font-weight:700; margin-bottom:2px; }
+  .exline { margin:4px 0; font-size:1.02rem; }
+  .uq { font-size:1.2rem; font-weight:700; margin:8px 4px 4px; }
+  .ruleline { padding:8px 0; border-top:1px solid var(--line); }
+  .wde2 { color:var(--accent); font-size:1.1rem; }
+  .wtr2 { font-weight:600; }
+  .mgrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:12px 0; }
+  .mcol { display:flex; flex-direction:column; gap:8px; }
+  .mbtn { min-height:52px; border-radius:12px; border:3px solid var(--line); background:var(--card); color:var(--text); font-size:1rem; font-weight:700; cursor:pointer; padding:6px 8px; }
+  .mbtn.sel { border-color:var(--accent); background:var(--chip); }
+  .mbtn.right { background:var(--ok-bg); border-color:var(--ok); color:var(--ok); cursor:default; }
+  .mbtn.wrong { background:var(--bad-bg); border-color:var(--bad); color:var(--bad); }
+  .mbtn:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  [dir=rtl] .tabs { direction:rtl; }
+  @media (max-width:560px) { .cmp { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>W-Fragen &middot; A1</h1>
+  <div class="langbar"><label id="langLbl" for="langSel">Sprache</label><select id="langSel"></select></div>
+  <div class="tabs" role="tablist">
+    <button class="tab on" id="tabLearn" type="button"></button>
+    <button class="tab" id="tabPractice" type="button"></button>
+    <button class="tab" id="tabProg" type="button"></button>
+  </div>
+  <div id="viewLearn"></div>
+  <div id="viewPractice" class="hidden"></div>
+  <div id="viewProg" class="hidden"></div>
+</div>
+<script>
+(function () {
+"use strict";
+/* ---------- Texte ---------- */
+function m(de, en, tr, ar, ru, uk) { return { de: de, en: en, tr: tr, ar: ar, ru: ru, uk: uk }; }
+var LANGS = [
+  { id: "de", label: "Deutsch" }, { id: "en", label: "English" }, { id: "tr", label: "Türkçe" },
+  { id: "ar", label: "العربية" }, { id: "ru", label: "Русский" }, { id: "uk", label: "Українська" }
+];
+var TI = { en: 0, tr: 1, ar: 2, ru: 3, uk: 4 };
+
+var S = {
+  tabLearn: m("Lernen", "Learn", "Öğren", "تعلّم", "Учить", "Вчити"),
+  tabPractice: m("Üben", "Practise", "Alıştırma", "تدرّب", "Упражнения", "Вправи"),
+  tabProgress: m("Fortschritt", "Progress", "İlerleme", "التقدّم", "Прогресс", "Прогрес"),
+  langLabel: m("Sprache", "Language", "Dil", "اللغة", "Язык", "Мова"),
+  chooseMode: m("Übung wählen", "Choose an exercise", "Alıştırma seç", "اختر تمريناً", "Выбери упражнение", "Вибери вправу"),
+  m_recog: m("Welches Fragewort?", "Which question word?", "Hangi soru sözcüğü?", "أيّ كلمة استفهام؟", "Какое вопросительное слово?", "Яке питальне слово?"),
+  m_recog_d: m("Ergänze das passende Fragewort.", "Fill in the matching question word.", "Uygun soru sözcüğünü tamamla.", "أكمل بكلمة الاستفهام المناسبة.", "Вставь подходящее вопросительное слово.", "Встав підходяще питальне слово."),
+  m_viel: m("Wie viel / wie viele?", "Wie viel / wie viele?", "Wie viel / wie viele?", "Wie viel / wie viele؟", "Wie viel / wie viele?", "Wie viel / wie viele?"),
+  m_viel_d: m("Zählbar oder nicht zählbar? Wähle viel oder viele.", "Countable or not? Choose viel or viele.", "Sayılabilir mi, sayılamaz mı? viel veya viele seç.", "معدود أم غير معدود؟ اختر viel أو viele.", "Исчисляемое или нет? Выбери viel или viele.", "Зліченне чи ні? Вибери viel або viele."),
+  m_welch: m("welch-: Endungen", "welch-: endings", "welch-: ekler", "welch-: النهايات", "welch-: окончания", "welch-: закінчення"),
+  m_welch_d: m("Welche Endung passt: welcher, welche, welches oder welchen?", "Which ending fits: welcher, welche, welches or welchen?", "Hangi ek uyar: welcher, welche, welches veya welchen?", "أيّ نهاية تناسب: welcher أو welche أو welches أو welchen؟", "Какое окончание подходит: welcher, welche, welches или welchen?", "Яке закінчення підходить: welcher, welche, welches чи welchen?"),
+  m_build: m("Frage bauen", "Build the question", "Soruyu kur", "كوّن السؤال", "Составь вопрос", "Склади питання"),
+  m_build_d: m("Tippe die Wörter in der richtigen Reihenfolge.", "Tap the words in the right order.", "Sözcüklere doğru sırayla dokun.", "اضغط على الكلمات بالترتيب الصحيح.", "Нажимай слова в правильном порядке.", "Натискай слова в правильному порядку."),
+  m_match: m("Zuordnen", "Match", "Eşleştir", "طابق", "Сопоставь", "Зіставь"),
+  m_match_d: m("Ordne jedem Fragewort die passende Erklärung zu.", "Match each German question word with its translation.", "Her Almanca soru sözcüğünü çevirisiyle eşleştir.", "طابق كل كلمة استفهام ألمانية مع ترجمتها.", "Сопоставь каждое немецкое вопросительное слово с его переводом.", "Зістав кожне німецьке питальне слово з його перекладом."),
+  matchHint: m("Tippe ein Fragewort und dann die passende Erklärung.", "Tap a question word, then its translation.", "Bir soru sözcüğüne, sonra çevirisine dokun.", "اضغط على كلمة استفهام ثم على ترجمتها.", "Нажми на вопросительное слово, потом на его перевод.", "Натисни на питальне слово, потім на його переклад."),
+  matchDone: m("Alle Paare gefunden!", "All pairs found!", "Tüm çiftler bulundu!", "تم العثور على كل الأزواج!", "Все пары найдены!", "Усі пари знайдено!"),
+  matchCheck: m("Das solltest du noch einmal üben:", "Practise these once more:", "Bunları bir kez daha çalış:", "تدرّب على هذه مرة أخرى:", "Потренируй их ещё раз:", "Потренуй їх ще раз:"),
+  m_mean: m("Bedeutung", "Meaning", "Anlam", "المعنى", "Значение", "Значення"),
+  m_mean_d: m("Welche Übersetzung passt zum Fragewort?", "Which translation matches the question word?", "Hangi çeviri soru sözcüğüne uyar?", "أيّ ترجمة تناسب كلمة الاستفهام؟", "Какой перевод подходит к вопросительному слову?", "Який переклад підходить до питального слова?"),
+  m_mean_n: m("Wähle oben eine andere Sprache als Deutsch.", "Choose a language other than German above.", "Yukarıdan Almancadan farklı bir dil seç.", "اختر أعلاه لغة غير الألمانية.", "Выбери выше язык, отличный от немецкого.", "Вибери вище мову, відмінну від німецької."),
+  settings: m("Einstellungen", "Settings", "Ayarlar", "الإعدادات", "Настройки", "Налаштування"),
+  roundOf: m("Runde mit", "Round of", "Tur:", "الجولة:", "Раунд:", "Раунд:"),
+  nQ: m("{n} Fragen", "{n} questions", "{n} soru", "{n} أسئلة", "{n} вопросов", "{n} питань"),
+  allQ: m("allen Fragen", "all questions", "tüm sorular", "كل الأسئلة", "всех вопросов", "усіх питань"),
+  auto: m("Bei richtiger Antwort automatisch weiter", "Continue automatically after a correct answer", "Doğru cevapta otomatik devam et", "الانتقال تلقائياً عند الإجابة الصحيحة", "Автоматически дальше при верном ответе", "Автоматично далі при правильній відповіді"),
+  qOf: m("Frage {i} / {n}", "Question {i} / {n}", "Soru {i} / {n}", "السؤال {i} / {n}", "Вопрос {i} / {n}", "Питання {i} / {n}"),
+  nRight: m("{r} richtig", "{r} correct", "{r} doğru", "{r} صحيحة", "{r} верно", "{r} правильно"),
+  review: m("Wiederholung", "Review", "Tekrar", "مراجعة", "Повторение", "Повторення"),
+  answerLbl: m("Antwort:", "Answer:", "Cevap:", "الإجابة:", "Ответ:", "Відповідь:"),
+  next: m("Weiter", "Next", "Devam", "التالي", "Далее", "Далі"),
+  results: m("Auswertung", "Results", "Sonuç", "النتيجة", "Итоги", "Підсумки"),
+  check: m("Prüfen", "Check", "Kontrol et", "تحقّق", "Проверить", "Перевірити"),
+  resetTiles: m("Zurücksetzen", "Reset", "Sıfırla", "إعادة", "Сбросить", "Скинути"),
+  rightOk: m("Richtig!", "Correct!", "Doğru!", "صحيح!", "Верно!", "Правильно!"),
+  rightIs: m("Richtig ist:", "Correct is:", "Doğrusu:", "الصحيح هو:", "Правильно:", "Правильно:"),
+  quit: m("Runde abbrechen", "Quit round", "Turu bırak", "إنهاء الجولة", "Прервать раунд", "Перервати раунд"),
+  allRight: m("Alles richtig!", "All correct!", "Hepsi doğru!", "كل الإجابات صحيحة!", "Всё верно!", "Усе правильно!"),
+  veryGood: m("Sehr gut.", "Very good.", "Çok iyi.", "جيد جداً.", "Очень хорошо.", "Дуже добре."),
+  keepOn: m("Weiter üben – die Fehler kommen jetzt öfter dran.", "Keep practising – your mistakes will now come up more often.", "Çalışmaya devam – hatalar artık daha sık çıkacak.", "واصل التدرّب — ستظهر الأخطاء الآن أكثر.", "Продолжай упражняться — ошибки теперь будут встречаться чаще.", "Продовжуй вправлятися — помилки тепер траплятимуться частіше."),
+  reviewList: m("Wiederholungsliste", "Review list", "Tekrar listesi", "قائمة المراجعة", "Список для повторения", "Список для повторення"),
+  repeatWrong: m("Fehler wiederholen ({n})", "Repeat mistakes ({n})", "Hataları tekrarla ({n})", "كرّر الأخطاء ({n})", "Повторить ошибки ({n})", "Повторити помилки ({n})"),
+  newRound: m("Neue Runde", "New round", "Yeni tur", "جولة جديدة", "Новый раунд", "Новий раунд"),
+  you: m("du:", "you:", "sen:", "أنت:", "ты:", "ти:"),
+  overall: m("Gesamt", "Overall", "Genel", "الإجمالي", "Всего", "Усього"),
+  sureOf: m("{s} von {t} sicher · {a} % Trefferquote", "{s} of {t} secure · {a} % correct", "{t} içinden {s} sağlam · %{a} doğru", "{s} من {t} متقنة · {a}٪ إجابات صحيحة", "{s} из {t} усвоено · {a} % верных", "{s} з {t} засвоєно · {a} % правильних"),
+  sureNote: m("„sicher“ = zuletzt zweimal hintereinander richtig.", "“secure” = last two answers in a row were correct.", "“sağlam” = son iki cevap üst üste doğru.", "«متقنة» = آخر إجابتين متتاليتين صحيحتان.", "«усвоено» = последние два ответа подряд верны.", "«засвоєно» = останні дві відповіді поспіль правильні."),
+  resetProg: m("Fortschritt zurücksetzen", "Reset progress", "İlerlemeyi sıfırla", "إعادة ضبط التقدّم", "Сбросить прогресс", "Скинути прогрес"),
+  resetConfirm: m("Gesamten Fortschritt löschen?", "Delete all progress?", "Tüm ilerleme silinsin mi?", "حذف كل التقدّم؟", "Удалить весь прогресс?", "Видалити весь прогрес?"),
+  /* Lernen */
+  jumpOver: m("Überblick", "Overview", "Genel bakış", "نظرة عامة", "Обзор", "Огляд"),
+  introTitle: m("Die W-Fragen", "W-questions", "W-soruları", "أسئلة W", "W-вопросы", "W-питання"),
+  intro: m(
+    "W-Fragen beginnen mit einem Fragewort. Das Verb steht auf Position 2. Die Antwort ist nicht „Ja“ oder „Nein“, sondern eine Information.",
+    "W-questions begin with a question word. The verb is in position 2. The answer is not “yes” or “no” but a piece of information.",
+    "W-soruları bir soru sözcüğüyle başlar. Fiil 2. sırada durur. Cevap “evet” ya da “hayır” değil, bir bilgidir.",
+    "تبدأ أسئلة W بكلمة استفهام. يأتي الفعل في الموضع الثاني. الإجابة ليست «نعم» أو «لا»، بل معلومة.",
+    "W-вопросы начинаются с вопросительного слова. Глагол стоит на втором месте. Ответ — не «да» или «нет», а информация.",
+    "W-питання починаються з питального слова. Дієслово стоїть на другому місці. Відповідь — не «так» чи «ні», а інформація."),
+  askFor: m("fragt nach:", "asks for:", "şunu sorar:", "يسأل عن:", "спрашивает о:", "питає про:"),
+  exLbl: m("Beispiel", "Example", "Örnek", "مثال", "Пример", "Приклад"),
+  groupsTitle: m("Merkhilfen", "Memory aids", "Hatırlatmalar", "مساعدات للحفظ", "Подсказки", "Підказки"),
+  vvTitle: m("Der Unterschied: wie viel – wie viele", "The difference: wie viel – wie viele", "Fark: wie viel – wie viele", "الفرق: wie viel – wie viele", "Разница: wie viel – wie viele", "Різниця: wie viel – wie viele"),
+  vv1: m(
+    "Kannst du es zählen? Dann: wie viele + Plural. Kannst du es nur messen oder wiegen? Dann: wie viel + Singular.",
+    "Can you count it? Then: wie viele + plural. Can you only measure or weigh it? Then: wie viel + singular.",
+    "Sayabiliyor musun? O zaman: wie viele + çoğul. Sadece ölçebiliyor ya da tartabiliyor musun? O zaman: wie viel + tekil.",
+    "هل يمكنك عدّه؟ إذن: wie viele + الجمع. هل يمكنك قياسه أو وزنه فقط؟ إذن: wie viel + المفرد.",
+    "Можно ли это посчитать? Тогда: wie viele + множественное число. Можно только измерить или взвесить? Тогда: wie viel + единственное число.",
+    "Чи можна це порахувати? Тоді: wie viele + множина. Можна лише виміряти або зважити? Тоді: wie viel + однина."),
+  cntYes: m("zählbar (1, 2, 3 …)", "countable (1, 2, 3 …)", "sayılabilir (1, 2, 3 …)", "معدود (1، 2، 3 …)", "исчисляемое (1, 2, 3 …)", "зліченне (1, 2, 3 …)"),
+  cntNo: m("nicht zählbar (Menge, Masse)", "not countable (amount, mass)", "sayılamaz (miktar, kütle)", "غير معدود (كمية، كتلة)", "неисчисляемое (количество, масса)", "незліченне (кількість, маса)"),
+  afterPl: m("danach: Plural", "followed by: plural", "ardından: çoğul", "بعدها: جمع", "дальше: множественное число", "далі: множина"),
+  afterSg: m("danach: Singular, ohne Artikel", "followed by: singular, no article", "ardından: tekil, artikelsiz", "بعدها: مفرد، بدون أداة تعريف", "дальше: единственное число, без артикля", "далі: однина, без артикля"),
+  vv3: m(
+    "Steht kein Nomen dahinter, benutzt man immer wie viel.",
+    "If no noun follows, always use wie viel.",
+    "Arkasından isim gelmiyorsa her zaman wie viel kullanılır.",
+    "إذا لم يأتِ اسم بعدها، يُستخدم دائماً wie viel.",
+    "Если после него нет существительного, всегда используется wie viel.",
+    "Якщо після нього немає іменника, завжди вживається wie viel."),
+  vv4: m(
+    "Achtung: Vor einem Nomen im Plural braucht man immer wie viele.",
+    "Careful: before a plural noun you always need wie viele.",
+    "Dikkat: çoğul bir isimden önce her zaman wie viele gerekir.",
+    "انتبه: قبل اسم في الجمع نستخدم دائماً wie viele.",
+    "Внимание: перед существительным во множественном числе всегда нужен wie viele.",
+    "Увага: перед іменником у множині завжди потрібен wie viele."),
+  vv5: m(
+    "Zeit allgemein kann man nicht zählen. Stunden, Tage und Minuten kann man zählen.",
+    "You cannot count time in general. You can count hours, days and minutes.",
+    "Genel olarak “zaman” sayılamaz. Saatler, günler ve dakikalar sayılabilir.",
+    "الوقت بشكل عام لا يمكن عدّه. أما الساعات والأيام والدقائق فيمكن عدّها.",
+    "Время вообще посчитать нельзя. Часы, дни и минуты посчитать можно.",
+    "Час загалом порахувати не можна. Години, дні й хвилини порахувати можна."),
+  welchTitle: m("welch- und seine Endungen", "welch- and its endings", "welch- ve ekleri", "welch- ونهاياتها", "welch- и его окончания", "welch- і його закінчення"),
+  w1: m(
+    "welch- fragt nach einer Auswahl („Welches davon?“). Es steht vor einem Nomen und bekommt eine Endung – fast wie der bestimmte Artikel: der → welcher, die → welche, das → welches.",
+    "welch- asks about a choice (“Which one?”). It stands before a noun and takes an ending – almost like the definite article: der → welcher, die → welche, das → welches.",
+    "welch- bir seçimi sorar (“Hangisi?”). Bir ismin önünde durur ve ek alır – neredeyse belirli artikel gibi: der → welcher, die → welche, das → welches.",
+    "تسأل welch- عن اختيار («أيّ واحد؟»). تأتي قبل اسم وتأخذ نهاية — تقريباً مثل أداة التعريف: der → welcher، die → welche، das → welches.",
+    "welch- спрашивает о выборе («Какой именно?»). Стоит перед существительным и получает окончание — почти как определённый артикль: der → welcher, die → welche, das → welches.",
+    "welch- питає про вибір («Який саме?»). Стоїть перед іменником і отримує закінчення — майже як означений артикль: der → welcher, die → welche, das → welches."),
+  w3: m(
+    "Nur beim Maskulinum ändert sich etwas: Nominativ welcher → Akkusativ welchen. Feminin, Neutrum und Plural bleiben gleich.",
+    "Only the masculine changes: nominative welcher → accusative welchen. Feminine, neuter and plural stay the same.",
+    "Yalnızca eril değişir: yalın hâl welcher → belirtme hâli welchen. Dişil, nötr ve çoğul aynı kalır.",
+    "المذكّر فقط يتغيّر: الرفع welcher ← النصب welchen. المؤنّث والمحايد والجمع تبقى كما هي.",
+    "Меняется только мужской род: именительный welcher → винительный welchen. Женский, средний род и множественное число остаются прежними.",
+    "Змінюється лише чоловічий рід: називний welcher → знахідний welchen. Жіночий, середній рід і множина залишаються без змін."),
+  w4: m(
+    "So findest du den Fall: Nominativ = Subjekt (wer oder was macht etwas?) und nach „sein“. Akkusativ = Objekt nach Verben wie nehmen, haben, möchten, kaufen, sehen, lesen, trinken, essen, suchen.",
+    "How to find the case: nominative = subject (who or what does something?) and after “sein”. Accusative = object after verbs like nehmen, haben, möchten, kaufen, sehen, lesen, trinken, essen, suchen.",
+    "Hâli şöyle bulursun: yalın hâl = özne (kim veya ne bir şey yapıyor?) ve “sein” fiilinden sonra. Belirtme hâli = nehmen, haben, möchten, kaufen, sehen, lesen, trinken, essen, suchen gibi fiillerden sonraki nesne.",
+    "كيف تعرف الحالة: الرفع = الفاعل (مَن أو ما الذي يفعل شيئاً؟) وبعد «sein». النصب = المفعول به بعد أفعال مثل nehmen وhaben وmöchten وkaufen وsehen وlesen وtrinken وessen وsuchen.",
+    "Как определить падеж: именительный = подлежащее (кто или что действует?) и после «sein». Винительный = дополнение после глаголов вроде nehmen, haben, möchten, kaufen, sehen, lesen, trinken, essen, suchen.",
+    "Як визначити відмінок: називний = підмет (хто або що діє?) і після «sein». Знахідний = додаток після дієслів на кшталт nehmen, haben, möchten, kaufen, sehen, lesen, trinken, essen, suchen."),
+  tagNom: m("Subjekt → Nominativ", "subject → nominative", "özne → yalın hâl", "فاعل ← رفع", "подлежащее → именительный", "підмет → називний"),
+  tagAkk: m("Objekt → Akkusativ", "object → accusative", "nesne → belirtme hâli", "مفعول به ← نصب", "дополнение → винительный", "додаток → знахідний"),
+  rowNom: m("Nominativ", "Nominativ", "Nominativ", "Nominativ", "Nominativ", "Nominativ"),
+  rowAkk: m("Akkusativ", "Akkusativ", "Akkusativ", "Akkusativ", "Akkusativ", "Akkusativ"),
+  gm: m("maskulin", "masculine", "eril", "مذكّر", "мужской род", "чоловічий рід"),
+  gf: m("feminin", "feminine", "dişil", "مؤنّث", "женский род", "жіночий рід"),
+  gn: m("Neutrum", "neuter", "nötr", "محايد", "средний род", "середній рід"),
+  gp: m("Plural", "plural", "çoğul", "جمع", "множественное число", "множина"),
+  /* Feedback-Vorlagen */
+  fbViele: m("„{n}“ kann man zählen ({c}) → wie viele + Plural.", "You can count “{n}” ({c}) → wie viele + plural.", "“{n}” sayılabilir ({c}) → wie viele + çoğul.", "يمكن عدّ «{n}» ({c}) ← wie viele + الجمع.", "«{n}» можно посчитать ({c}) → wie viele + множественное число.", "«{n}» можна порахувати ({c}) → wie viele + множина."),
+  fbViel: m("„{n}“ kann man nicht zählen (Menge) → wie viel + Singular.", "You cannot count “{n}” (amount) → wie viel + singular.", "“{n}” sayılamaz (miktar) → wie viel + tekil.", "لا يمكن عدّ «{n}» (كمية) ← wie viel + المفرد.", "«{n}» нельзя посчитать (количество) → wie viel + единственное число.", "«{n}» не можна порахувати (кількість) → wie viel + однина."),
+  fbVielVerb: m("Kein Nomen danach → immer wie viel.", "No noun follows → always wie viel.", "Arkasında isim yok → her zaman wie viel.", "لا اسم بعدها ← دائماً wie viel.", "Существительного нет → всегда wie viel.", "Іменника немає → завжди wie viel."),
+  cNomSubj: m("Nominativ (Subjekt)", "nominative (subject)", "yalın hâl (özne)", "الرفع (الفاعل)", "именительный падеж (подлежащее)", "називний відмінок (підмет)"),
+  cNomSein: m("Nominativ (nach „sein“)", "nominative (after “sein”)", "yalın hâl (“sein” fiilinden sonra)", "الرفع (بعد «sein»)", "именительный падеж (после «sein»)", "називний відмінок (після «sein»)"),
+  cAkk: m("Akkusativ (Objekt von „{v}“)", "accusative (object of “{v}”)", "belirtme hâli (“{v}” fiilinin nesnesi)", "النصب (مفعول به للفعل «{v}»)", "винительный падеж (дополнение к «{v}»)", "знахідний відмінок (додаток до «{v}»)"),
+  ruleV2: m("Regel: Fragewort auf Position 1, Verb auf Position 2.", "Rule: question word in position 1, verb in position 2.", "Kural: soru sözcüğü 1., fiil 2. sırada.", "القاعدة: كلمة الاستفهام في الموضع الأول، والفعل في الموضع الثاني.", "Правило: вопросительное слово на 1-м месте, глагол на 2-м.", "Правило: питальне слово на 1-му місці, дієслово на 2-му."),
+  tapDirDe: m("Welche Übersetzung passt?", "Which translation fits?", "Hangi çeviri uyar?", "أيّ ترجمة تناسب؟", "Какой перевод подходит?", "Який переклад підходить?"),
+  tapDirX: m("Welches deutsche Fragewort passt?", "Which German question word fits?", "Hangi Almanca soru sözcüğü uyar?", "أيّ كلمة استفهام ألمانية تناسب؟", "Какое немецкое вопросительное слово подходит?", "Яке німецьке питальне слово підходить?")
+};
+
+/* Kategorien: "fragt nach" */
+var CATS = {
+  person: m("Person", "a person", "kişi", "شخص", "человек", "людина"),
+  personAkk: m("Person (Objekt)", "a person (as object)", "kişi (nesne)", "شخص (مفعول به)", "человек (дополнение)", "людина (додаток)"),
+  thing: m("Sache, Tätigkeit", "a thing, an activity", "şey, etkinlik", "شيء، نشاط", "предмет, действие", "предмет, дія"),
+  place: m("Ort", "place", "yer", "مكان", "место", "місце"),
+  origin: m("Herkunft", "origin", "köken", "الأصل", "происхождение", "походження"),
+  dir: m("Ziel, Richtung", "destination, direction", "hedef, yön", "الوجهة، الاتجاه", "цель, направление", "ціль, напрямок"),
+  time: m("Tag, Monat, Zeitpunkt", "day, month, point in time", "gün, ay, zaman noktası", "اليوم، الشهر، وقت محدّد", "день, месяц, момент времени", "день, місяць, момент часу"),
+  clock: m("Uhrzeit (Beginn)", "clock time (start)", "saat (başlangıç)", "الساعة (البداية)", "время по часам (начало)", "час за годинником (початок)"),
+  now: m("Uhrzeit (jetzt)", "clock time (now)", "saat (şimdi)", "الساعة (الآن)", "время по часам (сейчас)", "час за годинником (зараз)"),
+  manner: m("Art und Weise, Name", "manner, name", "tarz, isim", "الكيفية، الاسم", "образ действия, имя", "спосіб, ім’я"),
+  age: m("Alter", "age", "yaş", "العمر", "возраст", "вік"),
+  dur: m("Dauer", "duration", "süre", "المدّة", "длительность", "тривалість"),
+  freq: m("Häufigkeit", "frequency", "sıklık", "التكرار", "частота", "частота"),
+  amtU: m("Menge (nicht zählbar)", "amount (not countable)", "miktar (sayılamaz)", "كمية (غير معدودة)", "количество (неисчисляемое)", "кількість (незліченне)"),
+  amtC: m("Anzahl (zählbar)", "number (countable)", "sayı (sayılabilir)", "عدد (معدود)", "число (исчисляемое)", "кількість (зліченне)"),
+  reason: m("Grund", "reason", "neden", "السبب", "причина", "причина"),
+  choice: m("Auswahl", "choice", "seçim", "الاختيار", "выбор", "вибір")
+};
+
+/* Fragewörter: id, Deutsch, Kategorie, [en,tr,ar,ru,uk], Beispielfrage, Antwort, [Übersetzung der Frage] */
+var W = [
+  ["wer", "wer", "person", ["who", "kim", "مَن", "кто", "хто"], "Wer ist das?", "Das ist Frau Kaya.", ["Who is that?", "Bu kim?", "مَن هذه؟", "Кто это?", "Хто це?"]],
+  ["wen", "wen", "personAkk", ["whom", "kimi", "مَن (مفعول به)", "кого", "кого"], "Wen siehst du?", "Ich sehe Tim.", ["Whom do you see?", "Kimi görüyorsun?", "مَن ترى؟", "Кого ты видишь?", "Кого ти бачиш?"]],
+  ["was", "was", "thing", ["what", "ne", "ما / ماذا", "что", "що"], "Was machst du am Wochenende?", "Ich spiele Fußball.", ["What are you doing at the weekend?", "Hafta sonu ne yapıyorsun?", "ماذا تفعل في عطلة نهاية الأسبوع؟", "Что ты делаешь на выходных?", "Що ти робиш на вихідних?"]],
+  ["wo", "wo", "place", ["where", "nerede", "أين", "где", "де"], "Wo wohnst du?", "In Erfurt.", ["Where do you live?", "Nerede oturuyorsun?", "أين تسكن؟", "Где ты живёшь?", "Де ти живеш?"]],
+  ["woher", "woher", "origin", ["where from", "nereden", "من أين", "откуда", "звідки"], "Woher kommst du?", "Aus der Türkei.", ["Where are you from?", "Nereden geliyorsun?", "من أين أنت؟", "Откуда ты?", "Звідки ти?"]],
+  ["wohin", "wohin", "dir", ["where to", "nereye", "إلى أين", "куда", "куди"], "Wohin gehst du?", "Ins Kino.", ["Where are you going?", "Nereye gidiyorsun?", "إلى أين تذهب؟", "Куда ты идёшь?", "Куди ти йдеш?"]],
+  ["wann", "wann", "time", ["when", "ne zaman", "متى", "когда", "коли"], "Wann hast du Geburtstag?", "Im Mai.", ["When is your birthday?", "Doğum günün ne zaman?", "متى عيد ميلادك؟", "Когда у тебя день рождения?", "Коли в тебе день народження?"]],
+  ["wie", "wie", "manner", ["how", "nasıl", "كيف", "как", "як"], "Wie heißt du?", "Ich heiße Ali.", ["What is your name?", "Adın ne?", "ما اسمك؟", "Как тебя зовут?", "Як тебе звати?"]],
+  ["wiealt", "wie alt", "age", ["how old", "kaç yaşında", "كم العمر", "сколько лет", "скільки років"], "Wie alt bist du?", "Ich bin 25 Jahre alt.", ["How old are you?", "Kaç yaşındasın?", "كم عمرك؟", "Сколько тебе лет?", "Скільки тобі років?"]],
+  ["wielange", "wie lange", "dur", ["how long", "ne kadar süre", "كم من الوقت", "как долго", "як довго"], "Wie lange lernst du Deutsch?", "Zwei Jahre.", ["How long have you been learning German?", "Ne kadar süredir Almanca öğreniyorsun?", "كم من الوقت تتعلّم الألمانية؟", "Как долго ты учишь немецкий?", "Як довго ти вчиш німецьку?"]],
+  ["wieoft", "wie oft", "freq", ["how often", "ne sıklıkla", "كم مرة", "как часто", "як часто"], "Wie oft gehst du ins Kino?", "Einmal im Monat.", ["How often do you go to the cinema?", "Ne sıklıkla sinemaya gidiyorsun?", "كم مرة تذهب إلى السينما؟", "Как часто ты ходишь в кино?", "Як часто ти ходиш у кіно?"]],
+  ["wieviel", "wie viel", "amtU", ["how much", "ne kadar (miktar)", "كم (كمية)", "сколько (количество, сумма)", "скільки (кількість, сума)"], "Wie viel kostet das Brot?", "Zwei Euro.", ["How much does the bread cost?", "Ekmek ne kadar?", "كم يكلّف الخبز؟", "Сколько стоит хлеб?", "Скільки коштує хліб?"]],
+  ["wieviele", "wie viele", "amtC", ["how many", "kaç tane (sayı)", "كم (عدد)", "сколько (предметов, людей)", "скільки (предметів, людей)"], "Wie viele Kinder hast du?", "Zwei.", ["How many children do you have?", "Kaç çocuğun var?", "كم طفلاً لديك؟", "Сколько у тебя детей?", "Скільки в тебе дітей?"]],
+  ["warum", "warum", "reason", ["why", "neden / niçin", "لماذا", "почему / зачем", "чому / навіщо"], "Warum lernst du Deutsch?", "Ich arbeite in Deutschland.", ["Why are you learning German?", "Neden Almanca öğreniyorsun?", "لماذا تتعلّم الألمانية؟", "Почему ты учишь немецкий?", "Чому ти вчиш німецьку?"]],
+  ["welch", "welch-", "choice", ["which", "hangi", "أيّ", "какой", "який"], "Welcher Bus fährt zum Bahnhof?", "Der Bus Nummer 5.", ["Which bus goes to the station?", "Hangi otobüs istasyona gidiyor?", "أيّ حافلة تذهب إلى المحطة؟", "Какой автобус едет к вокзалу?", "Який автобус їде до вокзалу?"]],
+  ["wiespaet", "wie spät", "now", ["what time is it", "saat kaç", "كم الساعة", "который час", "котра година"], "Wie spät ist es?", "Es ist drei Uhr.", ["What time is it?", "Saat kaç?", "كم الساعة؟", "Который час?", "Котра година?"]],
+  ["umwieviel", "um wie viel Uhr", "clock", ["at what time", "saat kaçta", "في أيّ ساعة", "во сколько", "о котрій годині"], "Um wie viel Uhr beginnt der Kurs?", "Um 9 Uhr.", ["At what time does the course start?", "Kurs saat kaçta başlıyor?", "في أيّ ساعة تبدأ الدورة؟", "Во сколько начинается курс?", "О котрій годині починається курс?"]]
+];
+/* Erklärungen für die rein deutsche Version (Zuordnen) */
+var EXPL = {
+  wer: "welche Person (macht etwas)", wen: "welche Person (als Objekt)", was: "welches Ding oder welche Idee",
+  wo: "an welchem Ort", woher: "von welchem Ort", wohin: "zu welchem Ort", wann: "zu welcher Zeit (Tag, Monat)",
+  wie: "auf welche Art und Weise", wiealt: "wie viele Jahre", wielange: "für welche Zeitdauer", wieoft: "wie viele Male",
+  wieviel: "welche Menge (nicht zählbar)", wieviele: "welche Anzahl (zählbar)", warum: "aus welchem Grund",
+  welch: "welches von mehreren (Auswahl)", wiespaet: "welche Uhrzeit ist jetzt", umwieviel: "zu welcher Uhrzeit"
+};
+var GROUPS = [
+  ["wer – wen – was", ["wer", "wen", "was"]],
+  ["wo – woher – wohin", ["wo", "woher", "wohin"]],
+  ["wann – um wie viel Uhr – wie spät – wie lange – wie oft", ["wann", "umwieviel", "wiespaet", "wielange", "wieoft"]]
+];
+var NEAR = [
+  ["wer", "wen", "was"], ["wo", "woher", "wohin"], ["wann", "wiespaet", "umwieviel", "wielange", "wieoft"],
+  ["wieviel", "wieviele", "wiealt", "wielange", "wieoft"], ["wie", "warum", "welch", "was", "wiealt"]
+];
+
+/* Übung 1: [Frage, Antwort, Fragewort-ID, ausgeschlossene Distraktoren, Präfix der Lücke] */
+var R = [
+  ["Wer ist das?", "Das ist Frau Kaya.", "wer"],
+  ["Was ist das?", "Das ist ein Tisch.", "was"],
+  ["Wen siehst du?", "Ich sehe Tim.", "wen"],
+  ["Wie heißt der Lehrer?", "Er heißt Herr Braun.", "wie", ["was"]],
+  ["Wie heißt du?", "Ich heiße Ali.", "wie", ["was"]],
+  ["Wo wohnst du?", "In Erfurt.", "wo"],
+  ["Woher kommst du?", "Aus Syrien.", "woher"],
+  ["Wohin gehst du?", "Ins Kino.", "wohin"],
+  ["Wann beginnt der Kurs?", "Am Montag.", "wann"],
+  ["Um wie viel Uhr beginnt der Kurs?", "Um neun Uhr.", "umwieviel", ["wann"]],
+  ["Wie spät ist es?", "Es ist halb drei.", "wiespaet"],
+  ["Wie alt bist du?", "Ich bin 25 Jahre alt.", "wiealt"],
+  ["Wie lange lernst du Deutsch?", "Zwei Jahre.", "wielange", ["wieviele"]],
+  ["Wie oft gehst du ins Kino?", "Einmal im Monat.", "wieoft", ["wann"]],
+  ["Wie viel kostet das Brot?", "Zwei Euro.", "wieviel", ["was"]],
+  ["Wie viele Kinder hast du?", "Zwei.", "wieviele"],
+  ["Warum lernst du Deutsch?", "Ich arbeite in Deutschland.", "warum"],
+  ["Welcher Bus fährt zum Bahnhof?", "Der Bus Nummer 5.", "welch", [], "Welcher"],
+  ["Was machst du am Wochenende?", "Ich spiele Fußball.", "was"],
+  ["Wer spielt Fußball?", "Tim und Jonas.", "wer"],
+  ["Wo arbeitet Anna?", "In einem Büro.", "wo"],
+  ["Wohin fährt der Zug?", "Nach Hamburg.", "wohin"],
+  ["Woher kommt Maria?", "Aus Spanien.", "woher"],
+  ["Wann hast du Geburtstag?", "Im Mai.", "wann"],
+  ["Wie geht es dir?", "Gut, danke.", "wie", ["was"]],
+  ["Wie viel Geld hast du?", "Zwanzig Euro.", "wieviel"],
+  ["Wie viele Geschwister hast du?", "Drei.", "wieviele"],
+  ["Wie alt ist dein Bruder?", "Er ist 30.", "wiealt"],
+  ["Wie lange dauert der Kurs?", "Drei Monate.", "wielange", ["wieviele"]],
+  ["Wie oft gehst du zum Arzt?", "Selten.", "wieoft", ["wann"]],
+  ["Was kochst du?", "Suppe.", "was"],
+  ["Wen fragst du?", "Den Lehrer.", "wen"],
+  ["Wer kocht heute?", "Ich.", "wer"],
+  ["Warum bist du müde?", "Ich schlafe schlecht.", "warum"],
+  ["Welches Handy kaufst du?", "Das Handy von Samsung.", "welch", [], "Welches"],
+  ["Wann kommt der Bus?", "In fünf Minuten.", "wann"],
+  ["Wie viele Personen kommen?", "Zehn.", "wieviele"],
+  ["Wie viel Milch brauchst du?", "Einen Liter.", "wieviel"],
+  ["Was trinkst du?", "Tee.", "was"],
+  ["Wo ist die Party?", "Bei Anna.", "wo"],
+  ["Wann hat Anna Urlaub?", "Im August.", "wann"],
+  ["Wann ist der Test?", "Am Freitag.", "wann"],
+  ["Um wie viel Uhr kommt der Zug?", "Um 14 Uhr.", "umwieviel", ["wann"]],
+  ["Um wie viel Uhr frühstückst du?", "Um sieben Uhr.", "umwieviel", ["wann"]],
+  ["Wie spät ist es jetzt?", "Es ist zehn Uhr.", "wiespaet"]
+];
+
+/* Übung 2: [Nomen, Gap-Satz, viel|viele, Zähl-Beispiel, Antwort] */
+var V = [
+  ["Kinder", "Wie ___ Kinder hast du?", "viele", "ein Kind – zwei Kinder", "Zwei."],
+  ["Brüder", "Wie ___ Brüder hast du?", "viele", "ein Bruder – zwei Brüder", "Einen."],
+  ["Personen", "Wie ___ Personen kommen?", "viele", "eine Person – zehn Personen", "Zehn."],
+  ["Tage", "Wie ___ Tage hat eine Woche?", "viele", "ein Tag – sieben Tage", "Sieben."],
+  ["Stunden", "Wie ___ Stunden schläfst du?", "viele", "eine Stunde – acht Stunden", "Acht."],
+  ["Äpfel", "Wie ___ Äpfel kaufst du?", "viele", "ein Apfel – fünf Äpfel", "Fünf."],
+  ["Bücher", "Wie ___ Bücher liest du?", "viele", "ein Buch – zwei Bücher", "Zwei im Monat."],
+  ["Zimmer", "Wie ___ Zimmer hat die Wohnung?", "viele", "ein Zimmer – drei Zimmer", "Drei."],
+  ["Sprachen", "Wie ___ Sprachen sprichst du?", "viele", "eine Sprache – vier Sprachen", "Vier."],
+  ["Freunde", "Wie ___ Freunde hast du?", "viele", "ein Freund – fünf Freunde", "Fünf."],
+  ["Eier", "Wie ___ Eier brauchst du?", "viele", "ein Ei – sechs Eier", "Sechs."],
+  ["Monate", "Wie ___ Monate hat ein Jahr?", "viele", "ein Monat – zwölf Monate", "Zwölf."],
+  ["Teilnehmer", "Wie ___ Teilnehmer sind im Kurs?", "viele", "ein Teilnehmer – zwanzig Teilnehmer", "Zwanzig."],
+  ["Minuten", "Wie ___ Minuten dauert die Pause?", "viele", "eine Minute – fünfzehn Minuten", "Fünfzehn."],
+  ["Geld", "Wie ___ Geld hast du?", "viel", "", "Zwanzig Euro."],
+  ["Zeit", "Wie ___ Zeit hast du?", "viel", "", "Eine Stunde."],
+  ["Wasser", "Wie ___ Wasser trinkst du?", "viel", "", "Zwei Liter."],
+  ["Milch", "Wie ___ Milch brauchst du?", "viel", "", "Einen Liter."],
+  ["Zucker", "Wie ___ Zucker brauchst du?", "viel", "", "Zweihundert Gramm."],
+  ["Kaffee", "Wie ___ Kaffee trinkst du?", "viel", "", "Zwei Tassen."],
+  ["Obst", "Wie ___ Obst kaufst du?", "viel", "", "Ein Kilo."],
+  ["Fleisch", "Wie ___ Fleisch brauchst du?", "viel", "", "Fünfhundert Gramm."],
+  ["Reis", "Wie ___ Reis kochst du?", "viel", "", "Dreihundert Gramm."],
+  ["Salz", "Wie ___ Salz brauchst du?", "viel", "", "Nur ein bisschen."],
+  ["Miete", "Wie ___ Miete zahlst du?", "viel", "", "Fünfhundert Euro."],
+  ["Arbeit", "Wie ___ Arbeit hast du?", "viel", "", "Sehr viel."],
+  ["", "Wie ___ kostet das Brot?", "viel", "", "Zwei Euro."],
+  ["", "Wie ___ ist das?", "viel", "", "Fünf Euro."]
+];
+
+/* Übung 3: [Gap-Satz, Nomen mit Artikel, Genus m|f|n|p, Fall nom|akk, Lösung, Typ s|b|o, Verb] */
+var WC = [
+  ["___ Tag ist heute?", "der Tag", "m", "nom", "welcher", "b"],
+  ["___ Farbe ist das?", "die Farbe", "f", "nom", "welche", "b"],
+  ["___ Datum ist heute?", "das Datum", "n", "nom", "welches", "b"],
+  ["___ Bus fährt zum Bahnhof?", "der Bus", "m", "nom", "welcher", "s"],
+  ["___ Zimmer ist frei?", "das Zimmer", "n", "nom", "welches", "b"],
+  ["___ Kurse sind gut?", "die Kurse", "p", "nom", "welche", "b"],
+  ["___ Zug fährt nach Berlin?", "der Zug", "m", "nom", "welcher", "s"],
+  ["___ Straße ist das?", "die Straße", "f", "nom", "welche", "b"],
+  ["___ Kurs beginnt um neun Uhr?", "der Kurs", "m", "nom", "welcher", "s"],
+  ["___ Land ist das?", "das Land", "n", "nom", "welches", "b"],
+  ["___ Hose ist billig?", "die Hose", "f", "nom", "welche", "b"],
+  ["___ Monat ist es?", "der Monat", "m", "nom", "welcher", "b"],
+  ["___ Bus nimmst du?", "der Bus", "m", "akk", "welchen", "o", "nehmen"],
+  ["___ Sprache sprichst du?", "die Sprache", "f", "akk", "welche", "o", "sprechen"],
+  ["___ Buch liest du?", "das Buch", "n", "akk", "welches", "o", "lesen"],
+  ["___ Film siehst du?", "der Film", "m", "akk", "welchen", "o", "sehen"],
+  ["___ Kaffee möchten Sie?", "der Kaffee", "m", "akk", "welchen", "o", "möchten"],
+  ["___ Hose kaufst du?", "die Hose", "f", "akk", "welche", "o", "kaufen"],
+  ["___ Handy hast du?", "das Handy", "n", "akk", "welches", "o", "haben"],
+  ["___ Tisch möchtest du?", "der Tisch", "m", "akk", "welchen", "o", "möchten"],
+  ["___ Schlüssel suchst du?", "der Schlüssel", "m", "akk", "welchen", "o", "suchen"],
+  ["___ Hobbys hast du?", "die Hobbys", "p", "akk", "welche", "o", "haben"],
+  ["___ Brot isst du?", "das Brot", "n", "akk", "welches", "o", "essen"],
+  ["___ Zimmer nimmst du?", "das Zimmer", "n", "akk", "welches", "o", "nehmen"],
+  ["___ Kurs machst du?", "der Kurs", "m", "akk", "welchen", "o", "machen"]
+];
+var WFORMS = { nom: { m: "welcher", f: "welche", n: "welches", p: "welche" }, akk: { m: "welchen", f: "welche", n: "welches", p: "welche" } };
+var ARTF = { nom: { m: "der", f: "die", n: "das", p: "die" }, akk: { m: "den", f: "die", n: "das", p: "die" } };
+
+/* Übung 4: Satz ohne Fragezeichen */
+var B = [
+  "Wo wohnst du", "Woher kommst du", "Wohin gehst du", "Wann beginnt der Kurs", "Wie heißt du", "Wie alt bist du",
+  "Wie lange lernst du Deutsch", "Wie oft gehst du ins Kino", "Wie viel kostet das Brot", "Wie viele Kinder hast du",
+  "Warum lernst du Deutsch", "Welchen Bus nimmst du", "Um wie viel Uhr beginnt der Kurs", "Wie spät ist es",
+  "Was machst du am Wochenende", "Wer ist das", "Wen siehst du", "Wie viel Zeit hast du", "Welche Sprache sprichst du",
+  "Wie viele Geschwister hast du", "Wo arbeitet Anna", "Wohin fährt der Zug", "Woher kommt Maria", "Was trinkst du",
+  "Wie viel Geld hast du", "Welches Handy kaufst du"
+];
+
+/* ---------- Entdecken-Einheiten ---------- */
+S.discoverTitle = m("Selbst entdecken", "Discover it yourself", "Kendin keşfet", "اكتشف بنفسك", "Открой сам", "Відкрий сам");
+S.discoverIntro = m(
+  "Schau dir zuerst die Sätze an und beantworte kleine Fragen. Danach siehst du die Regel – und übst sie.",
+  "First look at the sentences and answer a few short questions. Then you see the rule – and practise it.",
+  "Önce cümlelere bak ve kısa soruları cevapla. Sonra kuralı görürsün – ve alıştırma yaparsın.",
+  "انظر أولاً إلى الجمل وأجب عن أسئلة قصيرة. بعد ذلك ترى القاعدة — ثم تتدرّب عليها.",
+  "Сначала посмотри на предложения и ответь на короткие вопросы. Потом ты увидишь правило — и потренируешь его.",
+  "Спочатку подивися на речення й дай відповіді на короткі запитання. Потім побачиш правило — і потренуєш його.");
+S.refTitle = m("Nachschlagen", "Reference", "Başvuru", "مرجع", "Справочник", "Довідник");
+S.stepObs = m("1 · Beobachten", "1 · Observe", "1 · Gözlemle", "1 · لاحظ", "1 · Наблюдай", "1 · Спостерігай");
+S.stepRule = m("2 · Die Regel", "2 · The rule", "2 · Kural", "2 · القاعدة", "2 · Правило", "2 · Правило");
+S.stepPrac = m("3 · Üben", "3 · Practise", "3 · Alıştır", "3 · تدرّب", "3 · Упражнение", "3 · Вправа");
+S.lookAt = m("Schau dir die Sätze an.", "Look at the sentences.", "Cümlelere bak.", "انظر إلى الجمل.", "Посмотри на предложения.", "Подивися на речення.");
+S.toRule = m("Zur Regel", "To the rule", "Kurala git", "إلى القاعدة", "К правилу", "До правила");
+S.practiceNow = m("Jetzt üben", "Practise now", "Şimdi alıştır", "تدرّب الآن", "Теперь потренируйся", "Тепер потренуйся");
+S.unitDone = m("Geschafft! Die Regel ist gesichert.", "Done! The rule is secured.", "Tamam! Kural pekişti.", "أحسنت! تم تثبيت القاعدة.", "Готово! Правило закреплено.", "Готово! Правило закріплено.");
+S.unitRetry = m("Noch nicht sicher – übe die Regel noch einmal.", "Not secure yet – practise the rule again.", "Henüz sağlam değil – kuralı bir daha alıştır.", "لم تُتقن بعد — تدرّب على القاعدة مرة أخرى.", "Пока не закреплено — потренируй правило ещё раз.", "Ще не закріплено — потренуй правило ще раз.");
+S.backUnits = m("Zurück zur Übersicht", "Back to overview", "Genel bakışa dön", "العودة إلى النظرة العامة", "Назад к обзору", "Назад до огляду");
+S.lookAgain = m("Schau noch einmal in die Sätze.", "Look at the sentences again.", "Cümlelere bir kez daha bak.", "انظر إلى الجمل مرة أخرى.", "Посмотри на предложения ещё раз.", "Подивися на речення ще раз.");
+S.unitsDone = m("Entdecken-Einheiten geschafft: {d} von {t}", "Discovery units completed: {d} of {t}", "Tamamlanan keşif üniteleri: {t} içinden {d}", "وحدات الاكتشاف المنجزة: {d} من {t}", "Пройдено блоков «Открой сам»: {d} из {t}", "Пройдено блоків «Відкрий сам»: {d} із {t}");
+S.t1 = m("Das Verb steht auf Position 2", "The verb is in position 2", "Fiil 2. sıradadır", "الفعل في الموضع الثاني", "Глагол стоит на 2-м месте", "Дієслово стоїть на 2-му місці");
+S.gs = m("Singular", "singular", "tekil", "مفرد", "единственное число", "однина");
+S.same = m("gleich", "the same", "aynı", "نفس الشكل", "одинаковое", "однакове");
+S.diff = m("verschieden", "different", "farklı", "مختلف", "разное", "різне");
+S.ptVerb = m("das Verb", "the verb", "fiil", "الفعل", "глагол", "дієслово");
+S.ptQW = m("das Fragewort", "the question word", "soru sözcüğü", "كلمة الاستفهام", "вопросительное слово", "питальне слово");
+S.ptSubj = m("das Subjekt (du, Anna …)", "the subject (du, Anna …)", "özne (du, Anna …)", "الفاعل (du, Anna …)", "подлежащее (du, Anna …)", "підмет (du, Anna …)");
+S.before = m("vor dem Subjekt", "before the subject", "öznenin önünde", "قبل الفاعل", "перед подлежащим", "перед підметом");
+S.after = m("nach dem Subjekt", "after the subject", "öznenin arkasında", "بعد الفاعل", "после подлежащего", "після підмета");
+S.ruleV2long = m(
+  "Fragewort auf Position 1, Verb auf Position 2, danach das Subjekt.",
+  "Question word in position 1, verb in position 2, then the subject.",
+  "Soru sözcüğü 1., fiil 2. sırada, ardından özne gelir.",
+  "كلمة الاستفهام في الموضع 1، والفعل في الموضع 2، ثم الفاعل.",
+  "Вопросительное слово — на 1-м месте, глагол — на 2-м, потом подлежащее.",
+  "Питальне слово — на 1-му місці, дієслово — на 2-му, потім підмет.");
+S.q_u1a = m("Welches Wort steht immer an Position 1?", "Which word is always in position 1?", "Hangi sözcük her zaman 1. sıradadır?", "أيّ كلمة تكون دائماً في الموضع الأول؟", "Какое слово всегда стоит на 1-м месте?", "Яке слово завжди стоїть на 1-му місці?");
+S.q_u1b = m("Welches Wort steht an Position 2?", "Which word is in position 2?", "Hangi sözcük 2. sıradadır?", "أيّ كلمة تكون في الموضع الثاني؟", "Какое слово стоит на 2-м месте?", "Яке слово стоїть на 2-му місці?");
+S.q_u1c = m("Wo steht das Verb: vor oder nach dem Subjekt (du, Anna)?", "Where is the verb: before or after the subject (du, Anna)?", "Fiil nerede: öznenin önünde mi arkasında mı (du, Anna)?", "أين يقع الفعل: قبل الفاعل أم بعده (du, Anna)؟", "Где стоит глагол: перед подлежащим или после него (du, Anna)?", "Де стоїть дієслово: перед підметом чи після нього (du, Anna)?");
+S.q_u2a = m("Welches Fragewort fragt nach dem Ort, an dem jemand ist?", "Which question word asks for the place where someone is?", "Hangi soru sözcüğü birinin bulunduğu yeri sorar?", "أيّ كلمة استفهام تسأل عن المكان الذي يوجد فيه شخص ما؟", "Какое вопросительное слово спрашивает о месте, где кто-то находится?", "Яке питальне слово питає про місце, де хтось перебуває?");
+S.q_u2b = m("Welches fragt nach dem Ziel (wohin geht jemand)?", "Which one asks for the destination (where is someone going)?", "Hangisi hedefi sorar (biri nereye gidiyor)?", "أيّها يسأل عن الوجهة (إلى أين يذهب شخص ما)؟", "Какое спрашивает о цели (куда кто-то идёт)?", "Яке питає про ціль (куди хтось іде)?");
+S.q_u2c = m("Mit welchem Wort beginnt die Antwort bei woher?", "Which word does the answer to woher begin with?", "woher sorusunun cevabı hangi sözcükle başlar?", "بأيّ كلمة تبدأ الإجابة عن woher؟", "С какого слова начинается ответ на woher?", "З якого слова починається відповідь на woher?");
+S.q_u3a = m("Welches Fragewort fragt nach einer Sache?", "Which question word asks for a thing?", "Hangi soru sözcüğü bir şeyi sorar?", "أيّ كلمة استفهام تسأل عن شيء؟", "Какое вопросительное слово спрашивает о предмете?", "Яке питальне слово питає про предмет?");
+S.q_u3b = m("Welches fragt nach der Person, die etwas tut (Subjekt)?", "Which asks for the person who does something (subject)?", "Hangisi bir şey yapan kişiyi sorar (özne)?", "أيّها يسأل عن الشخص الذي يفعل شيئاً (الفاعل)؟", "Какое спрашивает о человеке, который что-то делает (подлежащее)?", "Яке питає про людину, яка щось робить (підмет)?");
+S.q_u3c = m("Welches fragt nach der Person als Objekt (Ich sehe Tim)?", "Which asks for the person as an object (Ich sehe Tim)?", "Hangisi nesne olan kişiyi sorar (Ich sehe Tim)?", "أيّها يسأل عن الشخص بوصفه مفعولاً به (Ich sehe Tim)؟", "Какое спрашивает о человеке как о дополнении (Ich sehe Tim)?", "Яке питає про людину як про додаток (Ich sehe Tim)?");
+S.q_u4a = m("Welche Frage fragt nach der Uhrzeit jetzt?", "Which question asks for the time right now?", "Hangi soru şu anki saati sorar?", "أيّ سؤال يسأل عن الساعة الآن؟", "Какой вопрос спрашивает о времени сейчас?", "Яке запитання питає про час зараз?");
+S.q_u4b = m("Mit welchem Wort beginnt die Antwort bei „Um wie viel Uhr …?“", "Which word does the answer to “Um wie viel Uhr …?” begin with?", "“Um wie viel Uhr …?” sorusunun cevabı hangi sözcükle başlar?", "بأيّ كلمة تبدأ الإجابة عن «Um wie viel Uhr …؟»", "С какого слова начинается ответ на «Um wie viel Uhr …?»", "З якого слова починається відповідь на «Um wie viel Uhr …?»");
+S.q_u4c = m("Welche Frage passt zu „Im Mai“ und „Am Montag“?", "Which question fits “Im Mai” and “Am Montag”?", "“Im Mai” ve “Am Montag” için hangi soru uyar?", "أيّ سؤال يناسب «Im Mai» و«Am Montag»؟", "Какой вопрос подходит к «Im Mai» и «Am Montag»?", "Яке запитання підходить до «Im Mai» і «Am Montag»?");
+S.q_u5 = m("Was fragt „{w}“?", "What does “{w}” ask for?", "“{w}” neyi sorar?", "ماذا تسأل «{w}»؟", "О чём спрашивает «{w}»?", "Про що питає «{w}»?");
+S.q_u6a = m("Gruppe A: Stehen die Nomen im Singular oder im Plural?", "Group A: are the nouns singular or plural?", "A grubu: isimler tekil mi çoğul mu?", "المجموعة A: هل الأسماء في المفرد أم في الجمع؟", "Группа A: существительные в единственном или во множественном числе?", "Група A: іменники в однині чи в множині?");
+S.q_u6b = m("In welcher Gruppe kann man die Dinge zählen (1, 2, 3 …)?", "In which group can you count the things (1, 2, 3 …)?", "Hangi grupta şeyleri sayabilirsin (1, 2, 3 …)?", "في أيّ مجموعة يمكن عدّ الأشياء (1، 2، 3 …)؟", "В какой группе предметы можно посчитать (1, 2, 3 …)?", "У якій групі предмети можна порахувати (1, 2, 3 …)?");
+S.q_u6c = m("Welches Wort steht vor dem Nomen in Gruppe B (Geld, Milch, Zeit)?", "Which word stands before the noun in group B (Geld, Milch, Zeit)?", "B grubunda isimden önce hangi sözcük durur (Geld, Milch, Zeit)?", "أيّ كلمة تأتي قبل الاسم في المجموعة B (Geld, Milch, Zeit)؟", "Какое слово стоит перед существительным в группе B (Geld, Milch, Zeit)?", "Яке слово стоїть перед іменником у групі B (Geld, Milch, Zeit)?");
+S.q_u7a = m("Bei welchem Genus ändert sich die Endung zwischen A und B?", "For which gender does the ending change between A and B?", "A ile B arasında hangi cinste ek değişir?", "في أيّ جنس تتغيّر النهاية بين A وB؟", "У какого рода меняется окончание между A и B?", "У якого роду змінюється закінчення між A і B?");
+S.q_u7b = m("Wie ist die Endung bei feminin (die Farbe, die Sprache) in A und B?", "What is the ending for feminine (die Farbe, die Sprache) in A and B?", "Dişil (die Farbe, die Sprache) için ek A ve B’de nasıl?", "كيف النهاية في المؤنّث (die Farbe, die Sprache) في A وB؟", "Какое окончание у женского рода (die Farbe, die Sprache) в A и B?", "Яке закінчення в жіночого роду (die Farbe, die Sprache) в A і B?");
+S.q_u7c = m("Welche Form steht bei „der Bus“ in B (Objekt)?", "Which form is used with “der Bus” in B (object)?", "B’de (nesne) “der Bus” ile hangi biçim kullanılır?", "أيّ صيغة تُستخدم مع «der Bus» في B (مفعول به)؟", "Какая форма стоит с «der Bus» в B (дополнение)?", "Яка форма стоїть з «der Bus» у B (додаток)?");
+S.prepLine = m("typische Wörter in der Antwort:", "typical words in the answer:", "cevapta tipik sözcükler:", "كلمات شائعة في الإجابة:", "типичные слова в ответе:", "типові слова у відповіді:");
+
+/* Beispiele: [[a:..]] = Fragewort (blau), [[b:..]] = Verb/Antwortwort (rot) */
+var PREPS = { wo: "in · bei · auf", woher: "aus · von", wohin: "nach · in · zu", wann: "am · im", umwieviel: "um", wiespaet: "Es ist …", wer: "–", wen: "–" };
+var UNITS = [
+  { id: "u1", title: "t1", ex: [{ lines: ["[[a:Wo]] [[b:wohnst]] du?", "[[a:Woher]] [[b:kommst]] du?", "[[a:Wie alt]] [[b:ist]] Anna?", "[[a:Was]] [[b:machst]] du am Wochenende?"] }],
+    qs: [{ p: "q_u1a", o: ["T:ptVerb", "T:ptQW", "T:ptSubj"], a: 1 }, { p: "q_u1b", o: ["T:ptVerb", "T:ptQW", "T:ptSubj"], a: 0 }, { p: "q_u1c", o: ["T:before", "T:after"], a: 0 }],
+    prac: { mode: "build", n: 8 } },
+  { id: "u2", title: "wo – woher – wohin", ex: [{ lines: ["[[a:Wo]] wohnst du? – [[b:In]] Erfurt.", "[[a:Woher]] kommst du? – [[b:Aus]] Syrien.", "[[a:Wohin]] gehst du? – [[b:Ins]] Kino.", "[[a:Wo]] arbeitet Anna? – [[b:In]] einem Büro.", "[[a:Woher]] kommt Maria? – [[b:Aus]] Spanien.", "[[a:Wohin]] fährt der Zug? – [[b:Nach]] Hamburg."] }],
+    qs: [{ p: "q_u2a", o: ["D:wo", "D:woher", "D:wohin"], a: 0 }, { p: "q_u2b", o: ["D:wo", "D:woher", "D:wohin"], a: 2 }, { p: "q_u2c", o: ["D:aus", "D:in", "D:nach"], a: 0 }],
+    rule: ["wo", "woher", "wohin"], prac: { mode: "recog", ids: ["wo", "woher", "wohin"], n: 8 } },
+  { id: "u3", title: "wer – wen – was", ex: [{ lines: ["[[a:Wer]] ist das? – Das ist [[b:Frau Kaya]].", "[[a:Wer]] kocht heute? – [[b:Ich]].", "[[a:Wen]] siehst du? – Ich sehe [[b:Tim]].", "[[a:Wen]] fragst du? – [[b:Den Lehrer]].", "[[a:Was]] ist das? – Das ist [[b:ein Tisch]].", "[[a:Was]] trinkst du? – [[b:Tee]]."] }],
+    qs: [{ p: "q_u3a", o: ["D:wer", "D:wen", "D:was"], a: 2 }, { p: "q_u3b", o: ["D:wer", "D:wen", "D:was"], a: 0 }, { p: "q_u3c", o: ["D:wer", "D:wen", "D:was"], a: 1 }],
+    rule: ["wer", "wen", "was"], note: "Nominativ: wer · Akkusativ: wen", prac: { mode: "recog", ids: ["wer", "wen", "was"], n: 8 } },
+  { id: "u4", title: "wann – um wie viel Uhr – wie spät", ex: [{ lines: ["[[a:Wann]] hast du Geburtstag? – [[b:Im]] Mai.", "[[a:Wann]] beginnt der Kurs? – [[b:Am]] Montag.", "[[a:Um wie viel Uhr]] beginnt der Kurs? – [[b:Um]] neun Uhr.", "[[a:Wie spät]] ist es? – [[b:Es ist]] halb drei."] }],
+    qs: [{ p: "q_u4a", o: ["D:wann", "D:um wie viel Uhr", "D:wie spät"], a: 2 }, { p: "q_u4b", o: ["D:Um", "D:Am", "D:Im"], a: 0 }, { p: "q_u4c", o: ["D:wann", "D:um wie viel Uhr", "D:wie spät"], a: 0 }],
+    rule: ["wann", "umwieviel", "wiespaet"], prac: { mode: "recog", ids: ["wann", "umwieviel", "wiespaet"], n: 8 } },
+  { id: "u5", title: "wie alt – wie lange – wie oft", ex: [{ lines: ["[[a:Wie alt]] bist du? – [[b:25 Jahre]] alt.", "[[a:Wie lange]] lernst du Deutsch? – [[b:Zwei Jahre.]]", "[[a:Wie oft]] gehst du ins Kino? – [[b:Einmal im Monat.]]", "[[a:Wie alt]] ist dein Bruder? – Er ist [[b:30]].", "[[a:Wie lange]] dauert der Kurs? – [[b:Drei Monate.]]"] }],
+    qs: [{ p: "q_u5", v: "wie alt", o: ["C:age", "C:dur", "C:freq"], a: 0 }, { p: "q_u5", v: "wie lange", o: ["C:age", "C:dur", "C:freq"], a: 1 }, { p: "q_u5", v: "wie oft", o: ["C:age", "C:dur", "C:freq"], a: 2 }],
+    rule: ["wiealt", "wielange", "wieoft"], prac: { mode: "recog", ids: ["wiealt", "wielange", "wieoft"], n: 6 } },
+  { id: "u6", title: "wie viel – wie viele", ex: [
+      { h: "A", lines: ["[[a:Wie viele]] [[b:Kinder]] hast du? – Zwei.", "[[a:Wie viele]] [[b:Äpfel]] kaufst du? – Fünf.", "[[a:Wie viele]] [[b:Personen]] kommen? – Zehn."] },
+      { h: "B", lines: ["[[a:Wie viel]] [[b:Geld]] hast du? – Zwanzig Euro.", "[[a:Wie viel]] [[b:Milch]] brauchst du? – Einen Liter.", "[[a:Wie viel]] [[b:Zeit]] hast du? – Eine Stunde."] }],
+    qs: [{ p: "q_u6a", o: ["T:gs", "T:gp"], a: 1 }, { p: "q_u6b", o: ["D:A", "D:B"], a: 0 }, { p: "q_u6c", o: ["D:wie viel", "D:wie viele"], a: 0 }],
+    rule: "viel", prac: { mode: "viel", n: 10 } },
+  { id: "u7", title: "welch- Nominativ / Akkusativ", ex: [
+      { h: "T:tagNom", lines: ["[[a:Welcher]] Bus fährt zum Bahnhof?", "[[a:Welche]] Farbe ist das?", "[[a:Welches]] Datum ist heute?"] },
+      { h: "T:tagAkk", lines: ["[[a:Welchen]] Bus nimmst du?", "[[a:Welche]] Sprache sprichst du?", "[[a:Welches]] Buch liest du?"] }],
+    qs: [{ p: "q_u7a", o: ["T:gm", "T:gf", "T:gn"], a: 0 }, { p: "q_u7b", o: ["T:same", "T:diff"], a: 0 }, { p: "q_u7c", o: ["D:welcher", "D:welchen", "D:welche", "D:welches"], a: 1 }],
+    rule: "welch", prac: { mode: "welch", n: 10 } }
+];
+function unitTitle(u) { return u.title.indexOf("t") === 0 && S[u.title] ? T(u.title) : u.title; }
+function unitDoneCount() { var c = 0, k; for (k = 0; k < UNITS.length; k++) { if (store.units && store.units[UNITS[k].id]) { c += 1; } } return c; }
+
+var unitView = null; /* { id, qi, phase: obs|rule, answered } */
+
+function hl(text, isDe) {
+  var box = isDe === false ? el("div") : de("div", "exline");
+  var re = /\[\[(a|b):([^\]]+)\]\]/g, last = 0, mm;
+  while ((mm = re.exec(text)) !== null) {
+    if (mm.index > last) { box.appendChild(document.createTextNode(text.slice(last, mm.index))); }
+    box.appendChild(el("b", mm[1] === "a" ? "p1" : "p2", mm[2])); last = re.lastIndex;
+  }
+  if (last < text.length) { box.appendChild(document.createTextNode(text.slice(last))); }
+  return box;
+}
+function optLabel(o) {
+  var k = o.charAt(0), v = o.slice(2);
+  if (k === "T") { return { t: T(v), de: false }; }
+  if (k === "C") { return { t: CAT(v), de: false }; }
+  return { t: v, de: true };
+}
+function exampleBlock(u) {
+  var wrap = el("div", "exwrap"), k, j;
+  for (k = 0; k < u.ex.length; k++) {
+    var b = el("div", "exb2");
+    if (u.ex[k].h) {
+      var h = u.ex[k].h, ht;
+      if (h.indexOf("T:") === 0) { ht = el("div", "exh", T(h.slice(2))); } else { ht = de("div", "exh", h); }
+      b.appendChild(ht);
+    }
+    for (j = 0; j < u.ex[k].lines.length; j++) { b.appendChild(hl(u.ex[k].lines[j])); }
+    wrap.appendChild(b);
+  }
+  return wrap;
+}
+/* Regel-Block je Einheit */
+function ruleBlock(u) {
+  var box = el("div", "rulebox"), k;
+  if (u.id === "u1") {
+    box.appendChild(el("p", "lead", T("ruleV2long")));
+    var d = de("div", "demo"); d.appendChild(el("b", "p1", "Wo")); d.appendChild(document.createTextNode(" ")); d.appendChild(el("b", "p2", "wohnst")); d.appendChild(document.createTextNode(" du?")); box.appendChild(d);
+    box.appendChild(de("div", "small", "Position 1 · Position 2 · Subjekt"));
+    return box;
+  }
+  if (u.id === "u6") { box.appendChild(vielRule()); return box; }
+  if (u.id === "u7") { box.appendChild(welchRule()); return box; }
+  for (k = 0; k < u.rule.length; k++) {
+    var w = WBY[u.rule[k]], li = el("div", "ruleline");
+    li.appendChild(de("b", "wde2", cap(w[1]) + "?"));
+    li.appendChild(document.createTextNode(" = " + CAT(w[2])));
+    if (lang() !== "de") { var t = el("span", "wtr2", " · " + tr(w)); li.appendChild(t); }
+    var ex = el("div", "small"); ex.appendChild(de("span", "", w[4] + " – " + w[5]));
+    var pr = PREPS[w[0]]; if (pr && pr !== "–") { ex.appendChild(document.createTextNode("  ·  " + T("prepLine") + " ")); ex.appendChild(de("b", "", pr)); }
+    li.appendChild(ex); box.appendChild(li);
+  }
+  if (u.note) { box.appendChild(de("div", "hint", u.note)); }
+  return box;
+}
+
+function renderUnitList(v) {
+  var p = el("div", "panel"); p.appendChild(el("h2", null, T("discoverTitle"))); p.appendChild(el("p", "lead", T("discoverIntro")));
+  for (var k = 0; k < UNITS.length; k++) {
+    (function (u) {
+      var done = store.units && store.units[u.id];
+      var b = el("button", "modebtn"); b.type = "button";
+      var h = el("div", "mt", (done ? "✓ " : "") + unitTitle(u)); if (u.title.indexOf("t") !== 0) { h.setAttribute("dir", "ltr"); h.className += " de"; }
+      b.appendChild(h);
+      b.addEventListener("click", function () { unitView = { id: u.id, qi: 0, phase: "obs", answered: false }; renderLearn(); window.scrollTo && window.scrollTo(0, 0); });
+      p.appendChild(b);
+    })(UNITS[k]);
+  }
+  v.appendChild(p);
+}
+function unitById(id) { for (var k = 0; k < UNITS.length; k++) { if (UNITS[k].id === id) { return UNITS[k]; } } return null; }
+
+function renderUnit(v) {
+  var u = unitById(unitView.id), k;
+  var back = el("button", "linkbtn", "← " + T("backUnits")); back.type = "button";
+  back.addEventListener("click", function () { unitView = null; renderLearn(); });
+  v.appendChild(back);
+  var head = el("div", "panel"); var ttl = el("h2", null, unitTitle(u)); if (u.title.indexOf("t") !== 0) { ttl.setAttribute("dir", "ltr"); }
+  head.appendChild(ttl);
+  var steps = el("div", "steps");
+  [["obs", "stepObs"], ["rule", "stepRule"], ["prac", "stepPrac"]].forEach(function (s) {
+    steps.appendChild(el("span", "step" + (unitView.phase === s[0] ? " on" : ""), T(s[1])));
+  });
+  head.appendChild(steps);
+  head.appendChild(exampleBlock(u)); v.appendChild(head);
+
+  if (unitView.phase === "obs") {
+    var q = u.qs[unitView.qi], card = el("div", "panel qcard");
+    card.appendChild(el("div", "qlesson", (unitView.qi + 1) + " / " + u.qs.length));
+    card.appendChild(el("div", "uq", T(q.p, q.v ? { w: q.v } : null)));
+    var g = el("div", "opts" + (q.o.length === 2 ? " two" : "")); g.id = "uOpts";
+    for (k = 0; k < q.o.length; k++) {
+      (function (idx) {
+        var lab = optLabel(q.o[idx]), b = el("button", "opt-b"); b.type = "button";
+        var sp = lab.de ? de("span", "", lab.t) : el("span", null, lab.t); if (!lab.de && lang() === "ar") { sp.setAttribute("dir", "rtl"); }
+        b.appendChild(sp); b.setAttribute("data-i", String(idx));
+        b.addEventListener("click", function () { answerUnit(idx); });
+        g.appendChild(b);
+      })(k);
+    }
+    card.appendChild(g);
+    var fb = el("div"); fb.id = "ufb"; card.appendChild(fb);
+    var nxt = el("button", "main hidden", unitView.qi + 1 >= u.qs.length ? T("toRule") : T("next")); nxt.type = "button"; nxt.id = "uNext";
+    nxt.style.marginTop = "10px";
+    nxt.addEventListener("click", function () {
+      if (unitView.qi + 1 >= u.qs.length) { unitView.phase = "rule"; } else { unitView.qi += 1; }
+      renderLearn(); window.scrollTo && window.scrollTo(0, 0);
+    });
+    card.appendChild(nxt); v.appendChild(card);
+  } else {
+    var rp = el("div", "panel"); rp.appendChild(el("h2", null, T("stepRule"))); rp.appendChild(ruleBlock(u));
+    var go = el("button", "main", T("practiceNow")); go.type = "button"; go.style.marginTop = "12px";
+    go.addEventListener("click", function () { startUnitPractice(u); });
+    rp.appendChild(go); v.appendChild(rp);
+  }
+}
+function answerUnit(idx) {
+  if (!unitView || unitView.answered) { return; }
+  var u = unitById(unitView.id), q = u.qs[unitView.qi]; unitView.answered = true;
+  var ok = idx === q.a, btns = $("uOpts").getElementsByTagName("button"), k;
+  for (k = 0; k < btns.length; k++) {
+    btns[k].disabled = true;
+    if (k === q.a) { btns[k].className = "opt-b right"; } else if (k === idx) { btns[k].className = "opt-b wrong"; }
+  }
+  var fb = $("ufb"); clear(fb);
+  var box = el("div", "fb " + (ok ? "ok" : "bad")), big = el("div", "big");
+  big.appendChild(document.createTextNode(ok ? "✓ " + T("rightOk") : "✗ " + T("lookAgain")));
+  box.appendChild(big);
+  fb.appendChild(box);
+  $("uNext").className = "main"; unitView.answered = false;
+  /* nächste Frage erst nach Klick auf „Weiter“ */
+}
+function startUnitPractice(u) {
+  var p = u.prac, ids = [], k, pool = [];
+  if (p.mode === "recog") {
+    for (k = 0; k < R.length; k++) { if (p.ids.indexOf(R[k][2]) >= 0) { pool.push(k); } }
+  } else { for (k = 0; k < poolSize(p.mode); k++) { pool.push(k); } }
+  var keyed = pool.map(function (id) { return { id: id, k: Math.pow(Math.random(), 1 / weightOf(p.mode, id)) }; });
+  keyed.sort(function (a, b) { return b.k - a.k; });
+  for (k = 0; k < keyed.length && k < p.n; k++) { ids.push(keyed[k].id); }
+  showTab("practice");
+  startSession(p.mode, ids, false, u.id);
+}
+/* Hook am Ende einer Übungsrunde */
+function unitEndHook(v, pct) {
+  if (!session || !session.unit) { return; }
+  var u = unitById(session.unit), p = el("div", "panel");
+  var ok = pct >= 70;
+  if (ok) { if (!store.units) { store.units = {}; } store.units[u.id] = 1; save(); }
+  p.appendChild(el("div", "big", (ok ? "✓ " : "") + (ok ? T("unitDone") : T("unitRetry"))));
+  var b = el("button", "sec", T("backUnits")); b.type = "button"; b.style.marginTop = "10px";
+  b.addEventListener("click", function () { unitView = null; session = null; showTab("learn"); });
+  p.appendChild(b); v.appendChild(p);
+}
+
+/* Nachschlagen: Regeln als Blöcke (auch für Einheiten genutzt) */
+function vielRule() {
+  var s = el("div");
+  s.appendChild(el("p", "lead", T("vv1")));
+  var cmp = el("div", "cmp");
+  var cA = el("div", "cbox"); cA.appendChild(de("h3", "", "wie viele"));
+  cA.appendChild(el("div", "tag", T("cntYes"))); cA.appendChild(el("div", "tag", T("afterPl")));
+  ["Wie viele Kinder hast du?", "Wie viele Äpfel kaufst du?", "Wie viele Personen kommen?"].forEach(function (t2) { cA.appendChild(de("div", "cex", t2)); });
+  var cB = el("div", "cbox"); cB.appendChild(de("h3", "", "wie viel"));
+  cB.appendChild(el("div", "tag", T("cntNo"))); cB.appendChild(el("div", "tag", T("afterSg")));
+  ["Wie viel Geld hast du?", "Wie viel Milch brauchst du?", "Wie viel Zeit hast du?"].forEach(function (t2) { cB.appendChild(de("div", "cex", t2)); });
+  cmp.appendChild(cA); cmp.appendChild(cB); s.appendChild(cmp);
+  s.appendChild(el("p", null, T("vv3")));
+  s.appendChild(de("div", "cex", "Wie viel kostet das? · Wie viel ist das?"));
+  var warn = el("div", "hint"); warn.appendChild(el("div", null, T("vv4")));
+  warn.appendChild(de("div", "xbad", "✗ Wie viel Personen?")); warn.appendChild(de("div", "xgood", "✓ Wie viele Personen?"));
+  s.appendChild(warn);
+  s.appendChild(el("p", null, T("vv5")));
+  s.appendChild(de("div", "cex", "Wie viel Zeit hast du? · Wie viele Stunden schläfst du?"));
+  return s;
+}
+function welchRule() {
+  var s = el("div");
+  s.appendChild(el("p", "lead", T("w1")));
+  s.appendChild(welchTable(null, null));
+  s.appendChild(el("p", null, T("w3")));
+  var e1 = el("div", "exb"); e1.appendChild(de("div", "", "Welcher Bus fährt zum Bahnhof?"));
+  e1.appendChild(el("div", "small", T("tagNom") + " · der Bus")); s.appendChild(e1);
+  var e2 = el("div", "exb"); e2.appendChild(de("div", "", "Welchen Bus nimmst du?"));
+  e2.appendChild(el("div", "small", T("tagAkk") + " · den Bus")); s.appendChild(e2);
+  s.appendChild(el("p", null, T("w4")));
+  return s;
+}
+
+/* ---------- Logik ---------- */
+var STORAGE_KEY = "daz_wfragen_a1_v1";
+var WEIGHTS = [3, 2, 1];
+var MODES = ["recog", "match", "viel", "welch", "build", "mean"];
+
+var store = { settings: { lang: "de", size: 20, auto: true }, words: {}, units: {} };
+var session = null;
+var autoTimer = null;
+var tab = "learn";
+
+function $(id) { return document.getElementById(id); }
+function el(tag, cls, text) {
+  var e = document.createElement(tag);
+  if (cls) { e.className = cls; }
+  if (text !== undefined && text !== null) { e.textContent = text; }
+  return e;
+}
+/* deutscher Text: immer links-nach-rechts, auch in der RTL-Oberfläche */
+function de(tag, cls, text) {
+  var e = el(tag, "de" + (cls ? " " + cls : ""), text);
+  e.setAttribute("dir", "ltr"); e.setAttribute("lang", "de");
+  return e;
+}
+function clear(n) { while (n.firstChild) { n.removeChild(n.firstChild); } }
+function lang() { return store.settings.lang; }
+function T(key, vars) {
+  var o = S[key]; var s = (o && (o[lang()] || o.de)) || key; var k;
+  if (vars) { for (k in vars) { if (vars.hasOwnProperty(k)) { s = s.split("{" + k + "}").join(vars[k]); } } }
+  return s;
+}
+function CAT(key) { var o = CATS[key]; return o[lang()] || o.de; }
+function tr(w) { return lang() === "de" ? "" : w[3][TI[lang()]]; }
+function trEx(w) { return lang() === "de" ? "" : w[6][TI[lang()]]; }
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function shuffle(a) {
+  var r = a.slice(), k, j, t;
+  for (k = r.length - 1; k > 0; k--) { j = Math.floor(Math.random() * (k + 1)); t = r[k]; r[k] = r[j]; r[j] = t; }
+  return r;
+}
+var WBY = {}; (function () { for (var i = 0; i < W.length; i++) { WBY[W[i][0]] = W[i]; } })();
+function wlabel(id) { return WBY[id][1]; }
+
+/* ---------- Speicher ---------- */
+function load() {
+  try {
+    var raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) { return; }
+    var s = JSON.parse(raw);
+    if (s && s.settings) {
+      var st = s.settings, k, ok = false;
+      for (k = 0; k < LANGS.length; k++) { if (LANGS[k].id === st.lang) { ok = true; } }
+      if (ok) { store.settings.lang = st.lang; }
+      if (typeof st.size === "number") { store.settings.size = st.size; }
+      if (typeof st.auto === "boolean") { store.settings.auto = st.auto; }
+    }
+    if (s && s.words) { store.words = s.words; }
+    if (s && s.units) { store.units = s.units; }
+  } catch (e) { /* ohne Speicher weiterarbeiten */ }
+}
+function save() { try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); } catch (e) { /* egal */ } }
+function applyLang() {
+  var l = lang(), h = document.documentElement;
+  h.setAttribute("lang", l); h.setAttribute("dir", l === "ar" ? "rtl" : "ltr");
+}
+
+/* ---------- Übungs-Items ---------- */
+function poolSize(mode) {
+  if (mode === "recog") { return R.length; }
+  if (mode === "viel") { return V.length; }
+  if (mode === "welch") { return WC.length; }
+  if (mode === "build") { return B.length; }
+  return W.length; /* mean, match */
+}
+function rec(mode, id) { return store.words[mode + ":" + id] || null; }
+function weightOf(mode, id) {
+  var r = rec(mode, id);
+  if (!r || r.box === undefined) { return 1; }
+  return WEIGHTS[r.box];
+}
+function isSure(mode, id) { var r = rec(mode, id); return !!(r && r.s >= 2); }
+function sample(mode, count) {
+  var keyed = [], n = poolSize(mode), k;
+  for (k = 0; k < n; k++) { keyed.push({ id: k, k: Math.pow(Math.random(), 1 / weightOf(mode, k)) }); }
+  keyed.sort(function (a, b) { return b.k - a.k; });
+  var m2 = (count > 0 && count < n) ? count : n, out = [];
+  for (k = 0; k < m2; k++) { out.push(keyed[k].id); }
+  return out;
+}
+function nearPool(id, excl) {
+  var out = [], g, k, seen = {};
+  for (g = 0; g < NEAR.length; g++) {
+    if (NEAR[g].indexOf(id) < 0) { continue; }
+    for (k = 0; k < NEAR[g].length; k++) {
+      var c = NEAR[g][k];
+      if (c !== id && excl.indexOf(c) < 0 && !seen[c]) { seen[c] = 1; out.push(c); }
+    }
+  }
+  return shuffle(out);
+}
+function pickDistractors(id, excl, n, uniqKey) {
+  var near = nearPool(id, excl), out = near.slice(0, n), used = {}, k;
+  function sig(x) { return uniqKey ? uniqKey(x) : x; }
+  used[sig(id)] = 1;
+  var res = [];
+  for (k = 0; k < out.length && res.length < n; k++) { if (!used[sig(out[k])]) { used[sig(out[k])] = 1; res.push(out[k]); } }
+  var rest = shuffle(W.map(function (w) { return w[0]; }));
+  for (k = 0; k < rest.length && res.length < n; k++) {
+    if (rest[k] !== id && excl.indexOf(rest[k]) < 0 && !used[sig(rest[k])]) { used[sig(rest[k])] = 1; res.push(rest[k]); }
+  }
+  return res;
+}
+
+/* Frage-Objekt für die aktuelle Runde erzeugen */
+function makeQuestion(mode, id) {
+  var q = { mode: mode, id: id }, it, opts, k;
+  if (mode === "recog") {
+    it = R[id]; q.correct = it[2];
+    opts = pickDistractors(it[2], it[3] || [], 3); opts.push(it[2]); q.opts = shuffle(opts);
+  } else if (mode === "viel") {
+    q.opts = ["viel", "viele"]; q.correct = V[id][2];
+  } else if (mode === "welch") {
+    it = WC[id]; q.opts = ["welcher", "welche", "welches", "welchen"]; q.correct = it[4];
+  } else if (mode === "build") {
+    var toks = B[id].split(" "), idx = [];
+    for (k = 0; k < toks.length; k++) { idx.push(k); }
+    var sh = shuffle(idx), tries = 0;
+    while (tries < 20 && sh.join() === idx.join()) { sh = shuffle(idx); tries++; }
+    q.toks = toks; q.bank = sh; q.placed = [];
+  } else {
+    var w = W[id]; q.dir = Math.random() < 0.5 ? "toX" : "toDe"; q.correct = w[0];
+    var uq = function (x) { return WBY[x][3][TI[lang()]]; };
+    var dist = pickDistractors(w[0], [], 3, uq); dist.push(w[0]); q.opts = shuffle(dist);
+  }
+  return q;
+}
+
+/* ---------- Auswahl-Schaltflächen ---------- */
+function startSession(mode, ids, isReview, unitId) {
+  if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+  var qs = [], k;
+  if (mode === "match") {
+    var boards = makeBoards(ids);
+    for (k = 0; k < boards.length; k++) { qs.push({ mode: "match", id: boards[k][0], ids: boards[k], matched: {}, errs: {}, count: 0, selL: null, selR: null }); }
+  } else { for (k = 0; k < ids.length; k++) { qs.push(makeQuestion(mode, ids[k])); } }
+  session = { mode: mode, qs: qs, pos: 0, results: [], answered: false, review: isReview, unit: unitId || null };
+  renderPractice();
+}
+function makeBoards(ids) {
+  var sh = shuffle(ids), out = [], k = 0;
+  while (k < sh.length) { out.push(sh.slice(k, k + 6)); k += 6; }
+  if (out.length > 1 && out[out.length - 1].length < 3) { var last = out.pop(); out[out.length - 1] = out[out.length - 1].concat(last); }
+  return out;
+}
+function matchRight(wi) { return lang() === "de" ? EXPL[W[wi][0]] : tr(W[wi]); }
+function recordResult(q, ok, shown) {
+  session.results.push({ q: q, ok: ok, shown: shown });
+  var key = q.mode + ":" + q.id, r = store.words[key] || { n: 0, c: 0, s: 0 };
+  r.n += 1;
+  if (ok) { r.c += 1; r.s += 1; if (r.box !== undefined && r.box < 2) { r.box += 1; } }
+  else { r.s = 0; r.box = 0; }
+  store.words[key] = r; save();
+}
+function finishAnswer(ok) {
+  var nb = $("nextBtn"); if (nb) { nb.className = "main"; }
+  if (ok && store.settings.auto) {
+    autoTimer = setTimeout(function () { autoTimer = null; nextQuestion(); }, 1200);
+  }
+}
+function nextQuestion() {
+  if (!session || !session.answered) { return; }
+  if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+  session.pos += 1; renderPractice();
+}
+
+/* kleine Tabelle der welch-Endungen (mit optionaler Hervorhebung) */
+function welchTable(hiCase, hiG) {
+  var tb = el("table", "wt"), gs = ["m", "f", "n", "p"], k, c, tr1, th, td, cases = ["nom", "akk"];
+  tr1 = el("tr"); tr1.appendChild(el("th", null, ""));
+  for (k = 0; k < 4; k++) { tr1.appendChild(el("th", null, T("g" + gs[k]))); }
+  tb.appendChild(tr1);
+  for (c = 0; c < 2; c++) {
+    tr1 = el("tr"); th = el("th", "rowh", T(cases[c] === "nom" ? "rowNom" : "rowAkk"));
+    th.setAttribute("dir", "ltr"); tr1.appendChild(th);
+    for (k = 0; k < 4; k++) {
+      td = el("td", (hiCase === cases[c] && hiG === gs[k]) ? "hi" : (cases[c] === "akk" && gs[k] === "m" && !hiCase ? "chg" : ""));
+      td.setAttribute("dir", "ltr");
+      td.appendChild(el("b", null, WFORMS[cases[c]][gs[k]]));
+      td.appendChild(el("small", null, ARTF[cases[c]][gs[k]]));
+      tr1.appendChild(td);
+    }
+    tb.appendChild(tr1);
+  }
+  return tb;
+}
+
+/* ---------- Üben ---------- */
+function renderPractice() {
+  var v = $("viewPractice"); clear(v);
+  if (!session) { renderSetup(v); }
+  else if (session.pos >= session.qs.length) { renderEnd(v); }
+  else { renderQuestion(v); }
+}
+function modeStats(mode) {
+  var n = poolSize(mode), s = 0, k;
+  for (k = 0; k < n; k++) { if (isSure(mode, k)) { s += 1; } }
+  return { t: n, s: s };
+}
+function renderSetup(v) {
+  var p1 = el("div", "panel"); p1.appendChild(el("h2", null, T("chooseMode")));
+  var k;
+  for (k = 0; k < MODES.length; k++) {
+    (function (mode) {
+      var disabled = (mode === "mean" && lang() === "de");
+      var b = el("button", "modebtn"); b.type = "button"; b.disabled = disabled;
+      var h = el("div", "mt", T("m_" + mode));
+      if (mode === "viel" || mode === "welch") { h.setAttribute("dir", "ltr"); h.className += " de"; if (lang() === "ar") { h.className += " rtlfix"; } }
+      b.appendChild(h);
+      b.appendChild(el("div", "md", disabled ? T("m_mean_n") : T("m_" + mode + "_d")));
+      var st = modeStats(mode);
+      var bar = el("div", "rowbar"); var i1 = el("i", "seg-s"); i1.style.width = (100 * st.s / st.t) + "%"; bar.appendChild(i1);
+      b.appendChild(bar);
+      b.appendChild(el("div", "ms", st.s + " / " + st.t));
+      b.addEventListener("click", function () { startSession(mode, sample(mode, store.settings.size), false); });
+      p1.appendChild(b);
+    })(MODES[k]);
+  }
+  v.appendChild(p1);
+  var p2 = el("div", "panel"); p2.appendChild(el("h2", null, T("settings")));
+  var r1 = el("label", "opt"); r1.appendChild(document.createTextNode(T("roundOf") + " "));
+  var sel = document.createElement("select"), opts = [10, 20, 40, 0];
+  for (k = 0; k < opts.length; k++) {
+    var o = document.createElement("option"); o.value = String(opts[k]);
+    o.textContent = opts[k] ? T("nQ", { n: opts[k] }) : T("allQ");
+    if (opts[k] === store.settings.size) { o.selected = true; }
+    sel.appendChild(o);
+  }
+  sel.addEventListener("change", function () { store.settings.size = parseInt(sel.value, 10); save(); });
+  r1.appendChild(sel); p2.appendChild(r1);
+  var r2 = el("label", "opt"); var cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = store.settings.auto;
+  cb.addEventListener("change", function () { store.settings.auto = cb.checked; save(); });
+  r2.appendChild(cb); r2.appendChild(document.createTextNode(" " + T("auto"))); p2.appendChild(r2);
+  v.appendChild(p2);
+}
+
+function renderQuestion(v) {
+  var q = session.qs[session.pos], total = session.qs.length, k;
+  var top = el("div", "top");
+  top.appendChild(el("span", null, (session.review ? T("review") + " · " : "") + T("qOf", { i: session.pos + 1, n: total })));
+  var right = 0; for (k = 0; k < session.results.length; k++) { if (session.results[k].ok) { right += 1; } }
+  top.appendChild(el("span", null, T("nRight", { r: right })));
+  v.appendChild(top);
+  var bar = el("div", "bar"), fill = el("i"); fill.style.width = Math.round(100 * session.pos / total) + "%";
+  bar.appendChild(fill); v.appendChild(bar);
+
+  var card = el("div", "panel qcard"); card.appendChild(el("div", "qlesson", T("m_" + q.mode)));
+  var m = q.mode;
+  if (m === "recog") {
+    var it = R[q.id], gap = it[4] ? it[0].replace(it[4], "Welch___") : gapOf(it);
+    card.appendChild(de("div", "qword", gap));
+    var an = el("div", "ans"); an.appendChild(document.createTextNode(T("answerLbl") + " ")); an.appendChild(de("span", "", it[1])); card.appendChild(an);
+    card.appendChild(optionGrid(q, function (o) { return wlabel(o); }, true));
+  } else if (m === "viel") {
+    var vi = V[q.id];
+    card.appendChild(de("div", "qword", vi[1]));
+    var an2 = el("div", "ans"); an2.appendChild(document.createTextNode(T("answerLbl") + " ")); an2.appendChild(de("span", "", vi[4])); card.appendChild(an2);
+    card.appendChild(optionGrid(q, function (o) { return o; }, true));
+  } else if (m === "welch") {
+    card.appendChild(de("div", "qword", WC[q.id][0]));
+    card.appendChild(optionGrid(q, function (o) { return o; }, true));
+  } else if (m === "build") {
+    renderBuild(card, q);
+  } else if (m === "match") {
+    renderMatch(card, q);
+  } else {
+    var w = WBY[q.correct];
+    card.appendChild(el("div", "small", q.dir === "toX" ? T("tapDirDe") : T("tapDirX")));
+    if (q.dir === "toX") { card.appendChild(de("div", "qword", w[1])); }
+    else { var tq = el("div", "qword", tr(w)); card.appendChild(tq); }
+    card.appendChild(optionGrid(q, function (o) { return q.dir === "toX" ? tr(WBY[o]) : wlabel(o); }, q.dir !== "toX"));
+  }
+  var fb = el("div"); fb.id = "fbBox"; card.appendChild(fb);
+  var nxt = el("button", "main hidden", session.pos + 1 >= total ? T("results") : T("next")); nxt.type = "button"; nxt.id = "nextBtn";
+  nxt.style.marginTop = "10px"; nxt.addEventListener("click", nextQuestion); card.appendChild(nxt);
+  v.appendChild(card);
+  if (m === "build") { paintBuild(q); }
+  var quit = el("button", "linkbtn", T("quit")); quit.type = "button";
+  quit.addEventListener("click", function () { if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; } session = null; renderPractice(); });
+  v.appendChild(quit);
+  session.answered = false;
+}
+function gapOf(it) {
+  var w = WBY[it[2]], phrase = w[1];
+  var words = phrase.split(" ").length, parts = it[0].split(" ");
+  return "___ " + parts.slice(words).join(" ");
+}
+
+/* Optionen als Raster; german=true -> deutscher Text (ltr) */
+function optionGrid(q, labelFn, german) {
+  var g = el("div", "opts" + (q.opts.length === 2 ? " two" : "")), k;
+  for (k = 0; k < q.opts.length; k++) {
+    (function (o, idx) {
+      var b = el("button", "opt-b"); b.type = "button"; b.setAttribute("data-o", o);
+      var lab = labelFn(o);
+      var sp = german ? de("span", "", lab) : el("span", null, lab);
+      if (!german && lang() === "ar") { sp.setAttribute("dir", "rtl"); }
+      b.appendChild(sp); b.appendChild(el("small", null, String(idx + 1)));
+      b.addEventListener("click", function () { answerChoice(o); });
+      g.appendChild(b);
+    })(q.opts[k], k);
+  }
+  g.id = "optGrid"; return g;
+}
+
+function answerChoice(pick) {
+  if (!session || session.answered) { return; }
+  var q = session.qs[session.pos]; session.answered = true;
+  var ok = pick === q.correct;
+  recordResult(q, ok, pick);
+  var btns = $("optGrid").getElementsByTagName("button"), k;
+  for (k = 0; k < btns.length; k++) {
+    var o = btns[k].getAttribute("data-o"); btns[k].disabled = true;
+    if (o === q.correct) { btns[k].className = "opt-b right"; } else if (o === pick) { btns[k].className = "opt-b wrong"; }
+  }
+  var fb = $("fbBox"); clear(fb);
+  var box = el("div", "fb " + (ok ? "ok" : "bad")), m = q.mode;
+  var big = el("div", "big"); big.appendChild(document.createTextNode((ok ? "✓ " + T("rightOk") : "✗ " + T("rightIs")) + " "));
+  if (m === "recog") {
+    var it = R[q.id]; if (!ok) { big.appendChild(de("span", "", it[0])); }
+    box.appendChild(big);
+    var w = WBY[q.correct], d = el("div", "small");
+    d.appendChild(de("b", "", it[0])); box.appendChild(d);
+    var line = el("div", "small");
+    line.appendChild(de("b", "", w[1])); line.appendChild(document.createTextNode(" – " + (lang() === "de" ? "" : tr(w) + " · ") + T("askFor") + " " + CAT(w[2])));
+    box.appendChild(line);
+  } else if (m === "viel") {
+    var vi = V[q.id]; if (!ok) { big.appendChild(de("span", "", vi[1].replace("___", vi[2]))); } else { big.appendChild(de("span", "", vi[1].replace("___", vi[2]))); }
+    box.appendChild(big);
+    var why;
+    if (!vi[0]) { why = T("fbVielVerb"); }
+    else if (vi[2] === "viele") { why = T("fbViele", { n: vi[0], c: vi[3] }); }
+    else { why = T("fbViel", { n: vi[0] }); }
+    box.appendChild(el("div", "hint", why));
+  } else if (m === "welch") {
+    var wc = WC[q.id];
+    big.appendChild(de("span", "", wc[0].replace("___", wc[4]))); box.appendChild(big);
+    var cs = wc[3] === "akk" ? T("cAkk", { v: wc[6] }) : T(wc[5] === "b" ? "cNomSein" : "cNomSubj");
+    var h = el("div", "hint");
+    var l1 = el("div"); l1.appendChild(de("b", "", wc[1])); l1.appendChild(document.createTextNode(" – " + T("g" + wc[2]))); h.appendChild(l1);
+    var l2b = el("div"); l2b.appendChild(document.createTextNode(cs)); h.appendChild(l2b);
+    var l3 = el("div"); l3.appendChild(document.createTextNode("✓ ")); l3.appendChild(de("b", "", wc[4])); h.appendChild(l3);
+    box.appendChild(h);
+    box.appendChild(welchTable(wc[3], wc[2]));
+  } else {
+    var w2 = WBY[q.correct]; big.appendChild(de("span", "", w2[1])); box.appendChild(big);
+    var l2 = el("div", "small"); l2.appendChild(de("b", "", w2[1])); l2.appendChild(document.createTextNode(" = " + tr(w2)));
+    box.appendChild(l2);
+    var ex = el("div", "small"); ex.appendChild(de("span", "", w2[4] + " – " + w2[5])); box.appendChild(ex);
+    box.appendChild(el("div", "small", trEx(w2)));
+  }
+  fb.appendChild(box); finishAnswer(ok);
+}
+
+/* --- Zuordnen --- */
+function renderMatch(card, q) {
+  card.appendChild(el("div", "small", T("matchHint")));
+  var grid = el("div", "mgrid"), colL = el("div", "mcol"), colR = el("div", "mcol");
+  var left = shuffle(q.ids.slice()), right = shuffle(q.ids.slice()), btnL = {}, btnR = {}, k;
+  function paint() {
+    var i, wi;
+    for (i = 0; i < q.ids.length; i++) {
+      wi = q.ids[i];
+      btnL[wi].className = "mbtn" + (q.matched[wi] ? " right" : (q.selL === wi ? " sel" : ""));
+      btnR[wi].className = "mbtn" + (q.matched[wi] ? " right" : (q.selR === wi ? " sel" : ""));
+      btnL[wi].disabled = btnR[wi].disabled = !!q.matched[wi];
+    }
+  }
+  function finish() {
+    var i, wi, bad = [];
+    for (i = 0; i < q.ids.length; i++) { wi = q.ids[i]; recordResult({ mode: "match", id: wi }, !q.errs[wi], ""); if (q.errs[wi]) { bad.push(wi); } }
+    session.answered = true;
+    var fb = $("fbBox"); clear(fb);
+    var box = el("div", "fb " + (bad.length ? "bad" : "ok")); box.appendChild(el("div", "big", (bad.length ? "" : "✓ ") + T("matchDone")));
+    if (bad.length) {
+      box.appendChild(el("div", "small", T("matchCheck")));
+      for (i = 0; i < bad.length; i++) {
+        var ln = el("div", "small"); ln.appendChild(de("b", "", W[bad[i]][1])); ln.appendChild(document.createTextNode(" = "));
+        var rt = lang() === "de" ? de("span", "", matchRight(bad[i])) : el("span", null, matchRight(bad[i])); if (lang() === "ar") { rt.setAttribute("dir", "rtl"); }
+        ln.appendChild(rt); box.appendChild(ln);
+      }
+    }
+    fb.appendChild(box); var nb = $("nextBtn"); if (nb) { nb.className = "main"; }
+  }
+  function evaluate() {
+    var a = q.selL, b = q.selR; q.selL = null; q.selR = null;
+    if (a === b) { q.matched[a] = 1; q.count += 1; paint(); if (q.count === q.ids.length) { finish(); } }
+    else {
+      q.errs[a] = 1; btnL[a].className = "mbtn wrong"; btnR[b].className = "mbtn wrong";
+      setTimeout(function () { if (!q.matched[a]) { paint(); } }, 650);
+    }
+  }
+  function pickL(wi) { if (session.answered || q.matched[wi]) { return; } q.selL = wi; paint(); if (q.selR !== null) { evaluate(); } }
+  function pickR(wi) { if (session.answered || q.matched[wi]) { return; } q.selR = wi; paint(); if (q.selL !== null) { evaluate(); } }
+  for (k = 0; k < left.length; k++) {
+    (function (wi) {
+      var b = el("button", "mbtn"); b.type = "button"; b.setAttribute("data-side", "L"); b.setAttribute("data-w", String(wi));
+      b.appendChild(de("span", "", W[wi][1])); b.addEventListener("click", function () { pickL(wi); }); btnL[wi] = b; colL.appendChild(b);
+    })(left[k]);
+  }
+  for (k = 0; k < right.length; k++) {
+    (function (wi) {
+      var b = el("button", "mbtn"); b.type = "button"; b.setAttribute("data-side", "R"); b.setAttribute("data-w", String(wi));
+      var sp = lang() === "de" ? de("span", "", matchRight(wi)) : el("span", null, matchRight(wi)); if (lang() === "ar") { sp.setAttribute("dir", "rtl"); }
+      b.appendChild(sp); b.addEventListener("click", function () { pickR(wi); }); btnR[wi] = b; colR.appendChild(b);
+    })(right[k]);
+  }
+  grid.appendChild(colL); grid.appendChild(colR); card.appendChild(grid);
+}
+
+/* --- Frage bauen --- */
+function renderBuild(card, q) {
+  var area = el("div", "tilearea"); area.id = "tileArea";
+  var bank = el("div", "tilebank"); bank.id = "tileBank";
+  card.appendChild(area); card.appendChild(bank);
+  var row = el("div", "row center");
+  var chk = el("button", "main", T("check")); chk.type = "button"; chk.id = "chkBtn"; chk.style.maxWidth = "260px";
+  chk.addEventListener("click", checkBuild);
+  var rs = el("button", "sec", T("resetTiles")); rs.type = "button";
+  rs.addEventListener("click", function () { if (session.answered) { return; } q.bank = shuffle(q.bank.concat(q.placed)); q.placed = []; paintBuild(q); });
+  row.appendChild(chk); row.appendChild(rs); card.appendChild(row);
+}
+function paintBuild(q) {
+  var area = $("tileArea"), bank = $("tileBank"), k; clear(area); clear(bank);
+  for (k = 0; k < q.placed.length; k++) {
+    (function (idx) {
+      var t = de("button", "tile in", q.toks[idx]); t.type = "button";
+      t.addEventListener("click", function () { if (session.answered) { return; } q.placed.splice(q.placed.indexOf(idx), 1); q.bank.push(idx); paintBuild(q); });
+      area.appendChild(t);
+    })(q.placed[k]);
+  }
+  area.appendChild(de("span", "qm", "?"));
+  for (k = 0; k < q.bank.length; k++) {
+    (function (idx) {
+      var t = de("button", "tile", q.toks[idx]); t.type = "button";
+      t.addEventListener("click", function () { if (session.answered) { return; } q.bank.splice(q.bank.indexOf(idx), 1); q.placed.push(idx); paintBuild(q); });
+      bank.appendChild(t);
+    })(q.bank[k]);
+  }
+  var c = $("chkBtn"); if (c) { c.disabled = q.bank.length > 0 || session.answered; }
+}
+function checkBuild() {
+  if (!session || session.answered) { return; }
+  var q = session.qs[session.pos], k, built = [];
+  if (q.bank.length > 0) { return; }
+  for (k = 0; k < q.placed.length; k++) { built.push(q.toks[q.placed[k]]); }
+  var ok = built.join(" ") === q.toks.join(" ");
+  session.answered = true; recordResult(q, ok, built.join(" "));
+  $("chkBtn").disabled = true;
+  var fb = $("fbBox"); clear(fb);
+  var box = el("div", "fb " + (ok ? "ok" : "bad")), big = el("div", "big");
+  big.appendChild(document.createTextNode((ok ? "✓ " + T("rightOk") : "✗ " + T("rightIs")) + " "));
+  big.appendChild(de("span", "", q.toks.join(" ") + "?")); box.appendChild(big);
+  box.appendChild(el("div", "small", T("ruleV2")));
+  fb.appendChild(box); finishAnswer(ok);
+}
+
+function renderEnd(v) {
+  var total = session.results.length, right = 0, wrong = [], k;
+  for (k = 0; k < session.results.length; k++) { if (session.results[k].ok) { right += 1; } else { wrong.push(session.results[k]); } }
+  var pct = total ? Math.round(100 * right / total) : 0;
+  var p = el("div", "panel"); p.appendChild(el("div", "score", right + " / " + total + " (" + pct + " %)"));
+  var msg = el("div", "small", pct === 100 ? T("allRight") : (pct >= 80 ? T("veryGood") : T("keepOn"))); msg.style.textAlign = "center"; p.appendChild(msg);
+  v.appendChild(p);
+  unitEndHook(v, pct);
+  if (wrong.length) {
+    var pl = el("div", "panel"); pl.appendChild(el("h2", null, T("reviewList") + " (" + wrong.length + ")"));
+    var ul = el("ul", "rev");
+    for (k = 0; k < wrong.length; k++) {
+      var q = wrong[k].q, li = el("li"), line = el("div");
+      line.appendChild(de("b", "", reviewText(q)));
+      li.appendChild(line); ul.appendChild(li);
+    }
+    pl.appendChild(ul); v.appendChild(pl);
+  }
+  var acts = el("div");
+  if (wrong.length) {
+    var rb = el("button", "main", T("repeatWrong", { n: wrong.length })); rb.type = "button";
+    rb.addEventListener("click", function () {
+      var ids = []; for (var j = 0; j < wrong.length; j++) { ids.push(wrong[j].q.id); }
+      startSession(session.mode, shuffle(ids), true, session.unit);
+    });
+    acts.appendChild(rb);
+  }
+  var again = el("button", "sec", T("newRound")); again.type = "button"; again.style.marginTop = "10px"; again.style.width = "100%";
+  again.addEventListener("click", function () { session = null; renderPractice(); });
+  acts.appendChild(again); v.appendChild(acts);
+}
+function reviewText(q) {
+  if (q.mode === "recog") { return R[q.id][0]; }
+  if (q.mode === "viel") { return V[q.id][1].replace("___", V[q.id][2]); }
+  if (q.mode === "welch") { return WC[q.id][0].replace("___", WC[q.id][4]); }
+  if (q.mode === "build") { return B[q.id] + "?"; }
+  if (q.mode === "match") { return W[q.id][1] + " = " + matchRight(q.id); }
+  return WBY[q.correct][1];
+}
+
+/* ---------- Lernen ---------- */
+function section(id, titleKey) {
+  var s = el("div", "panel"); s.id = id; s.appendChild(el("h2", null, T(titleKey))); return s;
+}
+function renderLearn() {
+  var v = $("viewLearn"); clear(v);
+  if (unitView) { renderUnit(v); return; }
+  var k, j;
+  renderUnitList(v);
+  var rh = el("h2", "refh", T("refTitle")); v.appendChild(rh);
+  var nav = el("div", "row"); nav.style.marginBottom = "10px";
+  [["secOver", T("jumpOver")], ["secViel", "wie viel / wie viele"], ["secWelch", "welch-"]].forEach(function (x) {
+    var b = el("button", "chipbtn", x[1]); b.type = "button";
+    b.addEventListener("click", function () { var t = $(x[0]); if (t && t.scrollIntoView) { t.scrollIntoView(); } });
+    nav.appendChild(b);
+  });
+  v.appendChild(nav);
+
+  var s1 = section("secOver", "introTitle"); s1.appendChild(el("p", "lead", T("intro")));
+  var ex = el("div", "demo");
+  var dline = de("div", "", ""); dline.appendChild(el("b", "p1", "Wo")); dline.appendChild(document.createTextNode(" ")); dline.appendChild(el("b", "p2", "wohnst")); dline.appendChild(document.createTextNode(" du?"));
+  ex.appendChild(dline);
+  ex.appendChild(de("div", "small", "Position 1 · Position 2")); s1.appendChild(ex);
+  for (k = 0; k < W.length; k++) {
+    var w = W[k], card = el("div", "wcard");
+    var head = el("div", "wh"); head.appendChild(de("span", "wde", w[1]));
+    if (lang() !== "de") { var tt = el("span", "wtr", tr(w)); if (lang() === "ar") { tt.setAttribute("dir", "rtl"); } head.appendChild(tt); }
+    card.appendChild(head);
+    card.appendChild(el("div", "small", T("askFor") + " " + CAT(w[2])));
+    var exb = el("div", "exb"); exb.appendChild(de("div", "", w[4] + " – " + w[5]));
+    if (lang() !== "de") { exb.appendChild(el("div", "small", trEx(w))); }
+    card.appendChild(exb); s1.appendChild(card);
+  }
+  v.appendChild(s1);
+
+  var s2 = section("secViel", "vvTitle"); s2.appendChild(vielRule());
+  var pb = el("button", "main", T("practiceNow")); pb.type = "button"; pb.style.marginTop = "10px";
+  pb.addEventListener("click", function () { startUnitPractice(unitById("u6")); }); s2.appendChild(pb);
+  v.appendChild(s2);
+
+  var s3 = section("secWelch", "welchTitle"); s3.appendChild(welchRule());
+  var pb2 = el("button", "main", T("practiceNow")); pb2.type = "button"; pb2.style.marginTop = "10px";
+  pb2.addEventListener("click", function () { startUnitPractice(unitById("u7")); }); s3.appendChild(pb2);
+  v.appendChild(s3);
+}
+
+/* ---------- Fortschritt ---------- */
+function renderProg() {
+  var v = $("viewProg"); clear(v);
+  var k, tot = 0, sure = 0, n = 0, c = 0, i2;
+  var p = el("div", "panel"); p.appendChild(el("h2", null, T("overall")));
+  var tb = el("table", "prog");
+  for (k = 0; k < MODES.length; k++) {
+    var st = modeStats(MODES[k]); tot += st.t; sure += st.s;
+    var tr1 = el("tr"), td = el("td", "n", T("m_" + MODES[k])); if (MODES[k] === "viel" || MODES[k] === "welch") { td.setAttribute("dir", "ltr"); }
+    tr1.appendChild(td);
+    var tdb = el("td"), bb = el("div", "rowbar"), a1 = el("i", "seg-s"); a1.style.width = (100 * st.s / st.t) + "%"; bb.appendChild(a1); tdb.appendChild(bb); tr1.appendChild(tdb);
+    tr1.appendChild(el("td", "c", st.s + " / " + st.t)); tb.appendChild(tr1);
+  }
+  for (var key in store.words) { if (store.words.hasOwnProperty(key)) { n += store.words[key].n; c += store.words[key].c; } }
+  p.appendChild(el("div", null, T("sureOf", { s: sure, t: tot, a: n ? Math.round(100 * c / n) : 0 })));
+  p.appendChild(tb); p.appendChild(el("div", "small", T("sureNote")));
+  p.appendChild(el("div", "small", T("unitsDone", { d: unitDoneCount(), t: UNITS.length })));
+  v.appendChild(p);
+  var p5 = el("div", "panel"), rs = el("button", "sec", T("resetProg")); rs.type = "button";
+  rs.addEventListener("click", function () { if (window.confirm(T("resetConfirm"))) { store.words = {}; store.units = {}; save(); renderProg(); } });
+  p5.appendChild(rs); v.appendChild(p5);
+}
+
+/* ---------- Rahmen ---------- */
+function renderChrome() {
+  $("tabLearn").textContent = T("tabLearn"); $("tabPractice").textContent = T("tabPractice"); $("tabProg").textContent = T("tabProgress");
+  $("langLbl").textContent = T("langLabel");
+}
+function showTab(t) {
+  tab = t;
+  $("viewLearn").className = t === "learn" ? "" : "hidden";
+  $("viewPractice").className = t === "practice" ? "" : "hidden";
+  $("viewProg").className = t === "prog" ? "" : "hidden";
+  $("tabLearn").className = "tab" + (t === "learn" ? " on" : "");
+  $("tabPractice").className = "tab" + (t === "practice" ? " on" : "");
+  $("tabProg").className = "tab" + (t === "prog" ? " on" : "");
+  if (t === "learn") { renderLearn(); } else if (t === "practice") { renderPractice(); } else { renderProg(); }
+}
+function init() {
+  load(); applyLang();
+  var sel = $("langSel"), k;
+  for (k = 0; k < LANGS.length; k++) {
+    var o = document.createElement("option"); o.value = LANGS[k].id; o.textContent = LANGS[k].label;
+    if (LANGS[k].id === lang()) { o.selected = true; } sel.appendChild(o);
+  }
+  sel.addEventListener("change", function () {
+    store.settings.lang = sel.value; save(); applyLang();
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+    session = null; renderChrome(); showTab(tab);
+  });
+  $("tabLearn").addEventListener("click", function () { showTab("learn"); });
+  $("tabPractice").addEventListener("click", function () { showTab("practice"); });
+  $("tabProg").addEventListener("click", function () { showTab("prog"); });
+  document.addEventListener("keydown", function (ev) {
+    if (tab !== "practice" || !session || session.pos >= session.qs.length) { return; }
+    var tag = ev.target && ev.target.tagName;
+    if (tag === "INPUT" || tag === "SELECT") { return; }
+    var q = session.qs[session.pos];
+    if (!session.answered) {
+      if (q.opts && /^[1-4]$/.test(ev.key)) { var o = q.opts[parseInt(ev.key, 10) - 1]; if (o) { answerChoice(o); } }
+    } else if ((ev.key === "Enter" || ev.key === " ") && tag !== "BUTTON") { ev.preventDefault(); nextQuestion(); }
+  });
+  renderChrome(); showTab("learn");
+}
+
+init();
+
+})();
+</script>
+</body>
+</html>
