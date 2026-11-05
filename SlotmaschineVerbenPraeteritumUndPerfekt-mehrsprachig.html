@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verb-Slotmaschine – Präteritum und Perfekt üben (mehrsprachig)</title>
+<style>
+:root{--h:124px;--gold:#f5c542;--ink:#1d1633;--red1:#d12f47;--red2:#8e1428}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% 0,#4a2a8a 0,#241447 55%,#150b2e 100%);color:#fff;min-height:100vh}
+.wrap{max-width:980px;margin:0 auto;padding:16px 14px 40px}
+header{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
+h1{font-size:clamp(20px,3.2vw,30px);margin:0;line-height:1.2}
+h1 span{display:block;font-size:.55em;font-weight:600;color:var(--gold);letter-spacing:.04em}
+.score{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:rgba(255,255,255,.14);border-radius:999px;padding:6px 14px;font-weight:700;font-size:15px}
+.machine{margin-top:14px;background:linear-gradient(var(--red1),var(--red2));border:4px solid var(--gold);border-radius:26px;padding:14px 16px 22px;box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 0 0 3px rgba(255,255,255,.12)}
+.lights{display:flex;justify-content:space-between;margin:0 4px 12px}
+.lights i{width:12px;height:12px;border-radius:50%;background:#ffe27a;box-shadow:0 0 8px #ffd23f;animation:blink 1.2s infinite}
+.lights i:nth-child(odd){animation-delay:.6s}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.reels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.label{text-align:center;color:var(--gold);font-weight:800;letter-spacing:.08em;font-size:13px;text-transform:uppercase}
+.reel{height:var(--h);overflow:hidden;background:#fff;border-radius:14px;border:3px solid #3a2a07;position:relative;box-shadow:inset 0 6px 14px rgba(0,0,0,.3),inset 0 -6px 14px rgba(0,0,0,.3)}
+.reel:after{content:"";position:absolute;left:0;right:0;top:0;bottom:0;background:linear-gradient(rgba(0,0,0,.22),transparent 25%,transparent 75%,rgba(0,0,0,.22));pointer-events:none}
+.reel.spinning .strip{filter:blur(1.4px)}
+.cell{height:var(--h);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6px 8px;color:var(--ink);font-weight:800;font-size:clamp(15px,2.5vw,28px);line-height:1.15;overflow:hidden;word-break:normal;-webkit-hyphens:auto;hyphens:auto}
+.cell small{font-size:.55em;font-weight:600;color:#6a5d8a;margin-top:3px}
+.cell.q{font-size:56px;color:#c9c2dc}
+.hold{border:2px solid rgba(255,255,255,.55);background:rgba(0,0,0,.22);color:#fff;border-radius:999px;padding:7px 8px;font-size:14px;font-weight:700;cursor:pointer}
+.hold.on{background:var(--gold);color:#3a2a07;border-color:#3a2a07}
+.hold:disabled{opacity:.5;cursor:not-allowed}
+.tl{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:14px;font-size:14px}
+.tl[hidden]{display:none}
+.tl span{background:rgba(0,0,0,.28);border-radius:10px;padding:7px 4px;text-align:center;color:#fff;opacity:.55;font-weight:600}
+.tl span.on{opacity:1;background:var(--gold);color:#3a2a07;font-weight:800}
+.spin{margin:18px auto 0;display:block;padding:14px 54px;font-size:24px;font-weight:900;letter-spacing:.08em;border-radius:999px;border:4px solid #3a2a07;background:linear-gradient(#ffe27a,#f5b41b);color:#3a2a07;cursor:pointer;box-shadow:0 6px 0 #9a6b00}
+.spin:active{transform:translateY(4px);box-shadow:0 2px 0 #9a6b00}
+.spin:disabled{filter:grayscale(.6);cursor:not-allowed}
+.settings{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:14px;font-size:14px;align-items:center}
+.settings label{display:flex;gap:6px;align-items:center}
+select{font:inherit;padding:5px 8px;border-radius:8px;border:1px solid #bbb;background:#fff;color:#1d1633}
+.card{background:#fff;color:var(--ink);border-radius:18px;padding:18px;margin-top:16px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.card[hidden]{display:none}
+.task{font-size:17px;margin-bottom:10px}
+.chip{display:inline-block;background:#efe9ff;color:#4a2a8a;border-radius:999px;padding:3px 12px;font-weight:700;font-size:14px;margin-left:6px}
+.chip[hidden]{display:none}
+.inputrow{display:flex;flex-wrap:wrap;gap:8px}
+.inputrow input{flex:1 1 260px;font:inherit;font-size:18px;padding:10px 12px;border:2px solid #b9aedc;border-radius:12px;color:var(--ink)}
+.btn{font:inherit;font-weight:800;border:0;border-radius:12px;padding:10px 18px;cursor:pointer;background:#4a2a8a;color:#fff}
+.btn.ghost{background:#e9e4f7;color:#3b2475}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.tip{font-size:13px;color:#5b5078;margin:8px 0 0}
+#fb{margin-top:10px;font-weight:700;min-height:1.2em}
+#fb.good{color:#0d7a3f}#fb.bad{color:#b3261e}#fb.warn{color:#8a5a00}
+#sol{margin-top:12px;border-top:2px dashed #d6cfee;padding-top:12px}
+#sol[hidden]{display:none}
+.verdict{font-size:16px;margin-bottom:8px}
+.model{font-size:20px;font-weight:800;line-height:1.5;margin:6px 0 10px;color:#2a1a5e}
+table{border-collapse:collapse;width:100%;max-width:640px;font-size:16px}
+td,th{padding:6px 10px;border-bottom:1px solid #e5e0f3;text-align:left}
+tr.need td{background:#fff4c9;font-weight:800}
+.stamm{font-size:14px;color:#5b5078;margin-top:8px}
+.badge{display:inline-block;background:#e2f6ea;color:#0d6a37;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:700;margin-left:6px}
+.help{margin-top:16px;font-size:14px;color:#d9d0f2}
+.help summary{cursor:pointer;font-weight:700}
+.help ul{margin:8px 0 0 18px;padding:0;line-height:1.5}
+.linkbtn{background:none;border:0;color:#d9d0f2;text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+@media (max-width:560px){:root{--h:112px}.machine{padding:10px 8px 18px}.reels{gap:6px}.hold{font-size:12px;padding:6px 2px}.spin{padding:12px 40px;font-size:20px}.cell{font-size:13px;padding:4px 3px}.cell small{font-size:.8em}.label{font-size:11px;letter-spacing:.02em}.tl{font-size:12px}}
+@media (prefers-reduced-motion:reduce){.lights i{animation:none}}
+.start{background:#fff;color:var(--ink);border-radius:18px;padding:20px;margin-top:16px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.start[hidden],.disc[hidden],.game[hidden]{display:none}
+.start h2,.disc h2{margin:0 0 6px;font-size:22px}
+.start p{margin:4px 0 14px;color:#4a4066}
+.mode{display:block;width:100%;text-align:left;font:inherit;font-size:17px;font-weight:700;line-height:1.35;border:3px solid #b9aedc;border-radius:14px;background:#f6f2ff;color:var(--ink);padding:14px 16px;margin:10px 0;cursor:pointer}
+.mode:hover,.mode:focus{border-color:#4a2a8a;background:#ece5ff;outline:none}
+.mode.rec{border-color:#0d7a3f;background:#eaf8f0}
+.mode small{display:block;font-weight:500;font-size:14px;color:#5b5078;margin-top:4px}
+.disc{background:#fff;color:var(--ink);border-radius:18px;padding:20px;margin-top:16px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.pair{border:2px solid #e0d9f3;border-radius:12px;padding:10px 12px;margin:10px 0}
+.pair .q{font-weight:700;margin-bottom:6px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{font:inherit;font-size:17px;font-weight:700;border:2px solid #b9aedc;background:#f6f2ff;color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer}
+.opt:disabled{cursor:default}
+.opt.right{border-color:#0d7a3f;background:#e2f6ea}
+.opt.wrongpick{border-color:#b3261e;background:#fde8e6}
+.pair .ex{margin-top:6px;font-size:15px;min-height:1.2em;color:#3b2475;font-weight:600}
+.merke{background:#fff4c9;border-radius:12px;padding:10px 14px;margin:12px 0;font-size:16px;line-height:1.5}
+.merke[hidden]{display:none}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.tagU{display:inline-block;border-radius:6px;padding:1px 8px;font-size:12px;font-weight:700;margin-left:6px;background:#e2f6ea;color:#0d6a37}
+.tagM{display:inline-block;border-radius:6px;padding:1px 8px;font-size:12px;font-weight:700;margin-left:6px;background:#eee8d8;color:#6b5400}
+.modechip{font-size:13px;color:#d9d0f2}
+.note{font-size:15px;color:#3b2475;margin-top:8px}
+.langbar{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:14px;color:#d9d0f2}
+.langbar select{font:inherit}
+.trans{display:block;font-weight:500;font-size:14px;color:#5b5078;margin-top:4px}
+.trans[hidden]{display:none}
+.mean{margin-top:10px;background:#eef6ff;border:2px solid #b8d4f2;border-radius:12px;padding:8px 12px;font-size:17px;font-weight:700;color:#12325a}
+.mean[hidden]{display:none}
+.mean .de{direction:ltr;unicode-bidi:isolate}
+body.rtl .start,body.rtl .disc,body.rtl .card,body.rtl .settings,body.rtl .help,body.rtl .langbar{direction:rtl;text-align:right}
+body.rtl .opts,body.rtl .opt,body.rtl .model,body.rtl .machine,body.rtl table td.de,body.rtl .inputrow input{direction:ltr;text-align:left}
+body.rtl .mode{direction:ltr;text-align:left}
+body.rtl .mode .trans{direction:rtl;text-align:right}
+body.rtl .inputrow{direction:ltr}
+.de{unicode-bidi:isolate}
+body.rtl h1 span{unicode-bidi:plaintext;text-align:left}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🎰 Verb-Slotmaschine <span data-i18n="sub"></span></h1>
+    <div class="score"><span class="pill" id="scoreEl"></span><span class="pill" id="streakEl"></span></div>
+  </header>
+  <div class="langbar"><label>🌐 <select id="selLang" aria-label="Language / Sprache"></select></label></div>
+
+  <section class="start" id="start">
+    <h2 data-i18n="start_h"></h2>
+    <p data-i18n="start_p"></p>
+    <button type="button" class="mode rec" id="modeA">A. Ich möchte einfach üben (empfohlen)<small class="trans" data-i18n="mA" hidden></small></button>
+    <button type="button" class="mode" id="modeB">B. Ich möchte auch neue Verben ab L18, Verben mit untrennbaren Präfixen im Perfekt und das Präteritum der Modalverben üben (nur für Gelangweilte)<small class="trans" data-i18n="mB" hidden></small></button>
+  </section>
+
+  <section class="disc" id="disc" hidden>
+    <h2 data-i18n="disc_h"></h2>
+    <p data-i18n="disc_p"></p>
+    <div id="pairs"></div>
+    <div class="merke" id="merke" hidden><span id="merkeText"></span></div>
+    <div class="row"><button type="button" class="btn" id="discGo"></button></div>
+  </section>
+
+  <div class="game" id="game" hidden>
+  <div class="machine">
+    <div class="lights" id="lights"></div>
+    <div class="reels">
+      <div class="col"><div class="label" data-i18n="l_time"></div><div class="reel" id="reel0"><div class="strip"><div class="cell q">?</div></div></div><button type="button" class="hold" id="hold0" aria-pressed="false"></button></div>
+      <div class="col"><div class="label" data-i18n="l_person"></div><div class="reel" id="reel1"><div class="strip"><div class="cell q">?</div></div></div><button type="button" class="hold" id="hold1" aria-pressed="false"></button></div>
+      <div class="col"><div class="label" data-i18n="l_phrase"></div><div class="reel" id="reel2"><div class="strip"><div class="cell q">?</div></div></div><button type="button" class="hold" id="hold2" aria-pressed="false"></button></div>
+    </div>
+    <div class="tl" id="tl"><span data-i18n="tl_past"></span><span data-i18n="tl_pres"></span><span data-i18n="tl_fut"></span></div>
+    <button type="button" class="spin" id="spin" data-i18n="spin"></button>
+  </div>
+
+  <div class="settings">
+    <span class="modechip" id="modeEl"></span>
+    <button type="button" class="linkbtn" id="chgMode" data-i18n="chg"></button>
+    <label><span data-i18n="tenses"></span>
+      <select id="selTense"><option value="all" data-i18n="t_all"></option><option value="pf" data-i18n="t_pf"></option><option value="past" data-i18n="t_past"></option></select>
+    </label>
+    <label><span data-i18n="tlbl"></span>
+      <select id="selTl"><option value="on" data-i18n="tl_on"></option><option value="off" selected data-i18n="tl_off"></option></select>
+    </label>
+    <label><input type="checkbox" id="chkSound"> <span data-i18n="sound"></span></label>
+    <button type="button" class="linkbtn" id="resetScore" data-i18n="reset"></button>
+  </div>
+
+  <div class="card" id="card" hidden>
+    <div class="task"><strong data-i18n="task"></strong> <span data-i18n="task_t"></span></div>
+    <div class="inputrow">
+      <input id="ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Antwort" lang="de" dir="ltr">
+      <button type="button" class="btn" id="btnCheck" data-i18n="check"></button>
+      <button type="button" class="btn ghost" id="btnReveal" data-i18n="reveal"></button>
+      <button type="button" class="btn ghost" id="btnMean" data-i18n="meaning" hidden></button>
+    </div>
+    <div class="mean" id="mean" hidden></div>
+    <p class="tip" data-i18n="tip"></p>
+    <div id="fb" role="status" aria-live="polite"></div>
+    <div id="sol" hidden></div>
+  </div>
+
+  <details class="help">
+    <summary data-i18n="help_sum"></summary>
+    <ul>
+      <li data-i18n="h1"></li><li data-i18n="h2"></li><li data-i18n="h3"></li><li data-i18n="h4"></li><li data-i18n="h5"></li>
+    </ul>
+  </details>
+  </div>
+</div>
+<script id="i18n">
+/* Oberflächentexte. Deutsche Grammatikbegriffe (Präsens, Präteritum, Perfekt, Futur I, ge-) bleiben in allen Sprachen deutsch. */
+var I18N={};
+var LANGS=[['de','Deutsch'],['en','English'],['pl','Polski'],['ru','Русский'],['uk','Українська'],['fa','فارسی'],['ar','العربية'],['tr','Türkçe'],['ro','Română'],['nl','Nederlands']];
+var RTL={fa:1,ar:1};
+
+I18N.de={
+sub:"Vergangenheit & Präsens üben: Präteritum oder Perfekt?",pts:"Punkte",streak:"Serie",lang:"Sprache",
+start_h:"Was möchtest du üben?",start_p:"Wähle eine Variante. Du kannst sie später jederzeit wechseln.",mA:"",mB:"",
+disc_h:"Entdecke zuerst die Regel",disc_p:"Welcher Satz klingt im Alltag natürlicher? Tippe auf deine Antwort.",disc_skip:"Überspringen und spielen",disc_go:"Los geht’s!",disc_other:"Üblicher ist der andere Satz.",
+q_usual:"Was sagt man im Alltag meistens?",q_modal:"Modalverben (können, müssen, wollen …): Was sagt man meistens?",q_untr:"Untrennbares Präfix: Welcher Satz ist richtig?",q_sep:"Trennbares Präfix: Welcher Satz ist richtig?",
+ex_hs:"haben und sein als Vollverb: meistens Präteritum (war, hatte).",ex_perf:"Die meisten anderen Verben: meistens Perfekt (hat/ist + Partizip II).",ex_perf2:"kaufen: Perfekt. Beide Sätze sind richtig, aber der erste ist üblicher.",ex_modal:"Modalverben: meistens Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",ex_untr:"Bei be-, ver-, er-, ent-, emp-, ge-, über-, unter- … gibt es im Partizip kein ge-.",ex_sep:"Bei trennbaren Verben steht ge- zwischen Präfix und Verb: an-ge-rufen.",
+merke_l:"Merke:",merkeA:"Üblich in der Vergangenheit: Präteritum bei haben und sein (Vollverb) – Perfekt bei allen anderen Verben. Die jeweils andere Form ist nicht falsch, aber unüblich.",merkeB:"Üblich in der Vergangenheit: Präteritum bei haben, sein und den Modalverben – Perfekt bei allen anderen Verben. Die jeweils andere Form ist nicht falsch, aber unüblich. Bei untrennbaren Präfixen hat das Partizip kein ge-.",
+l_time:"Zeit",l_person:"Person",l_phrase:"Verbalphrase",hold:"🔓 Halten",held:"🔒 Gehalten",spin:"DREHEN",
+chg:"Variante wechseln",tenses:"Zeiten:",t_all:"alle (Vergangenheit, Gegenwart, Zukunft)",t_pf:"nur Gegenwart & Zukunft",t_past:"nur Vergangenheit",tlbl:"Zeitstrahl:",tl_on:"an",tl_off:"aus",tl_past:"◀ Vergangenheit",tl_pres:"Gegenwart",tl_fut:"Zukunft ▶",sound:"Ton",reset:"Punkte zurücksetzen",chip_a:"Variante A: einfach üben",chip_b:"Variante B: mit Zusatzthemen",
+task:"Aufgabe:",task_t:"Bilde einen Satz mit allen drei Walzen. In der Vergangenheit: Welche Form ist im Alltag üblich?",ph:"Verbform(en) oder ganzer Satz …",check:"Prüfen",reveal:"Lösung zeigen",tip:"Schreibe nur die Verbform(en), z. B. „gehe“, „bin gegangen“ oder „stehe auf“ – oder den ganzen Satz. Die Wortstellung wird hier nicht bewertet.",meaning:"Was bedeutet das Verb?",
+help_sum:"So funktioniert’s",
+h1:"DREHEN (oder Leertaste): Alle drei Walzen drehen sich. Der Zeitstrahl zeigt, ob die Zeitangabe Vergangenheit, Gegenwart oder Zukunft meint. Für die Zukunft verwendet man im Deutschen meist das Präsens.",
+h2:"Üblich in der Vergangenheit: Präteritum bei haben und sein (als Vollverb) – in Variante B auch bei den Modalverben –, Perfekt bei allen anderen Verben. Die jeweils andere Form ist richtig, aber unüblich; du bekommst dafür trotzdem Punkte und einen Hinweis.",
+h3:"Halten: Eine Walze bleibt stehen, die anderen drehen sich weiter.",
+h4:"Zeitangaben wie „heute um 08:00 Uhr“ richten sich nach der Uhrzeit dieses Geräts: Ist es schon vorbei, braucht man die Vergangenheit.",
+h5:"Verb nicht verstanden? Klicke auf „Was bedeutet das Verb?“ – dann siehst du die Bedeutung in deiner Sprache.",
+fb_empty:"Schreib zuerst die Verbform(en) oder den ganzen Satz.",fb_ok:"✔ Richtig! +{n} Punkte",
+fb_u_futur:"Richtig, aber unüblich: Futur I ist grammatisch korrekt. Für die Zukunft nimmt man im Alltag meistens das Präsens (mit Zeitangabe).",
+fb_u_praet:"Richtig, aber unüblich: Das Präteritum ist grammatisch korrekt. Im Alltag sagt man bei diesem Verb meistens das Perfekt.",
+fb_u_perf:"Richtig, aber unüblich: Das Perfekt ist grammatisch korrekt. Bei diesem Verb sagt man in der Vergangenheit meistens das Präteritum.",
+fb_u_rest:"(Allerdings stimmt noch etwas im Rest nicht: Wörter oder Schreibung. Du kannst auch nur die Verbform(en) schreiben.)",
+fb_verbok:"Die Verbform stimmt. Im Rest ist aber noch etwas anders (Wörter oder Schreibung). Du kannst auch nur die Verbform(en) schreiben.",
+fb_oth_past:"Das ist {t}. Die Zeitangabe zeigt Vergangenheit – hier brauchst du das {u} (oder das {a}, aber das ist unüblich).",
+fb_oth_pres:"Das ist {t}. Die Zeitangabe zeigt Gegenwart – hier passt das Präsens.",
+fb_oth_fut:"Das ist {t}. Die Zeitangabe zeigt Zukunft – hier passt das Präsens.",
+fb_untr:"Bei Verben mit untrennbarem Präfix (be-, ver-, er-, ent-, emp-, ge-, über-, unter- …) gibt es im Partizip kein „ge-“.",
+fb_aux:"Das Partizip stimmt. Prüfe das Hilfsverb: haben oder sein? (Bewegung oder Zustandswechsel → meist sein)",
+fb_wrong:"Noch nicht ganz. Prüfe die Person (ich, du, er …), die Endung und – beim Perfekt – haben oder sein.",
+v_past:"Vergangenheit → üblich: {t}",v_pres:"Gegenwart → {t}",v_fut:"Zukunft → üblich: Präsens (Futur I ist möglich, aber unüblich)",
+tag_u:"üblich",tag_x:"richtig, aber unüblich",stammlbl:"Stammformen:",b_hs:"als Vollverb",b_modal:"Modalverb",b_untr:"untrennbares Präfix",
+m_hs:"„haben“ und „sein“ als Vollverb stehen in der Vergangenheit meistens im Präteritum (war, hatte).",
+m_modal:"Modalverben stehen in der Vergangenheit meistens im Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",
+m_untr:"Bei Verben mit untrennbarem Präfix (be-, ver-, er-, ent-, emp-, ge-, über-, unter-, wieder- …) hat das Partizip kein ge-: {pp}.",
+m_ieren:"Verben auf -ieren bilden das Partizip ohne ge-: {pp}.",
+m_sep:"Bei trennbaren Verben steht ge- zwischen Präfix und Verb: {pp}.",
+m_def:"Die meisten Verben bilden die Vergangenheit im Alltag mit dem Perfekt (haben/sein + Partizip II).",m_def_sein:"Dieses Verb bildet das Perfekt mit sein.",
+m_fut:"Für die Zukunft sagt man im Alltag meistens das Präsens (mit Zeitangabe)."
+};
+
+I18N.en={
+sub:"Practise past tense and present: Präteritum or Perfekt?",pts:"points",streak:"Streak",lang:"Language",
+start_h:"What would you like to practise?",start_p:"Choose a version. You can switch at any time.",
+mA:"I just want to practise (recommended)",mB:"I also want to practise new verbs from L18, verbs with inseparable prefixes in the Perfekt and the Präteritum of modal verbs (for the bored only)",
+disc_h:"Discover the rule first",disc_p:"Which sentence sounds more natural in everyday speech? Tap your answer.",disc_skip:"Skip and play",disc_go:"Let’s go!",disc_other:"The other sentence is more usual.",
+q_usual:"What do people usually say in everyday speech?",q_modal:"Modal verbs (können, müssen, wollen …): what do people usually say?",q_untr:"Inseparable prefix: which sentence is correct?",q_sep:"Separable prefix: which sentence is correct?",
+ex_hs:"haben and sein as main verbs: usually Präteritum (war, hatte).",ex_perf:"Most other verbs: usually Perfekt (hat/ist + past participle).",ex_perf2:"kaufen: Perfekt. Both sentences are correct, but the first is more usual.",ex_modal:"Modal verbs: usually Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",ex_untr:"With be-, ver-, er-, ent-, emp-, ge-, über-, unter- … the participle has no ge-.",ex_sep:"With separable verbs, ge- goes between the prefix and the verb: an-ge-rufen.",
+merke_l:"Remember:",merkeA:"In the past, the usual form is: Präteritum for haben and sein (main verb) – Perfekt for all other verbs. The other form is not wrong, just unusual.",merkeB:"In the past, the usual form is: Präteritum for haben, sein and the modal verbs – Perfekt for all other verbs. The other form is not wrong, just unusual. With inseparable prefixes the participle has no ge-.",
+l_time:"Time",l_person:"Person",l_phrase:"Verb phrase",hold:"🔓 Hold",held:"🔒 Held",spin:"SPIN",
+chg:"Change version",tenses:"Tenses:",t_all:"all (past, present, future)",t_pf:"present & future only",t_past:"past only",tlbl:"Timeline:",tl_on:"on",tl_off:"off",tl_past:"◀ Past",tl_pres:"Present",tl_fut:"Future ▶",sound:"Sound",reset:"Reset points",chip_a:"Version A: just practise",chip_b:"Version B: with extra topics",
+task:"Task:",task_t:"Make a sentence using all three reels. In the past: which form is usual in everyday speech?",ph:"Verb form(s) or whole sentence …",check:"Check",reveal:"Show solution",tip:"Write only the verb form(s), e.g. “gehe”, “bin gegangen” or “stehe auf” – or the whole sentence. Word order is not marked here.",meaning:"What does the verb mean?",
+help_sum:"How it works",
+h1:"SPIN (or space bar): all three reels spin. The timeline shows whether the time expression means past, present or future. For the future, German mostly uses the Präsens.",
+h2:"Usual in the past: Präteritum for haben and sein (as main verbs) – in version B also for modal verbs – and Perfekt for all other verbs. The other form is correct but unusual; you still get points and a note.",
+h3:"Hold: one reel stays, the others keep spinning.",
+h4:"Time expressions like “heute um 08:00 Uhr” depend on this device’s clock: if that time has passed, you need the past.",
+h5:"Don’t understand a verb? Click “What does the verb mean?” to see its meaning in your language.",
+fb_empty:"First write the verb form(s) or the whole sentence.",fb_ok:"✔ Correct! +{n} points",
+fb_u_futur:"Correct, but unusual: Futur I is grammatically correct. For the future, people usually use the Präsens (with a time expression).",
+fb_u_praet:"Correct, but unusual: the Präteritum is grammatically correct. With this verb people usually say the Perfekt in everyday speech.",
+fb_u_perf:"Correct, but unusual: the Perfekt is grammatically correct. With this verb people usually say the Präteritum for the past.",
+fb_u_rest:"(However, something in the rest is still not right: words or spelling. You can also write just the verb form(s).)",
+fb_verbok:"The verb form is right, but something else is different (words or spelling). You can also write just the verb form(s).",
+fb_oth_past:"That is {t}. The time expression shows the past – here you need the {u} (or the {a}, but that is unusual).",
+fb_oth_pres:"That is {t}. The time expression shows the present – the Präsens fits here.",
+fb_oth_fut:"That is {t}. The time expression shows the future – the Präsens fits here.",
+fb_untr:"With verbs with an inseparable prefix (be-, ver-, er-, ent-, emp-, ge-, über-, unter- …) the participle has no “ge-”.",
+fb_aux:"The participle is right. Check the auxiliary verb: haben or sein? (movement or change of state → usually sein)",
+fb_wrong:"Not quite yet. Check the person (ich, du, er …), the ending and – in the Perfekt – haben or sein.",
+v_past:"Past → usual: {t}",v_pres:"Present → {t}",v_fut:"Future → usual: Präsens (Futur I is possible but unusual)",
+tag_u:"usual",tag_x:"correct but unusual",stammlbl:"Principal parts:",b_hs:"as main verb",b_modal:"modal verb",b_untr:"inseparable prefix",
+m_hs:"“haben” and “sein” as main verbs are usually in the Präteritum in the past (war, hatte).",
+m_modal:"Modal verbs are usually in the Präteritum in the past (musste, konnte, wollte, durfte, sollte, mochte).",
+m_untr:"Verbs with an inseparable prefix (be-, ver-, er-, ent-, emp-, ge-, über-, unter-, wieder- …) have no ge- in the participle: {pp}.",
+m_ieren:"Verbs ending in -ieren form the participle without ge-: {pp}.",
+m_sep:"With separable verbs, ge- goes between the prefix and the verb: {pp}.",
+m_def:"Most verbs use the Perfekt for the past in everyday speech (haben/sein + past participle).",m_def_sein:"This verb forms the Perfekt with sein.",
+m_fut:"For the future, people usually use the Präsens in everyday speech (with a time expression)."
+};
+
+I18N.pl={
+sub:"Ćwiczenie czasu przeszłego i teraźniejszego: Präteritum czy Perfekt?",pts:"pkt",streak:"Seria",lang:"Język",
+start_h:"Co chcesz ćwiczyć?",start_p:"Wybierz wariant. Możesz go zmienić w każdej chwili.",
+mA:"Chcę po prostu ćwiczyć (zalecane)",mB:"Chcę ćwiczyć także nowe czasowniki od L18, czasowniki z przedrostkami nierozdzielnymi w Perfekt i Präteritum czasowników modalnych (tylko dla znudzonych)",
+disc_h:"Najpierw odkryj regułę",disc_p:"Które zdanie brzmi w codziennej mowie bardziej naturalnie? Dotknij swojej odpowiedzi.",disc_skip:"Pomiń i graj",disc_go:"Zaczynamy!",disc_other:"Bardziej typowe jest drugie zdanie.",
+q_usual:"Co zwykle mówi się w codziennej mowie?",q_modal:"Czasowniki modalne (können, müssen, wollen …): co zwykle się mówi?",q_untr:"Przedrostek nierozdzielny: które zdanie jest poprawne?",q_sep:"Przedrostek rozdzielny: które zdanie jest poprawne?",
+ex_hs:"haben i sein jako czasowniki samodzielne: zwykle Präteritum (war, hatte).",ex_perf:"Większość innych czasowników: zwykle Perfekt (hat/ist + imiesłów Partizip II).",ex_perf2:"kaufen: Perfekt. Oba zdania są poprawne, ale pierwsze jest bardziej typowe.",ex_modal:"Czasowniki modalne: zwykle Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",ex_untr:"Przy be-, ver-, er-, ent-, emp-, ge-, über-, unter- … imiesłów nie ma ge-.",ex_sep:"W czasownikach rozdzielnych ge- stoi między przedrostkiem a czasownikiem: an-ge-rufen.",
+merke_l:"Zapamiętaj:",merkeA:"W czasie przeszłym zwykle używa się: Präteritum przy haben i sein (czasownik samodzielny) – Perfekt przy wszystkich innych czasownikach. Druga forma nie jest błędna, ale jest nietypowa.",merkeB:"W czasie przeszłym zwykle używa się: Präteritum przy haben, sein i czasownikach modalnych – Perfekt przy wszystkich innych czasownikach. Druga forma nie jest błędna, ale jest nietypowa. Przy przedrostkach nierozdzielnych imiesłów nie ma ge-.",
+l_time:"Czas",l_person:"Osoba",l_phrase:"Fraza czasownikowa",hold:"🔓 Zatrzymaj",held:"🔒 Zatrzymano",spin:"LOSUJ",
+chg:"Zmień wariant",tenses:"Czasy:",t_all:"wszystkie (przeszły, teraźniejszy, przyszły)",t_pf:"tylko teraźniejszy i przyszły",t_past:"tylko przeszły",tlbl:"Oś czasu:",tl_on:"włączona",tl_off:"wyłączona",tl_past:"◀ Przeszłość",tl_pres:"Teraźniejszość",tl_fut:"Przyszłość ▶",sound:"Dźwięk",reset:"Wyzeruj punkty",chip_a:"Wariant A: zwykłe ćwiczenie",chip_b:"Wariant B: z dodatkowymi tematami",
+task:"Zadanie:",task_t:"Utwórz zdanie ze wszystkich trzech bębnów. W czasie przeszłym: jaka forma jest typowa w codziennej mowie?",ph:"Forma(y) czasownika lub całe zdanie …",check:"Sprawdź",reveal:"Pokaż rozwiązanie",tip:"Wpisz tylko formę (formy) czasownika, np. „gehe”, „bin gegangen” albo „stehe auf” – lub całe zdanie. Szyk wyrazów nie jest tu oceniany.",meaning:"Co znaczy ten czasownik?",
+help_sum:"Jak to działa",
+h1:"LOSUJ (lub spacja): wszystkie trzy bębny się kręcą. Oś czasu pokazuje, czy okolicznik czasu oznacza przeszłość, teraźniejszość czy przyszłość. Dla przyszłości w niemieckim zwykle używa się Präsens.",
+h2:"Typowe w czasie przeszłym: Präteritum przy haben i sein (jako czasowniki samodzielne) – w wariancie B także przy czasownikach modalnych – oraz Perfekt przy wszystkich innych czasownikach. Druga forma jest poprawna, ale nietypowa; mimo to dostajesz punkty i wskazówkę.",
+h3:"Zatrzymaj: jeden bęben zostaje, pozostałe kręcą się dalej.",
+h4:"Okoliczniki czasu takie jak „heute um 08:00 Uhr” zależą od zegara tego urządzenia: jeśli ta godzina już minęła, potrzebny jest czas przeszły.",
+h5:"Nie rozumiesz czasownika? Kliknij „Co znaczy ten czasownik?” – zobaczysz znaczenie w swoim języku.",
+fb_empty:"Najpierw wpisz formę (formy) czasownika lub całe zdanie.",fb_ok:"✔ Dobrze! +{n} pkt",
+fb_u_futur:"Poprawnie, ale nietypowo: Futur I jest gramatycznie poprawny. Dla przyszłości w codziennej mowie zwykle używa się Präsens (z okolicznikiem czasu).",
+fb_u_praet:"Poprawnie, ale nietypowo: Präteritum jest gramatycznie poprawne. Przy tym czasowniku w codziennej mowie zwykle mówi się Perfekt.",
+fb_u_perf:"Poprawnie, ale nietypowo: Perfekt jest gramatycznie poprawny. Przy tym czasowniku w czasie przeszłym zwykle mówi się Präteritum.",
+fb_u_rest:"(Jednak w reszcie coś jeszcze się nie zgadza: słowa lub pisownia. Możesz też wpisać tylko formę (formy) czasownika.)",
+fb_verbok:"Forma czasownika jest poprawna, ale w reszcie coś jest inaczej (słowa lub pisownia). Możesz też wpisać tylko formę (formy) czasownika.",
+fb_oth_past:"To jest {t}. Okolicznik czasu wskazuje przeszłość – tutaj potrzebujesz: {u} (lub {a}, ale to jest nietypowe).",
+fb_oth_pres:"To jest {t}. Okolicznik czasu wskazuje teraźniejszość – tutaj pasuje Präsens.",
+fb_oth_fut:"To jest {t}. Okolicznik czasu wskazuje przyszłość – tutaj pasuje Präsens.",
+fb_untr:"W czasownikach z przedrostkiem nierozdzielnym (be-, ver-, er-, ent-, emp-, ge-, über-, unter- …) imiesłów nie ma „ge-”.",
+fb_aux:"Imiesłów jest poprawny. Sprawdź czasownik posiłkowy: haben czy sein? (ruch lub zmiana stanu → zwykle sein)",
+fb_wrong:"Jeszcze nie całkiem. Sprawdź osobę (ich, du, er …), końcówkę i – w Perfekt – haben albo sein.",
+v_past:"Przeszłość → typowe: {t}",v_pres:"Teraźniejszość → {t}",v_fut:"Przyszłość → typowe: Präsens (Futur I jest możliwy, ale nietypowy)",
+tag_u:"typowe",tag_x:"poprawne, ale nietypowe",stammlbl:"Formy podstawowe:",b_hs:"jako czasownik samodzielny",b_modal:"czasownik modalny",b_untr:"przedrostek nierozdzielny",
+m_hs:"„haben” i „sein” jako czasowniki samodzielne w czasie przeszłym zwykle stoją w Präteritum (war, hatte).",
+m_modal:"Czasowniki modalne w czasie przeszłym zwykle stoją w Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",
+m_untr:"Czasowniki z przedrostkiem nierozdzielnym (be-, ver-, er-, ent-, emp-, ge-, über-, unter-, wieder- …) nie mają ge- w imiesłowie: {pp}.",
+m_ieren:"Czasowniki na -ieren tworzą imiesłów bez ge-: {pp}.",
+m_sep:"W czasownikach rozdzielnych ge- stoi między przedrostkiem a czasownikiem: {pp}.",
+m_def:"Większość czasowników tworzy w codziennej mowie czas przeszły za pomocą Perfekt (haben/sein + Partizip II).",m_def_sein:"Ten czasownik tworzy Perfekt z sein.",
+m_fut:"Dla przyszłości w codziennej mowie zwykle mówi się Präsens (z okolicznikiem czasu)."
+};
+
+I18N.ru={
+sub:"Тренировка прошедшего времени и настоящего: Präteritum или Perfekt?",pts:"очк.",streak:"Серия",lang:"Язык",
+start_h:"Что вы хотите потренировать?",start_p:"Выберите вариант. Позже его можно в любой момент сменить.",
+mA:"Я хочу просто тренироваться (рекомендуется)",mB:"Я хочу тренировать также новые глаголы с L18, глаголы с неотделяемыми приставками в Perfekt и Präteritum модальных глаголов (только для тех, кому скучно)",
+disc_h:"Сначала откройте правило сами",disc_p:"Какое предложение в повседневной речи звучит естественнее? Нажмите на свой ответ.",disc_skip:"Пропустить и играть",disc_go:"Поехали!",disc_other:"Более обычно другое предложение.",
+q_usual:"Что обычно говорят в повседневной речи?",q_modal:"Модальные глаголы (können, müssen, wollen …): что обычно говорят?",q_untr:"Неотделяемая приставка: какое предложение правильное?",q_sep:"Отделяемая приставка: какое предложение правильное?",
+ex_hs:"haben и sein как самостоятельные глаголы: обычно Präteritum (war, hatte).",ex_perf:"Большинство остальных глаголов: обычно Perfekt (hat/ist + причастие Partizip II).",ex_perf2:"kaufen: Perfekt. Оба предложения правильные, но первое употребительнее.",ex_modal:"Модальные глаголы: обычно Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",ex_untr:"При be-, ver-, er-, ent-, emp-, ge-, über-, unter- … в причастии нет ge-.",ex_sep:"У отделяемых глаголов ge- стоит между приставкой и глаголом: an-ge-rufen.",
+merke_l:"Запомните:",merkeA:"В прошедшем времени обычно: Präteritum у haben и sein (самостоятельный глагол) – Perfekt у всех остальных глаголов. Другая форма не ошибочна, но необычна.",merkeB:"В прошедшем времени обычно: Präteritum у haben, sein и модальных глаголов – Perfekt у всех остальных глаголов. Другая форма не ошибочна, но необычна. При неотделяемых приставках в причастии нет ge-.",
+l_time:"Время",l_person:"Лицо",l_phrase:"Глагольная фраза",hold:"🔓 Держать",held:"🔒 Удержано",spin:"КРУТИТЬ",
+chg:"Сменить вариант",tenses:"Времена:",t_all:"все (прошедшее, настоящее, будущее)",t_pf:"только настоящее и будущее",t_past:"только прошедшее",tlbl:"Ось времени:",tl_on:"вкл.",tl_off:"выкл.",tl_past:"◀ Прошлое",tl_pres:"Настоящее",tl_fut:"Будущее ▶",sound:"Звук",reset:"Сбросить очки",chip_a:"Вариант A: просто тренироваться",chip_b:"Вариант B: с дополнительными темами",
+task:"Задание:",task_t:"Составьте предложение из трёх барабанов. В прошедшем времени: какая форма употребительна в повседневной речи?",ph:"Форма(ы) глагола или всё предложение …",check:"Проверить",reveal:"Показать решение",tip:"Напишите только форму (формы) глагола, например «gehe», «bin gegangen» или «stehe auf», либо всё предложение. Порядок слов здесь не оценивается.",meaning:"Что значит этот глагол?",
+help_sum:"Как это работает",
+h1:"КРУТИТЬ (или пробел): все три барабана вращаются. Ось времени показывает, означает ли указание времени прошлое, настоящее или будущее. Для будущего в немецком обычно используют Präsens.",
+h2:"Обычно в прошедшем времени: Präteritum у haben и sein (как самостоятельных глаголов) – в варианте B также у модальных глаголов – и Perfekt у всех остальных глаголов. Другая форма правильна, но необычна; очки и подсказку вы всё равно получите.",
+h3:"Держать: один барабан остаётся на месте, остальные продолжают крутиться.",
+h4:"Указания времени вроде «heute um 08:00 Uhr» зависят от часов вашего устройства: если это время уже прошло, нужно прошедшее время.",
+h5:"Не понимаете глагол? Нажмите «Что значит этот глагол?» – вы увидите значение на своём языке.",
+fb_empty:"Сначала напишите форму (формы) глагола или всё предложение.",fb_ok:"✔ Верно! +{n} очк.",
+fb_u_futur:"Правильно, но необычно: Futur I грамматически верен. Для будущего в повседневной речи обычно используют Präsens (с указанием времени).",
+fb_u_praet:"Правильно, но необычно: Präteritum грамматически верно. С этим глаголом в повседневной речи обычно говорят Perfekt.",
+fb_u_perf:"Правильно, но необычно: Perfekt грамматически верен. С этим глаголом в прошедшем времени обычно говорят Präteritum.",
+fb_u_rest:"(Но в остальном есть ошибка: слова или написание. Можно написать только форму (формы) глагола.)",
+fb_verbok:"Форма глагола верна, но в остальном что-то не так (слова или написание). Можно написать только форму (формы) глагола.",
+fb_oth_past:"Это {t}. Указание времени показывает прошлое – здесь нужно {u} (или {a}, но это необычно).",
+fb_oth_pres:"Это {t}. Указание времени показывает настоящее – здесь подходит Präsens.",
+fb_oth_fut:"Это {t}. Указание времени показывает будущее – здесь подходит Präsens.",
+fb_untr:"У глаголов с неотделяемой приставкой (be-, ver-, er-, ent-, emp-, ge-, über-, unter- …) в причастии нет «ge-».",
+fb_aux:"Причастие верное. Проверьте вспомогательный глагол: haben или sein? (движение или смена состояния → обычно sein)",
+fb_wrong:"Пока не совсем. Проверьте лицо (ich, du, er …), окончание и – в Perfekt – haben или sein.",
+v_past:"Прошлое → обычно: {t}",v_pres:"Настоящее → {t}",v_fut:"Будущее → обычно: Präsens (Futur I возможен, но необычен)",
+tag_u:"обычно",tag_x:"правильно, но необычно",stammlbl:"Основные формы:",b_hs:"как самостоятельный глагол",b_modal:"модальный глагол",b_untr:"неотделяемая приставка",
+m_hs:"«haben» и «sein» как самостоятельные глаголы в прошедшем времени обычно стоят в Präteritum (war, hatte).",
+m_modal:"Модальные глаголы в прошедшем времени обычно стоят в Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",
+m_untr:"У глаголов с неотделяемой приставкой (be-, ver-, er-, ent-, emp-, ge-, über-, unter-, wieder- …) в причастии нет ge-: {pp}.",
+m_ieren:"Глаголы на -ieren образуют причастие без ge-: {pp}.",
+m_sep:"У отделяемых глаголов ge- стоит между приставкой и глаголом: {pp}.",
+m_def:"Большинство глаголов в повседневной речи образуют прошедшее время с помощью Perfekt (haben/sein + Partizip II).",m_def_sein:"Этот глагол образует Perfekt с sein.",
+m_fut:"Для будущего в повседневной речи обычно говорят Präsens (с указанием времени)."
+};
+
+I18N.uk={
+sub:"Тренування минулого і теперішнього часу: Präteritum чи Perfekt?",pts:"балів",streak:"Серія",lang:"Мова",
+start_h:"Що ви хочете потренувати?",start_p:"Оберіть варіант. Пізніше його можна в будь-який момент змінити.",
+mA:"Я хочу просто тренуватися (рекомендовано)",mB:"Я хочу тренувати також нові дієслова з L18, дієслова з нероздільними префіксами в Perfekt і Präteritum модальних дієслів (лише для тих, кому нудно)",
+disc_h:"Спершу відкрийте правило самі",disc_p:"Яке речення в повсякденному мовленні звучить природніше? Натисніть на свою відповідь.",disc_skip:"Пропустити й грати",disc_go:"Поїхали!",disc_other:"Звичніше інше речення.",
+q_usual:"Що зазвичай кажуть у повсякденному мовленні?",q_modal:"Модальні дієслова (können, müssen, wollen …): що зазвичай кажуть?",q_untr:"Нероздільний префікс: яке речення правильне?",q_sep:"Роздільний префікс: яке речення правильне?",
+ex_hs:"haben і sein як самостійні дієслова: зазвичай Präteritum (war, hatte).",ex_perf:"Більшість інших дієслів: зазвичай Perfekt (hat/ist + дієприкметник Partizip II).",ex_perf2:"kaufen: Perfekt. Обидва речення правильні, але перше звичніше.",ex_modal:"Модальні дієслова: зазвичай Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",ex_untr:"Із be-, ver-, er-, ent-, emp-, ge-, über-, unter- … у дієприкметнику немає ge-.",ex_sep:"У роздільних дієслів ge- стоїть між префіксом і дієсловом: an-ge-rufen.",
+merke_l:"Запам’ятайте:",merkeA:"У минулому часі зазвичай: Präteritum у haben і sein (самостійне дієслово) – Perfekt у всіх інших дієслів. Інша форма не хибна, але незвична.",merkeB:"У минулому часі зазвичай: Präteritum у haben, sein і модальних дієслів – Perfekt у всіх інших дієслів. Інша форма не хибна, але незвична. При нероздільних префіксах у дієприкметнику немає ge-.",
+l_time:"Час",l_person:"Особа",l_phrase:"Дієслівна фраза",hold:"🔓 Тримати",held:"🔒 Утримано",spin:"КРУТИТИ",
+chg:"Змінити варіант",tenses:"Часи:",t_all:"усі (минулий, теперішній, майбутній)",t_pf:"лише теперішній і майбутній",t_past:"лише минулий",tlbl:"Лінія часу:",tl_on:"увімк.",tl_off:"вимк.",tl_past:"◀ Минуле",tl_pres:"Теперішнє",tl_fut:"Майбутнє ▶",sound:"Звук",reset:"Скинути бали",chip_a:"Варіант A: просто тренуватися",chip_b:"Варіант B: з додатковими темами",
+task:"Завдання:",task_t:"Складіть речення з усіх трьох барабанів. У минулому часі: яка форма звична в повсякденному мовленні?",ph:"Форма(и) дієслова або ціле речення …",check:"Перевірити",reveal:"Показати розв’язок",tip:"Напишіть лише форму (форми) дієслова, наприклад «gehe», «bin gegangen» або «stehe auf», чи ціле речення. Порядок слів тут не оцінюється.",meaning:"Що означає це дієслово?",
+help_sum:"Як це працює",
+h1:"КРУТИТИ (або пропуск): усі три барабани обертаються. Лінія часу показує, чи вказівка часу означає минуле, теперішнє чи майбутнє. Для майбутнього в німецькій зазвичай уживають Präsens.",
+h2:"Зазвичай у минулому часі: Präteritum у haben і sein (як самостійних дієслів) – у варіанті B також у модальних дієслів – і Perfekt у всіх інших дієслів. Інша форма правильна, але незвична; бали та підказку ви все одно отримаєте.",
+h3:"Тримати: один барабан залишається на місці, решта крутяться далі.",
+h4:"Вказівки часу на кшталт «heute um 08:00 Uhr» залежать від годинника цього пристрою: якщо цей час уже минув, потрібен минулий час.",
+h5:"Не розумієте дієслово? Натисніть «Що означає це дієслово?» – побачите значення своєю мовою.",
+fb_empty:"Спершу напишіть форму (форми) дієслова або ціле речення.",fb_ok:"✔ Правильно! +{n} балів",
+fb_u_futur:"Правильно, але незвично: Futur I граматично правильний. Для майбутнього в повсякденному мовленні зазвичай уживають Präsens (з вказівкою часу).",
+fb_u_praet:"Правильно, але незвично: Präteritum граматично правильне. З цим дієсловом у повсякденному мовленні зазвичай кажуть Perfekt.",
+fb_u_perf:"Правильно, але незвично: Perfekt граматично правильний. З цим дієсловом у минулому часі зазвичай кажуть Präteritum.",
+fb_u_rest:"(Проте в решті є помилка: слова або написання. Можна написати лише форму (форми) дієслова.)",
+fb_verbok:"Форма дієслова правильна, але в решті щось не так (слова або написання). Можна написати лише форму (форми) дієслова.",
+fb_oth_past:"Це {t}. Вказівка часу означає минуле – тут потрібне {u} (або {a}, але це незвично).",
+fb_oth_pres:"Це {t}. Вказівка часу означає теперішнє – тут пасує Präsens.",
+fb_oth_fut:"Це {t}. Вказівка часу означає майбутнє – тут пасує Präsens.",
+fb_untr:"У дієслів із нероздільним префіксом (be-, ver-, er-, ent-, emp-, ge-, über-, unter- …) у дієприкметнику немає «ge-».",
+fb_aux:"Дієприкметник правильний. Перевірте допоміжне дієслово: haben чи sein? (рух або зміна стану → зазвичай sein)",
+fb_wrong:"Ще не зовсім. Перевірте особу (ich, du, er …), закінчення та – у Perfekt – haben або sein.",
+v_past:"Минуле → зазвичай: {t}",v_pres:"Теперішнє → {t}",v_fut:"Майбутнє → зазвичай: Präsens (Futur I можливий, але незвичний)",
+tag_u:"зазвичай",tag_x:"правильно, але незвично",stammlbl:"Основні форми:",b_hs:"як самостійне дієслово",b_modal:"модальне дієслово",b_untr:"нероздільний префікс",
+m_hs:"«haben» і «sein» як самостійні дієслова в минулому часі зазвичай стоять у Präteritum (war, hatte).",
+m_modal:"Модальні дієслова в минулому часі зазвичай стоять у Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",
+m_untr:"У дієслів із нероздільним префіксом (be-, ver-, er-, ent-, emp-, ge-, über-, unter-, wieder- …) у дієприкметнику немає ge-: {pp}.",
+m_ieren:"Дієслова на -ieren утворюють дієприкметник без ge-: {pp}.",
+m_sep:"У роздільних дієслів ge- стоїть між префіксом і дієсловом: {pp}.",
+m_def:"Більшість дієслів у повсякденному мовленні утворюють минулий час за допомогою Perfekt (haben/sein + Partizip II).",m_def_sein:"Це дієслово утворює Perfekt із sein.",
+m_fut:"Для майбутнього в повсякденному мовленні зазвичай кажуть Präsens (з вказівкою часу)."
+};
+
+I18N.fa={
+sub:"تمرین گذشته و حال: Präteritum یا Perfekt؟",pts:"امتیاز",streak:"پیاپی",lang:"زبان",
+start_h:"می‌خواهید چه چیزی تمرین کنید؟",start_p:"یک گزینه را انتخاب کنید. بعداً هر زمان می‌توانید آن را عوض کنید.",
+mA:"می‌خواهم فقط تمرین کنم (پیشنهادی)",mB:"می‌خواهم فعل‌های جدید از L18، فعل‌های دارای پیشوند جدانشدنی در Perfekt و Präteritum فعل‌های وجهی را هم تمرین کنم (فقط برای کسانی که حوصله‌شان سر رفته)",
+disc_h:"اول قاعده را خودتان کشف کنید",disc_p:"کدام جمله در گفتار روزمره طبیعی‌تر به نظر می‌رسد؟ روی پاسخ خود بزنید.",disc_skip:"رد کردن و بازی",disc_go:"شروع کنیم!",disc_other:"جملهٔ دیگر رایج‌تر است.",
+q_usual:"در گفتار روزمره معمولاً چه می‌گویند؟",q_modal:"فعل‌های وجهی (können, müssen, wollen …): معمولاً چه می‌گویند؟",q_untr:"پیشوند جدانشدنی: کدام جمله درست است؟",q_sep:"پیشوند جداشدنی: کدام جمله درست است؟",
+ex_hs:"haben و sein به‌عنوان فعل اصلی: معمولاً Präteritum (war, hatte).",ex_perf:"بیشتر فعل‌های دیگر: معمولاً Perfekt (hat/ist + صفت مفعولی Partizip II).",ex_perf2:"kaufen: Perfekt. هر دو جمله درست‌اند، اما جملهٔ اول رایج‌تر است.",ex_modal:"فعل‌های وجهی: معمولاً Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",ex_untr:"با be-، ver-، er-، ent-، emp-، ge-، über-، unter- … در Partizip پیشوند ge- نمی‌آید.",ex_sep:"در فعل‌های جداشدنی، ge- بین پیشوند و فعل قرار می‌گیرد: an-ge-rufen.",
+merke_l:"به خاطر بسپارید:",merkeA:"در گذشته معمولاً: Präteritum برای haben و sein (فعل اصلی) – Perfekt برای همهٔ فعل‌های دیگر. شکل دیگر غلط نیست، اما رایج نیست.",merkeB:"در گذشته معمولاً: Präteritum برای haben و sein و فعل‌های وجهی – Perfekt برای همهٔ فعل‌های دیگر. شکل دیگر غلط نیست، اما رایج نیست. با پیشوندهای جدانشدنی در Partizip پیشوند ge- نمی‌آید.",
+l_time:"زمان",l_person:"شخص",l_phrase:"عبارت فعلی",hold:"🔓 نگه‌دار",held:"🔒 نگه داشته شد",spin:"بچرخان",
+chg:"تغییر گزینه",tenses:"زمان‌ها:",t_all:"همه (گذشته، حال، آینده)",t_pf:"فقط حال و آینده",t_past:"فقط گذشته",tlbl:"محور زمان:",tl_on:"روشن",tl_off:"خاموش",tl_past:"◀ گذشته",tl_pres:"حال",tl_fut:"آینده ▶",sound:"صدا",reset:"صفر کردن امتیازها",chip_a:"گزینهٔ A: فقط تمرین",chip_b:"گزینهٔ B: با موضوع‌های اضافی",
+task:"تمرین:",task_t:"با هر سه چرخ یک جمله بسازید. در گذشته: کدام شکل در گفتار روزمره رایج است؟",ph:"شکل(های) فعل یا جملهٔ کامل …",check:"بررسی",reveal:"نمایش پاسخ",tip:"فقط شکل(های) فعل را بنویسید، مثلاً «gehe»، «bin gegangen» یا «stehe auf» – یا جملهٔ کامل. ترتیب کلمات در اینجا ارزیابی نمی‌شود.",meaning:"این فعل چه معنایی دارد؟",
+help_sum:"روش کار",
+h1:"بچرخان (یا کلید فاصله): هر سه چرخ می‌چرخند. محور زمان نشان می‌دهد قید زمان به گذشته، حال یا آینده اشاره دارد. برای آینده در آلمانی معمولاً از Präsens استفاده می‌کنند.",
+h2:"در گذشته رایج است: Präteritum برای haben و sein (به‌عنوان فعل اصلی) – در گزینهٔ B برای فعل‌های وجهی هم – و Perfekt برای همهٔ فعل‌های دیگر. شکل دیگر درست است اما رایج نیست؛ باز هم امتیاز و یک توضیح می‌گیرید.",
+h3:"نگه‌دار: یک چرخ می‌ماند و بقیه می‌چرخند.",
+h4:"قیدهای زمان مثل «heute um 08:00 Uhr» به ساعت همین دستگاه بستگی دارند: اگر آن ساعت گذشته باشد، باید از گذشته استفاده کنید.",
+h5:"فعلی را نمی‌فهمید؟ روی «این فعل چه معنایی دارد؟» بزنید تا معنی را به زبان خودتان ببینید.",
+fb_empty:"اول شکل(های) فعل یا جملهٔ کامل را بنویسید.",fb_ok:"✔ درست! +{n} امتیاز",
+fb_u_futur:"درست، اما رایج نیست: Futur I از نظر دستوری درست است. برای آینده در گفتار روزمره معمولاً از Präsens (همراه با قید زمان) استفاده می‌کنند.",
+fb_u_praet:"درست، اما رایج نیست: Präteritum از نظر دستوری درست است. برای این فعل در گفتار روزمره معمولاً Perfekt می‌گویند.",
+fb_u_perf:"درست، اما رایج نیست: Perfekt از نظر دستوری درست است. برای این فعل در گذشته معمولاً Präteritum می‌گویند.",
+fb_u_rest:"(اما در بقیهٔ جمله هنوز چیزی درست نیست: کلمات یا املا. می‌توانید فقط شکل(های) فعل را بنویسید.)",
+fb_verbok:"شکل فعل درست است، اما در بقیه چیزی فرق دارد (کلمات یا املا). می‌توانید فقط شکل(های) فعل را بنویسید.",
+fb_oth_past:"این {t} است. قید زمان گذشته را نشان می‌دهد – اینجا به {u} نیاز دارید (یا {a}، اما رایج نیست).",
+fb_oth_pres:"این {t} است. قید زمان حال را نشان می‌دهد – اینجا Präsens مناسب است.",
+fb_oth_fut:"این {t} است. قید زمان آینده را نشان می‌دهد – اینجا Präsens مناسب است.",
+fb_untr:"در فعل‌های دارای پیشوند جدانشدنی (be-، ver-، er-، ent-، emp-، ge-، über-، unter- …) در Partizip پیشوند «ge-» نمی‌آید.",
+fb_aux:"Partizip درست است. فعل کمکی را بررسی کنید: haben یا sein؟ (حرکت یا تغییر حالت ← معمولاً sein)",
+fb_wrong:"هنوز کاملاً درست نیست. شخص (ich, du, er …)، پایان فعل و – در Perfekt – haben یا sein را بررسی کنید.",
+v_past:"گذشته ← رایج: {t}",v_pres:"حال ← {t}",v_fut:"آینده ← رایج: Präsens (Futur I ممکن است اما رایج نیست)",
+tag_u:"رایج",tag_x:"درست، اما رایج نیست",stammlbl:"شکل‌های اصلی:",b_hs:"به‌عنوان فعل اصلی",b_modal:"فعل وجهی",b_untr:"پیشوند جدانشدنی",
+m_hs:"«haben» و «sein» به‌عنوان فعل اصلی در گذشته معمولاً در Präteritum می‌آیند (war, hatte).",
+m_modal:"فعل‌های وجهی در گذشته معمولاً در Präteritum می‌آیند (musste, konnte, wollte, durfte, sollte, mochte).",
+m_untr:"فعل‌های دارای پیشوند جدانشدنی (be-، ver-، er-، ent-، emp-، ge-، über-، unter-، wieder- …) در Partizip پیشوند ge- ندارند: {pp}.",
+m_ieren:"فعل‌هایی که به -ieren ختم می‌شوند، Partizip را بدون ge- می‌سازند: {pp}.",
+m_sep:"در فعل‌های جداشدنی، ge- بین پیشوند و فعل قرار می‌گیرد: {pp}.",
+m_def:"بیشتر فعل‌ها در گفتار روزمره گذشته را با Perfekt می‌سازند (haben/sein + Partizip II).",m_def_sein:"این فعل Perfekt را با sein می‌سازد.",
+m_fut:"برای آینده در گفتار روزمره معمولاً Präsens می‌گویند (همراه با قید زمان)."
+};
+
+I18N.ar={
+sub:"تدريب على الماضي والحاضر: Präteritum أم Perfekt؟",pts:"نقطة",streak:"سلسلة",lang:"اللغة",
+start_h:"ماذا تريد أن تتدرّب عليه؟",start_p:"اختر صيغة. يمكنك تغييرها في أي وقت لاحقاً.",
+mA:"أريد أن أتدرّب فقط (موصى به)",mB:"أريد أن أتدرّب أيضاً على أفعال جديدة من L18 وأفعال ذات بادئات غير منفصلة في Perfekt وعلى Präteritum للأفعال الناقصة (modal) (فقط لمن يشعر بالملل)",
+disc_h:"اكتشف القاعدة أولاً",disc_p:"أيّ جملة تبدو أكثر طبيعية في الكلام اليومي؟ اضغط على إجابتك.",disc_skip:"تخطَّ وابدأ اللعب",disc_go:"هيا بنا!",disc_other:"الجملة الأخرى هي الأكثر شيوعاً.",
+q_usual:"ماذا يقول الناس عادةً في الكلام اليومي؟",q_modal:"الأفعال الناقصة (können, müssen, wollen …): ماذا يقول الناس عادةً؟",q_untr:"بادئة غير منفصلة: أيّ جملة صحيحة؟",q_sep:"بادئة منفصلة: أيّ جملة صحيحة؟",
+ex_hs:"haben وsein كفعلين أساسيين: عادةً Präteritum (war, hatte).",ex_perf:"معظم الأفعال الأخرى: عادةً Perfekt (hat/ist + اسم المفعول Partizip II).",ex_perf2:"kaufen: Perfekt. الجملتان صحيحتان، لكن الأولى أكثر شيوعاً.",ex_modal:"الأفعال الناقصة: عادةً Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",ex_untr:"مع be- وver- وer- وent- وemp- وge- وüber- وunter- … لا يوجد ge- في Partizip.",ex_sep:"في الأفعال المنفصلة يأتي ge- بين البادئة والفعل: an-ge-rufen.",
+merke_l:"تذكّر:",merkeA:"الشائع في الماضي: Präteritum مع haben وsein (كفعل أساسي) – وPerfekt مع جميع الأفعال الأخرى. الصيغة الأخرى ليست خاطئة لكنها غير شائعة.",merkeB:"الشائع في الماضي: Präteritum مع haben وsein والأفعال الناقصة – وPerfekt مع جميع الأفعال الأخرى. الصيغة الأخرى ليست خاطئة لكنها غير شائعة. مع البادئات غير المنفصلة لا يوجد ge- في Partizip.",
+l_time:"الزمن",l_person:"الشخص",l_phrase:"العبارة الفعلية",hold:"🔓 تثبيت",held:"🔒 مثبّت",spin:"أدِر",
+chg:"تغيير الصيغة",tenses:"الأزمنة:",t_all:"الكل (ماضٍ، حاضر، مستقبل)",t_pf:"الحاضر والمستقبل فقط",t_past:"الماضي فقط",tlbl:"الخط الزمني:",tl_on:"مفعّل",tl_off:"معطّل",tl_past:"◀ الماضي",tl_pres:"الحاضر",tl_fut:"المستقبل ▶",sound:"الصوت",reset:"إعادة ضبط النقاط",chip_a:"الصيغة A: تدريب فقط",chip_b:"الصيغة B: مع مواضيع إضافية",
+task:"المهمة:",task_t:"كوّن جملة من الأسطوانات الثلاث. في الماضي: أيّ صيغة شائعة في الكلام اليومي؟",ph:"صيغة (صيغ) الفعل أو الجملة كاملة …",check:"تحقّق",reveal:"إظهار الحل",tip:"اكتب صيغة (صيغ) الفعل فقط، مثل «gehe» أو «bin gegangen» أو «stehe auf» – أو الجملة كاملة. لا يُقيَّم ترتيب الكلمات هنا.",meaning:"ما معنى هذا الفعل؟",
+help_sum:"كيف تعمل اللعبة",
+h1:"أدِر (أو مفتاح المسافة): تدور الأسطوانات الثلاث. يبيّن الخط الزمني هل تدلّ إشارة الزمن على الماضي أم الحاضر أم المستقبل. للمستقبل تستخدم الألمانية عادةً Präsens.",
+h2:"الشائع في الماضي: Präteritum مع haben وsein (كفعلين أساسيين) – وفي الصيغة B أيضاً مع الأفعال الناقصة – وPerfekt مع جميع الأفعال الأخرى. الصيغة الأخرى صحيحة لكنها غير شائعة؛ ومع ذلك تحصل على نقاط وملاحظة.",
+h3:"تثبيت: تبقى أسطوانة واحدة ثابتة وتواصل الأخريان الدوران.",
+h4:"إشارات الزمن مثل «heute um 08:00 Uhr» تعتمد على ساعة هذا الجهاز: إذا كان ذلك الوقت قد مضى فأنت بحاجة إلى الماضي.",
+h5:"لا تفهم فعلاً؟ اضغط على «ما معنى هذا الفعل؟» لترى معناه بلغتك.",
+fb_empty:"اكتب أولاً صيغة (صيغ) الفعل أو الجملة كاملة.",fb_ok:"✔ صحيح! +{n} نقطة",
+fb_u_futur:"صحيح لكن غير شائع: Futur I صحيح نحوياً. للمستقبل يستخدم الناس عادةً في الكلام اليومي Präsens (مع إشارة زمنية).",
+fb_u_praet:"صحيح لكن غير شائع: Präteritum صحيح نحوياً. مع هذا الفعل يقول الناس عادةً في الكلام اليومي Perfekt.",
+fb_u_perf:"صحيح لكن غير شائع: Perfekt صحيح نحوياً. مع هذا الفعل يقول الناس عادةً في الماضي Präteritum.",
+fb_u_rest:"(لكن ما زال هناك خطأ في بقية الجملة: كلمات أو إملاء. يمكنك أيضاً كتابة صيغة (صيغ) الفعل فقط.)",
+fb_verbok:"صيغة الفعل صحيحة، لكن هناك اختلاف في بقية الجملة (كلمات أو إملاء). يمكنك أيضاً كتابة صيغة (صيغ) الفعل فقط.",
+fb_oth_past:"هذا {t}. إشارة الزمن تدل على الماضي – هنا تحتاج إلى {u} (أو {a}، لكنه غير شائع).",
+fb_oth_pres:"هذا {t}. إشارة الزمن تدل على الحاضر – هنا يناسب Präsens.",
+fb_oth_fut:"هذا {t}. إشارة الزمن تدل على المستقبل – هنا يناسب Präsens.",
+fb_untr:"في الأفعال ذات البادئة غير المنفصلة (be- وver- وer- وent- وemp- وge- وüber- وunter- …) لا يوجد «ge-» في Partizip.",
+fb_aux:"Partizip صحيح. تحقّق من الفعل المساعد: haben أم sein؟ (الحركة أو تغيّر الحالة ← غالباً sein)",
+fb_wrong:"ليس صحيحاً تماماً بعد. تحقّق من الشخص (ich, du, er …) والنهاية، وفي Perfekt: haben أم sein.",
+v_past:"الماضي ← الشائع: {t}",v_pres:"الحاضر ← {t}",v_fut:"المستقبل ← الشائع: Präsens (Futur I ممكن لكنه غير شائع)",
+tag_u:"شائع",tag_x:"صحيح لكن غير شائع",stammlbl:"الصيغ الأساسية:",b_hs:"كفعل أساسي",b_modal:"فعل ناقص (modal)",b_untr:"بادئة غير منفصلة",
+m_hs:"«haben» و«sein» كفعلين أساسيين يأتيان في الماضي عادةً بصيغة Präteritum (war, hatte).",
+m_modal:"الأفعال الناقصة تأتي في الماضي عادةً بصيغة Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",
+m_untr:"الأفعال ذات البادئة غير المنفصلة (be- وver- وer- وent- وemp- وge- وüber- وunter- وwieder- …) لا تحمل ge- في Partizip: {pp}.",
+m_ieren:"الأفعال المنتهية بـ -ieren تكوّن Partizip بدون ge-: {pp}.",
+m_sep:"في الأفعال المنفصلة يأتي ge- بين البادئة والفعل: {pp}.",
+m_def:"تكوّن معظم الأفعال الماضي في الكلام اليومي بـ Perfekt (haben/sein + Partizip II).",m_def_sein:"هذا الفعل يكوّن Perfekt مع sein.",
+m_fut:"للمستقبل يقول الناس عادةً في الكلام اليومي Präsens (مع إشارة زمنية)."
+};
+
+I18N.tr={
+sub:"Geçmiş zaman ve şimdiki zaman alıştırması: Präteritum mu, Perfekt mi?",pts:"puan",streak:"Seri",lang:"Dil",
+start_h:"Ne çalışmak istiyorsun?",start_p:"Bir seçenek seç. Daha sonra istediğin zaman değiştirebilirsin.",
+mA:"Sadece alıştırma yapmak istiyorum (önerilir)",mB:"L18’den itibaren yeni fiilleri, ayrılmaz ön ekli fiillerin Perfekt’ini ve modal fiillerin Präteritum’unu da çalışmak istiyorum (sadece canı sıkılanlar için)",
+disc_h:"Önce kuralı kendin keşfet",disc_p:"Günlük konuşmada hangi cümle daha doğal geliyor? Cevabına dokun.",disc_skip:"Atla ve oyna",disc_go:"Başlayalım!",disc_other:"Diğer cümle daha yaygındır.",
+q_usual:"Günlük konuşmada genellikle ne denir?",q_modal:"Modal fiiller (können, müssen, wollen …): genellikle ne denir?",q_untr:"Ayrılmaz ön ek: hangi cümle doğru?",q_sep:"Ayrılabilir ön ek: hangi cümle doğru?",
+ex_hs:"haben ve sein ana fiil olarak: genellikle Präteritum (war, hatte).",ex_perf:"Diğer fiillerin çoğu: genellikle Perfekt (hat/ist + Partizip II).",ex_perf2:"kaufen: Perfekt. İki cümle de doğru, ama birincisi daha yaygın.",ex_modal:"Modal fiiller: genellikle Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",ex_untr:"be-, ver-, er-, ent-, emp-, ge-, über-, unter- … ile Partizip’te ge- olmaz.",ex_sep:"Ayrılabilir fiillerde ge- ön ek ile fiil arasında yer alır: an-ge-rufen.",
+merke_l:"Aklında tut:",merkeA:"Geçmişte genellikle: haben ve sein (ana fiil) için Präteritum – diğer tüm fiiller için Perfekt. Diğer biçim yanlış değil, ama yaygın değil.",merkeB:"Geçmişte genellikle: haben, sein ve modal fiiller için Präteritum – diğer tüm fiiller için Perfekt. Diğer biçim yanlış değil, ama yaygın değil. Ayrılmaz ön eklerde Partizip’te ge- olmaz.",
+l_time:"Zaman",l_person:"Kişi",l_phrase:"Fiil öbeği",hold:"🔓 Tut",held:"🔒 Tutuluyor",spin:"ÇEVİR",
+chg:"Seçeneği değiştir",tenses:"Zamanlar:",t_all:"hepsi (geçmiş, şimdiki, gelecek)",t_pf:"yalnızca şimdiki ve gelecek",t_past:"yalnızca geçmiş",tlbl:"Zaman çizgisi:",tl_on:"açık",tl_off:"kapalı",tl_past:"◀ Geçmiş",tl_pres:"Şimdiki zaman",tl_fut:"Gelecek ▶",sound:"Ses",reset:"Puanları sıfırla",chip_a:"Seçenek A: sadece alıştırma",chip_b:"Seçenek B: ek konularla",
+task:"Görev:",task_t:"Üç makaranın hepsini kullanarak bir cümle kur. Geçmişte: günlük konuşmada hangi biçim yaygın?",ph:"Fiil biçim(ler)i veya tüm cümle …",check:"Kontrol et",reveal:"Çözümü göster",tip:"Sadece fiil biçim(ler)ini yaz, örneğin „gehe“, „bin gegangen“ veya „stehe auf“ – ya da cümlenin tamamını. Kelime sırası burada değerlendirilmez.",meaning:"Bu fiil ne demek?",
+help_sum:"Nasıl çalışır?",
+h1:"ÇEVİR (veya boşluk tuşu): üç makara da döner. Zaman çizgisi, zaman ifadesinin geçmişi, şimdiki zamanı ya da geleceği gösterdiğini belirtir. Gelecek için Almancada çoğunlukla Präsens kullanılır.",
+h2:"Geçmişte yaygın olan: haben ve sein (ana fiil olarak) için Präteritum – B seçeneğinde modal fiiller için de – ve diğer tüm fiiller için Perfekt. Diğer biçim doğrudur ama yaygın değildir; yine de puan ve bir not alırsın.",
+h3:"Tut: bir makara durur, diğerleri dönmeye devam eder.",
+h4:"„heute um 08:00 Uhr“ gibi zaman ifadeleri bu cihazın saatine bağlıdır: o saat geçtiyse geçmiş zaman gerekir.",
+h5:"Bir fiili anlamadın mı? „Bu fiil ne demek?“ düğmesine tıkla, anlamını kendi dilinde göreceksin.",
+fb_empty:"Önce fiil biçim(ler)ini veya tüm cümleyi yaz.",fb_ok:"✔ Doğru! +{n} puan",
+fb_u_futur:"Doğru, ama yaygın değil: Futur I dil bilgisi açısından doğrudur. Gelecek için günlük konuşmada genellikle Präsens (zaman ifadesiyle) kullanılır.",
+fb_u_praet:"Doğru, ama yaygın değil: Präteritum dil bilgisi açısından doğrudur. Bu fiille günlük konuşmada genellikle Perfekt denir.",
+fb_u_perf:"Doğru, ama yaygın değil: Perfekt dil bilgisi açısından doğrudur. Bu fiille geçmişte genellikle Präteritum denir.",
+fb_u_rest:"(Ancak geri kalanda hâlâ bir şey yanlış: kelimeler veya yazım. İstersen sadece fiil biçim(ler)ini de yazabilirsin.)",
+fb_verbok:"Fiil biçimi doğru, ama geri kalanda bir şey farklı (kelimeler veya yazım). İstersen sadece fiil biçim(ler)ini de yazabilirsin.",
+fb_oth_past:"Bu {t}. Zaman ifadesi geçmişi gösteriyor – burada {u} gerekir (ya da {a}, ama o yaygın değil).",
+fb_oth_pres:"Bu {t}. Zaman ifadesi şimdiki zamanı gösteriyor – burada Präsens uygundur.",
+fb_oth_fut:"Bu {t}. Zaman ifadesi geleceği gösteriyor – burada Präsens uygundur.",
+fb_untr:"Ayrılmaz ön ekli fiillerde (be-, ver-, er-, ent-, emp-, ge-, über-, unter- …) Partizip’te „ge-“ olmaz.",
+fb_aux:"Partizip doğru. Yardımcı fiili kontrol et: haben mi, sein mı? (hareket veya durum değişikliği → genellikle sein)",
+fb_wrong:"Henüz tam değil. Kişiyi (ich, du, er …), eki ve – Perfekt’te – haben ya da sein’ı kontrol et.",
+v_past:"Geçmiş → yaygın: {t}",v_pres:"Şimdiki zaman → {t}",v_fut:"Gelecek → yaygın: Präsens (Futur I mümkün ama yaygın değil)",
+tag_u:"yaygın",tag_x:"doğru ama yaygın değil",stammlbl:"Temel biçimler:",b_hs:"ana fiil olarak",b_modal:"modal fiil",b_untr:"ayrılmaz ön ek",
+m_hs:"„haben“ ve „sein“ ana fiil olarak geçmişte genellikle Präteritum’da kullanılır (war, hatte).",
+m_modal:"Modal fiiller geçmişte genellikle Präteritum’da kullanılır (musste, konnte, wollte, durfte, sollte, mochte).",
+m_untr:"Ayrılmaz ön ekli fiillerde (be-, ver-, er-, ent-, emp-, ge-, über-, unter-, wieder- …) Partizip’te ge- olmaz: {pp}.",
+m_ieren:"-ieren ile biten fiiller Partizip’i ge- olmadan yapar: {pp}.",
+m_sep:"Ayrılabilir fiillerde ge- ön ek ile fiil arasında yer alır: {pp}.",
+m_def:"Çoğu fiil günlük konuşmada geçmişi Perfekt ile kurar (haben/sein + Partizip II).",m_def_sein:"Bu fiil Perfekt’i sein ile kurar.",
+m_fut:"Gelecek için günlük konuşmada genellikle Präsens kullanılır (zaman ifadesiyle)."
+};
+
+I18N.ro={
+sub:"Exersează trecutul și prezentul: Präteritum sau Perfekt?",pts:"puncte",streak:"Serie",lang:"Limba",
+start_h:"Ce vrei să exersezi?",start_p:"Alege o variantă. O poți schimba oricând mai târziu.",
+mA:"Vreau doar să exersez (recomandat)",mB:"Vreau să exersez și verbe noi începând cu L18, verbe cu prefixe inseparabile la Perfekt și Präteritum al verbelor modale (doar pentru cei plictisiți)",
+disc_h:"Descoperă mai întâi regula",disc_p:"Care propoziție sună mai firesc în vorbirea de zi cu zi? Atinge răspunsul tău.",disc_skip:"Sari peste și joacă",disc_go:"Hai să începem!",disc_other:"Cealaltă propoziție este mai uzuală.",
+q_usual:"Ce se spune de obicei în vorbirea de zi cu zi?",q_modal:"Verbe modale (können, müssen, wollen …): ce se spune de obicei?",q_untr:"Prefix inseparabil: care propoziție este corectă?",q_sep:"Prefix separabil: care propoziție este corectă?",
+ex_hs:"haben și sein ca verbe principale: de obicei Präteritum (war, hatte).",ex_perf:"Majoritatea celorlalte verbe: de obicei Perfekt (hat/ist + participiul Partizip II).",ex_perf2:"kaufen: Perfekt. Ambele propoziții sunt corecte, dar prima este mai uzuală.",ex_modal:"Verbe modale: de obicei Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",ex_untr:"La be-, ver-, er-, ent-, emp-, ge-, über-, unter- … participiul nu are ge-.",ex_sep:"La verbele separabile, ge- stă între prefix și verb: an-ge-rufen.",
+merke_l:"Ține minte:",merkeA:"La trecut este uzual: Präteritum la haben și sein (verb principal) – Perfekt la toate celelalte verbe. Cealaltă formă nu este greșită, dar este neuzuală.",merkeB:"La trecut este uzual: Präteritum la haben, sein și verbele modale – Perfekt la toate celelalte verbe. Cealaltă formă nu este greșită, dar este neuzuală. La prefixele inseparabile participiul nu are ge-.",
+l_time:"Timp",l_person:"Persoană",l_phrase:"Expresie verbală",hold:"🔓 Ține",held:"🔒 Ținut",spin:"ÎNVÂRTE",
+chg:"Schimbă varianta",tenses:"Timpuri:",t_all:"toate (trecut, prezent, viitor)",t_pf:"doar prezent și viitor",t_past:"doar trecut",tlbl:"Axa timpului:",tl_on:"pornită",tl_off:"oprită",tl_past:"◀ Trecut",tl_pres:"Prezent",tl_fut:"Viitor ▶",sound:"Sunet",reset:"Resetează punctele",chip_a:"Varianta A: doar exersare",chip_b:"Varianta B: cu teme suplimentare",
+task:"Sarcină:",task_t:"Formează o propoziție cu toate cele trei role. La trecut: ce formă este uzuală în vorbirea de zi cu zi?",ph:"Forma (formele) verbului sau propoziția întreagă …",check:"Verifică",reveal:"Arată soluția",tip:"Scrie doar forma (formele) verbului, de ex. „gehe”, „bin gegangen” sau „stehe auf” – sau propoziția întreagă. Ordinea cuvintelor nu este evaluată aici.",meaning:"Ce înseamnă verbul?",
+help_sum:"Cum funcționează",
+h1:"ÎNVÂRTE (sau bara de spațiu): toate cele trei role se învârt. Axa timpului arată dacă expresia de timp indică trecutul, prezentul sau viitorul. Pentru viitor, în germană se folosește de obicei Präsens.",
+h2:"Uzual la trecut: Präteritum la haben și sein (ca verbe principale) – în varianta B și la verbele modale – și Perfekt la toate celelalte verbe. Cealaltă formă este corectă, dar neuzuală; primești totuși puncte și o observație.",
+h3:"Ține: un rol rămâne pe loc, celelalte se învârt mai departe.",
+h4:"Expresii de timp precum „heute um 08:00 Uhr” depind de ceasul acestui dispozitiv: dacă ora a trecut deja, ai nevoie de trecut.",
+h5:"Nu înțelegi un verb? Apasă pe „Ce înseamnă verbul?” – vei vedea sensul în limba ta.",
+fb_empty:"Scrie mai întâi forma (formele) verbului sau propoziția întreagă.",fb_ok:"✔ Corect! +{n} puncte",
+fb_u_futur:"Corect, dar neuzual: Futur I este corect gramatical. Pentru viitor, în vorbirea de zi cu zi se folosește de obicei Präsens (cu o expresie de timp).",
+fb_u_praet:"Corect, dar neuzual: Präteritum este corect gramatical. La acest verb, în vorbirea de zi cu zi se spune de obicei Perfekt.",
+fb_u_perf:"Corect, dar neuzual: Perfekt este corect gramatical. La acest verb, la trecut se spune de obicei Präteritum.",
+fb_u_rest:"(Totuși, în restul propoziției ceva nu este încă în regulă: cuvinte sau ortografie. Poți scrie și doar forma (formele) verbului.)",
+fb_verbok:"Forma verbului este corectă, dar în rest ceva este diferit (cuvinte sau ortografie). Poți scrie și doar forma (formele) verbului.",
+fb_oth_past:"Aceasta este {t}. Expresia de timp arată trecutul – aici ai nevoie de {u} (sau {a}, dar este neuzual).",
+fb_oth_pres:"Aceasta este {t}. Expresia de timp arată prezentul – aici se potrivește Präsens.",
+fb_oth_fut:"Aceasta este {t}. Expresia de timp arată viitorul – aici se potrivește Präsens.",
+fb_untr:"La verbele cu prefix inseparabil (be-, ver-, er-, ent-, emp-, ge-, über-, unter- …) participiul nu are „ge-”.",
+fb_aux:"Participiul este corect. Verifică auxiliarul: haben sau sein? (mișcare sau schimbare de stare → de obicei sein)",
+fb_wrong:"Încă nu chiar. Verifică persoana (ich, du, er …), terminația și – la Perfekt – haben sau sein.",
+v_past:"Trecut → uzual: {t}",v_pres:"Prezent → {t}",v_fut:"Viitor → uzual: Präsens (Futur I este posibil, dar neuzual)",
+tag_u:"uzual",tag_x:"corect, dar neuzual",stammlbl:"Forme de bază:",b_hs:"ca verb principal",b_modal:"verb modal",b_untr:"prefix inseparabil",
+m_hs:"„haben” și „sein” ca verbe principale stau de obicei la trecut în Präteritum (war, hatte).",
+m_modal:"Verbele modale stau de obicei la trecut în Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",
+m_untr:"Verbele cu prefix inseparabil (be-, ver-, er-, ent-, emp-, ge-, über-, unter-, wieder- …) nu au ge- în participiu: {pp}.",
+m_ieren:"Verbele în -ieren formează participiul fără ge-: {pp}.",
+m_sep:"La verbele separabile, ge- stă între prefix și verb: {pp}.",
+m_def:"Majoritatea verbelor formează trecutul în vorbirea de zi cu zi cu Perfekt (haben/sein + Partizip II).",m_def_sein:"Acest verb formează Perfekt cu sein.",
+m_fut:"Pentru viitor, în vorbirea de zi cu zi se spune de obicei Präsens (cu o expresie de timp)."
+};
+
+I18N.nl={
+sub:"Verleden tijd en tegenwoordige tijd oefenen: Präteritum of Perfekt?",pts:"punten",streak:"Reeks",lang:"Taal",
+start_h:"Wat wil je oefenen?",start_p:"Kies een variant. Je kunt later altijd wisselen.",
+mA:"Ik wil gewoon oefenen (aanbevolen)",mB:"Ik wil ook nieuwe werkwoorden vanaf L18, werkwoorden met onscheidbare voorvoegsels in het Perfekt en het Präteritum van modale werkwoorden oefenen (alleen voor wie zich verveelt)",
+disc_h:"Ontdek eerst zelf de regel",disc_p:"Welke zin klinkt in het dagelijks taalgebruik natuurlijker? Tik op je antwoord.",disc_skip:"Overslaan en spelen",disc_go:"Aan de slag!",disc_other:"De andere zin is gebruikelijker.",
+q_usual:"Wat zegt men meestal in het dagelijks taalgebruik?",q_modal:"Modale werkwoorden (können, müssen, wollen …): wat zegt men meestal?",q_untr:"Onscheidbaar voorvoegsel: welke zin is juist?",q_sep:"Scheidbaar voorvoegsel: welke zin is juist?",
+ex_hs:"haben en sein als zelfstandig werkwoord: meestal Präteritum (war, hatte).",ex_perf:"De meeste andere werkwoorden: meestal Perfekt (hat/ist + voltooid deelwoord Partizip II).",ex_perf2:"kaufen: Perfekt. Beide zinnen zijn juist, maar de eerste is gebruikelijker.",ex_modal:"Modale werkwoorden: meestal Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",ex_untr:"Bij be-, ver-, er-, ent-, emp-, ge-, über-, unter- … heeft het Partizip geen ge-.",ex_sep:"Bij scheidbare werkwoorden staat ge- tussen het voorvoegsel en het werkwoord: an-ge-rufen.",
+merke_l:"Onthoud:",merkeA:"Gebruikelijk in het verleden: Präteritum bij haben en sein (zelfstandig werkwoord) – Perfekt bij alle andere werkwoorden. De andere vorm is niet fout, maar ongebruikelijk.",merkeB:"Gebruikelijk in het verleden: Präteritum bij haben, sein en de modale werkwoorden – Perfekt bij alle andere werkwoorden. De andere vorm is niet fout, maar ongebruikelijk. Bij onscheidbare voorvoegsels heeft het Partizip geen ge-.",
+l_time:"Tijd",l_person:"Persoon",l_phrase:"Werkwoordgroep",hold:"🔓 Vasthouden",held:"🔒 Vastgehouden",spin:"DRAAI",
+chg:"Variant wisselen",tenses:"Tijden:",t_all:"alle (verleden, heden, toekomst)",t_pf:"alleen heden en toekomst",t_past:"alleen verleden",tlbl:"Tijdlijn:",tl_on:"aan",tl_off:"uit",tl_past:"◀ Verleden",tl_pres:"Heden",tl_fut:"Toekomst ▶",sound:"Geluid",reset:"Punten resetten",chip_a:"Variant A: gewoon oefenen",chip_b:"Variant B: met extra onderwerpen",
+task:"Opdracht:",task_t:"Maak een zin met alle drie de rollen. In het verleden: welke vorm is in het dagelijks taalgebruik gebruikelijk?",ph:"Werkwoordsvorm(en) of hele zin …",check:"Controleren",reveal:"Oplossing tonen",tip:"Schrijf alleen de werkwoordsvorm(en), bijv. „gehe”, „bin gegangen” of „stehe auf” – of de hele zin. De woordvolgorde wordt hier niet beoordeeld.",meaning:"Wat betekent het werkwoord?",
+help_sum:"Zo werkt het",
+h1:"DRAAI (of spatiebalk): alle drie de rollen draaien. De tijdlijn laat zien of de tijdsaanduiding verleden, heden of toekomst betekent. Voor de toekomst gebruikt men in het Duits meestal het Präsens.",
+h2:"Gebruikelijk in het verleden: Präteritum bij haben en sein (als zelfstandig werkwoord) – in variant B ook bij de modale werkwoorden – en Perfekt bij alle andere werkwoorden. De andere vorm is juist maar ongebruikelijk; je krijgt toch punten en een opmerking.",
+h3:"Vasthouden: één rol blijft staan, de andere draaien door.",
+h4:"Tijdsaanduidingen zoals „heute um 08:00 Uhr” hangen af van de klok van dit apparaat: is dat tijdstip al voorbij, dan heb je het verleden nodig.",
+h5:"Een werkwoord niet begrepen? Klik op „Wat betekent het werkwoord?” – dan zie je de betekenis in je eigen taal.",
+fb_empty:"Schrijf eerst de werkwoordsvorm(en) of de hele zin.",fb_ok:"✔ Juist! +{n} punten",
+fb_u_futur:"Juist, maar ongebruikelijk: Futur I is grammaticaal correct. Voor de toekomst gebruikt men in het dagelijks taalgebruik meestal het Präsens (met een tijdsaanduiding).",
+fb_u_praet:"Juist, maar ongebruikelijk: het Präteritum is grammaticaal correct. Bij dit werkwoord zegt men in het dagelijks taalgebruik meestal het Perfekt.",
+fb_u_perf:"Juist, maar ongebruikelijk: het Perfekt is grammaticaal correct. Bij dit werkwoord zegt men in het verleden meestal het Präteritum.",
+fb_u_rest:"(Maar in de rest klopt nog iets niet: woorden of spelling. Je kunt ook alleen de werkwoordsvorm(en) schrijven.)",
+fb_verbok:"De werkwoordsvorm klopt, maar in de rest is iets anders (woorden of spelling). Je kunt ook alleen de werkwoordsvorm(en) schrijven.",
+fb_oth_past:"Dat is {t}. De tijdsaanduiding wijst op het verleden – hier heb je het {u} nodig (of het {a}, maar dat is ongebruikelijk).",
+fb_oth_pres:"Dat is {t}. De tijdsaanduiding wijst op het heden – hier past het Präsens.",
+fb_oth_fut:"Dat is {t}. De tijdsaanduiding wijst op de toekomst – hier past het Präsens.",
+fb_untr:"Bij werkwoorden met een onscheidbaar voorvoegsel (be-, ver-, er-, ent-, emp-, ge-, über-, unter- …) heeft het Partizip geen „ge-”.",
+fb_aux:"Het Partizip klopt. Controleer het hulpwerkwoord: haben of sein? (beweging of verandering van toestand → meestal sein)",
+fb_wrong:"Nog niet helemaal. Controleer de persoon (ich, du, er …), de uitgang en – bij het Perfekt – haben of sein.",
+v_past:"Verleden → gebruikelijk: {t}",v_pres:"Heden → {t}",v_fut:"Toekomst → gebruikelijk: Präsens (Futur I is mogelijk, maar ongebruikelijk)",
+tag_u:"gebruikelijk",tag_x:"juist, maar ongebruikelijk",stammlbl:"Hoofdvormen:",b_hs:"als zelfstandig werkwoord",b_modal:"modaal werkwoord",b_untr:"onscheidbaar voorvoegsel",
+m_hs:"„haben” en „sein” als zelfstandig werkwoord staan in het verleden meestal in het Präteritum (war, hatte).",
+m_modal:"Modale werkwoorden staan in het verleden meestal in het Präteritum (musste, konnte, wollte, durfte, sollte, mochte).",
+m_untr:"Werkwoorden met een onscheidbaar voorvoegsel (be-, ver-, er-, ent-, emp-, ge-, über-, unter-, wieder- …) hebben geen ge- in het Partizip: {pp}.",
+m_ieren:"Werkwoorden op -ieren vormen het Partizip zonder ge-: {pp}.",
+m_sep:"Bij scheidbare werkwoorden staat ge- tussen het voorvoegsel en het werkwoord: {pp}.",
+m_def:"De meeste werkwoorden vormen het verleden in het dagelijks taalgebruik met het Perfekt (haben/sein + Partizip II).",m_def_sein:"Dit werkwoord vormt het Perfekt met sein.",
+m_fut:"Voor de toekomst zegt men in het dagelijks taalgebruik meestal het Präsens (met een tijdsaanduiding)."
+};
+
+I18N.de.note_one="eine Person";I18N.de.note_many="mehrere Personen";I18N.de.note_formal="formell";
+I18N.en.note_one="one person";I18N.en.note_many="several people";I18N.en.note_formal="formal";
+I18N.pl.note_one="jedna osoba";I18N.pl.note_many="kilka osób";I18N.pl.note_formal="formalnie";
+I18N.ru.note_one="одно лицо";I18N.ru.note_many="несколько лиц";I18N.ru.note_formal="вежливая форма";
+I18N.uk.note_one="одна особа";I18N.uk.note_many="кілька осіб";I18N.uk.note_formal="ввічлива форма";
+I18N.fa.note_one="یک نفر";I18N.fa.note_many="چند نفر";I18N.fa.note_formal="رسمی";
+I18N.ar.note_one="شخص واحد";I18N.ar.note_many="عدة أشخاص";I18N.ar.note_formal="رسمي";
+I18N.tr.note_one="tek kişi";I18N.tr.note_many="birden çok kişi";I18N.tr.note_formal="resmî";
+I18N.ro.note_one="o persoană";I18N.ro.note_many="mai multe persoane";I18N.ro.note_formal="formal";
+I18N.nl.note_one="één persoon";I18N.nl.note_many="meerdere personen";I18N.nl.note_formal="formeel";
+
+</script>
+<script id="vmean">
+var VMEAN={"haben": {"en": "to have", "pl": "mieć", "ru": "иметь", "uk": "мати", "fa": "داشتن", "ar": "يملك", "tr": "sahip olmak", "ro": "a avea", "nl": "hebben"}, "sein": {"en": "to be", "pl": "być", "ru": "быть", "uk": "бути", "fa": "بودن", "ar": "يكون", "tr": "olmak", "ro": "a fi", "nl": "zijn"}, "kommen": {"en": "to come", "pl": "przychodzić, przyjeżdżać", "ru": "приходить, приезжать", "uk": "приходити, приїжджати", "fa": "آمدن", "ar": "يأتي", "tr": "gelmek", "ro": "a veni", "nl": "komen"}, "sprechen": {"en": "to speak", "pl": "mówić", "ru": "говорить", "uk": "говорити", "fa": "صحبت کردن", "ar": "يتحدث", "tr": "konuşmak", "ro": "a vorbi", "nl": "spreken"}, "schreiben": {"en": "to write", "pl": "pisać", "ru": "писать", "uk": "писати", "fa": "نوشتن", "ar": "يكتب", "tr": "yazmak", "ro": "a scrie", "nl": "schrijven"}, "sagen": {"en": "to say", "pl": "mówić, powiedzieć", "ru": "говорить, сказать", "uk": "казати, говорити", "fa": "گفتن", "ar": "يقول", "tr": "demek, söylemek", "ro": "a spune", "nl": "zeggen"}, "buchstabieren": {"en": "to spell", "pl": "literować", "ru": "произносить по буквам", "uk": "вимовляти по буквах", "fa": "هجی کردن", "ar": "يتهجّى", "tr": "harf harf söylemek", "ro": "a silabisi", "nl": "spellen"}, "arbeiten": {"en": "to work", "pl": "pracować", "ru": "работать", "uk": "працювати", "fa": "کار کردن", "ar": "يعمل", "tr": "çalışmak", "ro": "a lucra", "nl": "werken"}, "lernen": {"en": "to learn", "pl": "uczyć się", "ru": "учить, учиться", "uk": "вчити, вчитися", "fa": "یاد گرفتن", "ar": "يتعلّم", "tr": "öğrenmek", "ro": "a învăța", "nl": "leren"}, "reparieren": {"en": "to repair", "pl": "naprawiać", "ru": "ремонтировать", "uk": "ремонтувати", "fa": "تعمیر کردن", "ar": "يصلّح", "tr": "tamir etmek", "ro": "a repara", "nl": "repareren"}, "studieren": {"en": "to study (at university)", "pl": "studiować", "ru": "учиться в вузе", "uk": "навчатися в університеті", "fa": "تحصیل کردن (در دانشگاه)", "ar": "يدرس (في الجامعة)", "tr": "üniversitede okumak", "ro": "a studia (la facultate)", "nl": "studeren"}, "wohnen": {"en": "to live (reside)", "pl": "mieszkać", "ru": "жить, проживать", "uk": "жити, мешкати", "fa": "ساکن بودن", "ar": "يسكن", "tr": "oturmak", "ro": "a locui", "nl": "wonen"}, "trainieren": {"en": "to train", "pl": "trenować", "ru": "тренироваться", "uk": "тренуватися", "fa": "تمرین کردن", "ar": "يتدرّب", "tr": "antrenman yapmak", "ro": "a se antrena", "nl": "trainen"}, "tanzen": {"en": "to dance", "pl": "tańczyć", "ru": "танцевать", "uk": "танцювати", "fa": "رقصیدن", "ar": "يرقص", "tr": "dans etmek", "ro": "a dansa", "nl": "dansen"}, "trinken": {"en": "to drink", "pl": "pić", "ru": "пить", "uk": "пити", "fa": "نوشیدن", "ar": "يشرب", "tr": "içmek", "ro": "a bea", "nl": "drinken"}, "helfen": {"en": "to help", "pl": "pomagać", "ru": "помогать", "uk": "допомагати", "fa": "کمک کردن", "ar": "يساعد", "tr": "yardım etmek", "ro": "a ajuta", "nl": "helpen"}, "machen": {"en": "to do, to make", "pl": "robić", "ru": "делать", "uk": "робити", "fa": "انجام دادن، ساختن", "ar": "يفعل / يصنع", "tr": "yapmak", "ro": "a face", "nl": "doen, maken"}, "singen": {"en": "to sing", "pl": "śpiewać", "ru": "петь", "uk": "співати", "fa": "آواز خواندن", "ar": "يغنّي", "tr": "şarkı söylemek", "ro": "a cânta", "nl": "zingen"}, "hören": {"en": "to hear, to listen", "pl": "słyszeć, słuchać", "ru": "слышать, слушать", "uk": "чути, слухати", "fa": "شنیدن", "ar": "يسمع / يستمع", "tr": "duymak, dinlemek", "ro": "a auzi, a asculta", "nl": "horen, luisteren"}, "spielen": {"en": "to play", "pl": "grać, bawić się", "ru": "играть", "uk": "грати", "fa": "بازی کردن", "ar": "يلعب", "tr": "oynamak", "ro": "a juca", "nl": "spelen"}, "stehen": {"en": "to stand", "pl": "stać", "ru": "стоять", "uk": "стояти", "fa": "ایستادن", "ar": "يقف", "tr": "ayakta durmak", "ro": "a sta (în picioare)", "nl": "staan"}, "denken": {"en": "to think", "pl": "myśleć", "ru": "думать", "uk": "думати", "fa": "فکر کردن", "ar": "يفكّر", "tr": "düşünmek", "ro": "a gândi", "nl": "denken"}, "kennen": {"en": "to know (a person/place)", "pl": "znać", "ru": "знать (человека, место)", "uk": "знати (людину, місце)", "fa": "شناختن", "ar": "يعرف (شخصاً أو مكاناً)", "tr": "tanımak", "ro": "a cunoaște", "nl": "kennen"}, "leben": {"en": "to live, to be alive", "pl": "żyć", "ru": "жить", "uk": "жити", "fa": "زندگی کردن", "ar": "يعيش", "tr": "yaşamak", "ro": "a trăi", "nl": "leven"}, "duschen": {"en": "to take a shower", "pl": "brać prysznic", "ru": "принимать душ", "uk": "приймати душ", "fa": "دوش گرفتن", "ar": "يستحمّ (بالدش)", "tr": "duş almak", "ro": "a face duș", "nl": "douchen"}, "frühstücken": {"en": "to have breakfast", "pl": "jeść śniadanie", "ru": "завтракать", "uk": "снідати", "fa": "صبحانه خوردن", "ar": "يتناول الفطور", "tr": "kahvaltı yapmak", "ro": "a lua micul dejun", "nl": "ontbijten"}, "gehen": {"en": "to go, to walk", "pl": "iść, chodzić", "ru": "идти, ходить", "uk": "йти, ходити", "fa": "رفتن", "ar": "يذهب", "tr": "gitmek", "ro": "a merge", "nl": "gaan, lopen"}, "kochen": {"en": "to cook", "pl": "gotować", "ru": "готовить (еду)", "uk": "готувати (їжу)", "fa": "پختن", "ar": "يطبخ", "tr": "yemek pişirmek", "ro": "a găti", "nl": "koken"}, "kaufen": {"en": "to buy", "pl": "kupować", "ru": "покупать", "uk": "купувати", "fa": "خریدن", "ar": "يشتري", "tr": "satın almak", "ro": "a cumpăra", "nl": "kopen"}, "putzen": {"en": "to clean", "pl": "sprzątać, czyścić", "ru": "убирать, чистить", "uk": "прибирати, чистити", "fa": "تمیز کردن", "ar": "ينظّف", "tr": "temizlemek", "ro": "a curăța", "nl": "schoonmaken"}, "schlafen": {"en": "to sleep", "pl": "spać", "ru": "спать", "uk": "спати", "fa": "خوابیدن", "ar": "ينام", "tr": "uyumak", "ro": "a dormi", "nl": "slapen"}, "telefonieren": {"en": "to phone", "pl": "telefonować", "ru": "разговаривать по телефону", "uk": "розмовляти по телефону", "fa": "تلفنی صحبت کردن", "ar": "يتحدّث بالهاتف", "tr": "telefonla konuşmak", "ro": "a vorbi la telefon", "nl": "bellen"}, "essen": {"en": "to eat", "pl": "jeść", "ru": "есть", "uk": "їсти", "fa": "خوردن", "ar": "يأكل", "tr": "yemek yemek", "ro": "a mânca", "nl": "eten"}, "fahren": {"en": "to drive, to go (by vehicle)", "pl": "jechać", "ru": "ехать, ездить", "uk": "їхати, їздити", "fa": "رفتن با وسیله نقلیه، راندن", "ar": "يركب / يقود", "tr": "(araçla) gitmek", "ro": "a merge (cu un vehicul)", "nl": "rijden, gaan (met voertuig)"}, "grillen": {"en": "to grill", "pl": "grillować", "ru": "жарить на гриле", "uk": "смажити на грилі", "fa": "کباب کردن", "ar": "يشوي", "tr": "ızgara yapmak", "ro": "a face grătar", "nl": "barbecueën"}, "laufen": {"en": "to run, to walk", "pl": "biegać, chodzić", "ru": "бегать, ходить", "uk": "бігати, ходити", "fa": "دویدن", "ar": "يركض / يمشي", "tr": "koşmak, yürümek", "ro": "a alerga", "nl": "rennen, lopen"}, "lesen": {"en": "to read", "pl": "czytać", "ru": "читать", "uk": "читати", "fa": "خواندن", "ar": "يقرأ", "tr": "okumak", "ro": "a citi", "nl": "lezen"}, "schwimmen": {"en": "to swim", "pl": "pływać", "ru": "плавать", "uk": "плавати", "fa": "شنا کردن", "ar": "يسبح", "tr": "yüzmek", "ro": "a înota", "nl": "zwemmen"}, "sehen": {"en": "to see, to watch", "pl": "widzieć, patrzeć", "ru": "видеть, смотреть", "uk": "бачити, дивитися", "fa": "دیدن", "ar": "يرى / يشاهد", "tr": "görmek, izlemek", "ro": "a vedea", "nl": "zien, kijken"}, "treffen": {"en": "to meet", "pl": "spotykać", "ru": "встречать, встречаться", "uk": "зустрічати, зустрічатися", "fa": "ملاقات کردن", "ar": "يلتقي", "tr": "buluşmak", "ro": "a se întâlni cu", "nl": "ontmoeten"}, "finden": {"en": "to find", "pl": "znajdować", "ru": "находить", "uk": "знаходити", "fa": "پیدا کردن", "ar": "يجد", "tr": "bulmak", "ro": "a găsi", "nl": "vinden"}, "boxen": {"en": "to box", "pl": "boksować", "ru": "заниматься боксом", "uk": "займатися боксом", "fa": "بوکس کردن", "ar": "يمارس الملاكمة", "tr": "boks yapmak", "ro": "a face box", "nl": "boksen"}, "aufmachen": {"en": "to open", "pl": "otwierać", "ru": "открывать", "uk": "відкривати", "fa": "باز کردن", "ar": "يفتح", "tr": "açmak", "ro": "a deschide", "nl": "openmaken"}, "zumachen": {"en": "to close", "pl": "zamykać", "ru": "закрывать", "uk": "зачиняти", "fa": "بستن", "ar": "يُغلق", "tr": "kapatmak", "ro": "a închide", "nl": "dichtdoen"}, "einkaufen": {"en": "to shop", "pl": "robić zakupy", "ru": "делать покупки", "uk": "робити покупки", "fa": "خرید کردن", "ar": "يتسوّق", "tr": "alışveriş yapmak", "ro": "a face cumpărături", "nl": "boodschappen doen"}, "anmachen": {"en": "to turn on", "pl": "włączać", "ru": "включать", "uk": "вмикати", "fa": "روشن کردن", "ar": "يُشغّل", "tr": "açmak (cihazı)", "ro": "a porni", "nl": "aandoen"}, "ausmachen": {"en": "to turn off", "pl": "wyłączać", "ru": "выключать", "uk": "вимикати", "fa": "خاموش کردن", "ar": "يُطفئ", "tr": "kapatmak (cihazı)", "ro": "a opri", "nl": "uitdoen"}, "anziehen": {"en": "to put on (clothes)", "pl": "ubierać, zakładać", "ru": "надевать", "uk": "одягати", "fa": "پوشیدن", "ar": "يرتدي", "tr": "giymek", "ro": "a îmbrăca", "nl": "aantrekken"}, "ausziehen": {"en": "to take off (clothes)", "pl": "zdejmować, rozbierać", "ru": "снимать (одежду)", "uk": "знімати (одяг)", "fa": "درآوردن (لباس)", "ar": "يخلع", "tr": "çıkarmak (giysi)", "ro": "a dezbrăca", "nl": "uittrekken"}, "aufräumen": {"en": "to tidy up", "pl": "sprzątać, porządkować", "ru": "убирать, наводить порядок", "uk": "прибирати, наводити лад", "fa": "مرتب کردن", "ar": "يُرتّب", "tr": "toplamak, düzenlemek", "ro": "a face ordine", "nl": "opruimen"}, "vorbereiten": {"en": "to prepare", "pl": "przygotowywać", "ru": "готовить, подготавливать", "uk": "готувати, підготовлювати", "fa": "آماده کردن", "ar": "يُحضّر", "tr": "hazırlamak", "ro": "a pregăti", "nl": "voorbereiden"}, "anrufen": {"en": "to call (phone)", "pl": "dzwonić", "ru": "звонить", "uk": "телефонувати, дзвонити", "fa": "زنگ زدن", "ar": "يتّصل هاتفياً", "tr": "aramak (telefonla)", "ro": "a suna", "nl": "opbellen"}, "abholen": {"en": "to pick up", "pl": "odbierać, odbierać (kogoś)", "ru": "забирать, встречать", "uk": "забирати, зустрічати", "fa": "رفتن به دنبال (کسی یا چیزی)", "ar": "يستلم / يصطحب", "tr": "almak, karşılamak", "ro": "a lua (de undeva)", "nl": "ophalen"}, "aufstehen": {"en": "to get up", "pl": "wstawać", "ru": "вставать", "uk": "вставати", "fa": "بلند شدن", "ar": "يستيقظ / ينهض", "tr": "kalkmak", "ro": "a se trezi, a se ridica", "nl": "opstaan"}, "aufhören": {"en": "to stop", "pl": "przestawać, kończyć", "ru": "заканчивать, прекращать", "uk": "закінчувати, припиняти", "fa": "تمام کردن، دست کشیدن", "ar": "يتوقّف / ينتهي", "tr": "bitirmek, durmak", "ro": "a înceta", "nl": "ophouden"}, "glauben": {"en": "to believe, to think", "pl": "wierzyć, sądzić", "ru": "верить, думать", "uk": "вірити, думати", "fa": "باور کردن", "ar": "يعتقد / يظن", "tr": "inanmak, sanmak", "ro": "a crede", "nl": "geloven"}, "fragen": {"en": "to ask", "pl": "pytać", "ru": "спрашивать", "uk": "питати", "fa": "پرسیدن", "ar": "يسأل", "tr": "sormak", "ro": "a întreba", "nl": "vragen"}, "suchen": {"en": "to look for", "pl": "szukać", "ru": "искать", "uk": "шукати", "fa": "جستجو کردن", "ar": "يبحث عن", "tr": "aramak", "ro": "a căuta", "nl": "zoeken"}, "anfangen": {"en": "to start", "pl": "zaczynać", "ru": "начинать", "uk": "починати", "fa": "شروع کردن", "ar": "يبدأ", "tr": "başlamak", "ro": "a începe", "nl": "beginnen"}, "kontrollieren": {"en": "to check", "pl": "kontrolować, sprawdzać", "ru": "проверять, контролировать", "uk": "перевіряти, контролювати", "fa": "بررسی کردن", "ar": "يراقب / يتحقّق", "tr": "kontrol etmek", "ro": "a controla", "nl": "controleren"}, "schließen": {"en": "to close", "pl": "zamykać", "ru": "закрывать", "uk": "зачиняти, закривати", "fa": "بستن", "ar": "يُغلق", "tr": "kapatmak", "ro": "a închide", "nl": "sluiten"}, "aussehen": {"en": "to look (appearance)", "pl": "wyglądać", "ru": "выглядеть", "uk": "виглядати", "fa": "به نظر رسیدن", "ar": "يبدو", "tr": "görünmek", "ro": "a arăta", "nl": "eruitzien"}, "backen": {"en": "to bake", "pl": "piec", "ru": "печь, выпекать", "uk": "пекти", "fa": "پختن (در فر)", "ar": "يخبز", "tr": "pişirmek (fırında)", "ro": "a coace", "nl": "bakken"}, "mitbringen": {"en": "to bring along", "pl": "przynosić ze sobą", "ru": "приносить с собой", "uk": "приносити з собою", "fa": "همراه آوردن", "ar": "يُحضر معه", "tr": "(yanında) getirmek", "ro": "a aduce cu sine", "nl": "meebrengen"}, "organisieren": {"en": "to organize", "pl": "organizować", "ru": "организовывать", "uk": "організовувати", "fa": "سازماندهی کردن", "ar": "يُنظّم", "tr": "organize etmek", "ro": "a organiza", "nl": "organiseren"}, "antworten": {"en": "to answer", "pl": "odpowiadać", "ru": "отвечать", "uk": "відповідати", "fa": "جواب دادن", "ar": "يجيب", "tr": "cevap vermek", "ro": "a răspunde", "nl": "antwoorden"}, "einladen": {"en": "to invite", "pl": "zapraszać", "ru": "приглашать", "uk": "запрошувати", "fa": "دعوت کردن", "ar": "يدعو", "tr": "davet etmek", "ro": "a invita", "nl": "uitnodigen"}, "feiern": {"en": "to celebrate", "pl": "świętować", "ru": "праздновать", "uk": "святкувати", "fa": "جشن گرفتن", "ar": "يحتفل", "tr": "kutlamak", "ro": "a sărbători", "nl": "vieren"}, "probieren": {"en": "to try, to taste", "pl": "próbować", "ru": "пробовать", "uk": "пробувати", "fa": "امتحان کردن، چشیدن", "ar": "يجرّب / يتذوّق", "tr": "denemek, tatmak", "ro": "a încerca, a gusta", "nl": "proberen"}, "nehmen": {"en": "to take", "pl": "brać", "ru": "брать", "uk": "брати", "fa": "گرفتن", "ar": "يأخذ", "tr": "almak", "ro": "a lua", "nl": "nemen"}, "abgeben": {"en": "to hand in", "pl": "oddawać, składać", "ru": "сдавать, передавать", "uk": "здавати, передавати", "fa": "تحویل دادن", "ar": "يُسلّم", "tr": "teslim etmek", "ro": "a preda", "nl": "inleveren"}, "anmelden": {"en": "to register", "pl": "zgłaszać, zapisywać", "ru": "регистрировать, записывать", "uk": "реєструвати, записувати", "fa": "ثبت‌نام کردن", "ar": "يُسجّل", "tr": "kaydettirmek", "ro": "a înscrie", "nl": "aanmelden"}, "mitkommen": {"en": "to come along", "pl": "iść razem, pójść z kimś", "ru": "идти вместе, пойти с кем-то", "uk": "іти разом, піти з кимось", "fa": "همراه آمدن", "ar": "يرافق", "tr": "birlikte gelmek", "ro": "a veni cu cineva", "nl": "meekomen"}, "aussteigen": {"en": "to get off", "pl": "wysiadać", "ru": "выходить (из транспорта)", "uk": "виходити (з транспорту)", "fa": "پیاده شدن", "ar": "ينزل (من المركبة)", "tr": "(araçtan) inmek", "ro": "a coborî (din vehicul)", "nl": "uitstappen"}, "umsteigen": {"en": "to change (trains, buses)", "pl": "przesiadać się", "ru": "пересаживаться", "uk": "пересідати", "fa": "عوض کردن وسیله نقلیه", "ar": "يُبدّل وسيلة النقل", "tr": "aktarma yapmak", "ro": "a schimba (mijlocul de transport)", "nl": "overstappen"}, "rauchen": {"en": "to smoke", "pl": "palić", "ru": "курить", "uk": "курити", "fa": "سیگار کشیدن", "ar": "يدخّن", "tr": "sigara içmek", "ro": "a fuma", "nl": "roken"}, "mitnehmen": {"en": "to take along", "pl": "zabierać ze sobą", "ru": "брать с собой", "uk": "брати з собою", "fa": "با خود بردن", "ar": "يأخذ معه", "tr": "(yanında) götürmek", "ro": "a lua cu sine", "nl": "meenemen"}, "baden": {"en": "to bathe, to swim", "pl": "kąpać się", "ru": "купаться", "uk": "купатися", "fa": "حمام کردن، شنا کردن", "ar": "يستحم / يسبح", "tr": "yüzmek, banyo yapmak", "ro": "a face baie", "nl": "baden"}, "hängen": {"en": "to hang", "pl": "wieszać", "ru": "вешать, висеть", "uk": "вішати, висіти", "fa": "آویختن", "ar": "يُعلّق", "tr": "asmak", "ro": "a agăța", "nl": "hangen"}, "mieten": {"en": "to rent", "pl": "wynajmować", "ru": "снимать, арендовать", "uk": "винаймати", "fa": "اجاره کردن", "ar": "يستأجر", "tr": "kiralamak", "ro": "a închiria", "nl": "huren"}, "kennenlernen": {"en": "to get to know", "pl": "poznawać", "ru": "знакомиться", "uk": "знайомитися", "fa": "آشنا شدن", "ar": "يتعرّف على", "tr": "tanışmak", "ro": "a face cunoștință", "nl": "leren kennen"}, "reden": {"en": "to talk", "pl": "rozmawiać", "ru": "разговаривать", "uk": "розмовляти", "fa": "صحبت کردن", "ar": "يتحدّث", "tr": "konuşmak", "ro": "a vorbi", "nl": "praten"}, "abstellen": {"en": "to put down, to turn off", "pl": "odstawiać, wyłączać", "ru": "ставить, отключать", "uk": "ставити, відключати", "fa": "گذاشتن، خاموش کردن", "ar": "يضع جانباً / يُطفئ", "tr": "bir kenara koymak, kapatmak", "ro": "a pune jos, a opri", "nl": "neerzetten, uitzetten"}, "ablesen": {"en": "to read off (meter)", "pl": "odczytywać (licznik)", "ru": "снимать показания", "uk": "знімати показання", "fa": "خواندن (کنتور)", "ar": "يقرأ (العدّاد)", "tr": "(sayaç) okumak", "ro": "a citi (contorul)", "nl": "aflezen"}, "gießen": {"en": "to water (plants)", "pl": "podlewać", "ru": "поливать", "uk": "поливати", "fa": "آب دادن (به گیاه)", "ar": "يسقي (النباتات)", "tr": "sulamak", "ro": "a uda", "nl": "water geven"}, "einsteigen": {"en": "to get in (a vehicle)", "pl": "wsiadać", "ru": "садиться (в транспорт)", "uk": "сідати (в транспорт)", "fa": "سوار شدن", "ar": "يركب (المركبة)", "tr": "(araca) binmek", "ro": "a urca (în vehicul)", "nl": "instappen"}, "nähen": {"en": "to sew", "pl": "szyć", "ru": "шить", "uk": "шити", "fa": "دوختن", "ar": "يخيط", "tr": "dikiş dikmek", "ro": "a coase", "nl": "naaien"}, "anbieten": {"en": "to offer", "pl": "oferować, proponować", "ru": "предлагать", "uk": "пропонувати", "fa": "پیشنهاد دادن", "ar": "يعرض", "tr": "sunmak, teklif etmek", "ro": "a oferi", "nl": "aanbieden"}, "drucken": {"en": "to print", "pl": "drukować", "ru": "печатать", "uk": "друкувати", "fa": "چاپ کردن", "ar": "يطبع", "tr": "yazdırmak", "ro": "a tipări", "nl": "printen"}, "fotografieren": {"en": "to photograph", "pl": "fotografować", "ru": "фотографировать", "uk": "фотографувати", "fa": "عکس گرفتن", "ar": "يصوّر", "tr": "fotoğraf çekmek", "ro": "a fotografia", "nl": "fotograferen"}, "korrigieren": {"en": "to correct", "pl": "poprawiać", "ru": "исправлять", "uk": "виправляти", "fa": "تصحیح کردن", "ar": "يصحّح", "tr": "düzeltmek", "ro": "a corecta", "nl": "corrigeren"}, "mitmachen": {"en": "to take part", "pl": "brać udział", "ru": "участвовать", "uk": "брати участь", "fa": "شرکت کردن", "ar": "يشارك", "tr": "katılmak", "ro": "a participa", "nl": "meedoen"}, "prüfen": {"en": "to check, to test", "pl": "sprawdzać, badać", "ru": "проверять", "uk": "перевіряти", "fa": "بررسی کردن", "ar": "يفحص / يختبر", "tr": "kontrol etmek, sınamak", "ro": "a verifica", "nl": "controleren, toetsen"}, "recherchieren": {"en": "to research", "pl": "szukać informacji, badać", "ru": "искать информацию, исследовать", "uk": "шукати інформацію, досліджувати", "fa": "تحقیق کردن", "ar": "يبحث (يجري بحثاً)", "tr": "araştırmak", "ro": "a cerceta", "nl": "onderzoeken"}, "speichern": {"en": "to save (a file)", "pl": "zapisywać (plik)", "ru": "сохранять (файл)", "uk": "зберігати (файл)", "fa": "ذخیره کردن", "ar": "يحفظ (ملفاً)", "tr": "kaydetmek", "ro": "a salva", "nl": "opslaan"}, "bleiben": {"en": "to stay", "pl": "zostawać, pozostawać", "ru": "оставаться", "uk": "залишатися", "fa": "ماندن", "ar": "يبقى", "tr": "kalmak", "ro": "a rămâne", "nl": "blijven"}, "fliegen": {"en": "to fly", "pl": "latać, lecieć", "ru": "летать, лететь", "uk": "літати, летіти", "fa": "پرواز کردن", "ar": "يطير", "tr": "uçmak", "ro": "a zbura", "nl": "vliegen"}, "schicken": {"en": "to send", "pl": "wysyłać", "ru": "отправлять", "uk": "надсилати", "fa": "فرستادن", "ar": "يرسل", "tr": "göndermek", "ro": "a trimite", "nl": "sturen"}, "tragen": {"en": "to carry, to wear", "pl": "nosić", "ru": "нести, носить", "uk": "нести, носити", "fa": "حمل کردن، پوشیدن", "ar": "يحمل / يرتدي", "tr": "taşımak, giymek", "ro": "a purta, a căra", "nl": "dragen"}, "ausatmen": {"en": "to breathe out", "pl": "wydychać", "ru": "выдыхать", "uk": "видихати", "fa": "بازدم کردن", "ar": "يزفر", "tr": "nefes vermek", "ro": "a expira", "nl": "uitademen"}, "einatmen": {"en": "to breathe in", "pl": "wdychać", "ru": "вдыхать", "uk": "вдихати", "fa": "دم گرفتن", "ar": "يشهق", "tr": "nefes almak", "ro": "a inspira", "nl": "inademen"}, "öffnen": {"en": "to open", "pl": "otwierać", "ru": "открывать", "uk": "відкривати", "fa": "باز کردن", "ar": "يفتح", "tr": "açmak", "ro": "a deschide", "nl": "openen"}, "wiederkommen": {"en": "to come back", "pl": "przychodzić ponownie", "ru": "приходить снова", "uk": "приходити знову", "fa": "دوباره آمدن", "ar": "يعود", "tr": "tekrar gelmek", "ro": "a reveni", "nl": "terugkomen"}, "lachen": {"en": "to laugh", "pl": "śmiać się", "ru": "смеяться", "uk": "сміятися", "fa": "خندیدن", "ar": "يضحك", "tr": "gülmek", "ro": "a râde", "nl": "lachen"}, "informieren": {"en": "to inform", "pl": "informować", "ru": "информировать", "uk": "інформувати", "fa": "مطلع کردن", "ar": "يُعلِم", "tr": "bilgilendirmek", "ro": "a informa", "nl": "informeren"}, "fernsehen": {"en": "to watch TV", "pl": "oglądać telewizję", "ru": "смотреть телевизор", "uk": "дивитися телевізор", "fa": "تلویزیون تماشا کردن", "ar": "يشاهد التلفاز", "tr": "televizyon izlemek", "ro": "a se uita la televizor", "nl": "tv kijken"}, "wählen": {"en": "to dial, to choose", "pl": "wybierać (numer)", "ru": "набирать (номер), выбирать", "uk": "набирати (номер), обирати", "fa": "شماره گرفتن، انتخاب کردن", "ar": "يطلب (رقماً) / يختار", "tr": "(numara) çevirmek, seçmek", "ro": "a forma (un număr), a alege", "nl": "kiezen, bellen (nummer)"}, "husten": {"en": "to cough", "pl": "kaszleć", "ru": "кашлять", "uk": "кашляти", "fa": "سرفه کردن", "ar": "يسعل", "tr": "öksürmek", "ro": "a tuși", "nl": "hoesten"}, "warten": {"en": "to wait", "pl": "czekać", "ru": "ждать", "uk": "чекати", "fa": "منتظر ماندن", "ar": "ينتظر", "tr": "beklemek", "ro": "a aștepta", "nl": "wachten"}, "abmelden": {"en": "to deregister", "pl": "wymeldowywać", "ru": "снимать с регистрации, отписывать", "uk": "знімати з реєстрації", "fa": "لغو ثبت‌نام کردن", "ar": "يُلغي التسجيل", "tr": "kaydını sildirmek", "ro": "a deregistra", "nl": "afmelden"}, "geben": {"en": "to give", "pl": "dawać", "ru": "давать", "uk": "давати", "fa": "دادن", "ar": "يعطي", "tr": "vermek", "ro": "a da", "nl": "geven"}, "hochgehen": {"en": "to go up", "pl": "iść na górę", "ru": "подниматься наверх", "uk": "підніматися нагору", "fa": "بالا رفتن", "ar": "يصعد", "tr": "yukarı çıkmak", "ro": "a urca", "nl": "naar boven gaan"}, "parken": {"en": "to park", "pl": "parkować", "ru": "парковать", "uk": "паркувати", "fa": "پارک کردن", "ar": "يركن (السيارة)", "tr": "park etmek", "ro": "a parca", "nl": "parkeren"}, "tanken": {"en": "to refuel", "pl": "tankować", "ru": "заправляться", "uk": "заправлятися", "fa": "بنزین زدن", "ar": "يملأ خزان الوقود", "tr": "yakıt almak", "ro": "a alimenta (cu combustibil)", "nl": "tanken"}, "umziehen": {"en": "to move (house)", "pl": "przeprowadzać się", "ru": "переезжать", "uk": "переїжджати", "fa": "اسباب‌کشی کردن", "ar": "ينتقل إلى مسكن جديد", "tr": "taşınmak", "ro": "a se muta", "nl": "verhuizen"}, "reagieren": {"en": "to react", "pl": "reagować", "ru": "реагировать", "uk": "реагувати", "fa": "واکنش نشان دادن", "ar": "يتفاعل / يردّ", "tr": "tepki vermek", "ro": "a reacționa", "nl": "reageren"}, "rufen": {"en": "to call, to shout", "pl": "wołać", "ru": "звать, кричать", "uk": "кликати, гукати", "fa": "صدا زدن", "ar": "يُنادي", "tr": "çağırmak", "ro": "a chema", "nl": "roepen"}, "sitzen": {"en": "to sit", "pl": "siedzieć", "ru": "сидеть", "uk": "сидіти", "fa": "نشستن", "ar": "يجلس", "tr": "oturmak", "ro": "a sta (jos)", "nl": "zitten"}, "anprobieren": {"en": "to try on", "pl": "przymierzać", "ru": "примерять", "uk": "приміряти", "fa": "پرو کردن", "ar": "يقيس (الملابس)", "tr": "denemek (giysi)", "ro": "a proba (haine)", "nl": "passen (kleding)"}, "zahlen": {"en": "to pay", "pl": "płacić", "ru": "платить", "uk": "платити", "fa": "پرداخت کردن", "ar": "يدفع", "tr": "ödemek", "ro": "a plăti", "nl": "betalen"}, "zurückgehen": {"en": "to go back", "pl": "wracać", "ru": "возвращаться, идти обратно", "uk": "повертатися, йти назад", "fa": "برگشتن", "ar": "يعود (مشياً)", "tr": "geri gitmek", "ro": "a se întoarce", "nl": "teruggaan"}, "umtauschen": {"en": "to exchange (goods)", "pl": "wymieniać (towar)", "ru": "обменивать (товар)", "uk": "обмінювати (товар)", "fa": "عوض کردن (کالا)", "ar": "يستبدل (بضاعة)", "tr": "değiştirmek (ürün)", "ro": "a schimba (marfă)", "nl": "omruilen"}, "zeigen": {"en": "to show", "pl": "pokazywać", "ru": "показывать", "uk": "показувати", "fa": "نشان دادن", "ar": "يُري / يُظهر", "tr": "göstermek", "ro": "a arăta", "nl": "laten zien"}, "zurückgeben": {"en": "to give back", "pl": "oddawać, zwracać", "ru": "возвращать, отдавать обратно", "uk": "повертати, віддавати назад", "fa": "پس دادن", "ar": "يُعيد (يردّ)", "tr": "geri vermek", "ro": "a returna, a da înapoi", "nl": "teruggeven"}, "zurücknehmen": {"en": "to take back", "pl": "brać z powrotem", "ru": "забирать обратно", "uk": "забирати назад", "fa": "پس گرفتن", "ar": "يستردّ", "tr": "geri almak", "ro": "a lua înapoi", "nl": "terugnemen"}, "aufbauen": {"en": "to set up, to build", "pl": "montować, budować", "ru": "собирать, строить", "uk": "збирати, будувати", "fa": "برپا کردن، نصب کردن", "ar": "يُنصّب / يبني", "tr": "kurmak", "ro": "a monta, a construi", "nl": "opbouwen"}, "bieten": {"en": "to offer", "pl": "oferować, zapewniać", "ru": "предлагать, предоставлять", "uk": "пропонувати, надавати", "fa": "پیشنهاد دادن، ارائه کردن", "ar": "يعرض / يقدّم", "tr": "sunmak", "ro": "a oferi", "nl": "bieden"}, "präsentieren": {"en": "to present", "pl": "prezentować", "ru": "представлять, презентовать", "uk": "представляти, презентувати", "fa": "ارائه دادن", "ar": "يعرض (تقديمياً)", "tr": "sunmak", "ro": "a prezenta", "nl": "presenteren"}, "transportieren": {"en": "to transport", "pl": "transportować", "ru": "перевозить", "uk": "перевозити", "fa": "حمل کردن", "ar": "ينقل", "tr": "taşımak, nakletmek", "ro": "a transporta", "nl": "vervoeren"}, "ziehen": {"en": "to pull, to move", "pl": "ciągnąć, przeprowadzać się", "ru": "тянуть, переезжать", "uk": "тягнути, переїжджати", "fa": "کشیدن", "ar": "يسحب / ينتقل", "tr": "çekmek, taşınmak", "ro": "a trage, a se muta", "nl": "trekken, verhuizen"}, "kosten": {"en": "to cost", "pl": "kosztować", "ru": "стоить", "uk": "коштувати", "fa": "قیمت داشتن", "ar": "يُكلّف", "tr": "mal olmak", "ro": "a costa", "nl": "kosten"}, "schmecken": {"en": "to taste", "pl": "smakować", "ru": "быть на вкус", "uk": "смакувати", "fa": "مزه دادن", "ar": "يكون له طعم", "tr": "tadı olmak", "ro": "a avea gust", "nl": "smaken"}, "dauern": {"en": "to last, to take (time)", "pl": "trwać", "ru": "длиться", "uk": "тривати", "fa": "طول کشیدن", "ar": "يستغرق", "tr": "sürmek", "ro": "a dura", "nl": "duren"}, "funktionieren": {"en": "to work (devices)", "pl": "działać", "ru": "работать (о технике)", "uk": "працювати (про техніку)", "fa": "کار کردن (دستگاه)", "ar": "يعمل (الأجهزة)", "tr": "çalışmak (cihaz)", "ro": "a funcționa", "nl": "werken (apparaat)"}, "passieren": {"en": "to happen", "pl": "zdarzać się, wydarzyć się", "ru": "случаться, происходить", "uk": "траплятися, відбуватися", "fa": "اتفاق افتادن", "ar": "يحدث", "tr": "olmak, meydana gelmek", "ro": "a se întâmpla", "nl": "gebeuren"}, "passen": {"en": "to fit, to suit", "pl": "pasować", "ru": "подходить, быть впору", "uk": "пасувати, підходити", "fa": "اندازه بودن، مناسب بودن", "ar": "يناسب", "tr": "uymak, yakışmak", "ro": "a se potrivi", "nl": "passen"}, "wehtun": {"en": "to hurt", "pl": "boleć", "ru": "болеть", "uk": "боліти", "fa": "درد کردن", "ar": "يؤلم", "tr": "acımak", "ro": "a durea", "nl": "pijn doen"}, "bluten": {"en": "to bleed", "pl": "krwawić", "ru": "кровоточить", "uk": "кровоточити", "fa": "خونریزی کردن", "ar": "ينزف", "tr": "kanamak", "ro": "a sângera", "nl": "bloeden"}, "müssen": {"en": "must, to have to", "pl": "musieć", "ru": "быть должным", "uk": "мусити, бути змушеним", "fa": "باید", "ar": "يجب", "tr": "zorunda olmak", "ro": "a trebui", "nl": "moeten"}, "können": {"en": "can, to be able to", "pl": "móc, umieć", "ru": "мочь, уметь", "uk": "могти, вміти", "fa": "توانستن", "ar": "يستطيع", "tr": "-ebilmek", "ro": "a putea", "nl": "kunnen"}, "wollen": {"en": "to want", "pl": "chcieć", "ru": "хотеть", "uk": "хотіти", "fa": "خواستن", "ar": "يريد", "tr": "istemek", "ro": "a vrea", "nl": "willen"}, "dürfen": {"en": "may, to be allowed", "pl": "wolno, móc (mieć pozwolenie)", "ru": "мочь, иметь разрешение", "uk": "могти, мати дозвіл", "fa": "اجازه داشتن", "ar": "يُسمح له", "tr": "izinli olmak", "ro": "a avea voie", "nl": "mogen"}, "sollen": {"en": "should, to be supposed to", "pl": "mieć powinność, powinien", "ru": "следует, должен (по поручению)", "uk": "слід, мусити (за вказівкою)", "fa": "باید (طبق دستور یا توصیه)", "ar": "يجب (حسب التعليمات)", "tr": "-meli (talimat, öneri)", "ro": "a trebui (după indicații)", "nl": "moeten, zullen"}, "mögen": {"en": "to like", "pl": "lubić", "ru": "любить, нравиться", "uk": "любити, подобатися", "fa": "دوست داشتن", "ar": "يحبّ", "tr": "sevmek, hoşlanmak", "ro": "a-i plăcea", "nl": "houden van, mogen"}, "besuchen": {"en": "to visit", "pl": "odwiedzać", "ru": "навещать, посещать", "uk": "відвідувати", "fa": "دیدن کردن", "ar": "يزور", "tr": "ziyaret etmek", "ro": "a vizita", "nl": "bezoeken"}, "verstehen": {"en": "to understand", "pl": "rozumieć", "ru": "понимать", "uk": "розуміти", "fa": "فهمیدن", "ar": "يفهم", "tr": "anlamak", "ro": "a înțelege", "nl": "begrijpen"}, "beginnen": {"en": "to begin", "pl": "zaczynać się, rozpoczynać", "ru": "начинаться, начинать", "uk": "починатися, починати", "fa": "شروع شدن، آغاز کردن", "ar": "يبدأ", "tr": "başlamak", "ro": "a începe", "nl": "beginnen"}, "bestellen": {"en": "to order", "pl": "zamawiać", "ru": "заказывать", "uk": "замовляти", "fa": "سفارش دادن", "ar": "يطلب (يطلب شيئاً)", "tr": "sipariş etmek", "ro": "a comanda", "nl": "bestellen"}, "überweisen": {"en": "to transfer (money)", "pl": "przelewać (pieniądze)", "ru": "переводить (деньги)", "uk": "переказувати (гроші)", "fa": "حواله کردن", "ar": "يحوّل (الأموال)", "tr": "havale etmek", "ro": "a transfera (bani)", "nl": "overmaken"}, "vereinbaren": {"en": "to arrange, to agree on", "pl": "umawiać się", "ru": "договариваться", "uk": "домовлятися", "fa": "قرار گذاشتن", "ar": "يتّفق على", "tr": "kararlaştırmak, ayarlamak", "ro": "a conveni", "nl": "afspreken"}, "vergessen": {"en": "to forget", "pl": "zapominać", "ru": "забывать", "uk": "забувати", "fa": "فراموش کردن", "ar": "ينسى", "tr": "unutmak", "ro": "a uita", "nl": "vergeten"}, "verdienen": {"en": "to earn", "pl": "zarabiać", "ru": "зарабатывать", "uk": "заробляти", "fa": "درآمد کسب کردن", "ar": "يكسب", "tr": "kazanmak", "ro": "a câștiga", "nl": "verdienen"}, "erzählen": {"en": "to tell", "pl": "opowiadać", "ru": "рассказывать", "uk": "розповідати", "fa": "تعریف کردن، نقل کردن", "ar": "يحكي", "tr": "anlatmak", "ro": "a povesti", "nl": "vertellen"}, "empfehlen": {"en": "to recommend", "pl": "polecać", "ru": "рекомендовать", "uk": "рекомендувати", "fa": "توصیه کردن", "ar": "ينصح", "tr": "tavsiye etmek", "ro": "a recomanda", "nl": "aanbevelen"}, "bekommen": {"en": "to get, to receive", "pl": "dostawać", "ru": "получать", "uk": "отримувати", "fa": "دریافت کردن", "ar": "يحصل على", "tr": "almak, elde etmek", "ro": "a primi", "nl": "krijgen"}, "beantragen": {"en": "to apply for", "pl": "składać wniosek", "ru": "подавать заявление", "uk": "подавати заяву", "fa": "درخواست دادن", "ar": "يتقدّم بطلب", "tr": "başvurmak", "ro": "a solicita", "nl": "aanvragen"}, "bezahlen": {"en": "to pay (for)", "pl": "płacić, zapłacić", "ru": "оплачивать", "uk": "оплачувати", "fa": "پرداخت کردن", "ar": "يدفع (ثمن)", "tr": "ödemek", "ro": "a plăti", "nl": "betalen"}, "verlängern": {"en": "to extend", "pl": "przedłużać", "ru": "продлевать", "uk": "продовжувати", "fa": "تمدید کردن", "ar": "يُمدّد", "tr": "uzatmak", "ro": "a prelungi", "nl": "verlengen"}, "benutzen": {"en": "to use", "pl": "używać", "ru": "использовать", "uk": "використовувати", "fa": "استفاده کردن", "ar": "يستخدم", "tr": "kullanmak", "ro": "a folosi", "nl": "gebruiken"}, "erklären": {"en": "to explain", "pl": "wyjaśniać", "ru": "объяснять", "uk": "пояснювати", "fa": "توضیح دادن", "ar": "يشرح", "tr": "açıklamak", "ro": "a explica", "nl": "uitleggen"}, "betreuen": {"en": "to look after, to care for", "pl": "opiekować się", "ru": "присматривать, опекать", "uk": "доглядати, опікуватися", "fa": "مراقبت کردن، سرپرستی کردن", "ar": "يرعى", "tr": "bakmak, ilgilenmek", "ro": "a îngriji, a supraveghea", "nl": "begeleiden, verzorgen"}, "verlassen": {"en": "to leave", "pl": "opuszczać", "ru": "покидать", "uk": "залишати", "fa": "ترک کردن", "ar": "يغادر / يترك", "tr": "terk etmek, ayrılmak", "ro": "a părăsi", "nl": "verlaten"}, "verlieren": {"en": "to lose", "pl": "gubić, przegrywać", "ru": "терять, проигрывать", "uk": "губити, програвати", "fa": "گم کردن، باختن", "ar": "يفقد / يخسر", "tr": "kaybetmek", "ro": "a pierde", "nl": "verliezen"}, "gefallen": {"en": "to please, to like (it pleases me)", "pl": "podobać się", "ru": "нравиться", "uk": "подобатися", "fa": "خوش آمدن", "ar": "يُعجب", "tr": "hoşuna gitmek, beğenilmek", "ro": "a plăcea", "nl": "bevallen"}, "ausfüllen": {"en": "to fill out", "pl": "wypełniać", "ru": "заполнять", "uk": "заповнювати", "fa": "پر کردن (فرم)", "ar": "يملأ (استمارة)", "tr": "doldurmak", "ro": "a completa", "nl": "invullen"}, "unterschreiben": {"en": "to sign", "pl": "podpisywać", "ru": "подписывать", "uk": "підписувати", "fa": "امضا کردن", "ar": "يوقّع", "tr": "imzalamak", "ro": "a semna", "nl": "ondertekenen"}, "heiraten": {"en": "to marry", "pl": "ożenić się, wyjść za mąż", "ru": "жениться, выходить замуж", "uk": "одружуватися", "fa": "ازدواج کردن", "ar": "يتزوّج", "tr": "evlenmek", "ro": "a se căsători", "nl": "trouwen"}, "wiederholen": {"en": "to repeat", "pl": "powtarzać", "ru": "повторять", "uk": "повторювати", "fa": "تکرار کردن", "ar": "يُكرّر", "tr": "tekrarlamak", "ro": "a repeta", "nl": "herhalen"}, "wandern": {"en": "to hike", "pl": "wędrować", "ru": "ходить в поход, гулять по горам", "uk": "ходити в похід", "fa": "کوه‌نوردی کردن، پیاده‌روی کردن", "ar": "يتنزّه مشياً (هايكنغ)", "tr": "yürüyüş yapmak", "ro": "a face drumeții", "nl": "wandelen"}, "liegen": {"en": "to lie (be lying)", "pl": "leżeć", "ru": "лежать", "uk": "лежати", "fa": "خوابیده بودن، قرار داشتن", "ar": "يستلقي / يقع", "tr": "yatmak, bulunmak", "ro": "a zăcea, a sta întins", "nl": "liggen"}, "besichtigen": {"en": "to visit (sights)", "pl": "zwiedzać", "ru": "осматривать (достопримечательности)", "uk": "оглядати (визначні місця)", "fa": "بازدید کردن", "ar": "يزور (معالم)", "tr": "gezmek", "ro": "a vizita (obiective)", "nl": "bezichtigen"}, "übernachten": {"en": "to stay overnight", "pl": "nocować", "ru": "ночевать", "uk": "ночувати", "fa": "شب ماندن", "ar": "يبيت", "tr": "geceyi geçirmek", "ro": "a înnopta", "nl": "overnachten"}, "abfahren": {"en": "to depart", "pl": "odjeżdżać", "ru": "отправляться, уезжать", "uk": "відправлятися, від’їжджати", "fa": "حرکت کردن (وسیله نقلیه)", "ar": "يغادر (مركبة)", "tr": "hareket etmek", "ro": "a pleca", "nl": "vertrekken"}, "ankommen": {"en": "to arrive", "pl": "przybywać", "ru": "прибывать", "uk": "прибувати", "fa": "رسیدن", "ar": "يصل", "tr": "varmak", "ro": "a ajunge", "nl": "aankomen"}, "tun": {"en": "to do", "pl": "robić, czynić", "ru": "делать, совершать", "uk": "робити, чинити", "fa": "انجام دادن", "ar": "يفعل", "tr": "yapmak, etmek", "ro": "a face", "nl": "doen"}, "gratulieren": {"en": "to congratulate", "pl": "gratulować", "ru": "поздравлять", "uk": "вітати", "fa": "تبریک گفتن", "ar": "يهنّئ", "tr": "tebrik etmek", "ro": "a felicita", "nl": "feliciteren"}, "wünschen": {"en": "to wish", "pl": "życzyć", "ru": "желать", "uk": "бажати", "fa": "آرزو کردن", "ar": "يتمنّى", "tr": "dilemek", "ro": "a ura", "nl": "wensen"}, "zurückkommen": {"en": "to come back", "pl": "wracać", "ru": "возвращаться", "uk": "повертатися", "fa": "برگشتن", "ar": "يعود", "tr": "geri gelmek", "ro": "a se întoarce", "nl": "terugkomen"}, "schenken": {"en": "to give (as a gift)", "pl": "podarować, dawać w prezencie", "ru": "дарить", "uk": "дарувати", "fa": "هدیه دادن", "ar": "يُهدي", "tr": "hediye etmek", "ro": "a dărui", "nl": "cadeau geven"}, "auspacken": {"en": "to unpack, to unwrap", "pl": "rozpakowywać", "ru": "распаковывать", "uk": "розпаковувати", "fa": "باز کردن (بسته)", "ar": "يفتح (طرداً / هدية)", "tr": "paketi açmak", "ro": "a despacheta", "nl": "uitpakken"}, "lieben": {"en": "to love", "pl": "kochać", "ru": "любить", "uk": "кохати, любити", "fa": "دوست داشتن (عاشق بودن)", "ar": "يحبّ", "tr": "sevmek", "ro": "a iubi", "nl": "houden van, liefhebben"}, "schmücken": {"en": "to decorate", "pl": "dekorować, ozdabiać", "ru": "украшать", "uk": "прикрашати", "fa": "تزیین کردن", "ar": "يزيّن", "tr": "süslemek", "ro": "a decora", "nl": "versieren"}, "wissen": {"en": "to know (a fact)", "pl": "wiedzieć", "ru": "знать (факт)", "uk": "знати (факт)", "fa": "دانستن", "ar": "يعرف (معلومة)", "tr": "bilmek", "ro": "a ști", "nl": "weten"}, "schaffen": {"en": "to manage, to make it", "pl": "dawać radę, zdążyć", "ru": "справляться, успевать", "uk": "впоратися, встигнути", "fa": "موفق شدن، از پس چیزی برآمدن", "ar": "ينجح / يتمكّن من", "tr": "başarmak", "ro": "a reuși", "nl": "lukken, halen"}, "regnen": {"en": "to rain", "pl": "padać (deszcz)", "ru": "идти (о дожде)", "uk": "іти (про дощ)", "fa": "باران آمدن", "ar": "تمطر", "tr": "yağmur yağmak", "ro": "a ploua", "nl": "regenen"}, "schneien": {"en": "to snow", "pl": "padać (śnieg)", "ru": "идти (о снеге)", "uk": "іти (про сніг)", "fa": "برف آمدن", "ar": "تثلج", "tr": "kar yağmak", "ro": "a ninge", "nl": "sneeuwen"}, "scheinen": {"en": "to shine, to seem", "pl": "świecić, wydawać się", "ru": "светить, казаться", "uk": "світити, здаватися", "fa": "تابیدن، به نظر رسیدن", "ar": "يسطع / يبدو", "tr": "parlamak, görünmek", "ro": "a străluci, a părea", "nl": "schijnen"}, "gelten": {"en": "to be valid", "pl": "obowiązywać, być ważnym", "ru": "действовать, быть действительным", "uk": "діяти, бути чинним", "fa": "معتبر بودن", "ar": "يسري / يكون صالحاً", "tr": "geçerli olmak", "ro": "a fi valabil", "nl": "gelden"}};
+
+</script>
+<script id="logic">
+(function(root){
+'use strict';
+var IDX={p1s:0,p2s:1,p3s:2,p1p:3,p2p:4,p3p:5};
+var TN={praes:'Präsens',praet:'Präteritum',perfekt:'Perfekt',futur:'Futur I'};
+var HS_SHARE=0.30;            /* Anteil haben/sein (Vollverb) an allen Aufgaben */
+var B_SHARE=0.45;             /* Modus B: Anteil der B-Verben an den übrigen Aufgaben */
+var SUB_B={m:0.25,u:0.35,n:0.40}; /* Modus B: Modalverben / untrennbar / neu ab L18 */
+var WERDEN=['werde','wirst','wird','werden','werdet','werden'];
+
+/* ================= Verben ================= */
+var V={};
+function sp(s){return s.split(' ');}
+function stemOf(inf){return /en$/.test(inf)?inf.slice(0,-2):inf.slice(0,-1);} /* -ern: wandern -> wander */
+function eIns(st){
+  var l=st.slice(-1),p;
+  if(l==='t'||l==='d'){return true;}
+  if((l==='n'||l==='m')&&st.length>1){
+    p=st.charAt(st.length-2);
+    if(p!==l&&'aeiouäöüyhlr'.indexOf(p)<0){return true;}
+  }
+  return false;
+}
+function def(inf,o){o.inf=inf;if(!o.kind){o.kind='std';}V[inf]=o;}
+/* regelmäßig (schwach). o: U = untrennbar (kein ge-), aux */
+function W(inf,o){
+  o=o||{};
+  var st=stemOf(inf),e=eIns(st)?'e':'',z=/[sßxz]$/.test(st),ng=o.U||/ieren$/.test(inf);
+  var b=st+e+'te';
+  def(inf,{p:[st+'e',z?st+'t':st+e+'st',st+e+'t',inf,st+e+'t',inf],
+    t:[b,b+'st',b,b+'n',b+'t',b+'n'],
+    pp:(ng?'':'ge')+st+e+'t',aux:o.aux||'haben',untr:!!o.U,ieren:/ieren$/.test(inf)});
+}
+/* stark/unregelmäßig: duer = "du-Form er-Form" bei Vokalwechsel */
+function S(inf,duer,pret,pp,aux,o){
+  o=o||{};
+  var st=stemOf(inf),e=eIns(st)?'e':'',z=/[sßxz]$/.test(st),d=duer?sp(duer):null,t,sx,td;
+  if(/te$/.test(pret)){t=[pret,pret+'st',pret,pret+'n',pret+'t',pret+'n'];}
+  else{
+    sx=/[sßzx]$/.test(pret);td=/[td]$/.test(pret);
+    t=[pret,pret+(td?'est':(sx?'t':'st')),pret,pret+'en',pret+(td?'et':'t'),pret+'en'];
+  }
+  def(inf,{p:[st+'e',d?d[0]:(z?st+'t':st+e+'st'),d?d[1]:st+e+'t',inf,st+e+'t',inf],
+    t:t,pp:pp,aux:aux||'haben',untr:!!o.U});
+}
+/* vollständig angegeben */
+function X(inf,p,t,pp,aux,kind){def(inf,{p:sp(p),t:sp(t),pp:pp,aux:aux||'haben',untr:false,kind:kind||'std'});}
+/* trennbar: "an|rufen" */
+function SEP(spec,o){
+  var a=spec.split('|'),pre=a[0],b=V[a[1]],inf=pre+a[1];
+  o=o||{};
+  if(!b){throw new Error('Basisverb fehlt: '+spec);}
+  def(inf,{p:b.p,t:b.t,pp:pre+b.pp,aux:o.aux||b.aux,sep:pre,untr:false,base:a[1]});
+}
+
+/* --- Hilfs- und Modalverben --- */
+X('haben','habe hast hat haben habt haben','hatte hattest hatte hatten hattet hatten','gehabt','haben','hs');
+X('sein','bin bist ist sind seid sind','war warst war waren wart waren','gewesen','sein','hs');
+X('können','kann kannst kann können könnt können','konnte konntest konnte konnten konntet konnten','gekonnt','haben','modal');
+X('müssen','muss musst muss müssen müsst müssen','musste musstest musste mussten musstet mussten','gemusst','haben','modal');
+X('wollen','will willst will wollen wollt wollen','wollte wolltest wollte wollten wolltet wollten','gewollt','haben','modal');
+X('dürfen','darf darfst darf dürfen dürft dürfen','durfte durftest durfte durften durftet durften','gedurft','haben','modal');
+X('sollen','soll sollst soll sollen sollt sollen','sollte solltest sollte sollten solltet sollten','gesollt','haben','modal');
+X('mögen','mag magst mag mögen mögt mögen','mochte mochtest mochte mochten mochtet mochten','gemocht','haben','modal');
+X('wissen','weiß weißt weiß wissen wisst wissen','wusste wusstest wusste wussten wusstet wussten','gewusst');
+X('tun','tue tust tut tun tut tun','tat tatest tat taten tatet taten','getan');
+
+/* --- starke und unregelmäßige Verben --- */
+S('gehen','','ging','gegangen','sein');
+S('kommen','','kam','gekommen','sein');
+S('fahren','fährst fährt','fuhr','gefahren','sein');
+S('laufen','läufst läuft','lief','gelaufen','sein');
+S('schwimmen','','schwamm','geschwommen','sein');
+S('fliegen','','flog','geflogen','sein');
+S('bleiben','','blieb','geblieben','sein');
+S('steigen','','stieg','gestiegen','sein');
+S('schlafen','schläfst schläft','schlief','geschlafen');
+S('trinken','','trank','getrunken');
+S('essen','isst isst','aß','gegessen');
+S('lesen','liest liest','las','gelesen');
+S('sprechen','sprichst spricht','sprach','gesprochen');
+S('schreiben','','schrieb','geschrieben');
+S('singen','','sang','gesungen');
+S('sehen','siehst sieht','sah','gesehen');
+S('treffen','triffst trifft','traf','getroffen');
+S('helfen','hilfst hilft','half','geholfen');
+S('nehmen','nimmst nimmt','nahm','genommen');
+S('geben','gibst gibt','gab','gegeben');
+S('bringen','','brachte','gebracht');
+S('denken','','dachte','gedacht');
+S('kennen','','kannte','gekannt');
+S('sitzen','','saß','gesessen');
+S('liegen','','lag','gelegen');
+S('stehen','','stand','gestanden');
+S('rufen','','rief','gerufen');
+S('finden','','fand','gefunden');
+S('tragen','trägst trägt','trug','getragen');
+S('ziehen','','zog','gezogen');
+S('schließen','','schloss','geschlossen');
+S('gießen','','goss','gegossen');
+S('bieten','','bot','geboten');
+S('fangen','fängst fängt','fing','gefangen');
+S('laden','lädst lädt','lud','geladen');
+S('backen','bäckst bäckt','backte','gebacken');
+S('scheinen','','schien','geschienen');
+S('gelten','giltst gilt','galt','gegolten');
+/* untrennbare Präfixe */
+S('beginnen','','begann','begonnen','haben',{U:1});
+S('verstehen','','verstand','verstanden','haben',{U:1});
+S('überweisen','','überwies','überwiesen','haben',{U:1});
+S('vergessen','vergisst vergisst','vergaß','vergessen','haben',{U:1});
+S('empfehlen','empfiehlst empfiehlt','empfahl','empfohlen','haben',{U:1});
+S('bekommen','','bekam','bekommen','haben',{U:1});
+S('gefallen','gefällst gefällt','gefiel','gefallen','haben',{U:1});
+S('verlieren','','verlor','verloren','haben',{U:1});
+S('verlassen','verlässt verlässt','verließ','verlassen','haben',{U:1});
+S('unterschreiben','','unterschrieb','unterschrieben','haben',{U:1});
+
+/* --- regelmäßige Verben --- */
+['lernen','arbeiten','reparieren','studieren','wohnen','trainieren','tanzen','hören','spielen','funktionieren',
+ 'kosten','leben','duschen','frühstücken','kochen','kaufen','putzen','telefonieren','grillen','boxen',
+ 'buchstabieren','fragen','suchen','glauben','kontrollieren','organisieren','antworten','feiern','probieren',
+ 'schmecken','dauern','rauchen','baden','mieten','reden','hängen','nähen','drucken','fotografieren',
+ 'korrigieren','prüfen','recherchieren','speichern','schicken','lachen','informieren','wählen','husten','bluten',
+ 'sagen','warten','parken','tanken','reagieren','passen','zahlen','zeigen','bauen','präsentieren','transportieren',
+ 'heiraten','regnen','schneien','gratulieren','wünschen','schenken','lieben','schmücken','schaffen',
+ 'holen','räumen','machen','melden','füllen','packen','tauschen','stellen','atmen','öffnen'].forEach(function(k){W(k);});
+['besuchen','bestellen','erzählen','beantragen','bezahlen','verlängern','benutzen','erklären','betreuen',
+ 'vereinbaren','wiederholen','besichtigen','übernachten','bereiten','verdienen'].forEach(function(k){W(k,{U:1});});
+W('wandern',{aux:'sein'});
+W('passieren',{aux:'sein'});
+
+
+/* --- trennbare Verben --- */
+['an|rufen','auf|machen','zu|machen','an|machen','aus|machen','ein|kaufen','an|ziehen','aus|ziehen','auf|räumen',
+ 'vor|bereiten','ab|holen','auf|hören','an|fangen','mit|bringen','mit|machen','mit|nehmen','ein|laden','ab|geben',
+ 'an|melden','ab|melden','ab|stellen','ab|lesen','an|bieten','aus|atmen','ein|atmen','fern|sehen','weh|tun',
+ 'aus|sehen','an|probieren','um|tauschen','zurück|geben','zurück|nehmen','auf|bauen','aus|füllen','aus|packen',
+ 'kennen|lernen','hoch|gehen','zurück|gehen','wieder|kommen','mit|kommen','an|kommen','zurück|kommen',
+ 'aus|steigen','um|steigen','ein|steigen','ab|fahren'].forEach(function(s){SEP(s);});
+SEP('auf|stehen',{aux:'sein'});
+SEP('um|ziehen',{aux:'sein'});
+
+/* ================= Subjekte (g: m, f, mpl, fpl, x) ================= */
+function Sb(t,p,g,note,cap,special,an){return {t:t,p:p,g:g,note:note||'',cap:!!cap,sp:!!special,an:!!an};}
+var SUBJ=[
+  Sb('ich','p1s','x'),Sb('du','p2s','x'),Sb('er','p3s','m'),Sb('sie','p3s','f','eine Person'),
+  Sb('wir','p1p','mpl'),Sb('ihr','p2p','mpl'),Sb('sie','p3p','mpl','mehrere Personen'),Sb('Sie','p3p','mpl','formell',true),
+  Sb('der Chef','p3s','m'),Sb('meine Freunde','p3p','mpl'),Sb('meine Schwester','p3s','f'),Sb('unser Lehrer','p3s','m'),
+  Sb('die Kinder','p3p','mpl'),Sb('mein Bruder','p3s','m'),Sb('die Nachbarin','p3s','f'),Sb('Anna und Tom','p3p','mpl'),
+  Sb('meine Eltern','p3p','mpl'),Sb('die Studentinnen','p3p','fpl'),
+  Sb('mein Hund','p3s','m','',false,false,true),Sb('die Katze','p3s','f','',false,false,true),
+  /* nur für bestimmte Phrasen */
+  Sb('es','p3s','n','',false,true),Sb('die Sonne','p3s','n','',false,true),Sb('das Brot','p3s','n','',false,true),
+  Sb('die Äpfel','p3p','n','',false,true),Sb('die Suppe','p3s','n','',false,true),Sb('die Reise','p3s','n','',false,true),
+  Sb('der Film','p3s','n','',false,true),Sb('das Handy','p3s','n','',false,true),Sb('der Automat','p3s','n','',false,true),
+  Sb('der Unfall','p3s','n','',false,true),Sb('die Hose','p3s','n','',false,true),Sb('der Pullover','p3s','n','',false,true),
+  Sb('die Schuhe','p3p','n','',false,true),Sb('die Jacke','p3s','n','',false,true),Sb('das Kleid','p3s','n','',false,true),
+  Sb('der Kopf','p3s','n','',false,true),Sb('der Rücken','p3s','n','',false,true),Sb('die Nase','p3s','n','',false,true),
+  Sb('die Fahrkarte','p3s','n','',false,true),Sb('die Fahrkarten','p3p','n','',false,true)
+];
+var ANIMAL_OK=['Hunger haben','Durst haben','Angst haben','müde sein','krank sein','zu Hause sein','wie ein Stein schlafen','lange schlafen','im Park laufen','viel Wasser trinken'];
+function subjOK(s,p){
+  if(p.only){return p.only.indexOf(s.t)>=0;}
+  if(s.an){return ANIMAL_OK.indexOf(p.d)>=0;}
+  return !s.sp;
+}
+
+/* ================= Phrasen ================= */
+var PHR=[];
+function mkP(pre,v,cn,cat,sub,extra){
+  var vb=V[v],k;
+  if(!vb){throw new Error('Verb fehlt: '+v+' ('+pre+')');}
+  var p={pre:pre,v:v,cn:cn||null,cat:cat,sub:sub||'',only:null,aux:null,inf:!!(vb.kind==='modal'&&v!=='mögen')};
+  p.d=cn?cn+' sein':(pre?pre+' ':'')+vb.inf;
+  if(extra){for(k in extra){if(extra.hasOwnProperty(k)){p[k]=extra[k];}}}
+  PHR.push(p);
+}
+function PH(cat,sub,arr){
+  arr.forEach(function(s){
+    var a=s.split('|'),pre=a[0],cn=null;
+    if(/\*$/.test(pre)){cn=pre.slice(0,-1);pre='';}
+    mkP(pre,a[1],cn,cat,sub);
+  });
+}
+function SPX(cat,sub,pre,v,only,extra){
+  var e=extra||{};e.only=only;mkP(pre,v,null,cat,sub,e);
+}
+
+/* haben / sein (Vollverben) */
+PH('a','hs',['Hunger|haben','Durst|haben','Angst|haben','Zeit|haben','keine Zeit|haben','Kopfschmerzen|haben',
+ 'Glück|haben','recht|haben','Geburtstag|haben','ein Auto|haben','zwei Katzen|haben','viel Arbeit|haben',
+ 'Urlaub|haben','Langeweile|haben','Besuch|haben','eine gute Idee|haben','Spaß|haben',
+ 'müde|sein','krank|sein','Schüler*|sein','Lehrer*|sein','Kellner*|sein','Bäcker*|sein','zu Hause|sein',
+ 'in der Schule|sein','im Urlaub|sein','in Erfurt|sein','pünktlich|sein','nervös|sein','glücklich|sein',
+ 'zu spät|sein','fertig|sein','traurig|sein','fleißig|sein','bei der Arbeit|sein']);
+
+/* Modus A (und B): Verben bis L17, ohne Modalverben und untrennbare Präfixe */
+PH('a','',[
+ 'aus Deutschland|kommen','pünktlich|kommen','nach Hause|kommen',
+ 'Deutsch|sprechen','mit dem Chef|sprechen',
+ 'einen Brief|schreiben','eine E-Mail|schreiben',
+ 'die Wahrheit|sagen','den Namen|buchstabieren',
+ 'viel|arbeiten','im Büro|arbeiten',
+ 'Deutsch|lernen','für die Prüfung|lernen','das Fahrrad|reparieren','in Jena|studieren',
+ 'in Jena|wohnen','bei den Eltern|wohnen','im Park|trainieren','auf der Party|tanzen',
+ 'Kaffee|trinken','viel Wasser|trinken','dem Nachbarn|helfen',
+ 'Hausaufgaben|machen','Sport|machen','einen Fehler|machen','ein Lied|singen',
+ 'Musik|hören','Fußball|spielen','Gitarre|spielen','Karten|spielen','an der Haltestelle|stehen',
+ 'an die Familie|denken','den Lehrer|kennen','in Deutschland|leben',
+ 'kalt|duschen','im Café|frühstücken','zur Arbeit|gehen','ins Bett|gehen','zu Fuß|gehen','zur Schule|gehen',
+ 'Suppe|kochen','Brot|kaufen','Obst|kaufen','die Wohnung|putzen','wie ein Stein|schlafen','lange|schlafen',
+ 'mit Freunden|telefonieren','ein Brot|essen','zu Mittag|essen','zu Abend|essen',
+ 'mit dem Bus|fahren','nach Hause|fahren','Fahrrad|fahren','im Garten|grillen','im Park|laufen',
+ 'ein Buch|lesen','die Zeitung|lesen','im See|schwimmen','einen Film|sehen','Freunde|treffen',
+ 'den Schlüssel|finden','im Verein|boxen',
+ 'das Fenster|aufmachen','die Tür|zumachen','im Supermarkt|einkaufen','das Licht|anmachen',
+ 'den Fernseher|ausmachen','eine Jacke|anziehen','die Schuhe|ausziehen','die Wohnung|aufräumen',
+ 'das Essen|vorbereiten','den Chef|anrufen','die Kinder|abholen','um 6 Uhr|aufstehen','um 17 Uhr|aufhören',
+ 'die Geschichte|glauben','den Lehrer|fragen','den Schlüssel|suchen','um 8 Uhr|anfangen',
+ 'die Tickets|kontrollieren','die Tür|schließen',
+ 'müde|aussehen','einen Kuchen|backen','Kuchen|mitbringen','eine Party|organisieren',
+ 'auf die E-Mail|antworten','Freunde|einladen','Geburtstag|feiern','die Suppe|probieren',
+ 'den Bus|nehmen','die Suppe|nehmen',
+ 'das Formular|abgeben','das Kind|anmelden','zur Party|mitkommen',
+ 'am Bahnhof|aussteigen','in Erfurt|umsteigen','nie|rauchen','den Regenschirm|mitnehmen','im Meer|baden',
+ 'ein Bild an die Wand|hängen','eine Wohnung|mieten','neue Leute|kennenlernen','mit dem Nachbarn|reden',
+ 'das Auto|abstellen','den Zähler|ablesen','die Blumen|gießen','in den Zug|einsteigen',
+ 'ein Kleid|nähen','Kaffee|anbieten','den Text|drucken','die Kinder|fotografieren',
+ 'die Hausaufgaben|korrigieren','beim Spiel|mitmachen','die Rechnung|prüfen','im Internet|recherchieren',
+ 'die Datei|speichern','zu Hause|bleiben','nach Spanien|fliegen','ein Paket|schicken',
+ 'eine Brille|tragen','langsam|ausatmen','tief|einatmen','das Fenster|öffnen','später|wiederkommen','laut|lachen',
+ 'die Kollegen|informieren','|fernsehen','die Nummer 112|wählen','stark|husten',
+ 'auf den Bus|warten','das Auto|abmelden','ein Buch|geben','die Treppe|hochgehen','vor dem Haus|parken',
+ 'Benzin|tanken','in eine neue Wohnung|umziehen','auf die Frage|reagieren','die Polizei|rufen','im Café|sitzen',
+ 'eine Hose|anprobieren','bar|zahlen','zum Geschäft|zurückgehen','die Schuhe|umtauschen','den Weg|zeigen',
+ 'das Buch|zurückgeben','die Jacke|zurücknehmen',
+ 'das Regal|aufbauen','Hilfe|bieten','das Projekt|präsentieren','Möbel|transportieren'
+]);
+/* Ausnahmen mit festen Subjekten */
+SPX('a','','nach Berlin','ziehen',null,{aux:'sein'});
+PHR[PHR.length-1].only=null;
+SPX('a','','nur 2 Euro','kosten',['das Brot','die Äpfel']);
+SPX('a','','gut','schmecken',['die Suppe','das Brot']);
+SPX('a','','zwei Stunden','dauern',['die Reise','der Film']);
+SPX('a','','gut','funktionieren',['das Handy','der Automat']);
+SPX('a','','am Bahnhof','passieren',['der Unfall']);
+SPX('a','','mir','passen',['die Hose','der Pullover','die Schuhe']);
+SPX('a','','mir','stehen',['die Jacke','das Kleid']);
+SPX('a','','mir','wehtun',['der Kopf','der Rücken']);
+SPX('a','','stark','bluten',['die Nase']);
+
+/* Modus B: Modalverben (Präteritum) */
+PH('b','m',[
+ 'zur Arbeit gehen|müssen','früh aufstehen|müssen','viel lernen|müssen','am Wochenende arbeiten|müssen','die Wohnung aufräumen|müssen',
+ 'gut schwimmen|können','Gitarre spielen|können','Deutsch sprechen|können','den Weg finden|können','nicht schlafen|können',
+ 'nach Hause fahren|wollen','einen Film sehen|wollen','Pizza bestellen|wollen','im Park laufen|wollen',
+ 'hier parken|dürfen','lange schlafen|dürfen','nicht rauchen|dürfen','nach Hause gehen|dürfen',
+ 'zum Arzt gehen|sollen','mehr Wasser trinken|sollen','früher ankommen|sollen',
+ 'Pizza|mögen','Musik|mögen']);
+/* Modus B: untrennbare Präfixe (Partizip ohne ge-) */
+PH('b','u',[
+ 'die Großeltern|besuchen','die Frage|verstehen','pünktlich|beginnen','Pizza|bestellen','das Geld|überweisen',
+ 'einen Termin|vereinbaren','den Termin|vergessen','Geld|verdienen',
+ 'eine Geschichte|erzählen','ein Restaurant|empfehlen','einen Brief|bekommen','einen Ausweis|beantragen',
+ 'die Rechnung|bezahlen','den Vertrag|verlängern','den Aufzug|benutzen','die Regel|erklären','Kinder|betreuen',
+ 'das Haus|verlassen','den Schlüssel|verlieren']);
+SPX('b','u','mir','gefallen',['das Kleid','die Schuhe','die Jacke']);
+/* Modus B: neue Verben ab L18 */
+PH('b','n',[
+ 'das Formular|ausfüllen','den Vertrag|unterschreiben','eine Wartenummer|ziehen','in Berlin|heiraten','das Wort|wiederholen',
+ 'in den Bergen|wandern','im Bett|liegen','die Stadt|besichtigen','im Hotel|übernachten','um 8 Uhr|abfahren',
+ 'am Bahnhof|ankommen','nichts|tun','viel Gutes|tun','zum Geburtstag|gratulieren','gute Besserung|wünschen',
+ 'nach Hause|zurückkommen','Blumen|schenken','das Geschenk|auspacken','die Musik|lieben','den Baum|schmücken',
+ 'die Antwort|wissen','die Prüfung|schaffen']);
+SPX('b','n','','regnen',['es']);
+SPX('b','n','','schneien',['es']);
+SPX('b','n','','scheinen',['die Sonne']);
+SPX('b','n','zwei Tage','gelten',['die Fahrkarte','die Fahrkarten']);
+
+/* ================= Häufigkeit (Alltagsgebrauch) ================= */
+function tier(s,w,o){s.split(' ').forEach(function(k){o[k]=w;});}
+var VWT={};
+tier('gehen kommen machen fahren essen trinken sehen arbeiten wohnen lernen nehmen kaufen sprechen schlafen lesen schreiben finden geben spielen treffen aufstehen anrufen hören bleiben',8,VWT);
+tier('kochen laufen schwimmen fragen suchen denken glauben sagen einkaufen aufmachen zumachen anziehen ausziehen abholen einladen reden telefonieren helfen tanzen fliegen sitzen stehen öffnen warten tragen zeigen schicken mitbringen anfangen aufhören aufräumen bezahlen bekommen verstehen besuchen bestellen feiern putzen duschen frühstücken mitkommen mitnehmen umziehen mieten ankommen abfahren wissen können müssen wollen',5,VWT);
+tier('boxen bluten husten baden rauchen schmücken hängen gießen ablesen drucken speichern recherchieren korrigieren nähen transportieren betreuen verlängern beantragen abmelden anmelden kontrollieren buchstabieren wehtun ausatmen einatmen heiraten schneien scheinen gelten',1,VWT);
+function vw(v){return VWT[v]||3;}
+
+/* ================= Gruppen und Auswahl ================= */
+var G={hs:[],a:[],b:{m:[],u:[],n:[]}};
+PHR.forEach(function(p){
+  var v=V[p.v];
+  if(v.kind==='hs'){G.hs.push(p);}
+  else if(p.cat==='a'){G.a.push(p);}
+  else{G.b[p.sub].push(p);}
+});
+function wpick(list,rnd){
+  var by={},keys=[],i,tot=0,r,acc=0,k,arr;
+  for(i=0;i<list.length;i++){k=list[i].v;if(!by[k]){by[k]=[];keys.push(k);tot+=vw(k);}by[k].push(list[i]);}
+  r=rnd()*tot;k=keys[keys.length-1];
+  for(i=0;i<keys.length;i++){acc+=vw(keys[i]);if(r<acc){k=keys[i];break;}}
+  arr=by[k];
+  return arr[Math.floor(rnd()*arr.length)];
+}
+function pickPhrase(cfg,rnd,filter){
+  rnd=rnd||Math.random;
+  filter=filter||function(){return true;};
+  var r=rnd(),cands,s,sub,i,l;
+  if(r<HS_SHARE){cands=[G.hs,G.a];}
+  else if(cfg.mode==='B'&&r<HS_SHARE+(1-HS_SHARE)*B_SHARE){
+    s=rnd();sub=s<SUB_B.m?'m':(s<SUB_B.m+SUB_B.u?'u':'n');
+    cands=[G.b[sub],G.b.n,G.b.u,G.b.m,G.a,G.hs];
+  }else{cands=[G.a,G.hs];}
+  for(i=0;i<cands.length;i++){
+    l=cands[i].filter(filter);
+    if(l.length){return wpick(l,rnd);}
+  }
+  return null;
+}
+function pick(a,rnd){return a[Math.floor(rnd()*a.length)];}
+function pickSubj(phrase,rnd){
+  var l=SUBJ.filter(function(s){return subjOK(s,phrase);});
+  return pick(l,rnd);
+}
+
+/* ================= Zeitangaben ================= */
+var TIMES={
+  past:['gestern','vorgestern','gestern Abend','gestern Nacht','gestern um 20:00 Uhr','letzte Woche','letzten Monat','letztes Jahr','letzten Sommer','letzten Montag','letzten Freitag','vor einer Stunde','vor zwei Tagen','vor einer Woche','vor einem Monat','vor drei Jahren','vor langer Zeit','früher','damals','als Kind'],
+  pres:['jetzt','im Moment','momentan','zurzeit','gerade jetzt','in diesem Moment','heutzutage'],
+  fut:['morgen','übermorgen','morgen früh um 07:00 Uhr','nächste Woche','nächsten Monat','nächstes Jahr','nächsten Sommer','nächsten Freitag','in einer Stunde','in zwei Tagen','in einem Monat','in drei Jahren','bald','in Zukunft'],
+  clock:['06:00','08:00','10:30','12:00','15:00','18:00','20:00','22:00']
+};
+function timePools(nowMin){
+  var out={past:[],pres:[],fut:[]},i,c,hm,m,d;
+  for(i=0;i<TIMES.past.length;i++){out.past.push({t:TIMES.past[i],k:'past'});}
+  for(i=0;i<TIMES.pres.length;i++){out.pres.push({t:TIMES.pres[i],k:'pres'});}
+  for(i=0;i<TIMES.fut.length;i++){out.fut.push({t:TIMES.fut[i],k:'fut'});}
+  for(i=0;i<TIMES.clock.length;i++){
+    c=TIMES.clock[i];hm=c.split(':');m=parseInt(hm[0],10)*60+parseInt(hm[1],10);d=m-nowMin;
+    if(d<=-10){out.past.push({t:'heute um '+c+' Uhr',k:'past',c:m});}
+    else if(d>=10){out.fut.push({t:'heute um '+c+' Uhr',k:'fut',c:m});}
+  }
+  return out;
+}
+function kOf(item,nowMin){if(item.c!==undefined&&item.c!==null){return item.c<nowMin?'past':'fut';}return item.k;}
+function pickTime(tenseCfg,nowMin,rnd){
+  var pools=timePools(nowMin),w,keys,k,acc=0,r=rnd(),cat,i;
+  if(tenseCfg==='past'){w={past:1};}else if(tenseCfg==='pf'){w={pres:0.5,fut:0.5};}else{w={past:0.45,pres:0.30,fut:0.25};}
+  keys=[];for(k in w){if(w.hasOwnProperty(k)){keys.push(k);}}
+  cat=keys[keys.length-1];
+  for(i=0;i<keys.length;i++){acc+=w[keys[i]];if(r<acc){cat=keys[i];break;}}
+  return pick(pools[cat],rnd);
+}
+
+/* Üblich: haben/sein (Vollverb) und Modalverben -> Präteritum, alle anderen Verben -> Perfekt */
+function usual(st){
+  var v;
+  if(st.kind==='past'){
+    v=V[st.phrase.v];
+    return (v.kind==='hs'||v.kind==='modal')?'praet':'perfekt';
+  }
+  return 'praes';
+}
+function alts(st){
+  if(st.kind==='past'){return [usual(st)==='praet'?'perfekt':'praet'];}
+  if(st.kind==='fut'){return ['futur'];}
+  return [];
+}
+function newSpin(prev,held,cfg,nowMin,rnd){
+  rnd=rnd||Math.random;
+  var st={},keep=!!prev,phrase,subj,flt;
+  st.time=(keep&&held[0])?prev.time:pickTime(cfg.tense,nowMin,rnd);
+  if(keep&&held[2]&&held[1]){phrase=prev.phrase;subj=prev.subj;}
+  else if(keep&&held[2]){phrase=prev.phrase;subj=pickSubj(phrase,rnd);}
+  else if(keep&&held[1]){
+    subj=prev.subj;
+    flt=function(p){return subjOK(subj,p);};
+    phrase=pickPhrase(cfg,rnd,flt);
+    if(!phrase){phrase=pickPhrase(cfg,rnd);subj=pickSubj(phrase,rnd);}
+  }else{phrase=pickPhrase(cfg,rnd);subj=pickSubj(phrase,rnd);}
+  st.phrase=phrase;st.subj=subj;
+  st.kind=kOf(st.time,nowMin);
+  st.tense=usual(st);
+  return st;
+}
+
+/* ================= Sätze ================= */
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+function join(a){var o=[],i;for(i=0;i<a.length;i++){if(a[i]){o.push(a[i]);}}return o.join(' ');}
+function nounFor(b,g){if(g==='f'){return b+'in';}if(g==='fpl'){return b+'innen';}if(g==='x'){return b+'/in';}return b;}
+function preFor(ph,g){return ph.cn?nounFor(ph.cn,g):ph.pre;}
+function auxOf(ph){return ph.aux||V[ph.v].aux;}
+function vtoks(st,tense){
+  var ph=st.phrase,v=V[ph.v],i=IDX[st.subj.p],fin;
+  if(tense==='perfekt'){
+    if(ph.inf){return [V.haben.p[i],v.inf];}
+    return [V[auxOf(ph)].p[i],v.pp];
+  }
+  if(tense==='futur'){return [WERDEN[i],v.inf];}
+  fin=(tense==='praes'?v.p:v.t)[i];
+  return v.sep?[fin,v.sep]:[fin];
+}
+function clause(st,tense,g){
+  var t=vtoks(st,tense);
+  return join([st.subj.t,t[0],preFor(st.phrase,g||st.subj.g),t[1]||'']);
+}
+function sentence(st,tense,order,g){
+  var t=vtoks(st,tense),pre=preFor(st.phrase,g||st.subj.g),fin=t[0],end=t[1]||'';
+  var parts=order==='time'?[st.time.t,fin,st.subj.t,pre,end]:[st.subj.t,fin,st.time.t,pre,end];
+  return cap(join(parts))+'.';
+}
+function stamm(st){
+  var ph=st.phrase,v=V[ph.v],pret=v.t[2]+(v.sep?' '+v.sep:'');
+  if(ph.inf){return v.inf+' – '+pret+' – (hat) … '+v.inf;}
+  return v.inf+' – '+pret+' – '+(auxOf(ph)==='sein'?'ist ':'hat ')+v.pp;
+}
+/* Merkhinweis zur Aufgabe: liefert Textschlüssel (Übersetzung in der Oberfläche) */
+function merke(st){
+  var ph=st.phrase,v=V[ph.v];
+  if(st.kind!=='past'){return st.kind==='fut'?{k:'m_fut'}:null;}
+  if(v.kind==='hs'){return {k:'m_hs'};}
+  if(v.kind==='modal'){return {k:'m_modal'};}
+  if(v.untr){return {k:'m_untr',pp:v.pp};}
+  if(v.ieren){return {k:'m_ieren',pp:v.pp};}
+  if(v.sep){return {k:'m_sep',pp:v.pp};}
+  return {k:'m_def',add:auxOf(ph)==='sein'?'m_def_sein':null};
+}
+function solutionRows(st){
+  var u=usual(st),a=alts(st),rows=[],order,i;
+  if(st.kind==='past'){order=['praet','perfekt'];}
+  else if(st.kind==='fut'){order=['praes','futur'];}
+  else{order=['praes'];}
+  for(i=0;i<order.length;i++){
+    rows.push({tn:order[i],text:cap(clause(st,order[i]))+'.',tag:order[i]===u?'usual':'possible'});
+  }
+  return rows;
+}
+
+/* ================= Prüfen ================= */
+function norm(s){
+  return String(s).toLowerCase().replace(/\/in\b/g,'in').replace(/\(in\)/g,'in')
+    .replace(/ß/g,'ss').replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue')
+    .replace(/[.,;:!?„“”"'’‘…()\/\-–]/g,' ').replace(/\s+/g,' ').replace(/\b0(\d)/g,'$1').trim();
+}
+function toks(s){var n=norm(s);return n?n.split(' '):[];}
+function key(s){return toks(s).sort().join(' ');}
+function keysFor(st,tense){
+  var m={},gs=st.subj.g==='x'?['m','f']:[st.subj.g],s=st.subj.t,t=st.time.t,i,j,pre,combos,vt=vtoks(st,tense).join(' ');
+  for(i=0;i<gs.length;i++){
+    pre=preFor(st.phrase,gs[i]);
+    combos=[vt,vt+' '+s,vt+' '+pre,vt+' '+s+' '+pre,vt+' '+s+' '+t,vt+' '+pre+' '+t,vt+' '+s+' '+pre+' '+t];
+    for(j=0;j<combos.length;j++){m[key(combos[j])]=true;}
+  }
+  return m;
+}
+function evaluate(st,raw){
+  var k=key(raw),ts,inp={},i,u=usual(st),a=alts(st),order=['perfekt','praet','praes','futur'],ph=st.phrase,v=V[ph.v],np,hint=null;
+  if(!k){return {status:'empty'};}
+  if(keysFor(st,u)[k]){return {status:'ok'};}
+  for(i=0;i<a.length;i++){if(keysFor(st,a[i])[k]){return {status:'unusual',tense:a[i],usual:u};}}
+  ts=toks(raw);for(i=0;i<ts.length;i++){inp[ts[i]]=true;}
+  function has(tn){var w=toks(vtoks(st,tn).join(' ')),j;for(j=0;j<w.length;j++){if(!inp[w[j]]){return false;}}return true;}
+  if(has(u)){return {status:'verbok'};}
+  for(i=0;i<a.length;i++){if(has(a[i])){return {status:'verbok_unusual',tense:a[i],usual:u};}}
+  for(i=0;i<order.length;i++){
+    if(order[i]!==u&&a.indexOf(order[i])<0&&has(order[i])){return {status:'othertense',tense:order[i]};}
+  }
+  /* gezielte Hinweise */
+  if(!ph.inf){
+    np=norm(v.pp);
+    if(v.untr&&inp['ge'+np]){hint='untr';}
+    else if(inp[np]&&(u==='perfekt'||a.indexOf('perfekt')>=0)){hint='aux';}
+  }
+  return {status:'wrong',hint:hint};
+}
+
+root.SlotLogic={V:V,PHR:PHR,G:G,SUBJ:SUBJ,TIMES:TIMES,TN:TN,HS_SHARE:HS_SHARE,B_SHARE:B_SHARE,SUB_B:SUB_B,IDX:IDX,VWT:VWT,vw:vw,
+  timePools:timePools,kOf:kOf,newSpin:newSpin,pickPhrase:pickPhrase,pickTime:pickTime,pickSubj:pickSubj,subjOK:subjOK,
+  cap:cap,usual:usual,alts:alts,preFor:preFor,vtoks:vtoks,clause:clause,sentence:sentence,stamm:stamm,merke:merke,
+  solutionRows:solutionRows,evaluate:evaluate,keysFor:keysFor,norm:norm,key:key,auxOf:auxOf};
+})(typeof window!=='undefined'?window:this);
+
+</script>
+<script id="ui">
+(function(){
+'use strict';
+var L=window.SlotLogic;
+function $(id){return document.getElementById(id);}
+var lang='de',lastFb=null,showMean=false;
+function T(k,p){
+  var s=(I18N[lang]&&I18N[lang][k]!==undefined)?I18N[lang][k]:I18N.de[k],x;
+  if(p){for(x in p){if(p.hasOwnProperty(x)){s=s.split('{'+x+'}').join(p[x]);}}}
+  return s;
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+var reels=[$('reel0'),$('reel1'),$('reel2')];
+var holdBtns=[$('hold0'),$('hold1'),$('hold2')];
+var held=[false,false,false],state=null,busy=false,solved=false,attempts=0,score=0,streak=0;
+var cfg={tense:'all',mode:'A'},curScreen='start';
+var tlOn=false,soundOn=false,ac=null;
+var reduce=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+(function(){var h='',i;for(i=0;i<14;i++){h+='<i></i>';}$('lights').innerHTML=h;})();
+
+function tone(f,d,type,vol,delay){
+  if(!soundOn){return;}
+  try{
+    if(!ac){var A=window.AudioContext||window.webkitAudioContext;if(!A){return;}ac=new A();}
+    var o=ac.createOscillator(),g=ac.createGain(),t0=ac.currentTime+(delay||0);
+    o.type=type||'square';o.frequency.value=f;
+    g.gain.setValueAtTime(vol||0.05,t0);g.gain.exponentialRampToValueAtTime(0.0001,t0+d);
+    o.connect(g);g.connect(ac.destination);o.start(t0);o.stop(t0+d+0.02);
+  }catch(e){}
+}
+function clack(){tone(220,0.08,'square',0.06);}
+function winSound(){tone(523,0.14,'triangle',0.08,0);tone(659,0.14,'triangle',0.08,0.12);tone(784,0.14,'triangle',0.08,0.24);tone(1047,0.28,'triangle',0.08,0.36);}
+function badSound(){tone(150,0.25,'sawtooth',0.05);}
+
+function timeCell(it){return esc(L.cap(it.t));}
+var NOTEKEY={'eine Person':'note_one','mehrere Personen':'note_many','formell':'note_formal'};
+function subjCell(s){return esc(L.cap(s.t))+(s.note?'<small>'+esc(NOTEKEY[s.note]?T(NOTEKEY[s.note]):s.note)+'</small>':'');}
+function phraseCell(p){return esc(p.d);}
+function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+function allTimes(){return L.TIMES.past.concat(L.TIMES.pres,L.TIMES.fut);}
+function plainSubj(){return L.SUBJ.filter(function(s){return !s.sp&&!s.an;});}
+function poolPhrases(){
+  var l=L.G.hs.concat(L.G.a);
+  if(cfg.mode==='B'){l=l.concat(L.G.b.m,L.G.b.u,L.G.b.n);}
+  return l;
+}
+function fillers(i,n){
+  var out=[],k,ps=poolPhrases(),ss=plainSubj();
+  for(k=0;k<n;k++){
+    if(i===0){out.push(esc(L.cap(rnd(allTimes()))));}
+    else if(i===1){out.push(subjCell(rnd(ss)));}
+    else{out.push(phraseCell(Math.random()<0.3?rnd(L.G.hs):rnd(ps)));}
+  }
+  return out;
+}
+function mkCell(html){var d=document.createElement('div');d.className='cell';d.innerHTML=html;return d;}
+
+function animate(i,finalHtml,dur,cb){
+  var reel=reels[i],strip=reel.firstElementChild,H=reel.clientHeight,n,f,j,done=false,fl=fillers(i,12+i*5);
+  var first=strip.firstElementChild?strip.firstElementChild.cloneNode(true):mkCell('?');
+  strip.innerHTML='';strip.appendChild(first);
+  for(j=0;j<fl.length;j++){strip.appendChild(mkCell(fl[j]));}
+  strip.appendChild(mkCell(finalHtml));
+  strip.style.transition='none';strip.style.transform='translateY(0)';
+  void strip.offsetHeight;
+  n=strip.children.length-1;
+  reel.className='reel spinning';
+  strip.style.transition='transform '+dur+'ms cubic-bezier(.17,.67,.2,1)';
+  strip.style.transform='translateY('+(-n*H)+'px)';
+  f=function(){
+    if(done){return;}done=true;
+    reel.className='reel';
+    var last=strip.lastElementChild;strip.innerHTML='';strip.appendChild(last);
+    strip.style.transition='none';strip.style.transform='translateY(0)';
+    clack();cb();
+  };
+  strip.addEventListener('transitionend',f);
+  setTimeout(f,dur+150);
+}
+
+function setHoldDisabled(v){var i;for(i=0;i<3;i++){holdBtns[i].disabled=v;}}
+function resetHolds(){
+  var i;held=[false,false,false];
+  for(i=0;i<3;i++){holdBtns[i].className='hold';holdBtns[i].setAttribute('aria-pressed','false');holdBtns[i].textContent=T('hold');}
+}
+
+function spin(){
+  if(busy){return;}
+  busy=true;$('spin').disabled=true;setHoldDisabled(true);$('card').hidden=true;
+  var now=new Date(),nowMin=now.getHours()*60+now.getMinutes();
+  var next=L.newSpin(state,held,cfg,nowMin);
+  var finals=[timeCell(next.time),subjCell(next.subj),phraseCell(next.phrase)];
+  var pending=0,base=reduce?150:1100,i;
+  function one(){pending--;if(pending<=0){finish(next);}}
+  for(i=0;i<3;i++){
+    if(state&&held[i]&&!(i===1&&state.subj!==next.subj)&&!(i===2&&state.phrase!==next.phrase)){continue;}
+    pending++;
+    animate(i,finals[i],base+i*550,one);
+  }
+  if(pending===0){finish(next);}
+}
+
+function updateTl(){
+  var tl=$('tl'),spans=tl.getElementsByTagName('span'),idx=-1,i;
+  tl.hidden=!tlOn;
+  if(state){idx=state.kind==='past'?0:(state.kind==='pres'?1:2);}
+  for(i=0;i<spans.length;i++){spans[i].className=(i===idx)?'on':'';}
+}
+
+function finish(next){
+  state=next;busy=false;$('spin').disabled=false;setHoldDisabled(false);
+  solved=false;attempts=0;
+  $('ans').value='';$('ans').disabled=false;$('btnCheck').disabled=false;
+  lastFb=null;$('fb').textContent='';$('fb').className='';$('sol').hidden=true;$('sol').innerHTML='';showMean=false;$('mean').hidden=true;
+  updateTl();
+  $('card').hidden=false;
+  if(window.matchMedia&&window.matchMedia('(pointer:fine)').matches){$('ans').focus();}
+}
+
+function renderFb(){
+  var f=$('fb');
+  if(!lastFb){f.textContent='';f.className='';return;}
+  f.textContent=lastFb.keys.map(function(k){return T(k.k,k.p);}).join(' ');f.className=lastFb.cls||'';
+}
+function setFb(keys,cls){lastFb=keys?{keys:keys,cls:cls}:null;renderFb();}
+function updateScore(){$('scoreEl').textContent='⭐ '+score+' '+T('pts');$('streakEl').textContent='🔥 '+T('streak')+': '+streak;}
+function renderMean(){
+  var m=$('mean'),v,tr;
+  if(!showMean||!state||lang==='de'){m.hidden=true;return;}
+  v=state.phrase.v;tr=(window.VMEAN&&VMEAN[v])?VMEAN[v][lang]:'';
+  m.innerHTML=tr?('<span class="de">'+esc(v)+'</span> = '+esc(tr)):'';
+  m.hidden=!tr;
+}
+
+var solOn=false;
+function showSolution(){
+  solOn=true;renderSolution();
+}
+function renderSolution(){
+  if(!solOn||!state){return;}
+  var st=state,rows='',i,verdict,u=L.usual(st),sr=L.solutionRows(st),r,m1,m2,badge='',v=L.V[st.phrase.v],mk=L.merke(st),vt;
+  if(st.kind==='past'){vt=T('v_past',{t:L.TN[u]});}
+  else if(st.kind==='pres'){vt=T('v_pres',{t:L.TN.praes});}
+  else{vt=T('v_fut');}
+  verdict='<div class="verdict"><span class="de" dir="ltr">„'+esc(st.time.t)+'“</span> = '+esc(vt)+'</div>';
+  m1=L.sentence(st,u,'time');m2=L.sentence(st,u,'subj');
+  for(i=0;i<sr.length;i++){
+    r=sr[i];
+    rows+='<tr'+(r.tag==='usual'?' class="need"':'')+'><th>'+L.TN[r.tn]+'</th><td class="de">'+esc(r.text)+(r.tag==='usual'?' ◀':'')
+      +(sr.length>1?(r.tag==='usual'?'<span class="tagU">'+esc(T('tag_u'))+'</span>':'<span class="tagM">'+esc(T('tag_x'))+'</span>'):'')+'</td></tr>';
+  }
+  if(v.kind==='hs'){badge='<span class="badge">'+esc(v.inf+' '+T('b_hs'))+'</span>';}
+  else if(v.kind==='modal'){badge='<span class="badge">'+esc(T('b_modal'))+'</span>';}
+  else if(v.untr){badge='<span class="badge">'+esc(T('b_untr'))+'</span>';}
+  $('sol').innerHTML=verdict+'<div class="model">'+esc(m1)+'<br>'+esc(m2)+'</div>'
+    +'<table><tbody>'+rows+'</tbody></table>'
+    +(mk?'<div class="note"><b>'+esc(T('merke_l'))+'</b> '+esc(T(mk.k,{pp:mk.pp||''})+(mk.add?' '+T(mk.add):''))+'</div>':'')
+    +'<div class="stamm">'+esc(T('stammlbl'))+' <span class="de">'+esc(L.stamm(st))+'</span>'+badge+'</div>';
+  $('sol').hidden=false;
+}
+
+function unusualKey(r){
+  return r.tense==='futur'?'fb_u_futur':(r.tense==='praet'?'fb_u_praet':'fb_u_perf');
+}
+
+function check(){
+  if(!state||solved){return;}
+  var raw=$('ans').value,r=L.evaluate(state,raw),pts,u=L.usual(state),alt=(u==='praet'?'perfekt':'praet');
+  if(r.status==='empty'){setFb([{k:'fb_empty'}],'warn');return;}
+  if(r.status==='ok'||r.status==='unusual'){
+    pts=attempts===0?10:5;score+=pts;streak++;solved=true;
+    if(r.status==='ok'){setFb([{k:'fb_ok',p:{n:pts}}],'good');}
+    else{setFb([{k:'fb_ok',p:{n:pts}},{k:unusualKey(r)}],'warn');}
+    winSound();
+    $('ans').disabled=true;$('btnCheck').disabled=true;updateScore();showSolution();return;
+  }
+  attempts++;badSound();
+  if(r.status==='verbok'){
+    setFb([{k:'fb_verbok'}],'warn');
+  }else if(r.status==='verbok_unusual'){
+    setFb([{k:unusualKey(r)},{k:'fb_u_rest'}],'warn');
+  }else if(r.status==='othertense'){
+    if(state.kind==='past'){setFb([{k:'fb_oth_past',p:{t:L.TN[r.tense],u:L.TN[u],a:L.TN[alt]}}],'bad');}
+    else{setFb([{k:state.kind==='pres'?'fb_oth_pres':'fb_oth_fut',p:{t:L.TN[r.tense]}}],'bad');}
+  }else if(r.hint==='untr'){
+    setFb([{k:'fb_untr'}],'bad');
+  }else if(r.hint==='aux'){
+    setFb([{k:'fb_aux'}],'bad');
+  }else{
+    setFb([{k:'fb_wrong'}],'bad');
+  }
+}
+function reveal(){
+  if(!state){return;}
+  if(!solved){streak=0;updateScore();setFb(null);}
+  solved=true;$('ans').disabled=true;$('btnCheck').disabled=true;showSolution();
+}
+
+/* ---------- Start und Entdecken ---------- */
+function show(id){
+  curScreen=id;
+  ['start','disc','game'].forEach(function(x){$(x).hidden=(x!==id);});
+}
+function startGame(mode){
+  cfg.mode=mode;state=null;resetHolds();
+  $('card').hidden=true;
+  var strips=document.querySelectorAll('.strip'),i;
+  for(i=0;i<strips.length;i++){strips[i].innerHTML='<div class="cell q">?</div>';}
+  solOn=false;lastFb=null;showMean=false;
+  applyLang();updateTl();show('game');
+}
+var DISC_A=[
+  {q:'q_usual',a:'Gestern war ich müde.',b:'Gestern bin ich müde gewesen.',right:'a',ex:'ex_hs'},
+  {q:'q_usual',a:'Gestern ging ich ins Kino.',b:'Gestern bin ich ins Kino gegangen.',right:'b',ex:'ex_perf'},
+  {q:'q_usual',a:'Letzte Woche hatte ich viel Arbeit.',b:'Letzte Woche habe ich viel Arbeit gehabt.',right:'a',ex:'ex_hs'},
+  {q:'q_usual',a:'Ich habe gestern Brot gekauft.',b:'Ich kaufte gestern Brot.',right:'a',ex:'ex_perf2'}
+];
+var DISC_B=[
+  {q:'q_modal',a:'Gestern musste ich arbeiten.',b:'Gestern habe ich arbeiten müssen.',right:'a',ex:'ex_modal'},
+  {q:'q_untr',a:'Ich habe die Frage verstanden.',b:'Ich habe die Frage geverstanden.',right:'a',ex:'ex_untr'},
+  {q:'q_sep',a:'Ich habe dich angerufen.',b:'Ich habe dich geanrufen.',right:'a',ex:'ex_sep'}
+];
+var discDone=0,discTotal=0,discItems=[],discPicked={};
+function buildDisc(mode){
+  var items=DISC_A.concat(mode==='B'?DISC_B:[]),h='',i;
+  discItems=items;discDone=0;discTotal=items.length;discPicked={};
+  for(i=0;i<items.length;i++){
+    h+='<div class="pair" data-i="'+i+'"><div class="q" data-q="'+i+'"></div><div class="opts">'
+      +'<button type="button" class="opt" data-k="a">'+esc(items[i].a)+'</button>'
+      +'<button type="button" class="opt" data-k="b">'+esc(items[i].b)+'</button></div><div class="ex" data-ex="'+i+'"></div></div>';
+  }
+  $('pairs').innerHTML=h;
+  var btns=$('pairs').querySelectorAll('.opt'),j;
+  function bind(btn){
+    btn.addEventListener('click',function(){
+      var pair=btn.parentNode.parentNode,idx=parseInt(pair.getAttribute('data-i'),10),it=items[idx],ob=pair.querySelectorAll('.opt'),k;
+      for(k=0;k<ob.length;k++){
+        ob[k].disabled=true;
+        if(ob[k].getAttribute('data-k')===it.right){ob[k].className='opt right';}
+      }
+      if(btn.getAttribute('data-k')!==it.right){btn.className='opt wrongpick';}
+      discPicked[idx]=(btn.getAttribute('data-k')===it.right);
+      discDone++;
+      renderDisc();
+    });
+  }
+  for(j=0;j<btns.length;j++){bind(btns[j]);}
+  renderDisc();
+}
+function renderDisc(){
+  var i,qs=$('pairs').querySelectorAll('[data-q]'),exs=$('pairs').querySelectorAll('[data-ex]'),it;
+  for(i=0;i<qs.length;i++){
+    it=discItems[i];qs[i].textContent=T(it.q);
+    exs[i].textContent=(i in discPicked)?((discPicked[i]?'✔ ':T('disc_other')+' ')+T(it.ex)):'';
+  }
+  $('merkeText').textContent=T('merke_l')+' '+T(chosen==='B'?'merkeB':'merkeA');
+  $('merke').hidden=!(discDone>=discTotal);
+  $('discGo').textContent=(discDone>=discTotal)?T('disc_go'):T('disc_skip');
+}
+var chosen='A';
+function choose(mode){chosen=mode;buildDisc(mode);show('disc');}
+
+$('modeA').addEventListener('click',function(){choose('A');});
+$('modeB').addEventListener('click',function(){choose('B');});
+$('discGo').addEventListener('click',function(){startGame(chosen);});
+$('chgMode').addEventListener('click',function(){show('start');});
+
+$('spin').addEventListener('click',spin);
+$('btnCheck').addEventListener('click',check);
+$('btnReveal').addEventListener('click',reveal);
+$('ans').addEventListener('keydown',function(e){if(e.key==='Enter'||e.keyCode===13){e.preventDefault();check();}});
+(function(){
+  var i;
+  function bind(k){
+    holdBtns[k].addEventListener('click',function(){
+      held[k]=!held[k];
+      holdBtns[k].className='hold'+(held[k]?' on':'');
+      holdBtns[k].setAttribute('aria-pressed',held[k]?'true':'false');
+      holdBtns[k].textContent=held[k]?T('held'):T('hold');
+    });
+  }
+  for(i=0;i<3;i++){bind(i);}
+})();
+$('selTense').addEventListener('change',function(){cfg.tense=this.value;});
+$('selTl').addEventListener('change',function(){tlOn=(this.value==='on');updateTl();});
+$('chkSound').addEventListener('change',function(){soundOn=this.checked;if(soundOn){clack();}});
+$('resetScore').addEventListener('click',function(){score=0;streak=0;updateScore();});
+document.addEventListener('keydown',function(e){
+  var tag=document.activeElement?document.activeElement.tagName:'';
+  if($('game').hidden){return;}
+  if((e.key===' '||e.keyCode===32)&&tag!=='INPUT'&&tag!=='SELECT'&&tag!=='BUTTON'&&tag!=='TEXTAREA'){e.preventDefault();spin();}
+});
+
+$('btnMean').addEventListener('click',function(){showMean=!showMean;renderMean();});
+function applyLang(){
+  var i,els=document.querySelectorAll('[data-i18n]'),el,k,txt;
+  document.documentElement.lang=lang;
+  document.body.className=(RTL[lang]?'rtl':'');
+  for(i=0;i<els.length;i++){
+    el=els[i];k=el.getAttribute('data-i18n');txt=T(k);
+    el.textContent=txt;
+    if(el.className.indexOf('trans')>=0){el.hidden=(lang==='de'||!txt);}
+  }
+  $('ans').placeholder=T('ph');
+  for(i=0;i<3;i++){holdBtns[i].textContent=held[i]?T('held'):T('hold');}
+  $('modeEl').textContent=T(cfg.mode==='A'?'chip_a':'chip_b');
+  $('btnMean').hidden=(lang==='de');
+  updateScore();renderFb();renderMean();renderSolution();
+  if(discItems.length&&curScreen==='disc'){renderDisc();}
+}
+(function(){
+  var sel=$('selLang'),h='',i,saved=null;
+  for(i=0;i<LANGS.length;i++){h+='<option value="'+LANGS[i][0]+'">'+esc(LANGS[i][1])+'</option>';}
+  sel.innerHTML=h;
+  try{saved=localStorage.getItem('slot_lang');}catch(e){}
+  if(saved&&I18N[saved]){lang=saved;}
+  sel.value=lang;
+  sel.addEventListener('change',function(){
+    lang=this.value;
+    try{localStorage.setItem('slot_lang',lang);}catch(e){}
+    applyLang();
+  });
+})();
+applyLang();updateTl();show('start');
+})();
+
+</script>
+</body>
+</html>
