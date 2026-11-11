@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vokabel-Übersetzer – mehrere Sprachen gleichzeitig</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#fff; --ink:#1f2933; --mute:#6b7785; --line:#dde2e8;
+    --acc:#2557a7; --acc-ink:#fff; --ok:#1d7a46; --warn:#b4540a; --chip:#eef2f8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+  header{padding:18px 20px 6px;max-width:1200px;margin:0 auto}
+  h1{margin:0 0 4px;font-size:1.4rem}
+  header p{margin:0;color:var(--mute);font-size:.95rem}
+  main{max-width:1200px;margin:0 auto;padding:12px 20px 40px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px}
+  label.h{display:block;font-weight:600;margin-bottom:6px}
+  textarea{width:100%;min-height:130px;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit;resize:vertical}
+  select,input[type=email]{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .hint{color:var(--mute);font-size:.88rem;margin-top:6px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--chip);cursor:pointer;user-select:none}
+  .chip input{margin:0}
+  .chip.on{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+  .chip.off{opacity:.4;cursor:not-allowed}
+  button{font:inherit;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer}
+  button:hover{border-color:var(--acc)}
+  button.primary{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-weight:600}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  #status{min-height:1.4em;color:var(--mute);margin:4px 0 0}
+  #status.err{color:var(--warn)}
+  .wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+  table{border-collapse:collapse;width:100%;background:#fff}
+  th,td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:8px 10px;vertical-align:top;text-align:left}
+  th:last-child,td:last-child{border-right:0}
+  thead th{background:#f0f3f8;position:sticky;top:0;font-size:.92rem;white-space:nowrap}
+  td.src{font-weight:600;background:#fafbfd;min-width:140px;position:sticky;left:0}
+  td.src .x,td.src .cp{float:right;border:0;background:none;color:var(--mute);padding:0 0 0 8px;font-size:1.1rem}
+  td.src .cp:hover{color:var(--acc)}
+  td.src .cp.done{color:var(--ok)}
+  td.cell{min-width:150px}
+  .main{padding:2px 4px;border-radius:6px;font-size:1.05rem;outline:none;min-height:1.4em}
+  .main:focus{background:#fff8dc}
+  .alts{margin-top:4px;display:flex;flex-wrap:wrap;gap:4px}
+  .alt{font-size:.8rem;padding:1px 8px;border-radius:999px;border:1px dashed var(--line);background:#fafafa;color:var(--mute)}
+  .alt:hover{color:var(--ink)}
+  .loading{color:var(--mute)}
+  .error{color:var(--warn);font-size:.9rem}
+  .error button{padding:0 8px;margin-left:6px}
+  .rtl{direction:rtl;text-align:right}
+  .tools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+  .empty{padding:24px;color:var(--mute);text-align:center}
+  details summary{cursor:pointer;color:var(--mute)}
+  @media print{
+    body{background:#fff} header p,.card,.tools,#status,.x,.cp,.alts,.note{display:none!important}
+    main{padding:0} .wrap{border:0;overflow:visible} td.src,thead th{position:static}
+    #resultsCard{display:block!important;border:0;padding:0}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Vokabel-Übersetzer</h1>
+  <p>Wörter eingeben, Sprachen wählen – alle Übersetzungen erscheinen gleichzeitig in einer Tabelle.</p>
+</header>
+
+<main>
+  <section class="card">
+    <label class="h" for="input">Vokabeln (ein Wort oder eine Wendung pro Zeile)</label>
+    <textarea id="input" placeholder="der Tisch&#10;lernen&#10;sich freuen auf"></textarea>
+    <div class="row" style="margin-top:10px">
+      <label for="srcLang"><b>Ausgangssprache:</b></label>
+      <select id="srcLang"></select>
+      <button type="button" id="example">Beispiel einfügen</button>
+    </div>
+    <div class="hint">Mehrere Einträge lassen sich auch mit Semikolon trennen. Kommas bleiben erhalten (z. B. „sich freuen, dass“).</div>
+  </section>
+
+  <section class="card">
+    <label class="h">Zielsprachen</label>
+    <div class="row">
+      <button type="button" id="allDefault">Standardauswahl</button>
+      <button type="button" id="allNone">Keine</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <details style="margin-top:12px">
+      <summary>Erweitert</summary>
+      <div class="row" style="margin-top:8px">
+        <label for="mail">E-Mail (optional):</label>
+        <input type="email" id="mail" placeholder="name@beispiel.de" size="28">
+      </div>
+      <div class="hint">Die kostenlose Schnittstelle (MyMemory) erlaubt anonym ca. 5.000 Zeichen pro Tag, mit angegebener E-Mail-Adresse ca. 50.000. Die Adresse wird nur lokal in diesem Browser gespeichert und als Parameter an MyMemory gesendet.</div>
+    </details>
+  </section>
+
+  <div class="row" style="margin-bottom:6px">
+    <button type="button" class="primary" id="go">Übersetzen</button>
+    <button type="button" id="clear">Alles leeren</button>
+  </div>
+  <p id="status" role="status" aria-live="polite"></p>
+
+  <section class="card" id="resultsCard" style="margin-top:12px">
+    <div class="tools">
+      <label for="blockFmt"><b>Blockformat:</b></label>
+      <select id="blockFmt">
+        <option value="labels">Untereinander, mit Sprachnamen</option>
+        <option value="plain">Untereinander, nur Übersetzungen</option>
+        <option value="line">In einer Zeile, mit |</option>
+      </select>
+      <button type="button" id="copyBlocks" disabled>Alle Wörter als Blöcke kopieren</button>
+      <button type="button" id="copy" disabled>Tabelle kopieren (Excel)</button>
+      <button type="button" id="csv" disabled>CSV herunterladen</button>
+      <button type="button" id="print" disabled>Drucken</button>
+    </div>
+    <div class="wrap" id="wrap"><div class="empty">Noch keine Übersetzungen.</div></div>
+    <p class="hint note">Maschinelle Übersetzung: Einzelwörter ohne Zusammenhang können falsch oder mehrdeutig sein. Ein Feld anklicken, um es zu korrigieren; graue Alternativen antippen, um sie zu übernehmen. Vor dem Einsatz im Unterricht bitte prüfen. Für die Übersetzung ist eine Internetverbindung nötig, die eingegebenen Wörter werden dabei an MyMemory gesendet.</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  'use strict';
+
+  var LANGS = [
+    {c:'en', n:'Englisch', d:1},
+    {c:'ru', n:'Russisch', d:1},
+    {c:'uk', n:'Ukrainisch', d:1},
+    {c:'tr', n:'Türkisch', d:1},
+    {c:'ar', n:'Arabisch', d:1, rtl:1},
+    {c:'fa', n:'Persisch', d:1, rtl:1},
+    {c:'pl', n:'Polnisch'},
+    {c:'ro', n:'Rumänisch'},
+    {c:'fr', n:'Französisch'},
+    {c:'es', n:'Spanisch'},
+    {c:'it', n:'Italienisch'},
+    {c:'vi', n:'Vietnamesisch'},
+    {c:'bs', n:'Bosnisch'},
+    {c:'lv', n:'Lettisch'},
+    {c:'pa', n:'Punjabi'},
+    {c:'so', n:'Somali'},
+    {c:'de', n:'Deutsch'}
+  ];
+  var SRC = [{c:'de', n:'Deutsch'}, {c:'en', n:'Englisch'}, {c:'ru', n:'Russisch'}, {c:'uk', n:'Ukrainisch'}, {c:'tr', n:'Türkisch'}, {c:'ar', n:'Arabisch'}, {c:'fa', n:'Persisch'}];
+
+  var $ = function(id){ return document.getElementById(id); };
+  var selected = {};
+  var results = {};          // key -> {state, text, alts[], msg}
+  var cellEls = {};          // key -> td
+  var current = {src:'de', words:[], langs:[]};
+  var running = false;
+  var quotaHit = false;
+
+  function langByCode(c){ for (var i=0;i<LANGS.length;i++) if (LANGS[i].c===c) return LANGS[i]; return null; }
+  function key(src, word, lang){ return src + '|' + lang + '|' + word; }
+
+  /* ---------- Speicher (optional, darf scheitern) ---------- */
+  function lsGet(k){ try { return window.localStorage.getItem(k); } catch(e){ return null; } }
+  function lsSet(k,v){ try { window.localStorage.setItem(k,v); } catch(e){} }
+  var cache = {};
+  try { cache = JSON.parse(lsGet('vokUebCache1') || '{}') || {}; } catch(e){ cache = {}; }
+  function saveCache(){
+    var ks = Object.keys(cache);
+    if (ks.length > 3000) { cache = {}; }
+    lsSet('vokUebCache1', JSON.stringify(cache));
+  }
+
+  /* ---------- Oberfläche aufbauen ---------- */
+  function buildSrc(){
+    var s = $('srcLang'); s.innerHTML = '';
+    SRC.forEach(function(l){
+      var o = document.createElement('option'); o.value = l.c; o.textContent = l.n; s.appendChild(o);
+    });
+    var saved = lsGet('vokUebSrc'); if (saved) s.value = saved;
+  }
+  function renderChips(){
+    var src = $('srcLang').value, box = $('chips'); box.innerHTML = '';
+    LANGS.forEach(function(l){
+      var lab = document.createElement('label');
+      var dis = (l.c === src);
+      if (dis) selected[l.c] = false;
+      lab.className = 'chip' + (selected[l.c] ? ' on' : '') + (dis ? ' off' : '');
+      var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!selected[l.c]; cb.disabled = dis;
+      cb.addEventListener('change', function(){ selected[l.c] = cb.checked; lab.className = 'chip' + (cb.checked ? ' on' : ''); saveSel(); });
+      lab.appendChild(cb); lab.appendChild(document.createTextNode(l.n));
+      box.appendChild(lab);
+    });
+  }
+  function saveSel(){ lsSet('vokUebSel', JSON.stringify(selected)); }
+  function loadSel(){
+    var s = null; try { s = JSON.parse(lsGet('vokUebSel') || 'null'); } catch(e){}
+    if (s) { selected = s; } else { setDefault(); }
+  }
+  function setDefault(){ selected = {}; LANGS.forEach(function(l){ if (l.d) selected[l.c] = true; }); }
+
+  /* ---------- Eingabe lesen ---------- */
+  function parseWords(){
+    var raw = $('input').value.split(/\n|;/);
+    var seen = {}, out = [];
+    raw.forEach(function(w){
+      w = w.replace(/\s+/g,' ').trim();
+      if (w && !seen[w]) { seen[w] = 1; out.push(w); }
+    });
+    return out;
+  }
+
+  /* ---------- Übersetzung über MyMemory ---------- */
+  function decode(s){ var t = document.createElement('textarea'); t.innerHTML = s; return t.value; }
+  function norm(s){ return s.toLowerCase().replace(/\s+/g,' ').trim(); }
+
+  function fetchTr(src, lang, word){
+    var ck = key(src, word, lang);
+    if (cache[ck]) return Promise.resolve(cache[ck]);
+    var url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(word) +
+              '&langpair=' + encodeURIComponent(src + '|' + lang);
+    var mail = ($('mail').value || '').trim();
+    if (mail) url += '&de=' + encodeURIComponent(mail);
+    return fetch(url).then(function(r){
+      if (!r.ok) { var e = new Error('HTTP ' + r.status); if (r.status === 429) e.quota = true; throw e; }
+      return r.json();
+    }).then(function(j){
+      var rd = j.responseData || {};
+      var t = decode(String(rd.translatedText || '')).trim();
+      if (/MYMEMORY WARNING/i.test(t) || String(j.responseStatus) === '429') { var e = new Error('Tageslimit erreicht'); e.quota = true; throw e; }
+      if (String(j.responseStatus) !== '200' || !t) { throw new Error(String(j.responseDetails || 'Keine Übersetzung erhalten')); }
+      var alts = [], seen = {}; seen[norm(t)] = 1; seen[norm(word)] = 1;
+      var ms = (j.matches || []).slice().sort(function(a,b){ return (parseFloat(b.match)||0) - (parseFloat(a.match)||0); });
+      ms.forEach(function(m){
+        var x = decode(String(m.translation || '')).trim();
+        if (!x || seen[norm(x)] || x.length > 60 || alts.length >= 3) return;
+        seen[norm(x)] = 1; alts.push(x);
+      });
+      var res = {text:t, alts:alts};
+      cache[ck] = res; saveCache();
+      return res;
+    });
+  }
+
+  function runQueue(jobs, n, step){
+    var idx = 0, done = 0, total = jobs.length;
+    return new Promise(function(resolve){
+      if (!total) return resolve();
+      function next(){
+        if (idx >= total) { if (done >= total) resolve(); return; }
+        var job = jobs[idx++];
+        job().then(function(){}, function(){}).then(function(){ done++; step(done, total); if (done >= total) resolve(); else next(); });
+      }
+      for (var i=0; i<Math.min(n,total); i++) next();
+    });
+  }
+
+  /* ---------- Tabelle ---------- */
+  function renderTable(){
+    var wrap = $('wrap'); cellEls = {};
+    if (!current.words.length || !current.langs.length) { wrap.innerHTML = '<div class="empty">Noch keine Übersetzungen.</div>'; setExport(false); return; }
+    var srcName = (SRC.filter(function(s){ return s.c === current.src; })[0] || {n:current.src}).n;
+    var t = document.createElement('table');
+    var thead = document.createElement('thead'), hr = document.createElement('tr');
+    var th0 = document.createElement('th'); th0.textContent = srcName; hr.appendChild(th0);
+    current.langs.forEach(function(c){
+      var th = document.createElement('th'); th.textContent = langByCode(c).n; hr.appendChild(th);
+    });
+    thead.appendChild(hr); t.appendChild(thead);
+    var tb = document.createElement('tbody');
+    current.words.forEach(function(w){
+      var tr = document.createElement('tr');
+      var ts = document.createElement('td'); ts.className = 'src';
+      var xb = document.createElement('button'); xb.type = 'button'; xb.className = 'x'; xb.title = 'Zeile entfernen'; xb.textContent = '×';
+      xb.addEventListener('click', function(){ current.words = current.words.filter(function(z){ return z !== w; }); renderTable(); });
+      var cb = document.createElement('button'); cb.type = 'button'; cb.className = 'cp'; cb.title = 'Wort mit allen Übersetzungen als Block kopieren'; cb.textContent = '⧉';
+      cb.addEventListener('click', function(){
+        var txt = blockText(w);
+        if (!txt) { flash('Für dieses Wort gibt es noch keine Übersetzungen.', true); return; }
+        copyText(txt).then(function(){
+          cb.classList.add('done'); cb.textContent = '✓'; flash('„' + w + '“ mit allen Übersetzungen kopiert.');
+          setTimeout(function(){ cb.classList.remove('done'); cb.textContent = '⧉'; }, 1500);
+        }, function(){ flash('Kopieren nicht möglich. Bitte den Text von Hand markieren.', true); });
+      });
+      ts.appendChild(xb); ts.appendChild(cb); ts.appendChild(document.createTextNode(w)); tr.appendChild(ts);
+      current.langs.forEach(function(c){
+        var td = document.createElement('td'); td.className = 'cell';
+        cellEls[key(current.src, w, c)] = td;
+        fillCell(current.src, w, c); tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb); wrap.innerHTML = ''; wrap.appendChild(t);
+    setExport(true);
+  }
+
+  function fillCell(src, w, c){
+    var k = key(src, w, c), td = cellEls[k]; if (!td) return;
+    var rec = results[k] || {state:'loading'}, lang = langByCode(c);
+    td.innerHTML = '';
+    if (rec.state === 'loading') { td.innerHTML = '<span class="loading">…</span>'; return; }
+    if (rec.state === 'error') {
+      var sp = document.createElement('span'); sp.className = 'error'; sp.textContent = '⚠ ' + rec.msg;
+      var rb = document.createElement('button'); rb.type = 'button'; rb.textContent = '↻'; rb.title = 'Erneut versuchen';
+      rb.addEventListener('click', function(){ retry(src, w, c); });
+      sp.appendChild(rb); td.appendChild(sp); return;
+    }
+    var m = document.createElement('div'); m.className = 'main' + (lang.rtl ? ' rtl' : '');
+    m.contentEditable = 'true'; m.spellcheck = false; m.setAttribute('lang', c); m.textContent = rec.text;
+    m.addEventListener('input', function(){ rec.text = m.textContent; });
+    td.appendChild(m);
+    if (rec.alts && rec.alts.length) {
+      var box = document.createElement('div'); box.className = 'alts';
+      rec.alts.forEach(function(a, i){
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'alt' + (lang.rtl ? ' rtl' : ''); b.textContent = a;
+        b.title = 'Diese Übersetzung übernehmen';
+        b.addEventListener('click', function(){ var old = rec.text; rec.text = a; rec.alts[i] = old; fillCell(src, w, c); });
+        box.appendChild(b);
+      });
+      td.appendChild(box);
+    }
+  }
+
+  function setExport(on){ $('copy').disabled = $('copyBlocks').disabled = $('csv').disabled = $('print').disabled = !on; }
+
+  /* Block für ein Wort: alle vorhandenen Übersetzungen als zusammenhängender Text */
+  function blockText(w){
+    var fmt = $('blockFmt').value, parts = [];
+    current.langs.forEach(function(c){
+      var r = results[key(current.src, w, c)];
+      if (!r || r.state !== 'ok') return;
+      var t = String(r.text).replace(/\s+/g, ' ').trim();
+      if (t) parts.push({n: langByCode(c).n, t: t});
+    });
+    if (!parts.length) return '';
+    if (fmt === 'plain') return w + '\n' + parts.map(function(p){ return p.t; }).join('\n');
+    if (fmt === 'line')  return w + ' – ' + parts.map(function(p){ return p.t; }).join(' | ');
+    return w + '\n' + parts.map(function(p){ return p.n + ': ' + p.t; }).join('\n');
+  }
+
+  function jobFor(src, w, c){
+    var k = key(src, w, c);
+    return function(){
+      results[k] = {state:'loading'}; fillCell(src, w, c);
+      if (quotaHit) { results[k] = {state:'error', msg:'Tageslimit'}; fillCell(src, w, c); return Promise.reject(); }
+      return fetchTr(src, c, w).then(function(r){
+        results[k] = {state:'ok', text:r.text, alts:r.alts.slice()}; fillCell(src, w, c);
+      }, function(e){
+        if (e && e.quota) quotaHit = true;
+        results[k] = {state:'error', msg: (e && e.message) ? e.message : 'Fehler'}; fillCell(src, w, c);
+        throw e;
+      });
+    };
+  }
+  function retry(src, w, c){ quotaHit = false; jobFor(src, w, c)().then(function(){}, function(){}); }
+
+  /* ---------- Hauptablauf ---------- */
+  function go(){
+    if (running) return;
+    var words = parseWords();
+    var src = $('srcLang').value;
+    var langs = LANGS.filter(function(l){ return selected[l.c] && l.c !== src; }).map(function(l){ return l.c; });
+    var st = $('status'); st.className = '';
+    if (!words.length) { st.className = 'err'; st.textContent = 'Bitte zuerst Vokabeln eingeben.'; return; }
+    if (!langs.length) { st.className = 'err'; st.textContent = 'Bitte mindestens eine Zielsprache wählen.'; return; }
+    if (words.length > 150) { words = words.slice(0,150); st.textContent = 'Es werden die ersten 150 Einträge übersetzt. '; }
+    current = {src:src, words:words, langs:langs};
+    quotaHit = false;
+    var jobs = [];
+    words.forEach(function(w){ langs.forEach(function(c){
+      var k = key(src, w, c);
+      if (results[k] && results[k].state === 'ok') return;   // schon vorhanden (auch korrigierte Felder bleiben)
+      results[k] = {state:'loading'};
+      jobs.push(jobFor(src, w, c));
+    }); });
+    renderTable();
+    if (!jobs.length) { st.textContent = 'Alles bereits übersetzt.'; return; }
+    running = true; $('go').disabled = true;
+    st.textContent = 'Übersetze … 0 von ' + jobs.length;
+    runQueue(jobs, 5, function(d, t){ st.textContent = 'Übersetze … ' + d + ' von ' + t; }).then(function(){
+      running = false; $('go').disabled = false;
+      var bad = 0;
+      words.forEach(function(w){ langs.forEach(function(c){ var r = results[key(src,w,c)]; if (r && r.state === 'error') bad++; }); });
+      if (quotaHit) { st.className = 'err'; st.textContent = 'Das Tageslimit der kostenlosen Schnittstelle ist erreicht. Später erneut versuchen oder unter „Erweitert“ eine E-Mail-Adresse eintragen.'; }
+      else if (bad) { st.className = 'err'; st.textContent = 'Fertig, aber ' + bad + ' Feld(er) mit Fehler. Mit ↻ erneut versuchen (Internetverbindung prüfen).'; }
+      else { st.textContent = 'Fertig.'; }
+    });
+  }
+
+  /* ---------- Export ---------- */
+  function tableRows(){
+    var srcName = (SRC.filter(function(s){ return s.c === current.src; })[0] || {n:''}).n;
+    var rows = [[srcName].concat(current.langs.map(function(c){ return langByCode(c).n; }))];
+    current.words.forEach(function(w){
+      var row = [w];
+      current.langs.forEach(function(c){ var r = results[key(current.src,w,c)]; row.push(r && r.state === 'ok' ? String(r.text).replace(/\s+/g,' ').trim() : ''); });
+      rows.push(row);
+    });
+    return rows;
+  }
+  function copyText(txt){
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(txt);
+    return new Promise(function(res, rej){
+      var ta = document.createElement('textarea'); ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy') ? res() : rej(); } catch(e){ rej(e); } document.body.removeChild(ta);
+    });
+  }
+  function flash(msg, bad){ var st = $('status'); st.className = bad ? 'err' : ''; st.textContent = msg; }
+
+  $('copy').addEventListener('click', function(){
+    var txt = tableRows().map(function(r){ return r.join('\t'); }).join('\n');
+    copyText(txt).then(function(){ flash('Tabelle kopiert – lässt sich direkt in Excel oder Word einfügen.'); }, function(){ flash('Kopieren nicht möglich. Bitte CSV herunterladen.', true); });
+  });
+  $('copyBlocks').addEventListener('click', function(){
+    var blocks = current.words.map(blockText).filter(function(b){ return b; });
+    if (!blocks.length) { flash('Noch keine Übersetzungen zum Kopieren.', true); return; }
+    var sep = ($('blockFmt').value === 'line') ? '\n' : '\n\n';
+    copyText(blocks.join(sep)).then(function(){ flash(blocks.length + ' Block/Blöcke kopiert.'); }, function(){ flash('Kopieren nicht möglich.', true); });
+  });
+  $('blockFmt').value = lsGet('vokUebFmt') || 'labels';
+  $('blockFmt').addEventListener('change', function(){ lsSet('vokUebFmt', $('blockFmt').value); });
+  $('csv').addEventListener('click', function(){
+    var txt = tableRows().map(function(r){
+      return r.map(function(x){ return '"' + String(x).replace(/"/g,'""') + '"'; }).join(';');
+    }).join('\r\n');
+    var blob = new Blob(['﻿' + txt], {type:'text/csv;charset=utf-8'});
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Vokabeln-Uebersetzungen.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  });
+  $('print').addEventListener('click', function(){ window.print(); });
+
+  /* ---------- Bedienung ---------- */
+  $('go').addEventListener('click', go);
+  $('input').addEventListener('keydown', function(e){ if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') go(); });
+  $('example').addEventListener('click', function(){ $('input').value = 'der Tisch\nlernen\nfreundlich\nsich freuen auf\ndie Wohnung'; });
+  $('clear').addEventListener('click', function(){
+    if (running) return;
+    $('input').value = ''; current = {src:$('srcLang').value, words:[], langs:[]}; renderTable(); $('status').textContent = ''; $('status').className = '';
+  });
+  $('allDefault').addEventListener('click', function(){ setDefault(); saveSel(); renderChips(); });
+  $('allNone').addEventListener('click', function(){ selected = {}; saveSel(); renderChips(); });
+  $('srcLang').addEventListener('change', function(){ lsSet('vokUebSrc', $('srcLang').value); renderChips(); });
+  $('mail').value = lsGet('vokUebMail') || '';
+  $('mail').addEventListener('change', function(){ lsSet('vokUebMail', $('mail').value.trim()); });
+
+  buildSrc(); loadSel(); renderChips();
+})();
+</script>
+</body>
+</html>
