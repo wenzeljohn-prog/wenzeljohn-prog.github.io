@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="uk" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phrasebook-Trainer A1 minimalistisch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one centred working card; Ukrainian on the left, German on the right, like a worksheet row. */
+:root{
+  --bg:#f2f4f8; --card:#ffffff; --ink:#15203b; --muted:#5a6580; --line:#d9deea;
+  --accent:#1f4fa8; --accent-ink:#ffffff; --warm:#f2c230; --warm-ink:#2b2200;
+  --cover:#11151f; --bad:#b3261e; --bad-bg:#fbe4e1; --gapbg:#eef2fb; --good:#1d7a4d; --good-bg:#e4f4ea; --peek-bg:#fff4cc;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Source Sans 3",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10141f; --card:#182033; --ink:#e8ecf6; --muted:#9aa5c0; --line:#2b3550;
+    --accent:#7aa5f5; --accent-ink:#0c1428; --warm:#f2c230; --warm-ink:#2b2200;
+    --cover:#dfe4f0; --bad:#ff9a90; --bad-bg:#452320; --gapbg:#222d47; --good:#6fd3a0; --good-bg:#17382b; --peek-bg:#40350f;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10141f; --card:#182033; --ink:#e8ecf6; --muted:#9aa5c0; --line:#2b3550;
+  --accent:#7aa5f5; --accent-ink:#0c1428; --warm:#f2c230; --warm-ink:#2b2200;
+  --cover:#dfe4f0; --bad:#ff9a90; --bad-bg:#452320; --gapbg:#222d47; --good:#6fd3a0; --good-bg:#17382b; --peek-bg:#40350f;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:18px;line-height:1.45}
+.wrap{max-width:1040px;margin:0 auto;padding:20px 16px 48px;display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px}
+h1{font-size:1.15rem;margin:0;font-weight:700;letter-spacing:.01em}
+.fn{color:var(--muted);font-size:.95rem}
+.fn b{color:var(--ink)}
+.bar{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:end;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label,.field .lbl{font-size:.8rem;color:var(--muted);font-weight:600}
+select{font:inherit;font-size:.95rem;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);max-width:100%}
+.checks{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.chk{display:flex;gap:8px;align-items:center;font-size:.95rem;cursor:pointer}
+.chk input{width:18px;height:18px;accent-color:var(--accent)}
+.stat{margin-inline-start:auto;text-align:end;font-variant-numeric:tabular-nums;font-size:.95rem;color:var(--muted)}
+.stat b{color:var(--ink)}
+.qbar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:6px;min-width:140px}
+.qbar i{display:block;height:100%;background:var(--accent);width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px clamp(16px,3vw,32px) 26px;display:flex;flex-direction:column;gap:20px}
+.steps{display:flex;gap:6px;align-items:center}
+.steps i{flex:1;height:8px;border-radius:4px;background:var(--line);max-width:64px}
+.steps i.on{background:var(--cover)}
+.steps span{font-size:.85rem;color:var(--muted);margin-inline-start:8px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.instr{font-size:1.2rem;font-weight:600;margin:0;text-wrap:balance}
+.instr small{display:block;font-weight:400;font-size:.95rem;color:var(--muted);margin-top:4px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px 32px;align-items:start;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pair .col{font-family:var(--serif);font-size:clamp(1.35rem,2.6vw,1.9rem);line-height:1.6;min-width:0;overflow-wrap:anywhere}
+.pair .uk{color:var(--ink)}
+.tag{display:block;font-family:var(--sans);font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.cv{background:var(--cover);color:transparent;border-radius:3px;user-select:none;-webkit-user-select:none;white-space:pre-wrap;padding:0 .08em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.de.peek{background:var(--peek-bg);border-radius:8px;box-shadow:0 0 0 8px var(--peek-bg)}
+.de.reveal .w{color:var(--accent)}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+button{font:inherit;font-size:1rem;font-weight:600;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:11px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;min-height:46px}
+button:hover{border-color:var(--accent)}
+button:focus-visible,select:focus-visible,.chk input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.warm{background:var(--warm);color:var(--warm-ink);border-color:var(--warm)}
+button.hard{background:var(--peek-bg);color:var(--ink);border-color:var(--warm)}
+button.good{background:var(--good-bg);color:var(--good);border-color:var(--good)}
+button[disabled]{opacity:.45;cursor:not-allowed}
+svg{width:20px;height:20px;flex:none}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.opts button{justify-content:flex-start;text-align:start;align-items:flex-start;padding:14px 16px;line-height:1.35}
+.hint{font-size:.9rem;color:var(--muted);margin:0}
+.warn{background:var(--peek-bg);border-radius:10px;padding:10px 14px;font-size:.95rem}
+.done{text-align:center;padding:28px 8px;display:flex;flex-direction:column;gap:16px;align-items:center}
+.done h2{margin:0;font-size:1.4rem}
+[hidden]{display:none!important}
+@media (max-width:860px){
+  .opts{grid-template-columns:1fr}
+  .pair{grid-template-columns:1fr}
+  .stat{margin-inline-start:0;text-align:start}
+}
+@media (prefers-reduced-motion:no-preference){
+  .qbar i{transition:width .3s}
+}
+
+header{align-items:flex-end}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border-radius:10px 10px 0 0;border:1.5px solid var(--line);border-bottom:0;background:transparent;padding:9px 16px;min-height:0;flex-direction:column;align-items:flex-start;gap:0;font-weight:600;color:var(--muted)}
+.tab small{font-weight:400;font-size:.8rem}
+.tab[aria-selected="true"]{background:var(--card);color:var(--ink);border-color:var(--line)}
+.grp{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:end;flex:1 1 auto}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{flex:1 1 220px;flex-direction:column;align-items:flex-start;gap:2px;text-align:start}
+.seg button small{font-weight:400;font-size:.85rem;color:var(--muted)}
+.seg button[aria-pressed="true"]{border-color:var(--accent);background:var(--gapbg);box-shadow:inset 0 0 0 1px var(--accent)}
+.lvls{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:-6px}
+.lvls span.l{padding:4px 12px;border-radius:999px;border:1.5px solid var(--line);font-size:.85rem;font-weight:600;color:var(--muted)}
+.lvls span.l.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.lvls span.l.past{background:var(--good-bg);color:var(--good);border-color:var(--good)}
+.lvls .info{font-size:.85rem;color:var(--muted);margin-inline-start:6px}
+.stack{display:flex;flex-direction:column;gap:6px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stack .col{font-family:var(--serif);font-size:clamp(1.35rem,2.6vw,1.9rem);line-height:1.6}
+.cloze{line-height:2.3!important}
+.cloze .t{white-space:pre-wrap}
+.gap{font:inherit;color:var(--accent);background:var(--gapbg);border:0;border-bottom:3px solid var(--ink);border-radius:5px 5px 0 0;text-align:center;padding:0 .1em;margin:0 .05em;height:1.5em;vertical-align:baseline;outline-offset:2px}
+.gap:focus{background:var(--card);border-bottom-color:var(--accent)}
+.gap.ok{border-bottom-color:var(--good);background:var(--good-bg);color:var(--good)}
+.gap.bad{border-bottom-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.gap.shown{border-bottom-color:var(--warm);background:var(--peek-bg);color:var(--ink);font-style:italic}
+.chars{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chars span{font-size:.85rem;color:var(--muted);margin-inline-end:4px}
+.chars button{min-height:40px;padding:6px 14px;font-family:var(--serif);font-size:1.15rem}
+.fb{min-height:1.5em;font-weight:600;margin:0}
+.fb.ok{color:var(--good)}
+.fb.bad{color:var(--bad)}
+.fb small{display:block;font-weight:400;color:var(--muted)}
+.deCol{direction:ltr;text-align:left}
+.gap{direction:ltr}
+.ltr{direction:ltr;unicode-bidi:isolate}
+.langsel{display:flex;align-items:center;gap:8px}
+.langsel svg{color:var(--muted)}
+html[dir="rtl"] .pair .col:not(.deCol),html[dir="rtl"] .stack .col:not(.deCol){font-family:"Noto Naskh Arabic","Noto Sans Arabic","Segoe UI","Tahoma","Arial",sans-serif}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Phrasebook-Trainer A1 minimalistisch</h1>
+    <div class="langsel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg>
+      <select id="lang" aria-label="Language · Мова · Язык · Dil · اللغة · Język · Limbă · زبان"></select></div>
+    <nav class="tabs" role="tablist" data-aria="tabsAria">
+      <button class="tab" role="tab" id="tab1" type="button" aria-selected="true" aria-controls="v1"><span data-i="tab1"></span><small data-i="tab1s"></small></button>
+      <button class="tab" role="tab" id="tab2" type="button" aria-selected="false" aria-controls="v2"><span data-i="tab2"></span><small data-i="tab2s"></small></button>
+    </nav>
+  </header>
+
+  <section class="bar" data-aria="barAria">
+    <div class="field">
+      <label for="sec" data-i="sec"></label>
+      <select id="sec"></select>
+    </div>
+    <div class="field">
+      <span class="lbl" data-i="params"></span>
+      <div class="checks">
+        <label class="chk"><input type="checkbox" id="slow"> <span data-i="slow"></span></label>
+        <span id="o1" class="checks">
+          <label class="chk"><input type="checkbox" id="shuf"> <span data-i="shuf"></span></label>
+          <label class="chk"><input type="checkbox" id="auto" checked> <span data-i="auto"></span></label>
+        </span>
+        <span id="o2" class="checks" hidden>
+          <label class="chk" id="shuf2w"><input type="checkbox" id="shuf2"> <span data-i="shuf"></span></label>
+          <label class="chk"><input type="checkbox" id="auto2" checked> <span data-i="auto2"></span></label>
+          <span class="field" id="kindw" hidden style="flex-direction:row;align-items:center;gap:8px"><label for="kind" data-i="kindLbl"></label>
+            <select id="kind"><option value="mix" data-i="kAll"></option><option value="letter" data-i="kLetter"></option><option value="word" data-i="kWord"></option><option value="multi" data-i="kMulti"></option></select></span>
+        </span>
+      </div>
+    </div>
+    <div class="stat">
+      <div id="st1"></div>
+      <div id="st2" hidden></div>
+      <div class="qbar"><i id="qfill"></i></div>
+    </div>
+  </section>
+
+  <div id="novoice" class="warn" data-i="novoice" hidden></div>
+
+  <main class="card" id="v1" role="tabpanel" aria-labelledby="tab1" aria-live="polite">
+    <div id="work">
+      <div class="steps" id="steps" aria-hidden="true"></div>
+      <p class="instr" id="instr"></p>
+      <div class="pair">
+        <div class="col uk"><span class="tag" data-tag></span><span id="uk"></span></div>
+        <div class="col deCol"><span class="tag">Deutsch</span><span id="de" class="de" lang="de" dir="ltr"></span></div>
+      </div>
+      <div class="btns" id="btns"></div>
+      <div class="opts" id="opts" hidden></div>
+    </div>
+    <div class="done" id="fin" hidden>
+      <h2 data-i="finT"></h2>
+      <p class="hint" id="fin1txt"></p>
+      <div class="btns"><button class="primary" id="again" type="button" data-i="bAgain"></button></div>
+    </div>
+  </main>
+
+  <main class="card" id="v2" role="tabpanel" aria-labelledby="tab2" hidden>
+    <div class="seg" role="group" data-aria="mAria">
+      <button type="button" id="m-prog" aria-pressed="true"><span data-i="mProg"></span><small data-i="mProgS"></small></button>
+      <button type="button" id="m-rand" aria-pressed="false"><span data-i="mRand"></span><small data-i="mRandS"></small></button>
+    </div>
+    <div id="work2">
+      <div class="lvls" id="lvls" aria-hidden="true"></div>
+      <p class="instr" id="i2"></p>
+      <div class="stack">
+        <div class="col uk"><span class="tag" data-tag></span><span id="uk2"></span></div>
+        <div class="col cloze deCol"><span class="tag">Deutsch</span><span id="cl" lang="de" dir="ltr"></span></div>
+      </div>
+      <div class="chars" id="chars"><span data-i="special"></span></div>
+      <p class="fb" id="fb" role="status"></p>
+      <div class="btns" id="b2"></div>
+    </div>
+    <div class="done" id="fin2" hidden>
+      <h2 data-i="finT"></h2>
+      <p class="hint" id="fin2txt"></p>
+      <div class="btns"><button class="primary" id="again2" type="button" data-i="bAgain"></button></div>
+    </div>
+  </main>
+  <p class="hint" data-i="foot"></p>
+</div>
+
+<script>
+const DATA = {"sections":["2 Begrüßen und Verabschieden","3 Wie geht es dir?","4 Sich vorstellen: Name, Herkunft, Sprachen","5 Buchstabieren und nachfragen","6 Persönliche Daten und Formulare","7 Beruf und Arbeit","8 Familie","9 Dinge benennen und beschreiben","10 Zahlen, Preise und Uhrzeit","11 Freizeit und Verabredungen","12 Zusagen, Absagen und Einladungen","13 Tagesablauf und Arbeitszeiten","14 Essen, Trinken und Einkaufen","15 Restaurant, Bestellen und Komplimente","16 Kleidung kaufen und reklamieren","17 Termine, Telefon und Ämter","18 Pflichten und Erlaubnis: müssen, dürfen, können, wollen, sollen","19 Wohnung, Wohnungssuche und Nachbarn","20 Weg, Bus und Bahn","21 Arzt, Apotheke und Notruf","22 Ausbildung, Arbeit suchen und Kinderbetreuung","23 Höflich bitten und sich entschuldigen","24 Wetter, Reisen, Feste und Glückwünsche"],"sectionsUk":["Привітання та прощання","Як справи?","Знайомство: ім'я, походження, мови","Переспитування та літерування","Особисті дані та анкети","Професія та робота","Родина","Предмети та їх опис","Числа, ціни та час","Дозвілля та домовленості","Згода, відмова, запрошення","Розпорядок дня та робочий час","Їжа, напої, покупки","Ресторан, замовлення, компліменти","Купівля одягу та скарги","Записи, телефон, установи","Обов'язки та дозволи","Житло, пошук квартири, сусіди","Дорога, автобус, потяг","Лікар, аптека, екстрені служби","Навчання, пошук роботи, догляд за дітьми","Ввічливі прохання та вибачення","Погода, подорожі, свята, вітання"],"items":[{"s":0,"c":["Guten","Morgen!"],"u":"Доброго ранку!","r":15},{"s":0,"c":["Guten","Tag!"],"u":"Добрий день!","r":16},{"s":0,"c":["Guten","Abend!"],"u":"Добрий вечір!","r":17},{"s":0,"c":["Gute","Nacht!"],"u":"На добраніч!","r":18},{"s":0,"c":["Auf","Wiedersehen!"],"u":"До побачення!","r":22},{"s":0,"c":["Bis","bald!"],"u":"До скорого!","r":25},{"s":0,"c":["Danke","schön!"],"u":"Щиро дякую!","r":28},{"s":1,"c":["Wie","geht","es","Ihnen?"],"u":"Як у Вас справи?","r":30},{"s":1,"c":["Wie","geht","es","dir?"],"u":"Як у тебе справи?","r":31},{"s":1,"c":["Gut,","danke."],"u":"Добре, дякую.","r":32},{"s":1,"c":["Sehr gut,","danke!","Und","Ihnen?"],"u":"Дуже добре, дякую! А у Вас?","r":33},{"s":1,"c":["Sehr gut,","danke!","Und","dir?"],"u":"Дуже добре, дякую! А у тебе?","r":33},{"s":1,"c":["Nicht","gut."],"u":"Не дуже добре.","r":36},{"s":1,"c":["Ich","bin","müde."],"u":"Я втомлений (ч.) / втомлена (ж.).","r":37},{"s":1,"c":["Sagen","wir","du?"],"u":"Може, перейдемо на «ти»?","r":39},{"s":1,"c":["Ja,","gern."],"u":"Так, залюбки.","r":40},{"s":2,"c":["Wie","heißen","Sie?"],"u":"Як Вас звати?","r":41},{"s":2,"c":["Wie","heißt","du?"],"u":"Як тебе звати?","r":41},{"s":2,"c":["Woher","kommen","Sie?"],"u":"Звідки Ви?","r":43},{"s":2,"c":["Woher","kommst","du?"],"u":"Звідки ти?","r":43},{"s":2,"c":["Ich","komme","aus der Ukraine."],"u":"Я з України.","r":44},{"s":2,"c":["Welche","Sprachen","sprechen","Sie?"],"u":"Якими мовами Ви розмовляєте?","r":47},{"s":2,"c":["Welche","Sprachen","sprichst","du?"],"u":"Якими мовами ти розмовляєш?","r":47},{"s":2,"c":["Ich","spreche","Ukrainisch","und ein bisschen","Deutsch."],"u":"Я розмовляю українською і трохи німецькою.","r":48},{"s":2,"c":["Wo","wohnen","Sie?"],"u":"Де Ви живете?","r":49},{"s":2,"c":["Wo","wohnst","du?"],"u":"Де ти живеш?","r":49},{"s":2,"c":["Ich","wohne","in Erfurt."],"u":"Я живу в Ерфурті.","r":50},{"s":3,"c":["Wie","schreibt","man","das?"],"u":"Як це пишеться?","r":55},{"s":3,"c":["Ich","buchstabiere:","A-L-E-N-A."],"u":"Я скажу по літерах: A-L-E-N-A.","r":56},{"s":3,"c":["Ich","verstehe","das","nicht."],"u":"Я цього не розумію.","r":59},{"s":3,"c":["Tut","mir","leid,","ich","habe","Sie","nicht","verstanden."],"u":"Вибачте, я Вас не зрозумів (ч.) / не зрозуміла (ж.).","r":61},{"s":3,"c":["Könnten","Sie","das","bitte","wiederholen?"],"u":"Чи не могли б Ви повторити це, будь ласка?","r":64},{"s":3,"c":["Wie","heißt","das","auf Deutsch?"],"u":"Як це німецькою?","r":66},{"s":3,"c":["Keine","Ahnung."],"u":"Поняття не маю.","r":68},{"s":4,"c":["Wie","ist","Ihr Name?"],"u":"Як Вас звати?","r":72},{"s":4,"c":["Wie","ist","Ihre Adresse?"],"u":"Яка Ваша адреса?","r":73},{"s":4,"c":["Ich","wohne","in der Siemensstraße 12."],"u":"Я живу на вулиці Сіменсштрассе, 12.","r":74},{"s":4,"c":["Wie","ist","Ihre Telefonnummer?"],"u":"Який Ваш номер телефону?","r":76},{"s":4,"c":["Meine Telefonnummer","ist","0162 2083 640."],"u":"Мій номер телефону 0162 2083 640.","r":77},{"s":4,"c":["Wie","ist","Ihre E-Mail-Adresse?"],"u":"Яка Ваша електронна адреса?","r":78},{"s":4,"c":["Entschuldigung,","ich","brauche","Hilfe."],"u":"Вибачте, мені потрібна допомога.","r":81},{"s":4,"c":["Wann","sind","Sie","geboren?"],"u":"Коли Ви народилися?","r":87},{"s":4,"c":["Ich","bin","am vierten Mai","geboren."],"u":"Я народився (ч.) / народилася (ж.) четвертого травня.","r":88},{"s":5,"c":["Was","sind","Sie","von Beruf?"],"u":"Яка Ваша професія?","r":91},{"s":5,"c":["Was","bist","du","von Beruf?"],"u":"Яка в тебе професія?","r":91},{"s":5,"c":["Ich","bin","Ingenieurin","von Beruf."],"u":"Я за професією інженерка.","r":93},{"s":5,"c":["Ich","bin","Ingenieur","von Beruf."],"u":"Я за професією інженер.","r":93},{"s":5,"c":["Ich","arbeite","im Büro."],"u":"Я працюю в офісі.","r":96},{"s":5,"c":["Ich","arbeite","jetzt","nicht."],"u":"Зараз я не працюю.","r":98},{"s":5,"c":["Ich","studiere."],"u":"Я навчаюся (в університеті).","r":100},{"s":5,"c":["Ich","lerne","jetzt","Deutsch."],"u":"Зараз я вчу німецьку.","r":101},{"s":6,"c":["Das","ist","meine Familie."],"u":"Це моя родина.","r":105},{"s":6,"c":["Das","ist","meine Mutter."],"u":"Це моя мама.","r":107},{"s":6,"c":["Das","ist","mein Vater."],"u":"Це мій тато.","r":107},{"s":6,"c":["Wie viele","Geschwister","haben","Sie?"],"u":"Скільки у Вас братів і сестер?","r":112},{"s":6,"c":["Ich","habe","einen Bruder","und zwei Schwestern."],"u":"У мене є брат і дві сестри.","r":113},{"s":6,"c":["Ich","habe","keine Geschwister."],"u":"У мене немає братів і сестер.","r":114},{"s":6,"c":["Ich","bin","ledig."],"u":"Я неодружений (ч.) / незаміжня (ж.).","r":117},{"s":6,"c":["Ich","bin","verheiratet."],"u":"Я одружений (ч.) / заміжня (ж.).","r":118},{"s":6,"c":["Ich","habe","einen Sohn","und eine Tochter."],"u":"У мене є син і дочка.","r":120},{"s":6,"c":["Entschuldigung,","das","ist","privat."],"u":"Вибачте, це особисте.","r":127},{"s":6,"c":["Das","möchte","ich","nicht","sagen."],"u":"Я не хочу про це говорити.","r":127},{"s":7,"c":["Was","ist","das?"],"u":"Що це?","r":129},{"s":7,"c":["Das","ist","ein Tisch."],"u":"Це стіл.","r":130},{"s":7,"c":["Der Laptop","ist","neu."],"u":"Ноутбук новий.","r":132},{"s":7,"c":["Die Kaffeemaschine","ist","kaputt."],"u":"Кавоварка зламана.","r":134},{"s":7,"c":["Das","ist","wichtig","für mich."],"u":"Це важливо для мене.","r":139},{"s":8,"c":["Was","kostet","das?"],"u":"Скільки це коштує?","r":151},{"s":8,"c":["Wie viel","kostet","das?"],"u":"Скільки це коштує?","r":151},{"s":8,"c":["Das","kostet","3,50 Euro."],"u":"Це коштує 3,50 євро.","r":152},{"s":8,"c":["Wie viel Uhr","ist","es?"],"u":"Котра година?","r":154},{"s":8,"c":["Wie spät","ist","es?"],"u":"Котра година?","r":154},{"s":8,"c":["Es","ist","neun Uhr."],"u":"Дев'ята година.","r":155},{"s":8,"c":["Es","ist","fünf","nach neun."],"u":"Дев'ята п'ять (9:05).","r":156},{"s":8,"c":["Es","ist","Viertel","nach neun."],"u":"Дев'ята п'ятнадцять (9:15).","r":157},{"s":8,"c":["Es","ist","halb","zehn."],"u":"Дев'ята тридцять / пів на десяту (9:30).","r":158},{"s":8,"c":["Es","ist","Viertel","vor zehn."],"u":"За п'ятнадцять десята (9:45).","r":159},{"s":8,"c":["Um","wie viel","Uhr?"],"u":"О котрій годині?","r":160},{"s":8,"c":["Um","acht Uhr."],"u":"О восьмій годині.","r":161},{"s":9,"c":["Was","machst","du","gern?"],"u":"Що ти любиш робити?","r":164},{"s":9,"c":["Ich","mache","gern","Sport."],"u":"Я люблю займатися спортом.","r":166},{"s":9,"c":["Ich","lese","gern."],"u":"Я люблю читати.","r":167},{"s":9,"c":["Ich","höre","gern","Musik."],"u":"Я люблю слухати музику.","r":168},{"s":9,"c":["Was","machst","du","heute?"],"u":"Що ти робиш сьогодні?","r":172},{"s":9,"c":["Hast","du","heute","Zeit?"],"u":"Чи є в тебе сьогодні час?","r":173},{"s":9,"c":["Ich","weiß","nicht."],"u":"Не знаю.","r":180},{"s":10,"c":["Kommst","du","mit?"],"u":"Ти йдеш з нами?","r":183},{"s":10,"c":["Hast","du","Lust?"],"u":"Маєш бажання?","r":184},{"s":10,"c":["Ja,","ich","komme","gern."],"u":"Так, з радістю прийду.","r":186},{"s":10,"c":["Ich","habe","Zeit."],"u":"Маю час.","r":186},{"s":10,"c":["Nein,","ich","komme","leider","nicht."],"u":"Ні, на жаль, не прийду.","r":188},{"s":10,"c":["Ich","habe","keine Zeit."],"u":"Не маю часу.","r":188},{"s":10,"c":["Ich","kann","am Freitag","leider","nicht","kommen."],"u":"На жаль, у п'ятницю я не можу прийти.","r":189},{"s":10,"c":["Oh,","schade."],"u":"О, шкода.","r":191},{"s":10,"c":["Wir","feiern","am Sonntag","um 17 Uhr."],"u":"Ми святкуємо в неділю о 17:00.","r":194},{"s":10,"c":["Wir","möchten","euch","einladen."],"u":"Ми хочемо запросити вас.","r":195},{"s":10,"c":["Vielen Dank","für die Einladung!"],"u":"Дуже дякую за запрошення!","r":198},{"s":11,"c":["Ich","stehe","um sechs Uhr","auf."],"u":"Я встаю о шостій.","r":208},{"s":11,"c":["Ich","gehe","zur Arbeit."],"u":"Я йду на роботу.","r":209},{"s":11,"c":["Wann","beginnt","die Arbeit?"],"u":"Коли починається робота?","r":210},{"s":11,"c":["Die Arbeit","fängt","um acht Uhr","an."],"u":"Робота починається о восьмій.","r":211},{"s":11,"c":["Ich","habe","von 12 bis 13 Uhr","Pause."],"u":"У мене перерва з 12 до 13 години.","r":212},{"s":11,"c":["Ich","habe","Frühschicht."],"u":"У мене ранкова зміна.","r":216},{"s":11,"c":["Ich","habe","Spätschicht."],"u":"У мене вечірня зміна.","r":216},{"s":11,"c":["Ich","habe","frei."],"u":"У мене вихідний.","r":218},{"s":12,"c":["Was","isst","du","gern?"],"u":"Що ти любиш їсти?","r":220},{"s":12,"c":["Ich","esse","gern","Fisch."],"u":"Я люблю рибу.","r":222},{"s":12,"c":["Ich","trinke","gern","Tee."],"u":"Я люблю пити чай.","r":223},{"s":12,"c":["Ich","mag","kein Fleisch."],"u":"Я не люблю м'ясо.","r":225},{"s":12,"c":["Was","brauchen","wir?"],"u":"Що нам потрібно?","r":231},{"s":12,"c":["Wir","brauchen","eine Flasche Wasser."],"u":"Нам потрібна пляшка води.","r":232},{"s":12,"c":["Guten Tag,","was","möchten","Sie?"],"u":"Добрий день, що Ви бажаєте?","r":235},{"s":12,"c":["Ich","hätte","gern","einen Kaffee."],"u":"Я хотів би (ч.) / хотіла б (ж.) каву.","r":236},{"s":12,"c":["Ein Kaffee","mit Milch,","ohne Zucker."],"u":"Кава з молоком, без цукру.","r":237},{"s":12,"c":["Noch","etwas?"],"u":"Щось ще?","r":240},{"s":12,"c":["Nein,","das","ist","alles."],"u":"Ні, це все.","r":241},{"s":12,"c":["Hier,","bitte."],"u":"Ось, будь ласка.","r":242},{"s":13,"c":["Guten","Appetit!"],"u":"Смачного!","r":246},{"s":13,"c":["Ich","habe","Hunger."],"u":"Я голодний (ч.) / голодна (ж.).","r":247},{"s":13,"c":["Ich","möchte","bestellen."],"u":"Я хочу зробити замовлення.","r":250},{"s":13,"c":["Kann","ich","gleich","bestellen?"],"u":"Чи можу я одразу замовити?","r":255},{"s":13,"c":["Ich","nehme","den Fisch","mit Reis."],"u":"Я візьму рибу з рисом.","r":256},{"s":13,"c":["Ich","esse","kein Fleisch."],"u":"Я не їм м'ясо.","r":257},{"s":13,"c":["Hm,","das","schmeckt","super!"],"u":"Мм, це дуже смачно!","r":259},{"s":13,"c":["Die Suppe","ist","sehr","lecker."],"u":"Суп дуже смачний.","r":260},{"s":14,"c":["Welche","Größe","haben","Sie?"],"u":"Який у Вас розмір?","r":267},{"s":14,"c":["Haben","Sie","den Mantel","auch","in Blau?"],"u":"Чи є у Вас таке пальто також синього кольору?","r":270},{"s":14,"c":["Wo","kann","ich","den Mantel","anprobieren?"],"u":"Де можна приміряти пальто?","r":271},{"s":14,"c":["Was","kostet","der Mantel?"],"u":"Скільки коштує пальто?","r":272},{"s":14,"c":["Wo","ist","die Kasse?"],"u":"Де каса?","r":273},{"s":14,"c":["Zahlen","Sie","bar","oder","mit Karte?"],"u":"Ви платите готівкою чи карткою?","r":274},{"s":14,"c":["Das Kleid","passt","mir","nicht."],"u":"Сукня мені не підходить.","r":279},{"s":14,"c":["Ich","habe","das Handy","hier","gekauft."],"u":"Я купив (ч.) / купила (ж.) цей телефон тут.","r":283},{"s":14,"c":["Aber","es","funktioniert","nicht."],"u":"Але він не працює.","r":283},{"s":14,"c":["Haben","Sie","die Rechnung?"],"u":"У Вас є чек (рахунок)?","r":284},{"s":14,"c":["Ich","möchte","es umtauschen","oder","ich","möchte","das Geld zurück."],"u":"Я хочу обміняти його або повернути гроші.","r":286},{"s":15,"c":["Guten Tag,","hier","ist","Sevin."],"u":"Добрий день, це Севін.","r":288},{"s":15,"c":["Ich","möchte","mit Frau Santini","sprechen."],"u":"Я хотів би (ч.) / хотіла б (ж.) поговорити з пані Сантіні.","r":289},{"s":15,"c":["Frau Santini","ist","nicht","da."],"u":"Пані Сантіні немає на місці.","r":290},{"s":15,"c":["Ich","möchte","einen Termin","vereinbaren."],"u":"Я хочу домовитися про прийом (записатися).","r":293},{"s":15,"c":["Haben","Sie","am Donnerstag","einen Termin","frei?"],"u":"Чи є у Вас вільний час у четвер?","r":294},{"s":15,"c":["Ja,","das","geht."],"u":"Так, це підходить.","r":296},{"s":15,"c":["Das","geht","leider","nicht."],"u":"На жаль, це не підходить.","r":296},{"s":15,"c":["Wann","hat","die Post","geöffnet?"],"u":"Коли працює пошта?","r":300},{"s":15,"c":["Ich","möchte","ein Paket","abgeben."],"u":"Я хочу здати (відправити) посилку.","r":303},{"s":15,"c":["Ich","möchte","Geld","überweisen."],"u":"Я хочу переказати гроші.","r":304},{"s":15,"c":["Ich","möchte","meine Wohnung","anmelden."],"u":"Я хочу зареєструвати місце проживання.","r":306},{"s":15,"c":["Welche Dokumente","muss","ich","mitbringen?"],"u":"Які документи мені потрібно принести?","r":307},{"s":15,"c":["Wo","muss","ich","unterschreiben?"],"u":"Де мені підписати?","r":309},{"s":16,"c":["Was","musst","du","heute","machen?"],"u":"Що тобі сьогодні потрібно зробити?","r":311},{"s":16,"c":["Ich","muss","Hausaufgaben","machen."],"u":"Мені потрібно зробити домашнє завдання.","r":312},{"s":16,"c":["Ich","muss","zur Bank","gehen."],"u":"Мені треба піти в банк.","r":313},{"s":16,"c":["Wohin","gehst","du?"],"u":"Куди ти йдеш?","r":315},{"s":16,"c":["Ich","gehe","zur Post."],"u":"Я йду на пошту.","r":316},{"s":16,"c":["Ich","gehe","zur Apotheke."],"u":"Я йду в аптеку.","r":316},{"s":16,"c":["Ich","gehe","zum Arzt."],"u":"Я йду до лікаря.","r":316},{"s":16,"c":["Man","darf","hier","nicht","rauchen."],"u":"Тут не можна курити.","r":317},{"s":16,"c":["Das","ist","erlaubt."],"u":"Це дозволено.","r":321},{"s":16,"c":["Das","ist","verboten."],"u":"Це заборонено.","r":321},{"s":16,"c":["Ich","kann","gut","schwimmen."],"u":"Я добре плаваю (вмію плавати).","r":322},{"s":16,"c":["Ich","will","eine Ausbildung","machen."],"u":"Я хочу пройти професійне навчання.","r":325},{"s":17,"c":["Welche Zimmer","hat","die Wohnung?"],"u":"Які кімнати є в квартирі?","r":329},{"s":17,"c":["Entschuldigung,","wo","ist","die Toilette?"],"u":"Вибачте, де туалет?","r":334},{"s":17,"c":["Ich","suche","eine Wohnung."],"u":"Я шукаю квартиру.","r":335},{"s":17,"c":["Wir","haben","eine Wohnung","gefunden."],"u":"Ми знайшли квартиру.","r":338},{"s":17,"c":["Ich","habe","eine Bitte."],"u":"У мене є прохання.","r":340},{"s":17,"c":["Können","Sie","mir","helfen?"],"u":"Чи можете Ви мені допомогти?","r":340},{"s":18,"c":["Entschuldigung,","wie","komme","ich","zum Bahnhof?"],"u":"Вибачте, як мені дістатися до вокзалу?","r":346},{"s":18,"c":["Wie","komme","ich","zur Post?"],"u":"Як мені дістатися до пошти?","r":347},{"s":18,"c":["Muss","ich","umsteigen?"],"u":"Мені потрібно робити пересадку?","r":352},{"s":18,"c":["Wo","muss","ich","aussteigen?"],"u":"Де мені виходити?","r":353},{"s":18,"c":["Wie lange","dauert","es?"],"u":"Скільки це триває?","r":354},{"s":18,"c":["Was","kostet","die Fahrkarte?"],"u":"Скільки коштує квиток?","r":356},{"s":18,"c":["Wo","kann","ich","eine Fahrkarte","kaufen?"],"u":"Де можна купити квиток?","r":357},{"s":18,"c":["Wann","fährt","die U-Bahn?"],"u":"Коли відправляється метро?","r":359},{"s":18,"c":["Ich","fahre","mit dem Bus."],"u":"Я їду автобусом.","r":361},{"s":18,"c":["Ich","fahre","mit der U-Bahn."],"u":"Я їду на метро.","r":361},{"s":18,"c":["Ich","gehe","zu Fuß."],"u":"Я йду пішки.","r":362},{"s":18,"c":["Gehen","Sie","nach rechts."],"u":"Ідіть праворуч.","r":364},{"s":18,"c":["Gehen","Sie","nach links."],"u":"Ідіть ліворуч.","r":364},{"s":18,"c":["Gehen","Sie","geradeaus."],"u":"Ідіть прямо.","r":364},{"s":18,"c":["Wo","ist","die Apotheke?"],"u":"Де аптека?","r":367},{"s":18,"c":["Eine Fahrkarte","nach Ulm,","bitte."],"u":"Один квиток до Ульма, будь ласка.","r":372},{"s":18,"c":["Hin und zurück","oder","nur einfach?"],"u":"Туди й назад чи в один бік?","r":373},{"s":18,"c":["Wann","fährt","der nächste Zug?"],"u":"Коли відправляється наступний потяг?","r":374},{"s":19,"c":["Ich","bin","krank."],"u":"Я хворий (ч.) / хвора (ж.).","r":377},{"s":19,"c":["Ich","möchte","einen Termin","beim Arzt."],"u":"Я хочу записатися до лікаря.","r":378},{"s":19,"c":["Was","fehlt","Ihnen?"],"u":"Що Вас турбує?","r":380},{"s":19,"c":["Ich","habe","Kopfschmerzen."],"u":"У мене болить голова.","r":382},{"s":19,"c":["Ich","habe","Bauchschmerzen."],"u":"У мене болить живіт.","r":382},{"s":19,"c":["Ich","habe","Halsschmerzen."],"u":"У мене болить горло.","r":383},{"s":19,"c":["Ich","habe","Zahnschmerzen."],"u":"У мене болить зуб.","r":383},{"s":19,"c":["Ich","habe","Fieber."],"u":"У мене температура.","r":385},{"s":19,"c":["Ich","habe","Husten."],"u":"У мене кашель.","r":385},{"s":19,"c":["Ich","habe","eine Erkältung."],"u":"У мене застуда.","r":386},{"s":19,"c":["Seit","wann?"],"u":"Відколи?","r":387},{"s":19,"c":["Seit","zwei Tagen."],"u":"Вже два дні.","r":387},{"s":19,"c":["Nehmen","Sie","die Tabletten","zweimal","am Tag."],"u":"Приймайте таблетки двічі на день.","r":390},{"s":19,"c":["Ich","habe","hier","ein Rezept."],"u":"У мене тут рецепт.","r":392},{"s":19,"c":["Ich","kann","heute","leider","nicht","kommen."],"u":"На жаль, я сьогодні не можу прийти.","r":395},{"s":19,"c":["Die Notrufnummer","ist","die 112."],"u":"Номер екстреної служби — 112.","r":397},{"s":19,"c":["Hallo,","wir","haben","einen Notfall!"],"u":"Ало, у нас надзвичайна ситуація!","r":398},{"s":19,"c":["Sie","müssen","schnell","kommen!"],"u":"Ви мусите швидко приїхати!","r":399},{"s":19,"c":["Wo","sind","Sie?"],"u":"Де Ви?","r":400},{"s":19,"c":["Was","ist","passiert?"],"u":"Що сталося?","r":400},{"s":20,"c":["Was","können","Sie","gut?"],"u":"Що Ви добре вмієте?","r":404},{"s":20,"c":["Ich","möchte","ein Praktikum","machen."],"u":"Я хочу пройти практику.","r":406},{"s":20,"c":["Was","haben","Sie","früher","gemacht?"],"u":"Чим Ви займалися раніше?","r":408},{"s":20,"c":["Ich","habe","in der Küche","gearbeitet."],"u":"Я працював (ч.) / працювала (ж.) на кухні.","r":409},{"s":20,"c":["Ich","bin","2006","nach Deutschland","gekommen."],"u":"Я приїхав (ч.) / приїхала (ж.) до Німеччини в 2006 році.","r":410},{"s":20,"c":["Ich","wohne","seit einem Jahr","in Deutschland."],"u":"Я живу в Німеччині вже рік.","r":411},{"s":20,"c":["Ich","habe","noch","Fragen."],"u":"У мене є ще питання.","r":414},{"s":20,"c":["Ist","es","eine Vollzeitstelle","oder","eine Teilzeitstelle?"],"u":"Це робота на повний чи на неповний робочий день?","r":416},{"s":20,"c":["Wie","sind","die Arbeitszeiten?"],"u":"Який графік роботи?","r":417},{"s":20,"c":["Wann","können","Sie","bei uns","anfangen?"],"u":"Коли Ви можете почати у нас працювати?","r":420},{"s":20,"c":["Ich","brauche","eine Kinderbetreuung."],"u":"Мені потрібен догляд за дитиною.","r":424},{"s":21,"c":["Können","Sie","mir","helfen?"],"u":"Чи можете Ви мені допомогти?","r":429},{"s":21,"c":["Könnten","Sie","mir","bitte","helfen?"],"u":"Чи не могли б Ви мені, будь ласка, допомогти?","r":430},{"s":21,"c":["Würden","Sie","das","bitte","wiederholen?"],"u":"Чи не могли б Ви це повторити, будь ласка?","r":432},{"s":21,"c":["Kannst","du","bitte","die Tür","schließen?"],"u":"Можеш, будь ласка, зачинити двері?","r":433},{"s":21,"c":["Tut","mir","leid!"],"u":"Мені прикро! / Вибачте!","r":438},{"s":21,"c":["Tut","mir","leid,","ich","bin","zu spät."],"u":"Вибачте, я спізнився (ч.) / спізнилася (ж.).","r":439},{"s":21,"c":["Kein","Problem."],"u":"Нічого страшного.","r":440},{"s":22,"c":["Wie","ist","das Wetter?"],"u":"Яка погода?","r":442},{"s":22,"c":["Heute","scheint","die Sonne."],"u":"Сьогодні світить сонце.","r":443},{"s":22,"c":["Es","regnet."],"u":"Іде дощ.","r":444},{"s":22,"c":["Wollen","wir","im Park","ein Picknick","machen?"],"u":"Може, влаштуємо пікнік у парку?","r":448},{"s":22,"c":["Das","ist","eine gute Idee."],"u":"Це гарна ідея.","r":449},{"s":22,"c":["Wann","haben","Sie","Geburtstag?"],"u":"Коли у Вас день народження?","r":455},{"s":22,"c":["Ich","habe","am vierten Mai","Geburtstag."],"u":"У мене день народження четвертого травня.","r":456},{"s":22,"c":["Herzlichen Glückwunsch","zum Geburtstag!"],"u":"Вітаю з днем народження!","r":458},{"s":22,"c":["Viel","Glück!"],"u":"Щасти! / Успіхів!","r":462},{"s":22,"c":["Frohe","Weihnachten!"],"u":"Веселого Різдва!","r":463},{"s":22,"c":["Frohes","neues","Jahr!"],"u":"З Новим роком!","r":464},{"s":22,"c":["Danke","schön!"],"u":"Дякую!","r":466}]};
+const TR={"ru":["Доброе утро!","Добрый день!","Добрый вечер!","Спокойной ночи!","До свидания!","До скорого!","Большое спасибо!","Как у Вас дела?","Как у тебя дела?","Хорошо, спасибо.","Очень хорошо, спасибо! А у Вас?","Очень хорошо, спасибо! А у тебя?","Нехорошо.","Я устал (м.) / устала (ж.).","Может, перейдём на «ты»?","Да, с удовольствием.","Как Вас зовут?","Как тебя зовут?","Откуда Вы?","Откуда ты?","Я из Украины.","На каких языках Вы говорите?","На каких языках ты говоришь?","Я говорю по-украински и немного по-немецки.","Где Вы живёте?","Где ты живёшь?","Я живу в Эрфурте.","Как это пишется?","Я скажу по буквам: A-L-E-N-A.","Я этого не понимаю.","Извините, я Вас не понял (м.) / не поняла (ж.).","Не могли бы Вы повторить, пожалуйста?","Как это по-немецки?","Понятия не имею.","Как Ваше имя?","Какой у Вас адрес?","Я живу на Сименсштрассе, 12.","Какой у Вас номер телефона?","Мой номер телефона 0162 2083 640.","Какой у Вас адрес электронной почты?","Извините, мне нужна помощь.","Когда Вы родились?","Я родился (м.) / родилась (ж.) четвёртого мая.","Кем Вы работаете?","Кем ты работаешь?","Я по профессии инженер.","Я по профессии инженер.","Я работаю в офисе.","Сейчас я не работаю.","Я учусь в университете.","Сейчас я учу немецкий.","Это моя семья.","Это моя мама.","Это мой папа.","Сколько у Вас братьев и сестёр?","У меня есть брат и две сестры.","У меня нет братьев и сестёр.","Я не женат (м.) / не замужем (ж.).","Я женат (м.) / замужем (ж.).","У меня есть сын и дочь.","Извините, это личное.","Я не хочу об этом говорить.","Что это?","Это стол.","Ноутбук новый.","Кофемашина сломана.","Это важно для меня.","Сколько это стоит?","Сколько это стоит?","Это стоит 3,50 евро.","Который час?","Сколько времени?","Девять часов.","Пять минут десятого.","Четверть десятого.","Половина десятого.","Без четверти десять.","Во сколько?","В восемь часов.","Что ты любишь делать?","Я люблю заниматься спортом.","Я люблю читать.","Я люблю слушать музыку.","Что ты делаешь сегодня?","У тебя сегодня есть время?","Не знаю.","Ты идёшь с нами?","Хочешь?","Да, с радостью приду.","У меня есть время.","Нет, к сожалению, не приду.","У меня нет времени.","К сожалению, в пятницу я не смогу прийти.","О, жаль.","Мы празднуем в воскресенье в 17:00.","Мы хотим пригласить вас.","Большое спасибо за приглашение!","Я встаю в шесть часов.","Я иду на работу.","Когда начинается работа?","Работа начинается в восемь часов.","У меня перерыв с 12 до 13 часов.","Я работаю в утреннюю смену.","Я работаю в вечернюю смену.","У меня выходной.","Что ты любишь есть?","Я люблю рыбу.","Я люблю пить чай.","Я не люблю мясо.","Что нам нужно?","Нам нужна бутылка воды.","Добрый день, что Вы желаете?","Я бы хотел (м.) / хотела (ж.) кофе.","Кофе с молоком, без сахара.","Что-нибудь ещё?","Нет, это всё.","Вот, пожалуйста.","Приятного аппетита!","Я голоден (м.) / голодна (ж.).","Я хочу сделать заказ.","Можно сразу заказать?","Я возьму рыбу с рисом.","Я не ем мясо.","Ммм, это очень вкусно!","Суп очень вкусный.","Какой у Вас размер?","Есть ли у Вас такое пальто синего цвета?","Где можно примерить пальто?","Сколько стоит пальто?","Где касса?","Вы платите наличными или картой?","Платье мне не подходит.","Я купил (м.) / купила (ж.) этот телефон здесь.","Но он не работает.","У Вас есть чек?","Я хочу обменять его или вернуть деньги.","Добрый день, это Севин.","Я хотел бы (м.) / хотела бы (ж.) поговорить с госпожой Сантини.","Госпожи Сантини нет на месте.","Я хочу записаться на приём.","Есть ли у Вас свободное время в четверг?","Да, это подходит.","К сожалению, это не подходит.","Когда работает почта?","Я хочу отправить посылку.","Я хочу перевести деньги.","Я хочу зарегистрировать место жительства.","Какие документы мне нужно принести?","Где мне расписаться?","Что тебе нужно сегодня сделать?","Мне нужно сделать домашнее задание.","Мне нужно пойти в банк.","Куда ты идёшь?","Я иду на почту.","Я иду в аптеку.","Я иду к врачу.","Здесь нельзя курить.","Это разрешено.","Это запрещено.","Я хорошо плаваю.","Я хочу пройти профессиональное обучение.","Какие комнаты есть в квартире?","Извините, где туалет?","Я ищу квартиру.","Мы нашли квартиру.","У меня есть просьба.","Можете ли Вы мне помочь?","Извините, как мне добраться до вокзала?","Как мне добраться до почты?","Мне нужно делать пересадку?","Где мне выходить?","Сколько это занимает?","Сколько стоит билет?","Где можно купить билет?","Когда отправляется метро?","Я еду на автобусе.","Я еду на метро.","Я иду пешком.","Идите направо.","Идите налево.","Идите прямо.","Где аптека?","Один билет до Ульма, пожалуйста.","Туда и обратно или в один конец?","Когда отправляется следующий поезд?","Я болен (м.) / больна (ж.).","Я хочу записаться к врачу.","Что Вас беспокоит?","У меня болит голова.","У меня болит живот.","У меня болит горло.","У меня болит зуб.","У меня температура.","У меня кашель.","У меня простуда.","С каких пор?","Уже два дня.","Принимайте таблетки два раза в день.","У меня здесь рецепт.","К сожалению, сегодня я не смогу прийти.","Номер экстренной службы — 112.","Алло, у нас чрезвычайная ситуация!","Вы должны приехать быстро!","Где Вы находитесь?","Что случилось?","Что Вы хорошо умеете?","Я хочу пройти практику.","Чем Вы занимались раньше?","Я работал (м.) / работала (ж.) на кухне.","Я приехал (м.) / приехала (ж.) в Германию в 2006 году.","Я живу в Германии уже год.","У меня есть ещё вопросы.","Это работа на полный или на неполный рабочий день?","Какой график работы?","Когда Вы можете начать у нас работать?","Мне нужен уход за ребёнком.","Можете ли Вы мне помочь?","Не могли бы Вы мне, пожалуйста, помочь?","Не могли бы Вы это повторить, пожалуйста?","Можешь, пожалуйста, закрыть дверь?","Мне очень жаль!","Извините, я опоздал (м.) / опоздала (ж.).","Ничего страшного.","Какая погода?","Сегодня светит солнце.","Идёт дождь.","Устроим пикник в парке?","Это хорошая идея.","Когда у Вас день рождения?","У меня день рождения четвёртого мая.","Поздравляю с днём рождения!","Удачи!","Весёлого Рождества!","С Новым годом!","Спасибо!"],"en":["Good morning!","Good day!","Good evening!","Good night!","Goodbye!","See you soon!","Thank you very much!","How are you? (formal)","How are you? (informal)","Fine, thank you.","Very well, thank you! And you? (formal)","Very well, thank you! And you? (informal)","Not good.","I'm tired.","Shall we use \"du\"?","Yes, gladly.","What is your name? (formal)","What is your name? (informal)","Where are you from? (formal)","Where are you from? (informal)","I come from Ukraine.","Which languages do you speak? (formal)","Which languages do you speak? (informal)","I speak Ukrainian and a little German.","Where do you live? (formal)","Where do you live? (informal)","I live in Erfurt.","How do you spell that?","I'll spell it: A-L-E-N-A.","I don't understand that.","Sorry, I didn't understand you.","Could you please repeat that?","What is that called in German?","No idea.","What is your name?","What is your address?","I live at Siemensstraße 12.","What is your phone number?","My phone number is 0162 2083 640.","What is your email address?","Excuse me, I need help.","When were you born?","I was born on the fourth of May.","What is your occupation? (formal)","What is your occupation? (informal)","I'm an engineer by profession.","I'm an engineer by profession.","I work in an office.","I'm not working at the moment.","I'm a student.","I'm learning German now.","This is my family.","This is my mother.","This is my father.","How many siblings do you have?","I have one brother and two sisters.","I have no siblings.","I'm single.","I'm married.","I have a son and a daughter.","Excuse me, that's private.","I don't want to say that.","What is that?","This is a table.","The laptop is new.","The coffee machine is broken.","That is important to me.","What does that cost?","How much does that cost?","That costs 3.50 euros.","What time is it?","What's the time?","It is nine o'clock.","It is five past nine.","It is a quarter past nine.","It is half past nine.","It is a quarter to ten.","At what time?","At eight o'clock.","What do you like doing?","I like doing sport.","I like reading.","I like listening to music.","What are you doing today?","Do you have time today?","I don't know.","Are you coming along?","Do you feel like it?","Yes, I'd love to come.","I have time.","No, unfortunately I'm not coming.","I have no time.","Unfortunately I can't come on Friday.","Oh, what a pity.","We are celebrating on Sunday at 5 p.m.","We would like to invite you.","Thank you very much for the invitation!","I get up at six o'clock.","I go to work.","When does work start?","Work starts at eight o'clock.","I have a break from 12 to 1 p.m.","I work the early shift.","I work the late shift.","I have a day off.","What do you like to eat?","I like eating fish.","I like drinking tea.","I don't like meat.","What do we need?","We need a bottle of water.","Hello, what would you like?","I'd like a coffee.","A coffee with milk, no sugar.","Anything else?","No, that's all.","Here you are.","Enjoy your meal!","I'm hungry.","I would like to order.","Can I order right away?","I'll have the fish with rice.","I don't eat meat.","Mm, that tastes great!","The soup is very tasty.","What size are you?","Do you also have the coat in blue?","Where can I try on the coat?","How much is the coat?","Where is the checkout?","Do you pay cash or by card?","The dress doesn't fit me.","I bought the phone here.","But it doesn't work.","Do you have the receipt?","I'd like to exchange it or I'd like my money back.","Hello, this is Sevin.","I'd like to speak to Ms Santini.","Ms Santini is not here.","I would like to make an appointment.","Do you have an appointment free on Thursday?","Yes, that works.","Unfortunately that doesn't work.","When is the post office open?","I would like to drop off a parcel.","I would like to transfer money.","I would like to register my address.","Which documents do I have to bring?","Where do I have to sign?","What do you have to do today?","I have to do my homework.","I have to go to the bank.","Where are you going?","I'm going to the post office.","I'm going to the pharmacy.","I'm going to the doctor.","You are not allowed to smoke here.","That is allowed.","That is forbidden.","I can swim well.","I want to do a vocational training.","Which rooms does the flat have?","Excuse me, where is the toilet?","I'm looking for a flat.","We found a flat.","I have a favour to ask.","Can you help me?","Excuse me, how do I get to the station?","How do I get to the post office?","Do I have to change?","Where do I have to get off?","How long does it take?","How much is the ticket?","Where can I buy a ticket?","When does the underground leave?","I take the bus.","I take the underground.","I walk.","Turn right.","Turn left.","Go straight ahead.","Where is the pharmacy?","One ticket to Ulm, please.","Return or single?","When does the next train leave?","I'm ill.","I would like an appointment with the doctor.","What is the matter?","I have a headache.","I have a stomach ache.","I have a sore throat.","I have toothache.","I have a fever.","I have a cough.","I have a cold.","Since when?","For two days.","Take the tablets twice a day.","I have a prescription here.","Unfortunately I can't come today.","The emergency number is 112.","Hello, we have an emergency!","You must come quickly!","Where are you?","What happened?","What are you good at?","I would like to do an internship.","What did you do before?","I worked in the kitchen.","I came to Germany in 2006.","I have lived in Germany for a year.","I still have questions.","Is it a full-time or a part-time job?","What are the working hours?","When can you start with us?","I need childcare.","Can you help me?","Could you please help me?","Would you please repeat that?","Can you please close the door?","I'm sorry!","I'm sorry, I'm late.","No problem.","What's the weather like?","The sun is shining today.","It's raining.","Shall we have a picnic in the park?","That's a good idea.","When is your birthday?","My birthday is on the fourth of May.","Congratulations on your birthday!","Good luck!","Merry Christmas!","Happy New Year!","Thank you very much!"],"tr":["Günaydın!","İyi günler!","İyi akşamlar!","İyi geceler!","Hoşça kalın!","Yakında görüşürüz!","Çok teşekkür ederim!","Nasılsınız?","Nasılsın?","İyiyim, teşekkürler.","Çok iyiyim, teşekkürler! Ya siz?","Çok iyiyim, teşekkürler! Ya sen?","İyi değil.","Yorgunum.","Birbirimize «sen» diyelim mi?","Evet, memnuniyetle.","Adınız nedir?","Adın ne?","Nerelisiniz?","Nerelisin?","Ukrayna'dan geliyorum.","Hangi dilleri konuşuyorsunuz?","Hangi dilleri konuşuyorsun?","Ukraynaca ve biraz Almanca konuşuyorum.","Nerede oturuyorsunuz?","Nerede oturuyorsun?","Erfurt'ta oturuyorum.","Bu nasıl yazılır?","Harf harf söylüyorum: A-L-E-N-A.","Bunu anlamıyorum.","Üzgünüm, sizi anlamadım.","Lütfen tekrar eder misiniz?","Bu Almancada ne denir?","Hiçbir fikrim yok.","Adınız nedir?","Adresiniz nedir?","Siemensstraße 12'de oturuyorum.","Telefon numaranız nedir?","Telefon numaram 0162 2083 640.","E-posta adresiniz nedir?","Affedersiniz, yardıma ihtiyacım var.","Ne zaman doğdunuz?","Dört Mayıs'ta doğdum.","Mesleğiniz nedir?","Mesleğin ne?","Mesleğim mühendis.","Mesleğim mühendis.","Ofiste çalışıyorum.","Şu anda çalışmıyorum.","Üniversitede okuyorum.","Şimdi Almanca öğreniyorum.","Bu benim ailem.","Bu benim annem.","Bu benim babam.","Kaç kardeşiniz var?","Bir erkek kardeşim ve iki kız kardeşim var.","Kardeşim yok.","Bekârım.","Evliyim.","Bir oğlum ve bir kızım var.","Affedersiniz, bu özel.","Bunu söylemek istemiyorum.","Bu nedir?","Bu bir masa.","Dizüstü bilgisayar yeni.","Kahve makinesi bozuk.","Bu benim için önemli.","Bu ne kadar?","Bu kaça mal oluyor?","Bu 3,50 avro.","Saat kaç?","Şimdi saat kaç?","Saat dokuz.","Dokuzu beş geçiyor.","Dokuzu çeyrek geçiyor.","Dokuz buçuk.","Ona çeyrek var.","Saat kaçta?","Saat sekizde.","Ne yapmayı seversin?","Spor yapmayı severim.","Okumayı severim.","Müzik dinlemeyi severim.","Bugün ne yapıyorsun?","Bugün vaktin var mı?","Bilmiyorum.","Sen de bizimle geliyor musun?","Canın ister mi?","Evet, memnuniyetle gelirim.","Vaktim var.","Hayır, maalesef gelemiyorum.","Vaktim yok.","Cuma günü maalesef gelemem.","Of, yazık.","Pazar günü saat 17.00'de kutlama yapıyoruz.","Sizi davet etmek istiyoruz.","Davet için çok teşekkürler!","Saat altıda kalkıyorum.","İşe gidiyorum.","İş ne zaman başlıyor?","İş saat sekizde başlıyor.","12.00 ile 13.00 arasında molam var.","Sabah vardiyasındayım.","Akşam vardiyasındayım.","İzinliyim.","Ne yemeyi seversin?","Balık yemeyi severim.","Çay içmeyi severim.","Et sevmem.","Neye ihtiyacımız var?","Bir şişe suya ihtiyacımız var.","İyi günler, ne arzu edersiniz?","Bir kahve rica ediyorum.","Sütlü, şekersiz bir kahve.","Başka bir şey?","Hayır, hepsi bu kadar.","Buyurun.","Afiyet olsun!","Açım.","Sipariş vermek istiyorum.","Hemen sipariş verebilir miyim?","Pilavlı balık alacağım.","Et yemem.","Mmm, çok lezzetli!","Çorba çok lezzetli.","Kaç beden giyiyorsunuz?","Bu paltonun mavisi var mı?","Paltoyu nerede deneyebilirim?","Palto ne kadar?","Kasa nerede?","Nakit mi, kartla mı ödüyorsunuz?","Elbise bana olmuyor.","Bu telefonu buradan aldım.","Ama çalışmıyor.","Faturanız var mı?","Değiştirmek ya da paramı geri almak istiyorum.","İyi günler, ben Sevin.","Bayan Santini ile görüşmek istiyorum.","Bayan Santini yok.","Randevu almak istiyorum.","Perşembe günü boş randevunuz var mı?","Evet, uygun.","Maalesef uygun değil.","Postane ne zaman açık?","Bir paket vermek istiyorum.","Para göndermek istiyorum.","İkametgâhımı kaydettirmek istiyorum.","Hangi belgeleri getirmem gerekiyor?","Nereyi imzalamam gerekiyor?","Bugün ne yapman gerekiyor?","Ödev yapmam gerekiyor.","Bankaya gitmem gerekiyor.","Nereye gidiyorsun?","Postaneye gidiyorum.","Eczaneye gidiyorum.","Doktora gidiyorum.","Burada sigara içmek yasak.","Bu serbest.","Bu yasak.","İyi yüzerim.","Meslek eğitimi almak istiyorum.","Dairede hangi odalar var?","Affedersiniz, tuvalet nerede?","Daire arıyorum.","Bir daire bulduk.","Bir ricam var.","Bana yardım edebilir misiniz?","Affedersiniz, gara nasıl giderim?","Postaneye nasıl giderim?","Aktarma yapmam gerekiyor mu?","Nerede inmem gerekiyor?","Ne kadar sürer?","Bilet ne kadar?","Nereden bilet alabilirim?","Metro ne zaman kalkıyor?","Otobüsle gidiyorum.","Metroyla gidiyorum.","Yürüyerek gidiyorum.","Sağa gidin.","Sola gidin.","Düz gidin.","Eczane nerede?","Ulm'a bir bilet, lütfen.","Gidiş dönüş mü, yoksa tek yön mü?","Bir sonraki tren ne zaman kalkıyor?","Hastayım.","Doktordan randevu almak istiyorum.","Neyiniz var?","Başım ağrıyor.","Karnım ağrıyor.","Boğazım ağrıyor.","Dişim ağrıyor.","Ateşim var.","Öksürüğüm var.","Soğuk algınlığım var.","Ne zamandan beri?","İki gündür.","Hapları günde iki kez alın.","Burada bir reçetem var.","Maalesef bugün gelemiyorum.","Acil durum numarası 112.","Alo, acil bir durumumuz var!","Hemen gelmelisiniz!","Neredesiniz?","Ne oldu?","Neleri iyi yapabilirsiniz?","Staj yapmak istiyorum.","Daha önce ne yaptınız?","Mutfakta çalıştım.","2006'da Almanya'ya geldim.","Bir yıldır Almanya'da oturuyorum.","Hâlâ sorularım var.","Tam zamanlı mı, yarı zamanlı bir iş mi?","Çalışma saatleri nedir?","Bizde ne zaman işe başlayabilirsiniz?","Çocuk bakımına ihtiyacım var.","Bana yardım edebilir misiniz?","Lütfen bana yardım edebilir misiniz?","Bunu tekrar eder misiniz, lütfen?","Kapıyı kapatır mısın lütfen?","Özür dilerim!","Özür dilerim, geç kaldım.","Sorun değil.","Hava nasıl?","Bugün güneş açıyor.","Yağmur yağıyor.","Parkta piknik yapalım mı?","İyi bir fikir.","Doğum gününüz ne zaman?","Doğum günüm dört Mayıs'ta.","Doğum gününüz kutlu olsun!","Bol şans!","Mutlu Noeller!","Mutlu yıllar!","Çok teşekkürler!"],"ar":["صباح الخير!","نهارك سعيد!","مساء الخير!","تصبح على خير!","مع السلامة!","أراك قريبًا!","شكرًا جزيلًا!","كيف حال حضرتك؟","كيف حالك؟","بخير، شكرًا.","بخير جدًا، شكرًا! وحضرتك؟","بخير جدًا، شكرًا! وأنت؟","لست بخير.","أنا متعب (م) / متعبة (ف).","هل نتخاطب بصيغة «du» (أنت)؟","نعم، بكل سرور.","ما اسم حضرتك؟","ما اسمك؟","من أين حضرتك؟","من أين أنت؟","أنا من أوكرانيا.","ما اللغات التي تتحدث بها حضرتك؟","ما اللغات التي تتحدثها؟","أتحدث الأوكرانية وقليلًا من الألمانية.","أين تسكن حضرتك؟","أين تسكن؟","أسكن في إرفورت.","كيف تُكتب هذه الكلمة؟","سأتهجّى: A-L-E-N-A.","لا أفهم هذا.","آسف (م) / آسفة (ف)، لم أفهمك.","هل يمكنك أن تعيد ذلك من فضلك؟","كيف تُقال هذه بالألمانية؟","لا أعرف.","ما اسم حضرتك؟","ما عنوان حضرتك؟","أسكن في شارع سيمنس 12.","ما رقم هاتف حضرتك؟","رقم هاتفي 0162 2083 640.","ما عنوان بريد حضرتك الإلكتروني؟","عفوًا، أحتاج إلى مساعدة.","متى وُلدتَ؟","وُلدتُ في الرابع من مايو.","ما مهنة حضرتك؟","ما مهنتك؟","أنا مهندسة بحسب المهنة.","أنا مهندس بحسب المهنة.","أعمل في المكتب.","لا أعمل الآن.","أدرس في الجامعة.","أتعلم الألمانية الآن.","هذه عائلتي.","هذه أمي.","هذا أبي.","كم عدد إخوة حضرتك وأخواته؟","لدي أخ وأختان.","ليس لدي إخوة ولا أخوات.","أنا أعزب (م) / عزباء (ف).","أنا متزوج (م) / متزوجة (ف).","لدي ابن وابنة.","عفوًا، هذا خاص.","لا أريد أن أقول ذلك.","ما هذا؟","هذه طاولة.","الحاسوب المحمول جديد.","آلة القهوة معطّلة.","هذا مهم بالنسبة لي.","كم يكلّف هذا؟","بكم هذا؟","هذا يكلّف 3.50 يورو.","كم الساعة؟","كم الوقت الآن؟","الساعة التاسعة.","التاسعة وخمس دقائق.","التاسعة والربع.","التاسعة والنصف.","العاشرة إلا ربعًا.","في أي ساعة؟","في الساعة الثامنة.","ماذا تحب أن تفعل؟","أحب ممارسة الرياضة.","أحب القراءة.","أحب الاستماع إلى الموسيقى.","ماذا تفعل اليوم؟","هل لديك وقت اليوم؟","لا أعرف.","هل ستأتي معنا؟","هل لديك رغبة؟","نعم، سآتي بكل سرور.","لدي وقت.","لا، للأسف لن أستطيع الحضور.","ليس لدي وقت.","للأسف لا أستطيع الحضور يوم الجمعة.","آه، يا للأسف.","نحتفل يوم الأحد في الساعة 17:00.","نريد أن ندعوكم.","شكرًا جزيلًا على الدعوة!","أستيقظ في الساعة السادسة.","أذهب إلى العمل.","متى يبدأ العمل؟","يبدأ العمل في الساعة الثامنة.","لدي استراحة من الساعة 12 إلى 13.","أعمل في المناوبة الصباحية.","أعمل في المناوبة المسائية.","لدي يوم إجازة.","ماذا تحب أن تأكل؟","أحب أكل السمك.","أحب شرب الشاي.","لا أحب اللحم.","ماذا نحتاج؟","نحتاج إلى زجاجة ماء.","مرحبًا، ماذا تريد؟","أودّ قهوة من فضلك.","قهوة بالحليب، بدون سكر.","شيئًا آخر؟","لا، هذا كل شيء.","تفضّل.","بالهناء والشفاء!","أنا جائع (م) / جائعة (ف).","أريد أن أطلب.","هل يمكنني الطلب الآن؟","سآخذ السمك مع الأرز.","لا آكل اللحم.","مم، هذا لذيذ جدًا!","الشوربة لذيذة جدًا.","ما مقاسك؟","هل لديكم المعطف أيضًا باللون الأزرق؟","أين يمكنني تجربة المعطف؟","كم سعر المعطف؟","أين الصندوق؟","هل تدفع نقدًا أم بالبطاقة؟","الفستان لا يناسبني.","اشتريت هذا الهاتف من هنا.","لكنه لا يعمل.","هل لديك الفاتورة؟","أريد استبداله أو أريد استرداد المال.","مرحبًا، معك سيفين.","أريد أن أتحدث مع السيدة سانتيني.","السيدة سانتيني غير موجودة.","أريد أن أحجز موعدًا.","هل لديكم موعد شاغر يوم الخميس؟","نعم، هذا يناسب.","للأسف هذا لا يناسب.","متى يفتح مكتب البريد؟","أريد أن أسلّم طردًا.","أريد أن أحوّل مالًا.","أريد أن أسجّل عنوان سكني.","ما الوثائق التي يجب أن أحضرها؟","أين يجب أن أوقّع؟","ماذا يجب أن تفعل اليوم؟","يجب أن أحلّ الواجب المنزلي.","يجب أن أذهب إلى البنك.","إلى أين تذهب؟","أذهب إلى مكتب البريد.","أذهب إلى الصيدلية.","أذهب إلى الطبيب.","يُمنع التدخين هنا.","هذا مسموح.","هذا ممنوع.","أستطيع السباحة جيدًا.","أريد أن أتابع تكوينًا مهنيًا.","ما الغرف الموجودة في الشقة؟","عفوًا، أين المرحاض؟","أبحث عن شقة.","وجدنا شقة.","لدي طلب.","هل يمكنك مساعدتي؟","عفوًا، كيف أصل إلى المحطة؟","كيف أصل إلى مكتب البريد؟","هل يجب أن أغيّر القطار؟","أين يجب أن أنزل؟","كم يستغرق ذلك؟","كم سعر التذكرة؟","أين يمكنني شراء تذكرة؟","متى ينطلق المترو؟","أذهب بالحافلة.","أذهب بالمترو.","أذهب سيرًا على الأقدام.","اذهب يمينًا.","اذهب يسارًا.","اذهب مباشرة.","أين الصيدلية؟","تذكرة إلى أولم، من فضلك.","ذهاب وإياب أم ذهاب فقط؟","متى ينطلق القطار التالي؟","أنا مريض (م) / مريضة (ف).","أريد موعدًا عند الطبيب.","ما مشكلتك؟","عندي صداع.","عندي ألم في البطن.","عندي ألم في الحلق.","عندي ألم في الأسنان.","عندي حمّى.","عندي سعال.","عندي نزلة برد.","منذ متى؟","منذ يومين.","تناول الأقراص مرتين في اليوم.","معي وصفة طبية هنا.","للأسف لا أستطيع الحضور اليوم.","رقم الطوارئ هو 112.","مرحبًا، لدينا حالة طارئة!","يجب أن تأتوا بسرعة!","أين أنت؟","ماذا حدث؟","ماذا تجيد؟","أريد أن أقوم بتدريب عملي.","ماذا فعلت سابقًا؟","عملتُ في المطبخ.","جئتُ إلى ألمانيا عام 2006.","أسكن في ألمانيا منذ سنة.","لا تزال لدي أسئلة.","هل هي وظيفة بدوام كامل أم بدوام جزئي؟","ما ساعات العمل؟","متى يمكنك أن تبدأ العمل عندنا؟","أحتاج إلى رعاية للطفل.","هل يمكنك مساعدتي؟","هل يمكنك مساعدتي من فضلك؟","هل لك أن تعيد ذلك من فضلك؟","هل يمكنك إغلاق الباب من فضلك؟","آسف!","آسف (م) / آسفة (ف)، لقد تأخرت.","لا مشكلة.","كيف الطقس؟","اليوم الشمس مشرقة.","تمطر.","هل نقيم نزهة في الحديقة؟","هذه فكرة جيدة.","متى عيد ميلادك؟","عيد ميلادي في الرابع من مايو.","تهانينا بعيد ميلادك!","حظًا سعيدًا!","عيد ميلاد مجيد!","سنة جديدة سعيدة!","شكرًا!"],"pl":["Dzień dobry! (rano)","Dzień dobry!","Dobry wieczór!","Dobranoc!","Do widzenia!","Do zobaczenia wkrótce!","Dziękuję bardzo!","Jak się Pan/Pani miewa?","Jak się masz?","Dobrze, dziękuję.","Bardzo dobrze, dziękuję! A Pan/Pani?","Bardzo dobrze, dziękuję! A ty?","Niedobrze.","Jestem zmęczony (m) / zmęczona (ż).","Może przejdziemy na „ty”?","Tak, chętnie.","Jak się Pan/Pani nazywa?","Jak się nazywasz?","Skąd Pan/Pani pochodzi?","Skąd jesteś?","Pochodzę z Ukrainy.","Jakimi językami Pan/Pani mówi?","Jakimi językami mówisz?","Mówię po ukraińsku i trochę po niemiecku.","Gdzie Pan/Pani mieszka?","Gdzie mieszkasz?","Mieszkam w Erfurcie.","Jak to się pisze?","Przeliteruję: A-L-E-N-A.","Nie rozumiem tego.","Przepraszam, nie zrozumiałem (m) / zrozumiałam (ż) Pana/Pani.","Czy mógłby/mogłaby Pan/Pani to powtórzyć?","Jak to jest po niemiecku?","Nie mam pojęcia.","Jak brzmi Pana/Pani imię i nazwisko?","Jaki jest Pana/Pani adres?","Mieszkam przy Siemensstraße 12.","Jaki jest Pana/Pani numer telefonu?","Mój numer telefonu to 0162 2083 640.","Jaki jest Pana/Pani adres e-mail?","Przepraszam, potrzebuję pomocy.","Kiedy się Pan/Pani urodził(a)?","Urodziłem się (m) / Urodziłam się (ż) czwartego maja.","Jaki jest Pana/Pani zawód?","Jaki jest twój zawód?","Jestem inżynierką z zawodu.","Jestem inżynierem z zawodu.","Pracuję w biurze.","Teraz nie pracuję.","Studiuję.","Teraz uczę się niemieckiego.","To jest moja rodzina.","To jest moja mama.","To jest mój tata.","Ile ma Pan/Pani rodzeństwa?","Mam brata i dwie siostry.","Nie mam rodzeństwa.","Jestem kawalerem (m) / panną (ż).","Jestem żonaty (m) / zamężna (ż).","Mam syna i córkę.","Przepraszam, to jest prywatne.","Nie chcę tego mówić.","Co to jest?","To jest stół.","Laptop jest nowy.","Ekspres do kawy jest zepsuty.","To jest dla mnie ważne.","Ile to kosztuje?","Za ile to jest?","To kosztuje 3,50 euro.","Która jest godzina?","Jak późno jest?","Jest dziewiąta.","Jest pięć po dziewiątej.","Jest kwadrans po dziewiątej.","Jest wpół do dziesiątej.","Jest za piętnaście dziesiąta.","O której godzinie?","O ósmej.","Co lubisz robić?","Lubię uprawiać sport.","Lubię czytać.","Lubię słuchać muzyki.","Co dziś robisz?","Masz dziś czas?","Nie wiem.","Idziesz z nami?","Masz ochotę?","Tak, chętnie przyjdę.","Mam czas.","Nie, niestety nie przyjdę.","Nie mam czasu.","Niestety w piątek nie mogę przyjść.","Oj, szkoda.","Świętujemy w niedzielę o 17:00.","Chcemy was zaprosić.","Bardzo dziękuję za zaproszenie!","Wstaję o szóstej.","Idę do pracy.","Kiedy zaczyna się praca?","Praca zaczyna się o ósmej.","Mam przerwę od 12 do 13.","Pracuję na rannej zmianie.","Pracuję na popołudniowej zmianie.","Mam wolne.","Co lubisz jeść?","Lubię jeść rybę.","Lubię pić herbatę.","Nie lubię mięsa.","Czego potrzebujemy?","Potrzebujemy butelki wody.","Dzień dobry, czego Pan/Pani sobie życzy?","Poproszę kawę.","Kawa z mlekiem, bez cukru.","Coś jeszcze?","Nie, to wszystko.","Proszę bardzo.","Smacznego!","Jestem głodny (m) / głodna (ż).","Chcę złożyć zamówienie.","Czy mogę od razu zamówić?","Wezmę rybę z ryżem.","Nie jem mięsa.","Mmm, to jest pyszne!","Zupa jest bardzo smaczna.","Jaki ma Pan/Pani rozmiar?","Czy ma Pan/Pani ten płaszcz także w kolorze niebieskim?","Gdzie mogę przymierzyć płaszcz?","Ile kosztuje płaszcz?","Gdzie jest kasa?","Płaci Pan/Pani gotówką czy kartą?","Sukienka na mnie nie pasuje.","Kupiłem (m) / Kupiłam (ż) ten telefon tutaj.","Ale on nie działa.","Ma Pan/Pani paragon?","Chcę go wymienić albo chcę dostać z powrotem pieniądze.","Dzień dobry, tu Sevin.","Chciałbym (m) / Chciałabym (ż) rozmawiać z panią Santini.","Pani Santini nie ma.","Chcę umówić się na wizytę.","Czy ma Pan/Pani wolny termin w czwartek?","Tak, pasuje.","Niestety to nie pasuje.","Kiedy otwarta jest poczta?","Chcę nadać paczkę.","Chcę przelać pieniądze.","Chcę zameldować swoje mieszkanie.","Jakie dokumenty muszę przynieść?","Gdzie muszę się podpisać?","Co musisz dziś zrobić?","Muszę odrobić pracę domową.","Muszę iść do banku.","Dokąd idziesz?","Idę na pocztę.","Idę do apteki.","Idę do lekarza.","Tu nie wolno palić.","To jest dozwolone.","To jest zabronione.","Dobrze pływam.","Chcę zrobić szkolenie zawodowe.","Jakie pokoje ma mieszkanie?","Przepraszam, gdzie jest toaleta?","Szukam mieszkania.","Znaleźliśmy mieszkanie.","Mam prośbę.","Czy może mi Pan/Pani pomóc?","Przepraszam, jak dojść na dworzec?","Jak dojść na pocztę?","Czy muszę się przesiadać?","Gdzie muszę wysiąść?","Jak długo to trwa?","Ile kosztuje bilet?","Gdzie mogę kupić bilet?","Kiedy odjeżdża metro?","Jadę autobusem.","Jadę metrem.","Idę pieszo.","Proszę iść w prawo.","Proszę iść w lewo.","Proszę iść prosto.","Gdzie jest apteka?","Poproszę bilet do Ulm.","W obie strony czy w jedną?","Kiedy odjeżdża następny pociąg?","Jestem chory (m) / chora (ż).","Chcę umówić się na wizytę u lekarza.","Co Panu/Pani dolega?","Boli mnie głowa.","Boli mnie brzuch.","Boli mnie gardło.","Boli mnie ząb.","Mam gorączkę.","Mam kaszel.","Mam przeziębienie.","Od kiedy?","Od dwóch dni.","Proszę brać tabletki dwa razy dziennie.","Mam tu receptę.","Niestety dziś nie mogę przyjść.","Numer alarmowy to 112.","Halo, mamy nagły wypadek!","Musicie Państwo szybko przyjechać!","Gdzie Pan/Pani jest?","Co się stało?","W czym jest Pan/Pani dobry/dobra?","Chcę odbyć praktykę.","Co Pan/Pani robił(a) wcześniej?","Pracowałem (m) / Pracowałam (ż) w kuchni.","Przyjechałem (m) / Przyjechałam (ż) do Niemiec w 2006 roku.","Mieszkam w Niemczech od roku.","Mam jeszcze pytania.","Czy to praca na pełny czy na część etatu?","Jakie są godziny pracy?","Kiedy może Pan/Pani u nas zacząć?","Potrzebuję opieki nad dzieckiem.","Czy może mi Pan/Pani pomóc?","Czy mógłby/mogłaby mi Pan/Pani pomóc?","Czy mógłby/mogłaby Pan/Pani to powtórzyć?","Czy możesz zamknąć drzwi?","Przepraszam!","Przepraszam, spóźniłem się (m) / spóźniłam się (ż).","Nic nie szkodzi.","Jaka jest pogoda?","Dziś świeci słońce.","Pada deszcz.","Zrobimy piknik w parku?","To dobry pomysł.","Kiedy ma Pan/Pani urodziny?","Moje urodziny są czwartego maja.","Najlepsze życzenia z okazji urodzin!","Powodzenia!","Wesołych Świąt!","Szczęśliwego Nowego Roku!","Dziękuję!"],"ro":["Bună dimineața!","Bună ziua!","Bună seara!","Noapte bună!","La revedere!","Pe curând!","Mulțumesc frumos!","Ce mai faceți?","Ce mai faci?","Bine, mulțumesc.","Foarte bine, mulțumesc! Și dumneavoastră?","Foarte bine, mulțumesc! Și tu?","Nu prea bine.","Sunt obosit (m.) / obosită (f.).","Să ne tutuim?","Da, cu plăcere.","Cum vă numiți?","Cum te cheamă?","De unde sunteți?","De unde ești?","Sunt din Ucraina.","Ce limbi vorbiți?","Ce limbi vorbești?","Vorbesc ucraineană și puțină germană.","Unde locuiți?","Unde locuiești?","Locuiesc în Erfurt.","Cum se scrie asta?","Vă spun literele: A-L-E-N-A.","Nu înțeleg asta.","Îmi pare rău, nu v-am înțeles.","Ați putea să repetați, vă rog?","Cum se spune asta în germană?","Nu am nicio idee.","Care este numele dumneavoastră?","Care este adresa dumneavoastră?","Locuiesc pe Siemensstraße 12.","Care este numărul dumneavoastră de telefon?","Numărul meu de telefon este 0162 2083 640.","Care este adresa dumneavoastră de e-mail?","Scuzați-mă, am nevoie de ajutor.","Când v-ați născut?","M-am născut pe patru mai.","Ce profesie aveți?","Ce profesie ai?","Sunt inginer de profesie.","Sunt inginer de profesie.","Lucrez la birou.","Acum nu lucrez.","Studiez.","Acum învăț germana.","Aceasta este familia mea.","Aceasta este mama mea.","Acesta este tatăl meu.","Câți frați și surori aveți?","Am un frate și două surori.","Nu am frați sau surori.","Sunt necăsătorit (m.) / necăsătorită (f.).","Sunt căsătorit (m.) / căsătorită (f.).","Am un fiu și o fiică.","Scuzați-mă, este privat.","Nu vreau să spun asta.","Ce este aceasta?","Aceasta este o masă.","Laptopul este nou.","Aparatul de cafea este stricat.","Este important pentru mine.","Cât costă asta?","Cu cât se vinde asta?","Costă 3,50 euro.","Cât este ceasul?","Ce oră este?","Este ora nouă.","Este nouă și cinci.","Este nouă și un sfert.","Este nouă și jumătate.","Este zece fără un sfert.","La ce oră?","La ora opt.","Ce îți place să faci?","Îmi place să fac sport.","Îmi place să citesc.","Îmi place să ascult muzică.","Ce faci astăzi?","Ai timp astăzi?","Nu știu.","Vii cu noi?","Ai chef?","Da, vin cu plăcere.","Am timp.","Nu, din păcate nu vin.","Nu am timp.","Din păcate, vineri nu pot veni.","Of, păcat.","Sărbătorim duminică la ora 17:00.","Vrem să vă invităm.","Vă mulțumesc mult pentru invitație!","Mă trezesc la ora șase.","Merg la serviciu.","Când începe munca?","Munca începe la ora opt.","Am pauză de la 12 la 13.","Am tura de dimineață.","Am tura de după-amiază.","Am liber.","Ce îți place să mănânci?","Îmi place să mănânc pește.","Îmi place să beau ceai.","Nu-mi place carnea.","De ce avem nevoie?","Avem nevoie de o sticlă de apă.","Bună ziua, ce doriți?","Aș dori o cafea.","O cafea cu lapte, fără zahăr.","Altceva?","Nu, asta e tot.","Poftiți.","Poftă bună!","Mi-e foame.","Aș dori să comand.","Pot comanda imediat?","Iau peștele cu orez.","Nu mănânc carne.","Mmm, este delicios!","Supa este foarte gustoasă.","Ce mărime purtați?","Aveți paltonul și în albastru?","Unde pot proba paltonul?","Cât costă paltonul?","Unde este casa?","Plătiți cash sau cu cardul?","Rochia nu mi se potrivește.","Am cumpărat telefonul de aici.","Dar nu funcționează.","Aveți bonul?","Vreau să îl schimb sau vreau banii înapoi.","Bună ziua, aici Sevin.","Aș dori să vorbesc cu doamna Santini.","Doamna Santini nu este aici.","Aș dori să fac o programare.","Aveți o programare liberă joi?","Da, se potrivește.","Din păcate, nu se potrivește.","Când este deschisă poșta?","Aș dori să trimit un colet.","Aș dori să transfer bani.","Aș dori să îmi înregistrez domiciliul.","Ce documente trebuie să aduc?","Unde trebuie să semnez?","Ce trebuie să faci astăzi?","Trebuie să fac temele.","Trebuie să merg la bancă.","Unde mergi?","Merg la poștă.","Merg la farmacie.","Merg la medic.","Aici nu este permis fumatul.","Este permis.","Este interzis.","Știu să înot bine.","Vreau să fac o formare profesională.","Ce camere are apartamentul?","Scuzați-mă, unde este toaleta?","Caut un apartament.","Am găsit un apartament.","Am o rugăminte.","Puteți să mă ajutați?","Scuzați-mă, cum ajung la gară?","Cum ajung la poștă?","Trebuie să schimb?","Unde trebuie să cobor?","Cât durează?","Cât costă biletul?","Unde pot cumpăra un bilet?","Când pleacă metroul?","Merg cu autobuzul.","Merg cu metroul.","Merg pe jos.","Mergeți la dreapta.","Mergeți la stânga.","Mergeți drept înainte.","Unde este farmacia?","Un bilet până la Ulm, vă rog.","Dus-întors sau doar dus?","Când pleacă următorul tren?","Sunt bolnav (m.) / bolnavă (f.).","Aș dori o programare la medic.","Ce problemă aveți?","Mă doare capul.","Mă doare burta.","Mă doare gâtul.","Mă doare dintele.","Am febră.","Am tuse.","Am o răceală.","De când?","De două zile.","Luați pastilele de două ori pe zi.","Am aici o rețetă.","Din păcate, astăzi nu pot veni.","Numărul de urgență este 112.","Alo, avem o urgență!","Trebuie să veniți repede!","Unde sunteți?","Ce s-a întâmplat?","Ce știți să faceți bine?","Aș dori să fac un stagiu.","Ce ați făcut înainte?","Am lucrat în bucătărie.","Am venit în Germania în 2006.","Locuiesc în Germania de un an.","Mai am întrebări.","Este un post cu normă întreagă sau cu jumătate de normă?","Care este programul de lucru?","Când puteți începe la noi?","Am nevoie de îngrijirea copilului.","Puteți să mă ajutați?","Ați putea să mă ajutați, vă rog?","Ați putea să repetați, vă rog?","Poți închide ușa, te rog?","Îmi pare rău!","Îmi pare rău, am întârziat.","Nicio problemă.","Cum este vremea?","Astăzi este soare.","Plouă.","Facem un picnic în parc?","Este o idee bună.","Când aveți ziua de naștere?","Ziua mea de naștere este pe patru mai.","La mulți ani de ziua de naștere!","Succes!","Crăciun fericit!","Un An Nou fericit!","Mulțumesc frumos!"],"fa":["صبح بخیر!","روز بخیر!","عصر بخیر!","شب بخیر!","خداحافظ!","به زودی می‌بینمت!","خیلی ممنون!","حال شما چطور است؟","حالت چطوره؟","خوبم، ممنون.","خیلی خوبم، ممنون! شما چطورید؟","خیلی خوبم، ممنون! تو چطوری؟","خوب نیستم.","خسته‌ام.","بیایید همدیگر را «تو» خطاب کنیم؟","بله، با کمال میل.","نام شما چیست؟","اسمت چیه؟","اهل کجا هستید؟","اهل کجایی؟","من اهل اوکراین هستم.","شما به چه زبان‌هایی صحبت می‌کنید؟","تو به چه زبان‌هایی صحبت می‌کنی؟","من اوکراینی و کمی آلمانی صحبت می‌کنم.","کجا زندگی می‌کنید؟","کجا زندگی می‌کنی؟","من در ارفورت زندگی می‌کنم.","این چطور نوشته می‌شود؟","من حرف به حرف می‌گویم: A-L-E-N-A.","من این را نمی‌فهمم.","ببخشید، شما را نفهمیدم.","لطفاً می‌توانید این را تکرار کنید؟","این به آلمانی چه می‌شود؟","نمی‌دانم.","نام شما چیست؟","نشانی شما چیست؟","من در خیابان زیمنس شماره 12 زندگی می‌کنم.","شماره تلفن شما چیست؟","شماره تلفن من 0162 2083 640 است.","نشانی ایمیل شما چیست؟","ببخشید، به کمک نیاز دارم.","چه زمانی به دنیا آمدید؟","من چهارم ماه مه به دنیا آمدم.","شغل شما چیست؟","شغلت چیه؟","من مهندس هستم.","من مهندس هستم.","من در دفتر کار می‌کنم.","الان کار نمی‌کنم.","من در دانشگاه درس می‌خوانم.","الان آلمانی یاد می‌گیرم.","این خانواده من است.","این مادر من است.","این پدر من است.","چند برادر و خواهر دارید؟","من یک برادر و دو خواهر دارم.","من برادر و خواهر ندارم.","من مجرد هستم.","من متأهل هستم.","من یک پسر و یک دختر دارم.","ببخشید، این خصوصی است.","نمی‌خواهم این را بگویم.","این چیست؟","این یک میز است.","لپ‌تاپ نو است.","قهوه‌ساز خراب است.","این برای من مهم است.","این چند است؟","این چقدر قیمت دارد؟","این 3.50 یورو است.","ساعت چند است؟","الان ساعت چند است؟","ساعت نه است.","ساعت پنج دقیقه از نه گذشته است.","ساعت نه و ربع است.","ساعت نه و نیم است.","ربع به ده است.","ساعت چند؟","ساعت هشت.","دوست داری چه کاری انجام بدهی؟","من ورزش کردن را دوست دارم.","من مطالعه را دوست دارم.","من گوش دادن به موسیقی را دوست دارم.","امروز چه کار می‌کنی؟","امروز وقت داری؟","نمی‌دانم.","با ما می‌آیی؟","دوست داری؟","بله، با کمال میل می‌آیم.","من وقت دارم.","نه، متأسفانه نمی‌آیم.","من وقت ندارم.","متأسفانه روز جمعه نمی‌توانم بیایم.","آخ، حیف شد.","ما یکشنبه ساعت 17:00 جشن می‌گیریم.","ما می‌خواهیم شما را دعوت کنیم.","خیلی ممنون بابت دعوت!","ساعت شش بیدار می‌شوم.","به سر کار می‌روم.","کار چه زمانی شروع می‌شود؟","کار ساعت هشت شروع می‌شود.","من از ساعت 12 تا 13 استراحت دارم.","من شیفت صبح دارم.","من شیفت عصر دارم.","من تعطیل هستم.","دوست داری چه غذایی بخوری؟","من ماهی خوردن را دوست دارم.","من چای نوشیدن را دوست دارم.","من گوشت دوست ندارم.","ما به چه چیزی نیاز داریم؟","ما به یک بطری آب نیاز داریم.","روز بخیر، چه میل دارید؟","یک قهوه می‌خواهم، لطفاً.","یک قهوه با شیر، بدون شکر.","چیز دیگری؟","نه، همین کافی است.","بفرمایید.","نوش جان!","من گرسنه‌ام.","می‌خواهم سفارش بدهم.","می‌توانم همین حالا سفارش بدهم؟","من ماهی با برنج می‌گیرم.","من گوشت نمی‌خورم.","اممم، خیلی خوشمزه است!","سوپ خیلی خوشمزه است.","سایز شما چند است؟","این پالتو را به رنگ آبی هم دارید؟","کجا می‌توانم پالتو را امتحان کنم؟","پالتو چند است؟","صندوق کجاست؟","نقدی پرداخت می‌کنید یا با کارت؟","این لباس به من نمی‌آید.","من این تلفن را از اینجا خریدم.","اما کار نمی‌کند.","فاکتور دارید؟","می‌خواهم آن را عوض کنم یا پولم را پس بگیرم.","روز بخیر، من سوین هستم.","می‌خواهم با خانم سانتینی صحبت کنم.","خانم سانتینی اینجا نیست.","می‌خواهم وقت ملاقات بگیرم.","روز پنجشنبه وقت خالی دارید؟","بله، مناسب است.","متأسفانه مناسب نیست.","اداره پست چه ساعتی باز است؟","می‌خواهم یک بسته تحویل بدهم.","می‌خواهم پول حواله کنم.","می‌خواهم نشانی محل سکونتم را ثبت کنم.","چه مدارکی باید بیاورم؟","کجا باید امضا کنم؟","امروز چه کاری باید انجام بدهی؟","باید تکلیف مدرسه‌ام را انجام بدهم.","باید به بانک بروم.","کجا می‌روی؟","به اداره پست می‌روم.","به داروخانه می‌روم.","پیش دکتر می‌روم.","اینجا سیگار کشیدن ممنوع است.","این مجاز است.","این ممنوع است.","من خوب شنا می‌کنم.","می‌خواهم یک دوره حرفه‌آموزی بگذرانم.","آپارتمان چه اتاق‌هایی دارد؟","ببخشید، دستشویی کجاست؟","دنبال آپارتمان می‌گردم.","ما یک آپارتمان پیدا کردیم.","من یک خواهش دارم.","می‌توانید به من کمک کنید؟","ببخشید، چطور به ایستگاه قطار برسم؟","چطور به اداره پست برسم؟","باید عوض کنم؟","کجا باید پیاده شوم؟","چقدر طول می‌کشد؟","بلیت چند است؟","کجا می‌توانم بلیت بخرم؟","مترو چه ساعتی حرکت می‌کند؟","من با اتوبوس می‌روم.","من با مترو می‌روم.","من پیاده می‌روم.","به راست بروید.","به چپ بروید.","مستقیم بروید.","داروخانه کجاست؟","یک بلیت به اولم، لطفاً.","رفت و برگشت یا فقط یک‌طرفه؟","قطار بعدی چه ساعتی حرکت می‌کند؟","من بیمار هستم.","می‌خواهم از دکتر وقت بگیرم.","چه مشکلی دارید؟","من سردرد دارم.","من دل‌درد دارم.","من گلودرد دارم.","من دندان‌درد دارم.","من تب دارم.","من سرفه دارم.","من سرماخوردگی دارم.","از کی؟","از دو روز پیش.","قرص‌ها را روزی دو بار بخورید.","من اینجا یک نسخه دارم.","متأسفانه امروز نمی‌توانم بیایم.","شماره اورژانس 112 است.","الو، ما یک وضعیت اورژانسی داریم!","باید سریع بیایید!","کجا هستید؟","چه اتفاقی افتاده؟","شما چه کارهایی را خوب بلدید؟","می‌خواهم کارآموزی کنم.","قبلاً چه کار می‌کردید؟","من در آشپزخانه کار کردم.","من در سال 2006 به آلمان آمدم.","من یک سال است که در آلمان زندگی می‌کنم.","هنوز سؤال دارم.","این شغل تمام‌وقت است یا پاره‌وقت؟","ساعت‌های کاری چطور است؟","چه زمانی می‌توانید در شرکت ما شروع کنید؟","من به مراقبت از کودک نیاز دارم.","می‌توانید به من کمک کنید؟","لطفاً می‌توانید به من کمک کنید؟","لطف می‌کنید و این را تکرار می‌کنید؟","لطفاً در را می‌بندی؟","متأسفم!","متأسفم، دیر کردم.","مشکلی نیست.","هوا چطور است؟","امروز آفتابی است.","باران می‌بارد.","در پارک پیک‌نیک کنیم؟","ایده خوبی است.","تولد شما چه زمانی است؟","تولد من چهارم ماه مه است.","تولدت مبارک!","موفق باشی!","کریسمس مبارک!","سال نو مبارک!","ممنون!"]};
+const SECTR={"ru":["Приветствие и прощание","Как дела?","Знакомство: имя, происхождение, языки","Переспросить и продиктовать по буквам","Личные данные и анкеты","Профессия и работа","Семья","Назвать и описать предметы","Числа, цены и время","Досуг и договорённости","Согласие, отказ, приглашения","Распорядок дня и рабочее время","Еда, напитки, покупки","Ресторан, заказ, комплименты","Покупка одежды и жалобы","Записи, телефон, учреждения","Обязанности и разрешения","Жильё, поиск квартиры, соседи","Дорога, автобус, поезд","Врач, аптека, экстренные службы","Обучение, поиск работы, уход за детьми","Вежливые просьбы и извинения","Погода, путешествия, праздники, поздравления"],"en":["Greetings and goodbyes","How are you?","Introducing yourself: name, origin, languages","Spelling and asking again","Personal data and forms","Occupation and work","Family","Naming and describing things","Numbers, prices and time","Free time and arrangements","Accepting, declining, invitations","Daily routine and working hours","Food, drink and shopping","Restaurant, ordering, compliments","Buying clothes and complaints","Appointments, phone and offices","Obligations and permission","Housing, flat hunting, neighbours","Directions, bus and train","Doctor, pharmacy and emergency","Training, job search and childcare","Polite requests and apologies","Weather, travel, celebrations, greetings"],"tr":["Selamlaşma ve vedalaşma","Nasılsın?","Kendini tanıtma: ad, köken, diller","Harf harf söyleme ve tekrar sorma","Kişisel bilgiler ve formlar","Meslek ve iş","Aile","Nesneleri adlandırma ve tanımlama","Sayılar, fiyatlar ve saat","Boş zaman ve sözleşmeler","Kabul, ret ve davetler","Günlük akış ve çalışma saatleri","Yemek, içecek ve alışveriş","Restoran, sipariş ve iltifatlar","Giysi alma ve şikâyet","Randevular, telefon ve kurumlar","Zorunluluk ve izin","Ev, ev arama ve komşular","Yol tarifi, otobüs ve tren","Doktor, eczane ve acil durum","Eğitim, iş arama ve çocuk bakımı","Nazik rica ve özür","Hava durumu, seyahat, bayramlar, tebrikler"],"ar":["التحية والوداع","كيف حالك؟","التعريف بالنفس: الاسم والأصل واللغات","التهجئة وطلب الإعادة","البيانات الشخصية والاستمارات","المهنة والعمل","العائلة","تسمية الأشياء ووصفها","الأرقام والأسعار والوقت","وقت الفراغ والمواعيد","القبول والرفض والدعوات","الروتين اليومي وساعات العمل","الطعام والشراب والتسوق","المطعم والطلب والمجاملات","شراء الملابس والشكاوى","المواعيد والهاتف والدوائر الرسمية","الواجبات والإذن","السكن والبحث عن شقة والجيران","الطريق والحافلة والقطار","الطبيب والصيدلية والطوارئ","التدريب والبحث عن عمل ورعاية الأطفال","الطلبات المهذبة والاعتذار","الطقس والسفر والأعياد والتهاني"],"pl":["Powitania i pożegnania","Jak się masz?","Przedstawianie się: imię, pochodzenie, języki","Literowanie i dopytywanie","Dane osobowe i formularze","Zawód i praca","Rodzina","Nazywanie i opisywanie rzeczy","Liczby, ceny i godziny","Czas wolny i umawianie się","Zgoda, odmowa, zaproszenia","Plan dnia i godziny pracy","Jedzenie, picie i zakupy","Restauracja, zamawianie, komplementy","Kupowanie ubrań i reklamacje","Terminy, telefon i urzędy","Obowiązki i pozwolenia","Mieszkanie, szukanie mieszkania, sąsiedzi","Droga, autobus i pociąg","Lekarz, apteka i pogotowie","Nauka, szukanie pracy i opieka nad dziećmi","Uprzejme prośby i przeprosiny","Pogoda, podróże, święta, życzenia"],"ro":["Salut și rămas-bun","Ce mai faci?","Prezentarea: nume, origine, limbi","Silabisire și reîntrebare","Date personale și formulare","Profesie și muncă","Familia","Denumirea și descrierea lucrurilor","Numere, prețuri și ora","Timp liber și întâlniri","Acceptare, refuz, invitații","Programul zilei și orele de lucru","Mâncare, băuturi și cumpărături","Restaurant, comandă, complimente","Cumpărarea hainelor și reclamații","Programări, telefon și instituții","Obligații și permisiuni","Locuință, căutarea unui apartament, vecini","Drum, autobuz și tren","Medic, farmacie și urgențe","Formare, căutarea unui loc de muncă și îngrijirea copiilor","Rugăminți politicoase și scuze","Vreme, călătorii, sărbători, felicitări"],"fa":["سلام و خداحافظی","حالتان چطور است؟","معرفی خود: نام، اصلیت، زبان‌ها","هجی کردن و دوباره پرسیدن","اطلاعات شخصی و فرم‌ها","شغل و کار","خانواده","نام‌بردن و توصیف چیزها","عددها، قیمت‌ها و ساعت","اوقات فراغت و قرار گذاشتن","قبول، رد و دعوت","برنامه روزانه و ساعت کاری","غذا، نوشیدنی و خرید","رستوران، سفارش و تعارف","خرید لباس و شکایت","وقت ملاقات، تلفن و ادارات","وظایف و اجازه","خانه، خانه‌یابی و همسایه‌ها","مسیر، اتوبوس و قطار","پزشک، داروخانه و اورژانس","آموزش، کاریابی و نگهداری از کودک","درخواست مؤدبانه و عذرخواهی","آب‌وهوا، سفر، جشن‌ها و تبریک‌ها"]};
+const LANGS={uk:{n:'Українська',tag:'Українською',dir:'ltr'},ru:{n:'Русский',tag:'По-русски',dir:'ltr'},en:{n:'English',tag:'In English',dir:'ltr'},tr:{n:'Türkçe',tag:'Türkçe',dir:'ltr'},ar:{n:'العربية',tag:'بالعربية',dir:'rtl'},pl:{n:'Polski',tag:'Po polsku',dir:'ltr'},ro:{n:'Română',tag:'În română',dir:'ltr'},fa:{n:'فارسی',tag:'به فارسی',dir:'rtl'}};
+const UI={
+uk:{
+tabsAria:'Функції',tab1:'Функція 1',tab1s:'Слухай, повторюй, закривай',tab2:'Функція 2',tab2s:'Заповни пропуски',
+barAria:'Налаштування',sec:'Розділ',params:'Параметри',slow:'Повільне озвучення',shuf:'Випадковий порядок',auto:'Озвучувати нове речення',auto2:'Озвучувати правильне речення',kindLbl:'Тип пропусків',
+kAll:'Усі типи',kLetter:'Літери',kWord:'Слова',kMulti:'Кілька слів',
+st1:(p,t,o,h)=>`Речення <b>${p}</b> з <b>${t}</b> · Легкі: <b>${o}</b> · Для повторення: <b>${h}</b>`,
+st2p:(p,t,d)=>`Речення <b>${p}</b> з <b>${t}</b> · Пройдено: <b>${d}</b>`,
+st2r:(e,f)=>`Вправ: <b>${e}</b> · З першої спроби: <b>${f}</b>`,
+novoice:'На цьому пристрої не знайдено німецького голосу. Установіть німецьку мову в налаштуваннях синтезу мовлення пристрою або відкрийте сторінку в іншому браузері.',
+stepRev:'Перевірка',stepPeek:'Підглянуто',stepClosed:(k,n)=>`Закрито ${k} з ${n}`,
+iPeek:'Ви підглянули речення. Закривання починається спочатку.',sPeek:'Прочитайте речення вголос, а потім натисніть «Почати спочатку».',
+iRev:'Порівняйте те, що ви сказали, з реченням на екрані.',sRev:'Можна ще раз прослухати речення. Потім оберіть варіант нижче.',
+i0:'Прослухайте речення й повторіть його вголос.',s0:'Потім натисніть «Далі»: частина речення закриється.',
+iMid:'Прочитайте вголос усе німецьке речення, разом із закритими словами.',sMid:'Не вдається згадати? Натисніть «Підглянути», але тоді закривання почнеться спочатку.',
+iAll:'Усе речення закрите. Скажіть його вголос по пам’яті.',sAll:'Потім натисніть «Перевірити» й порівняйте.',
+bAgain:'Почати спочатку',bListen:'Прослухати',bNext:'Далі',bCheck:'Перевірити',bPeek:'Підглянути',bPrev:'Попереднє',bSkip:'Пропустити',
+o1:'Я ще не сказав(ла) речення правильно, мені треба ще багато потренуватися',o2:'Я сказав(ла) речення правильно, але це було важко, і я його не запам’ятаю',o3:'Я сказав(ла) речення правильно. Для мене це речення легке.',
+finT:'Ви пройшли всі речення в цьому розділі.',fin1:(o,h)=>`Легкі речення: <b>${o}</b>. Ще важкі: <b>${h}</b>.`,fin2:n=>`Пройдено речень: <b>${n}</b>.`,
+mAria:'Режим',mProg:'Поступово',mProgS:'Те саме речення: спочатку літери, потім слова, потім кілька слів',mRand:'Випадково',mRandS:'Різні речення й різні пропуски, без наростання складності',
+lvlOf:n=>`Рівень ${n} з 3. `,kindIs:'Тип пропусків: ',
+hLetter:'Впишіть пропущені літери.',hWord:'Впишіть пропущені слова.',hMulti:'Впишіть пропущені слова та частини речення.',
+bHint:'Підказка',bReveal:'Показати відповідь',bRetry:'Спробувати цей рівень ще раз',bNextS:'Наступне речення',bNextL:n=>`Далі: рівень ${n}`,bSkipS:'Пропустити речення',
+fbOk:'Усе правильно!',fbUml:'Пам’ятайте: у тексті пишемо ä, ö, ü, ß (а не ae, oe, ue, ss).',fbBad:'Не всі пропуски правильні. Виправте червоні поля й натисніть «Перевірити» ще раз.',fbCase:'Зверніть увагу на великі й малі літери: німецькі іменники пишемо з великої літери.',
+fbRevP:'Правильна відповідь показана. Спробуйте цей рівень ще раз з іншими пропусками.',fbRevR:'Правильна відповідь показана. Переходьте до наступної вправи.',
+gap:n=>`Пропуск ${n}`,special:'Спеціальні літери:',all:n=>`Усі розділи (${n})`,foot:'Німецькі речення з Treffpunkt A1. Переклади потребують перевірки носієм мови.'
+},
+ru:{
+tabsAria:'Функции',tab1:'Функция 1',tab1s:'Слушай, повторяй, закрывай',tab2:'Функция 2',tab2s:'Заполни пропуски',
+barAria:'Настройки',sec:'Раздел',params:'Параметры',slow:'Медленное озвучивание',shuf:'Случайный порядок',auto:'Озвучивать новое предложение',auto2:'Озвучивать правильное предложение',kindLbl:'Тип пропусков',
+kAll:'Все типы',kLetter:'Буквы',kWord:'Слова',kMulti:'Несколько слов',
+st1:(p,t,o,h)=>`Предложение <b>${p}</b> из <b>${t}</b> · Лёгкие: <b>${o}</b> · Для повторения: <b>${h}</b>`,
+st2p:(p,t,d)=>`Предложение <b>${p}</b> из <b>${t}</b> · Пройдено: <b>${d}</b>`,
+st2r:(e,f)=>`Упражнений: <b>${e}</b> · С первой попытки: <b>${f}</b>`,
+novoice:'На этом устройстве не найден немецкий голос. Установите немецкий язык в настройках синтеза речи устройства или откройте страницу в другом браузере.',
+stepRev:'Проверка',stepPeek:'Подсмотрено',stepClosed:(k,n)=>`Закрыто ${k} из ${n}`,
+iPeek:'Вы подсмотрели предложение. Закрывание начинается сначала.',sPeek:'Прочитайте предложение вслух, а затем нажмите «Начать сначала».',
+iRev:'Сравните то, что вы сказали, с предложением на экране.',sRev:'Можно ещё раз прослушать предложение. Затем выберите вариант ниже.',
+i0:'Прослушайте предложение и повторите его вслух.',s0:'Затем нажмите «Дальше»: часть предложения закроется.',
+iMid:'Прочитайте вслух всё немецкое предложение, вместе с закрытыми словами.',sMid:'Не получается вспомнить? Нажмите «Подсмотреть», но тогда закрывание начнётся сначала.',
+iAll:'Всё предложение закрыто. Скажите его вслух по памяти.',sAll:'Затем нажмите «Проверить» и сравните.',
+bAgain:'Начать сначала',bListen:'Прослушать',bNext:'Дальше',bCheck:'Проверить',bPeek:'Подсмотреть',bPrev:'Предыдущее',bSkip:'Пропустить',
+o1:'Я ещё не сказал(а) предложение правильно, мне нужно ещё много тренироваться',o2:'Я сказал(а) предложение правильно, но это было трудно, и я его не запомню',o3:'Я сказал(а) предложение правильно. Для меня это предложение лёгкое.',
+finT:'Вы прошли все предложения в этом разделе.',fin1:(o,h)=>`Лёгкие предложения: <b>${o}</b>. Ещё трудные: <b>${h}</b>.`,fin2:n=>`Пройдено предложений: <b>${n}</b>.`,
+mAria:'Режим',mProg:'Постепенно',mProgS:'То же предложение: сначала буквы, потом слова, потом несколько слов',mRand:'Случайно',mRandS:'Разные предложения и разные пропуски, без нарастания сложности',
+lvlOf:n=>`Уровень ${n} из 3. `,kindIs:'Тип пропусков: ',
+hLetter:'Впишите пропущенные буквы.',hWord:'Впишите пропущенные слова.',hMulti:'Впишите пропущенные слова и части предложения.',
+bHint:'Подсказка',bReveal:'Показать ответ',bRetry:'Попробовать этот уровень ещё раз',bNextS:'Следующее предложение',bNextL:n=>`Дальше: уровень ${n}`,bSkipS:'Пропустить предложение',
+fbOk:'Всё правильно!',fbUml:'Помните: в тексте пишем ä, ö, ü, ß (а не ae, oe, ue, ss).',fbBad:'Не все пропуски заполнены правильно. Исправьте красные поля и снова нажмите «Проверить».',fbCase:'Обратите внимание на заглавные и строчные буквы: немецкие существительные пишутся с большой буквы.',
+fbRevP:'Правильный ответ показан. Попробуйте этот уровень ещё раз с другими пропусками.',fbRevR:'Правильный ответ показан. Переходите к следующему упражнению.',
+gap:n=>`Пропуск ${n}`,special:'Специальные буквы:',all:n=>`Все разделы (${n})`,foot:'Немецкие предложения из Treffpunkt A1. Переводы нужно проверить у носителя языка.'
+},
+en:{
+tabsAria:'Functions',tab1:'Function 1',tab1s:'Listen, repeat, cover',tab2:'Function 2',tab2s:'Fill in the gaps',
+barAria:'Settings',sec:'Section',params:'Options',slow:'Slow audio',shuf:'Random order',auto:'Play new sentence automatically',auto2:'Play correct sentence automatically',kindLbl:'Type of gaps',
+kAll:'All types',kLetter:'Letters',kWord:'Words',kMulti:'Several words',
+st1:(p,t,o,h)=>`Sentence <b>${p}</b> of <b>${t}</b> · Easy: <b>${o}</b> · To review: <b>${h}</b>`,
+st2p:(p,t,d)=>`Sentence <b>${p}</b> of <b>${t}</b> · Completed: <b>${d}</b>`,
+st2r:(e,f)=>`Exercises: <b>${e}</b> · First try: <b>${f}</b>`,
+novoice:'No German voice was found on this device. Install German in the device’s speech settings or open the page in another browser.',
+stepRev:'Check',stepPeek:'Peeked',stepClosed:(k,n)=>`Covered ${k} of ${n}`,
+iPeek:'You peeked at the sentence. The covering starts again from the beginning.',sPeek:'Read the sentence aloud, then press “Start again”.',
+iRev:'Compare what you said with the sentence on the screen.',sRev:'You can listen to the sentence once more. Then choose an option below.',
+i0:'Listen to the sentence and repeat it aloud.',s0:'Then press “Next”: part of the sentence will be covered.',
+iMid:'Read the whole German sentence aloud, including the covered words.',sMid:'Can’t remember? Press “Peek”, but then the covering starts again from the beginning.',
+iAll:'The whole sentence is covered. Say it aloud from memory.',sAll:'Then press “Check” and compare.',
+bAgain:'Start again',bListen:'Listen',bNext:'Next',bCheck:'Check',bPeek:'Peek',bPrev:'Previous',bSkip:'Skip',
+o1:'I haven’t said the sentence correctly yet, and I need to practise a lot more',o2:'I said the sentence correctly, but it was difficult and I won’t remember it',o3:'I said the sentence correctly. This sentence is easy for me.',
+finT:'You have finished all sentences in this section.',fin1:(o,h)=>`Easy sentences: <b>${o}</b>. Still difficult: <b>${h}</b>.`,fin2:n=>`Sentences completed: <b>${n}</b>.`,
+mAria:'Mode',mProg:'Step by step',mProgS:'Same sentence: first letters, then words, then several words',mRand:'Random',mRandS:'Different sentences and different gaps, no increase in difficulty',
+lvlOf:n=>`Level ${n} of 3. `,kindIs:'Type of gaps: ',
+hLetter:'Fill in the missing letters.',hWord:'Fill in the missing words.',hMulti:'Fill in the missing words and parts of the sentence.',
+bHint:'Hint',bReveal:'Show answer',bRetry:'Try this level again',bNextS:'Next sentence',bNextL:n=>`Next: level ${n}`,bSkipS:'Skip sentence',
+fbOk:'All correct!',fbUml:'Remember: in the text we write ä, ö, ü, ß (not ae, oe, ue, ss).',fbBad:'Not all gaps are correct. Fix the red fields and press “Check” again.',fbCase:'Watch the capital and small letters: German nouns are written with a capital letter.',
+fbRevP:'The correct answer is shown. Try this level again with different gaps.',fbRevR:'The correct answer is shown. Go on to the next exercise.',
+gap:n=>`Gap ${n}`,special:'Special letters:',all:n=>`All sections (${n})`,foot:'German sentences from Treffpunkt A1. The translations should be checked by a native speaker.'
+},
+tr:{
+tabsAria:'İşlevler',tab1:'İşlev 1',tab1s:'Dinle, tekrar et, kapat',tab2:'İşlev 2',tab2s:'Boşlukları doldur',
+barAria:'Ayarlar',sec:'Bölüm',params:'Seçenekler',slow:'Yavaş seslendirme',shuf:'Rastgele sıra',auto:'Yeni cümleyi seslendir',auto2:'Doğru cümleyi seslendir',kindLbl:'Boşluk türü',
+kAll:'Tüm türler',kLetter:'Harfler',kWord:'Sözcükler',kMulti:'Birkaç sözcük',
+st1:(p,t,o,h)=>`Cümle <b>${p}</b> / <b>${t}</b> · Kolay: <b>${o}</b> · Tekrar için: <b>${h}</b>`,
+st2p:(p,t,d)=>`Cümle <b>${p}</b> / <b>${t}</b> · Tamamlanan: <b>${d}</b>`,
+st2r:(e,f)=>`Alıştırma: <b>${e}</b> · İlk denemede: <b>${f}</b>`,
+novoice:'Bu cihazda Almanca ses bulunamadı. Cihazın konuşma sentezi ayarlarından Almanca’yı yükleyin ya da sayfayı başka bir tarayıcıda açın.',
+stepRev:'Kontrol',stepPeek:'Bakıldı',stepClosed:(k,n)=>`${n} bölümden ${k} kapalı`,
+iPeek:'Cümleye baktınız. Kapatma baştan başlıyor.',sPeek:'Cümleyi yüksek sesle okuyun, sonra «Baştan başla» düğmesine basın.',
+iRev:'Söylediğinizi ekrandaki cümleyle karşılaştırın.',sRev:'Cümleyi bir kez daha dinleyebilirsiniz. Sonra aşağıdaki seçeneklerden birini seçin.',
+i0:'Cümleyi dinleyin ve yüksek sesle tekrar edin.',s0:'Sonra «İleri» düğmesine basın: cümlenin bir kısmı kapanacak.',
+iMid:'Kapalı sözcükler dahil Almanca cümlenin tamamını yüksek sesle okuyun.',sMid:'Hatırlayamıyor musunuz? «Bak» düğmesine basın, ama o zaman kapatma baştan başlar.',
+iAll:'Cümlenin tamamı kapalı. Cümleyi ezberden yüksek sesle söyleyin.',sAll:'Sonra «Kontrol et» düğmesine basın ve karşılaştırın.',
+bAgain:'Baştan başla',bListen:'Dinle',bNext:'İleri',bCheck:'Kontrol et',bPeek:'Bak',bPrev:'Önceki',bSkip:'Atla',
+o1:'Cümleyi henüz doğru söyleyemedim, daha çok çalışmam gerekiyor',o2:'Cümleyi doğru söyledim ama zordu ve aklımda tutamayacağım',o3:'Cümleyi doğru söyledim. Bu cümle benim için kolay.',
+finT:'Bu bölümdeki tüm cümleleri bitirdiniz.',fin1:(o,h)=>`Kolay cümleler: <b>${o}</b>. Hâlâ zor olanlar: <b>${h}</b>.`,fin2:n=>`Tamamlanan cümle: <b>${n}</b>.`,
+mAria:'Kip',mProg:'Adım adım',mProgS:'Aynı cümle: önce harfler, sonra sözcükler, sonra birkaç sözcük',mRand:'Rastgele',mRandS:'Farklı cümleler ve farklı boşluklar, zorluk artışı yok',
+lvlOf:n=>`Seviye ${n} / 3. `,kindIs:'Boşluk türü: ',
+hLetter:'Eksik harfleri yazın.',hWord:'Eksik sözcükleri yazın.',hMulti:'Eksik sözcükleri ve cümle parçalarını yazın.',
+bHint:'İpucu',bReveal:'Cevabı göster',bRetry:'Bu seviyeyi tekrar dene',bNextS:'Sonraki cümle',bNextL:n=>`İleri: seviye ${n}`,bSkipS:'Cümleyi atla',
+fbOk:'Hepsi doğru!',fbUml:'Unutmayın: metinde ä, ö, ü, ß yazıyoruz (ae, oe, ue, ss değil).',fbBad:'Tüm boşluklar doğru değil. Kırmızı alanları düzeltin ve tekrar «Kontrol et» düğmesine basın.',fbCase:'Büyük ve küçük harflere dikkat edin: Almanca isimler büyük harfle yazılır.',
+fbRevP:'Doğru cevap gösterildi. Bu seviyeyi farklı boşluklarla tekrar deneyin.',fbRevR:'Doğru cevap gösterildi. Sonraki alıştırmaya geçin.',
+gap:n=>`Boşluk ${n}`,special:'Özel harfler:',all:n=>`Tüm bölümler (${n})`,foot:'Treffpunkt A1’den Almanca cümleler. Çevirilerin ana dili konuşan biri tarafından kontrol edilmesi gerekir.'
+},
+ar:{
+tabsAria:'الوظائف',tab1:'الوظيفة 1',tab1s:'استمع وكرّر وغطِّ',tab2:'الوظيفة 2',tab2s:'املأ الفراغات',
+barAria:'الإعدادات',sec:'القسم',params:'الخيارات',slow:'نطق بطيء',shuf:'ترتيب عشوائي',auto:'نطق الجملة الجديدة تلقائيًا',auto2:'نطق الجملة الصحيحة تلقائيًا',kindLbl:'نوع الفراغات',
+kAll:'كل الأنواع',kLetter:'حروف',kWord:'كلمات',kMulti:'عدة كلمات',
+st1:(p,t,o,h)=>`الجملة <b>${p}</b> من <b>${t}</b> · السهلة: <b>${o}</b> · للمراجعة: <b>${h}</b>`,
+st2p:(p,t,d)=>`الجملة <b>${p}</b> من <b>${t}</b> · المنجزة: <b>${d}</b>`,
+st2r:(e,f)=>`التمارين: <b>${e}</b> · من المحاولة الأولى: <b>${f}</b>`,
+novoice:'لم يتم العثور على صوت ألماني على هذا الجهاز. ثبّت اللغة الألمانية في إعدادات تركيب الكلام في الجهاز أو افتح الصفحة في متصفح آخر.',
+stepRev:'التحقق',stepPeek:'تمّت المعاينة',stepClosed:(k,n)=>`مغطّى ${k} من ${n}`,
+iPeek:'لقد ألقيتَ نظرة على الجملة. يبدأ التغطية من جديد.',sPeek:'اقرأ الجملة بصوت عالٍ، ثم اضغط «ابدأ من جديد».',
+iRev:'قارن ما قلتَه بالجملة الظاهرة على الشاشة.',sRev:'يمكنك الاستماع إلى الجملة مرة أخرى. ثم اختر أحد الخيارات أدناه.',
+i0:'استمع إلى الجملة وكرّرها بصوت عالٍ.',s0:'ثم اضغط «التالي»: سيتم تغطية جزء من الجملة.',
+iMid:'اقرأ الجملة الألمانية كاملة بصوت عالٍ، بما فيها الكلمات المغطّاة.',sMid:'لا تتذكر؟ اضغط «ألقِ نظرة»، لكن عندها تبدأ التغطية من جديد.',
+iAll:'الجملة كلها مغطّاة. قلها بصوت عالٍ من الذاكرة.',sAll:'ثم اضغط «تحقق» وقارن.',
+bAgain:'ابدأ من جديد',bListen:'استمع',bNext:'التالي',bCheck:'تحقق',bPeek:'ألقِ نظرة',bPrev:'السابق',bSkip:'تخطَّ',
+o1:'لم أقل الجملة بشكل صحيح بعد وأحتاج إلى مزيد من التدريب',o2:'قلت الجملة بشكل صحيح لكنها كانت صعبة ولن أتذكرها',o3:'قلت الجملة بشكل صحيح. هذه الجملة سهلة بالنسبة لي.',
+finT:'لقد أنهيت جميع الجمل في هذا القسم.',fin1:(o,h)=>`الجمل السهلة: <b>${o}</b>. ما زالت صعبة: <b>${h}</b>.`,fin2:n=>`الجمل المنجزة: <b>${n}</b>.`,
+mAria:'الوضع',mProg:'تدريجيًا',mProgS:'الجملة نفسها: أولًا حروف، ثم كلمات، ثم عدة كلمات',mRand:'عشوائي',mRandS:'جمل مختلفة وفراغات مختلفة، دون زيادة في الصعوبة',
+lvlOf:n=>`المستوى ${n} من 3. `,kindIs:'نوع الفراغات: ',
+hLetter:'اكتب الحروف الناقصة.',hWord:'اكتب الكلمات الناقصة.',hMulti:'اكتب الكلمات الناقصة وأجزاء الجملة.',
+bHint:'تلميح',bReveal:'أظهر الإجابة',bRetry:'جرّب هذا المستوى مرة أخرى',bNextS:'الجملة التالية',bNextL:n=>`التالي: المستوى ${n}`,bSkipS:'تخطَّ الجملة',
+fbOk:'كل شيء صحيح!',fbUml:'تذكّر: نكتب في النص ä وö وü وß (وليس ae وoe وue وss).',fbBad:'ليست كل الفراغات صحيحة. صحّح الحقول الحمراء واضغط «تحقق» مرة أخرى.',fbCase:'انتبه إلى الأحرف الكبيرة والصغيرة: تُكتب الأسماء الألمانية بحرف كبير.',
+fbRevP:'تم عرض الإجابة الصحيحة. جرّب هذا المستوى مرة أخرى بفراغات مختلفة.',fbRevR:'تم عرض الإجابة الصحيحة. انتقل إلى التمرين التالي.',
+gap:n=>`الفراغ ${n}`,special:'حروف خاصة:',all:n=>`كل الأقسام (${n})`,foot:'جمل ألمانية من كتاب Treffpunkt A1. الترجمات تحتاج إلى مراجعة ناطق أصلي باللغة.'
+},
+pl:{
+tabsAria:'Funkcje',tab1:'Funkcja 1',tab1s:'Słuchaj, powtarzaj, zasłaniaj',tab2:'Funkcja 2',tab2s:'Uzupełnij luki',
+barAria:'Ustawienia',sec:'Rozdział',params:'Opcje',slow:'Wolne odtwarzanie',shuf:'Losowa kolejność',auto:'Odtwarzaj nowe zdanie',auto2:'Odtwarzaj poprawne zdanie',kindLbl:'Rodzaj luk',
+kAll:'Wszystkie rodzaje',kLetter:'Litery',kWord:'Słowa',kMulti:'Kilka słów',
+st1:(p,t,o,h)=>`Zdanie <b>${p}</b> z <b>${t}</b> · Łatwe: <b>${o}</b> · Do powtórki: <b>${h}</b>`,
+st2p:(p,t,d)=>`Zdanie <b>${p}</b> z <b>${t}</b> · Ukończone: <b>${d}</b>`,
+st2r:(e,f)=>`Ćwiczeń: <b>${e}</b> · Za pierwszym razem: <b>${f}</b>`,
+novoice:'Na tym urządzeniu nie znaleziono niemieckiego głosu. Zainstaluj język niemiecki w ustawieniach syntezy mowy urządzenia lub otwórz stronę w innej przeglądarce.',
+stepRev:'Sprawdzenie',stepPeek:'Podejrzane',stepClosed:(k,n)=>`Zasłonięto ${k} z ${n}`,
+iPeek:'Podejrzałeś(-aś) zdanie. Zasłanianie zaczyna się od początku.',sPeek:'Przeczytaj zdanie na głos, a potem naciśnij „Zacznij od nowa”.',
+iRev:'Porównaj to, co powiedziałeś(-aś), ze zdaniem na ekranie.',sRev:'Możesz jeszcze raz odsłuchać zdanie. Potem wybierz opcję poniżej.',
+i0:'Posłuchaj zdania i powtórz je na głos.',s0:'Potem naciśnij „Dalej”: część zdania zostanie zasłonięta.',
+iMid:'Przeczytaj na głos całe niemieckie zdanie, razem z zasłoniętymi słowami.',sMid:'Nie pamiętasz? Naciśnij „Podejrzyj”, ale wtedy zasłanianie zacznie się od początku.',
+iAll:'Całe zdanie jest zasłonięte. Powiedz je na głos z pamięci.',sAll:'Potem naciśnij „Sprawdź” i porównaj.',
+bAgain:'Zacznij od nowa',bListen:'Posłuchaj',bNext:'Dalej',bCheck:'Sprawdź',bPeek:'Podejrzyj',bPrev:'Poprzednie',bSkip:'Pomiń',
+o1:'Nie powiedziałem(-am) jeszcze zdania poprawnie i muszę jeszcze dużo poćwiczyć',o2:'Powiedziałem(-am) zdanie poprawnie, ale było trudne i go nie zapamiętam',o3:'Powiedziałem(-am) zdanie poprawnie. To zdanie jest dla mnie łatwe.',
+finT:'Przeszedłeś(-łaś) wszystkie zdania w tym rozdziale.',fin1:(o,h)=>`Łatwe zdania: <b>${o}</b>. Wciąż trudne: <b>${h}</b>.`,fin2:n=>`Ukończone zdania: <b>${n}</b>.`,
+mAria:'Tryb',mProg:'Stopniowo',mProgS:'To samo zdanie: najpierw litery, potem słowa, potem kilka słów',mRand:'Losowo',mRandS:'Różne zdania i różne luki, bez wzrostu trudności',
+lvlOf:n=>`Poziom ${n} z 3. `,kindIs:'Rodzaj luk: ',
+hLetter:'Wpisz brakujące litery.',hWord:'Wpisz brakujące słowa.',hMulti:'Wpisz brakujące słowa i części zdania.',
+bHint:'Podpowiedź',bReveal:'Pokaż odpowiedź',bRetry:'Spróbuj ten poziom jeszcze raz',bNextS:'Następne zdanie',bNextL:n=>`Dalej: poziom ${n}`,bSkipS:'Pomiń zdanie',
+fbOk:'Wszystko poprawnie!',fbUml:'Pamiętaj: w tekście piszemy ä, ö, ü, ß (a nie ae, oe, ue, ss).',fbBad:'Nie wszystkie luki są poprawne. Popraw czerwone pola i jeszcze raz naciśnij „Sprawdź”.',fbCase:'Zwróć uwagę na wielkie i małe litery: niemieckie rzeczowniki piszemy wielką literą.',
+fbRevP:'Poprawna odpowiedź jest pokazana. Spróbuj ten poziom jeszcze raz z innymi lukami.',fbRevR:'Poprawna odpowiedź jest pokazana. Przejdź do następnego ćwiczenia.',
+gap:n=>`Luka ${n}`,special:'Znaki specjalne:',all:n=>`Wszystkie rozdziały (${n})`,foot:'Niemieckie zdania z Treffpunkt A1. Tłumaczenia wymagają sprawdzenia przez native speakera.'
+},
+ro:{
+tabsAria:'Funcții',tab1:'Funcția 1',tab1s:'Ascultă, repetă, acoperă',tab2:'Funcția 2',tab2s:'Completează spațiile',
+barAria:'Setări',sec:'Capitol',params:'Opțiuni',slow:'Redare lentă',shuf:'Ordine aleatorie',auto:'Redă propoziția nouă',auto2:'Redă propoziția corectă',kindLbl:'Tipul spațiilor',
+kAll:'Toate tipurile',kLetter:'Litere',kWord:'Cuvinte',kMulti:'Mai multe cuvinte',
+st1:(p,t,o,h)=>`Propoziția <b>${p}</b> din <b>${t}</b> · Ușoare: <b>${o}</b> · De repetat: <b>${h}</b>`,
+st2p:(p,t,d)=>`Propoziția <b>${p}</b> din <b>${t}</b> · Terminate: <b>${d}</b>`,
+st2r:(e,f)=>`Exerciții: <b>${e}</b> · Din prima încercare: <b>${f}</b>`,
+novoice:'Pe acest dispozitiv nu s-a găsit o voce germană. Instalați limba germană în setările de sinteză vocală ale dispozitivului sau deschideți pagina în alt browser.',
+stepRev:'Verificare',stepPeek:'Privit',stepClosed:(k,n)=>`Acoperit ${k} din ${n}`,
+iPeek:'Ați aruncat o privire la propoziție. Acoperirea începe de la capăt.',sPeek:'Citiți propoziția cu voce tare, apoi apăsați „De la început”.',
+iRev:'Comparați ce ați spus cu propoziția de pe ecran.',sRev:'Puteți asculta propoziția încă o dată. Apoi alegeți o variantă de mai jos.',
+i0:'Ascultați propoziția și repetați-o cu voce tare.',s0:'Apoi apăsați „Înainte”: o parte din propoziție va fi acoperită.',
+iMid:'Citiți cu voce tare toată propoziția germană, inclusiv cuvintele acoperite.',sMid:'Nu vă amintiți? Apăsați „Privește”, dar atunci acoperirea începe de la capăt.',
+iAll:'Toată propoziția este acoperită. Spuneți-o cu voce tare din memorie.',sAll:'Apoi apăsați „Verifică” și comparați.',
+bAgain:'De la început',bListen:'Ascultă',bNext:'Înainte',bCheck:'Verifică',bPeek:'Privește',bPrev:'Precedenta',bSkip:'Sari peste',
+o1:'Încă nu am spus propoziția corect și trebuie să mai exersez mult',o2:'Am spus propoziția corect, dar a fost greu și nu o voi reține',o3:'Am spus propoziția corect. Pentru mine propoziția este ușoară.',
+finT:'Ați parcurs toate propozițiile din acest capitol.',fin1:(o,h)=>`Propoziții ușoare: <b>${o}</b>. Încă dificile: <b>${h}</b>.`,fin2:n=>`Propoziții terminate: <b>${n}</b>.`,
+mAria:'Mod',mProg:'Treptat',mProgS:'Aceeași propoziție: mai întâi litere, apoi cuvinte, apoi mai multe cuvinte',mRand:'Aleatoriu',mRandS:'Propoziții și spații diferite, fără creșterea dificultății',
+lvlOf:n=>`Nivelul ${n} din 3. `,kindIs:'Tipul spațiilor: ',
+hLetter:'Scrieți literele lipsă.',hWord:'Scrieți cuvintele lipsă.',hMulti:'Scrieți cuvintele și părțile de propoziție lipsă.',
+bHint:'Indiciu',bReveal:'Arată răspunsul',bRetry:'Încearcă din nou acest nivel',bNextS:'Propoziția următoare',bNextL:n=>`Înainte: nivelul ${n}`,bSkipS:'Sari peste propoziție',
+fbOk:'Totul este corect!',fbUml:'Rețineți: în text scriem ä, ö, ü, ß (nu ae, oe, ue, ss).',fbBad:'Nu toate spațiile sunt corecte. Corectați câmpurile roșii și apăsați din nou „Verifică”.',fbCase:'Atenție la literele mari și mici: substantivele germane se scriu cu literă mare.',
+fbRevP:'Răspunsul corect este afișat. Încercați din nou acest nivel cu alte spații.',fbRevR:'Răspunsul corect este afișat. Treceți la exercițiul următor.',
+gap:n=>`Spațiul ${n}`,special:'Litere speciale:',all:n=>`Toate capitolele (${n})`,foot:'Propoziții germane din Treffpunkt A1. Traducerile trebuie verificate de un vorbitor nativ.'
+},
+fa:{
+tabsAria:'کارکردها',tab1:'کارکرد ۱',tab1s:'گوش بده، تکرار کن، بپوشان',tab2:'کارکرد ۲',tab2s:'جاهای خالی را پر کن',
+barAria:'تنظیمات',sec:'بخش',params:'گزینه‌ها',slow:'پخش آهسته',shuf:'ترتیب تصادفی',auto:'پخش جمله جدید',auto2:'پخش جمله درست',kindLbl:'نوع جاهای خالی',
+kAll:'همه نوع‌ها',kLetter:'حرف‌ها',kWord:'کلمه‌ها',kMulti:'چند کلمه',
+st1:(p,t,o,h)=>`جمله <b>${p}</b> از <b>${t}</b> · آسان: <b>${o}</b> · برای مرور: <b>${h}</b>`,
+st2p:(p,t,d)=>`جمله <b>${p}</b> از <b>${t}</b> · انجام‌شده: <b>${d}</b>`,
+st2r:(e,f)=>`تمرین‌ها: <b>${e}</b> · در تلاش اول: <b>${f}</b>`,
+novoice:'صدای آلمانی در این دستگاه پیدا نشد. زبان آلمانی را در تنظیمات تبدیل متن به گفتار دستگاه نصب کنید یا صفحه را در مرورگر دیگری باز کنید.',
+stepRev:'بررسی',stepPeek:'نگاه شد',stepClosed:(k,n)=>`${k} از ${n} پوشانده شد`,
+iPeek:'شما به جمله نگاه کردید. پوشاندن از اول شروع می‌شود.',sPeek:'جمله را بلند بخوانید، سپس «از اول شروع کن» را بزنید.',
+iRev:'آنچه گفتید را با جمله روی صفحه مقایسه کنید.',sRev:'می‌توانید یک بار دیگر به جمله گوش دهید. سپس یکی از گزینه‌های زیر را انتخاب کنید.',
+i0:'به جمله گوش دهید و آن را بلند تکرار کنید.',s0:'سپس «بعدی» را بزنید: بخشی از جمله پوشانده می‌شود.',
+iMid:'کل جمله آلمانی را همراه با کلمه‌های پوشانده‌شده بلند بخوانید.',sMid:'یادتان نمی‌آید؟ «نگاه کن» را بزنید، ولی آن‌وقت پوشاندن از اول شروع می‌شود.',
+iAll:'کل جمله پوشانده شده است. آن را از حفظ بلند بگویید.',sAll:'سپس «بررسی» را بزنید و مقایسه کنید.',
+bAgain:'از اول شروع کن',bListen:'گوش بده',bNext:'بعدی',bCheck:'بررسی',bPeek:'نگاه کن',bPrev:'قبلی',bSkip:'رد شو',
+o1:'هنوز جمله را درست نگفته‌ام و باید خیلی بیشتر تمرین کنم',o2:'جمله را درست گفتم، اما سخت بود و آن را به خاطر نمی‌سپارم',o3:'جمله را درست گفتم. این جمله برای من آسان است.',
+finT:'شما همه جمله‌های این بخش را تمام کردید.',fin1:(o,h)=>`جمله‌های آسان: <b>${o}</b>. هنوز سخت: <b>${h}</b>.`,fin2:n=>`جمله‌های انجام‌شده: <b>${n}</b>.`,
+mAria:'حالت',mProg:'مرحله‌ای',mProgS:'همان جمله: اول حرف‌ها، بعد کلمه‌ها، بعد چند کلمه',mRand:'تصادفی',mRandS:'جمله‌ها و جاهای خالی متفاوت، بدون افزایش دشواری',
+lvlOf:n=>`سطح ${n} از ۳. `,kindIs:'نوع جاهای خالی: ',
+hLetter:'حرف‌های جاافتاده را بنویسید.',hWord:'کلمه‌های جاافتاده را بنویسید.',hMulti:'کلمه‌ها و بخش‌های جاافتاده جمله را بنویسید.',
+bHint:'راهنمایی',bReveal:'نمایش پاسخ',bRetry:'این سطح را دوباره امتحان کن',bNextS:'جمله بعدی',bNextL:n=>`بعدی: سطح ${n}`,bSkipS:'رد شدن از جمله',
+fbOk:'همه درست است!',fbUml:'یادتان باشد: در متن ä، ö، ü، ß می‌نویسیم (نه ae، oe، ue، ss).',fbBad:'همه جاهای خالی درست نیستند. فیلدهای قرمز را اصلاح کنید و دوباره «بررسی» را بزنید.',fbCase:'به حروف بزرگ و کوچک توجه کنید: اسم‌های آلمانی با حرف بزرگ نوشته می‌شوند.',
+fbRevP:'پاسخ درست نشان داده شد. این سطح را دوباره با جاهای خالی دیگر امتحان کنید.',fbRevR:'پاسخ درست نشان داده شد. به تمرین بعدی بروید.',
+gap:n=>`جای خالی ${n}`,special:'حرف‌های ویژه:',all:n=>`همه بخش‌ها (${n})`,foot:'جمله‌های آلمانی از Treffpunkt A1. ترجمه‌ها باید توسط یک فارسی‌زبان بررسی شوند.'
+}
+};
+
+
+/*LOGIC*/
+function makeOrder(n){
+  const a=[...Array(n).keys()];
+  for(let i=n-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function newRun(item){const n=item.c.length;return {n:n,order:makeOrder(n),k:0,peek:false,reveal:false};}
+function coveredSet(run){return new Set(run.order.slice(0,run.k));}
+function advance(run){
+  if(run.peek||run.reveal) return run;
+  if(run.k<run.n) run.k++; else run.reveal=true;
+  return run;
+}
+function canPeek(run){return run.k>=1&&!run.reveal&&!run.peek;}
+function doPeek(run){if(canPeek(run)) run.peek=true; return run;}
+function requeue(q,pos,id){
+  /* difficult sentence: comes back after about 5 further sentences, at most once per pass at the end */
+  const at=Math.min(pos+6,q.length);
+  q.splice(at,0,id);
+  return q;
+}
+function sentence(item){return item.c.join(' ');}
+function buildQueue(sec,shuffle){
+  let q=[];
+  DATA.items.forEach((it,i)=>{ if(sec==='all'||it.s===+sec) q.push(i); });
+  if(shuffle) q=makeOrder(q.length).map(i=>q[i]);
+  return q;
+}
+/*END LOGIC*/
+
+/*LOGIC2*/
+const KINDS=['letter','word','multi'];
+function splitWord(w){const m=w.match(/^([^\p{L}\p{N}]*)(.*?)([^\p{L}\p{N}]*)$/u);return {lead:m[1],core:m[2],trail:m[3]};}
+function okCore(core){return /\p{L}/u.test(core)&&!/\d/.test(core)&&!/^(\p{L}-)+\p{L}$/u.test(core);}
+function wordsOf(item){
+  const out=[];
+  item.c.forEach((ch,ci)=>{
+    const arr=ch.split(' ').filter(Boolean);
+    arr.forEach((w,wi)=>{const p=splitWord(w);out.push({ci:ci,wi:wi,n:arr.length,lead:p.lead,core:p.core,trail:p.trail});});
+  });
+  return out;
+}
+function shuf(a,rnd){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function letterPositions(core){const p=[];for(let i=1;i<core.length;i++){if(/\p{L}/u.test(core[i]))p.push(i);}return p;}
+/* parts: {t:'s',s} text, {t:'g',a,kind} gap */
+function buildCloze(item,kind,rnd){
+  rnd=rnd||Math.random;
+  const W=wordsOf(item);
+  const wordGap=new Map(); /* index in W -> {kind,pos} */
+  const chunkGap=new Set();
+  if(kind==='letter'){
+    const E=[];W.forEach((w,i)=>{if(okCore(w.core)&&w.core.length>=2&&letterPositions(w.core).length)E.push(i);});
+    if(E.length){
+      const g=Math.min(E.length,E.length<=2?1:Math.max(2,Math.round(E.length*0.4)));
+      shuf(E,rnd).slice(0,g).forEach(i=>{const ps=letterPositions(W[i].core);wordGap.set(i,{kind:'letter',pos:ps[Math.floor(rnd()*ps.length)]});});
+    }else kind='word';
+  }
+  if(kind==='word'){
+    const E=[];W.forEach((w,i)=>{if(okCore(w.core))E.push(i);});
+    const g=Math.min(E.length,E.length<=2?1:Math.max(1,Math.round(E.length*0.34)));
+    shuf(E,rnd).slice(0,g).forEach(i=>wordGap.set(i,{kind:'word'}));
+  }
+  let E0=null;
+  if(kind==='multi'){
+    E0=[];
+    item.c.forEach((ch,ci)=>{const ws=W.filter(w=>w.ci===ci);if(ws.every(w=>okCore(w.core)))E0.push(ci);});
+    if(!E0.length)kind='word';
+  }
+  if(kind==='word'&&!wordGap.size){
+    const Ew=[];W.forEach((w,i)=>{if(okCore(w.core))Ew.push(i);});
+    const g=Math.min(Ew.length,Ew.length<=2?1:Math.max(1,Math.round(Ew.length*0.34)));
+    shuf(Ew,rnd).slice(0,g).forEach(i=>wordGap.set(i,{kind:'word'}));
+  }
+  if(kind==='multi'){
+    const E=E0;
+    const m=Math.min(E.length,E.length<2?1:Math.max(2,Math.ceil(item.c.length*0.6)));
+    const multi=E.filter(ci=>item.c[ci].split(' ').filter(Boolean).length>1);
+    const pick=[];
+    if(multi.length) pick.push(multi[Math.floor(rnd()*multi.length)]);
+    shuf(E.filter(c=>!pick.includes(c)),rnd).forEach(c=>{if(pick.length<m)pick.push(c);});
+    pick.forEach(c=>chunkGap.add(c));
+  }
+  const parts=[];
+  const push=s=>{if(!s)return;const l=parts[parts.length-1];if(l&&l.t==='s')l.s+=s;else parts.push({t:'s',s:s});};
+  item.c.forEach((ch,ci)=>{
+    if(ci>0)push(' ');
+    if(chunkGap.has(ci)){
+      const lead=ch.match(/^[^\p{L}\p{N}]*/u)[0];
+      const trail=ch.slice(lead.length).match(/[^\p{L}\p{N}]*$/u)[0];
+      push(lead);parts.push({t:'g',a:ch.slice(lead.length,ch.length-trail.length),kind:'multi'});push(trail);
+      return;
+    }
+    W.forEach((w,i)=>{
+      if(w.ci!==ci)return;
+      if(w.wi>0)push(' ');
+      push(w.lead);
+      const g=wordGap.get(i);
+      if(!g)push(w.core);
+      else if(g.kind==='word')parts.push({t:'g',a:w.core,kind:'word'});
+      else{push(w.core.slice(0,g.pos));parts.push({t:'g',a:w.core[g.pos],kind:'letter'});push(w.core.slice(g.pos+1));}
+      push(w.trail);
+    });
+  });
+  return {parts:parts,kind:kind,gaps:parts.filter(p=>p.t==='g')};
+}
+function clozeFull(cl){return cl.parts.map(p=>p.t==='s'?p.s:p.a).join('');}
+function expandDe(s){return s.replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/Ä/g,'Ae').replace(/Ö/g,'Oe').replace(/Ü/g,'Ue').replace(/ß/g,'ss');}
+/* returns 'ok' | 'alt' (ae/oe/ue/ss instead of umlaut) | 'case' (only capitalisation differs) | 'bad' */
+function evalGap(user,ans){
+  const u=user.replace(/\s+/g,' ').trim();
+  if(u===ans)return 'ok';
+  if(!u)return 'bad';
+  if(expandDe(u)===expandDe(ans))return 'alt';
+  if(u.toLowerCase()===ans.toLowerCase())return 'case';
+  if(expandDe(u).toLowerCase()===expandDe(ans).toLowerCase())return 'case';
+  return 'bad';
+}
+/*END LOGIC2*/
+
+
+const $=id=>document.getElementById(id);
+const ICON_PLAY='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+const ICON_EYE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+let LANG='uk';
+function t(k,...a){const v=(UI[LANG]&&UI[LANG][k]!==undefined)?UI[LANG][k]:UI.uk[k];return typeof v==='function'?v(...a):v;}
+function tr(id){return LANG==='uk'?DATA.items[id].u:(TR[LANG]&&TR[LANG][id])||DATA.items[id].u;}
+function secTitle(i){return LANG==='uk'?DATA.sectionsUk[i]:SECTR[LANG][i];}
+function buildSecOptions(){
+  const sel=$('sec');const keep=sel.value||'all';sel.textContent='';
+  const counts={};DATA.items.forEach(i=>counts[i.s]=(counts[i.s]||0)+1);
+  const all=document.createElement('option');all.value='all';all.textContent=t('all',DATA.items.length);sel.appendChild(all);
+  DATA.sections.forEach((s,i)=>{
+    if(!counts[i]) return;
+    const o=document.createElement('option');o.value=i;
+    o.textContent=(i+1)+'. \u2068'+s.replace(/^\d+\s*/,'')+'\u2069 · \u2068'+secTitle(i)+'\u2069 ('+counts[i]+')';
+    sel.appendChild(o);
+  });
+  sel.value=keep;
+}
+function applyStatic(l){
+  LANG=l;
+  const de=document.documentElement;de.lang=l;de.dir=LANGS[l].dir;
+  document.querySelectorAll('[data-i]').forEach(e=>{e.textContent=t(e.dataset.i);});
+  document.querySelectorAll('[data-aria]').forEach(e=>e.setAttribute('aria-label',t(e.dataset.aria)));
+  document.querySelectorAll('[data-tag]').forEach(e=>e.textContent=LANGS[l].tag);
+  ['uk','uk2'].forEach(id=>{const e=$(id);e.lang=l;e.dir=LANGS[l].dir;});
+  buildSecOptions();
+}
+function setLang(l){
+  applyStatic(l);
+  if(S.run){ if(S.pos>=S.queue.length)showFinish();else render(); }
+  gt2Relabel();
+  if(VIEW===1)updateStat(S.pos>=S.queue.length);
+}
+let VIEW=1;
+const S={queue:[],pos:0,run:null,done:new Set(),hard:new Set(),voice:null,voicesReady:false};
+
+function pickVoice(){
+  if(!('speechSynthesis' in window)) return;
+  const vs=speechSynthesis.getVoices();
+  if(!vs.length) return;
+  S.voicesReady=true;
+  S.voice=vs.find(v=>v.lang==='de-DE')||vs.find(v=>/^de/i.test(v.lang))||null;
+}
+function speak(text){
+  if(!('speechSynthesis' in window)){ $('novoice').hidden=false; return; }
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='de-DE';
+    if(S.voice) u.voice=S.voice;
+    u.rate=$('slow').checked?0.6:0.9;
+    speechSynthesis.speak(u);
+    $('novoice').hidden=!(S.voicesReady&&!S.voice);
+  }catch(e){ $('novoice').hidden=false; }
+}
+if('speechSynthesis' in window){
+  pickVoice();
+  speechSynthesis.addEventListener&&speechSynthesis.addEventListener('voiceschanged',pickVoice);
+}
+
+function current(){return DATA.items[S.queue[S.pos]];}
+
+function setQueue(){
+  S.queue=buildQueue($('sec').value,$('shuf').checked);
+  S.pos=0;
+  S.done=new Set();S.hard=new Set();
+  startSentence(false);
+}
+
+function startSentence(say){
+  if(S.pos>=S.queue.length){showFinish();return;}
+  $('work').hidden=false;$('fin').hidden=true;
+  S.run=newRun(current());
+  render();
+  if(say&&$('auto').checked) speak(sentence(current()));
+}
+
+function showFinish(){
+  $('work').hidden=true;$('fin').hidden=false;
+  updateStat(true);
+}
+
+function updateStat(fin){
+  if(VIEW!==1) return;
+  const tot=S.queue.length;
+  $('st1').innerHTML=t('st1',fin?tot:Math.min(S.pos+1,tot),tot,S.done.size,S.hard.size);
+  $('fin1txt').innerHTML=t('fin1',S.done.size,S.hard.size);
+  $('qfill').style.width=(tot?(fin?tot:S.pos)/tot*100:0)+'%';
+}
+
+function renderDe(item,run){
+  const de=$('de');
+  de.textContent='';
+  de.className='de'+(run.peek?' peek':'')+(run.reveal?' reveal':'');
+  const cov=run.peek||run.reveal?new Set():coveredSet(run);
+  item.c.forEach((c,i)=>{
+    const isCov=cov.has(i);
+    const nextCov=i<item.c.length-1&&cov.has(i+1);
+    const s=document.createElement('span');
+    if(isCov){
+      s.className='cv';s.setAttribute('aria-hidden','true');
+      s.textContent=c+(nextCov?' ':'');
+    }else{
+      s.className='w';s.textContent=c;
+    }
+    de.appendChild(s);
+    if(i<item.c.length-1&&!(isCov&&nextCov)) de.appendChild(document.createTextNode(' '));
+  });
+}
+
+function btn(label,cls,fn,icon,disabled){
+  const b=document.createElement('button');
+  b.type='button';b.className=cls||'';
+  if(icon) b.insertAdjacentHTML('beforeend',icon);
+  b.appendChild(document.createTextNode(label));
+  if(disabled) b.disabled=true;
+  b.addEventListener('click',fn);
+  return b;
+}
+
+function render(){
+  const item=current(),run=S.run,n=run.n;
+  $('uk').textContent=tr(S.queue[S.pos]);
+  renderDe(item,run);
+  // steps bar
+  const st=$('steps');st.textContent='';
+  const cov=coveredSet(run);
+  for(let i=0;i<n;i++){const e=document.createElement('i');if(!run.reveal&&!run.peek&&i<run.k)e.className='on';st.appendChild(e);}
+  const lab=document.createElement('span');
+  lab.textContent=run.reveal?t('stepRev'):(run.peek?t('stepPeek'):t('stepClosed',run.k,n));
+  st.appendChild(lab);
+  // instruction
+  const ins=$('instr');ins.textContent='';
+  const main=document.createElement('span');
+  const sub=document.createElement('small');
+  if(run.peek){
+    main.textContent=t('iPeek');
+    sub.textContent=t('sPeek');
+  }else if(run.reveal){
+    main.textContent=t('iRev');
+    sub.textContent=t('sRev');
+  }else if(run.k===0){
+    main.textContent=t('i0');
+    sub.textContent=t('s0');
+  }else if(run.k<n){
+    main.textContent=t('iMid');
+    sub.textContent=t('sMid');
+  }else{
+    main.textContent=t('iAll');
+    sub.textContent=t('sAll');
+  }
+  ins.appendChild(main);ins.appendChild(sub);
+  // buttons
+  const bs=$('btns');bs.textContent='';
+  const opts=$('opts');opts.textContent='';opts.hidden=true;
+  const say=()=>speak(sentence(item));
+  if(run.peek){
+    bs.appendChild(btn(t('bAgain'),'primary',()=>{S.run=newRun(item);render();},null));
+  }else if(run.reveal){
+    bs.appendChild(btn(t('bListen'),'primary',say,ICON_PLAY));
+    opts.hidden=false;
+    const id=S.queue[S.pos];
+    const o1=btn(t('o1'),'',()=>{S.run=newRun(item);render();},null);
+    const o2=btn(t('o2'),'hard',()=>{
+      S.done.delete(id);S.hard.add(id);
+      requeue(S.queue,S.pos,id);
+      S.pos++;startSentence(true);},null);
+    const o3=btn(t('o3'),'good',()=>{
+      S.done.add(id);S.hard.delete(id);S.pos++;startSentence(true);},null);
+    opts.appendChild(o1);opts.appendChild(o2);opts.appendChild(o3);
+  }else if(run.k===0){
+    bs.appendChild(btn(t('bListen'),'warm',say,ICON_PLAY));
+    bs.appendChild(btn(t('bNext'),'primary',()=>{advance(S.run);render();},null));
+  }else{
+    bs.appendChild(btn(run.k<n?t('bNext'):t('bCheck'),'primary',()=>{advance(S.run);render();},null));
+    bs.appendChild(btn(t('bPeek'),'',()=>{doPeek(S.run);render();},ICON_EYE));
+  }
+  // skip controls
+  const sk=document.createElement('span');
+  sk.style.marginInlineStart='auto';sk.style.display='flex';sk.style.gap='8px';
+  const prev=btn(t('bPrev'),'',()=>{if(S.pos>0){S.pos--;startSentence(true);}},null,S.pos===0);
+  const nxt=btn(t('bSkip'),'',()=>{S.pos++;startSentence(true);},null);
+  sk.appendChild(prev);sk.appendChild(nxt);
+  bs.appendChild(sk);
+  updateStat(false);
+}
+
+
+/* ---------- Function 2: gap fill ---------- */
+const GT={mode:'prog',queue:[],pos:0,level:1,kind:'letter',item:null,id:null,cl:null,state:'edit',attempts:0,hinted:false,
+  done:new Set(),bag:[],ex:0,first:0,inputs:[],last:null,lastId:null,fb:null};
+const KIND_KEY={letter:'kLetter',word:'kWord',multi:'kMulti'};
+const HELP_KEY={letter:'hLetter',word:'hWord',multi:'hMulti'};
+
+function gt2Reset(){
+  GT.queue=buildQueue($('sec').value,$('shuf2').checked);
+  GT.pos=0;GT.level=1;GT.done=new Set();GT.bag=[];GT.ex=0;GT.first=0;
+  gt2Load(false);
+}
+function gt2NextId(){
+  if(!GT.bag.length){
+    const q=buildQueue($('sec').value,true);
+    if(q.length>1&&q[0]===GT.id) q.push(q.shift());
+    GT.bag=q;
+  }
+  return GT.bag.shift();
+}
+function gt2Load(focus){
+  $('fin2').hidden=true;
+  if(GT.mode==='prog'){
+    if(GT.pos>=GT.queue.length){gt2Finish();return;}
+    GT.id=GT.queue[GT.pos];GT.kind=KINDS[GT.level-1];
+  }else{
+    GT.id=gt2NextId();
+    const k=$('kind').value;
+    GT.kind=k==='mix'?KINDS[Math.floor(Math.random()*3)]:k;
+  }
+  if(GT.id===undefined){gt2Finish();return;}
+  GT.item=DATA.items[GT.id];
+  GT.cl=buildCloze(GT.item,GT.kind);
+  GT.kind=GT.cl.kind;
+  GT.state='edit';GT.attempts=0;GT.hinted=false;GT.last=null;
+  gt2Render(focus);
+}
+function gt2Finish(){
+  $('work2').hidden=true;$('fin2').hidden=false;
+  $('fin2txt').innerHTML=t('fin2',GT.done.size);
+  gt2Stat(true);
+}
+function gt2Stat(fin){
+  if(VIEW!==2) return;
+  if(GT.mode==='prog'){
+    const tot=GT.queue.length;
+    $('st2').innerHTML=t('st2p',fin?tot:Math.min(GT.pos+1,tot),tot,GT.done.size);
+    $('qfill').style.width=(tot?((fin?tot:GT.pos)+(!fin&&tot?(GT.level-1)/3:0))/tot*100:0)+'%';
+  }else{
+    $('st2').innerHTML=t('st2r',GT.ex,GT.first);
+    $('qfill').style.width=(GT.ex?GT.first/GT.ex*100:0)+'%';
+  }
+}
+function gt2Render(focus){
+  $('work2').hidden=false;
+  $('uk2').textContent=tr(GT.id);
+  // level pills
+  const lv=$('lvls');lv.textContent='';
+  if(GT.mode==='prog'){
+    KINDS.forEach((k,i)=>{
+      const s=document.createElement('span');
+      s.className='l'+(i+1<GT.level?' past':'')+(i+1===GT.level?' on':'');
+      s.textContent=(i+1)+' · '+t(KIND_KEY[k]);lv.appendChild(s);
+    });
+  }else{
+    const s=document.createElement('span');s.className='l on';s.textContent=t('kindIs')+t(KIND_KEY[GT.kind]);lv.appendChild(s);
+  }
+  $('i2').textContent=(GT.mode==='prog'?t('lvlOf',GT.level):'')+t(HELP_KEY[GT.kind]);
+  // cloze
+  const cl=$('cl');cl.textContent='';GT.inputs=[];
+  GT.cl.parts.forEach(p=>{
+    if(p.t==='s'){const s=document.createElement('span');s.className='t';s.textContent=p.s;cl.appendChild(s);}
+    else{
+      const inp=document.createElement('input');
+      inp.type='text';inp.className='gap';inp.autocomplete='off';inp.spellcheck=false;
+      inp.setAttribute('autocapitalize','off');inp.setAttribute('autocorrect','off');
+      inp.setAttribute('aria-label',t('gap',GT.inputs.length+1));inp.dir='ltr';
+      inp.style.width=(Math.max(p.a.length,1)+1.2)+'ch';
+      if(p.kind==='letter')inp.maxLength=1;
+      inp.dataset.i=GT.inputs.length;
+      inp.addEventListener('focus',()=>{GT.last=inp;});
+      inp.addEventListener('input',()=>{
+        inp.classList.remove('ok','bad','shown');
+        if(p.kind==='letter'&&inp.value.length===1){const nx=GT.inputs[+inp.dataset.i+1];if(nx&&!nx.disabled)nx.focus();}
+      });
+      inp.addEventListener('keydown',e=>{
+        if(e.key==='Enter'){e.preventDefault();if(GT.state==='edit')gt2Check();else gt2Next();}
+      });
+      cl.appendChild(inp);GT.inputs.push(inp);
+    }
+  });
+  GT.fb=null;gt2Fb();
+  gt2Buttons();
+  gt2Stat(false);
+  if(focus&&GT.inputs[0])GT.inputs[0].focus();
+}
+function gt2Buttons(){
+  const b=$('b2');b.textContent='';
+  const say=()=>speak(sentence(GT.item));
+  const last=GT.mode==='prog'&&GT.level===3;
+  if(GT.state==='edit'){
+    b.appendChild(btn(t('bCheck'),'primary',gt2Check,null));
+    b.appendChild(btn(t('bHint'),'warm',gt2Hint,null));
+    b.appendChild(btn(t('bReveal'),'',gt2Reveal,ICON_EYE));
+    b.appendChild(btn(t('bListen'),'',say,ICON_PLAY));
+  }else{
+    let label;
+    if(GT.state==='revealed') label=GT.mode==='prog'?t('bRetry'):t('bNext');
+    else label=GT.mode==='prog'?(last?t('bNextS'):t('bNextL',GT.level+1)):t('bNext');
+    b.appendChild(btn(label,'primary',gt2Next,null));
+    b.appendChild(btn(t('bListen'),'',say,ICON_PLAY));
+  }
+  if(GT.mode==='prog'){
+    const sk=document.createElement('span');sk.style.marginInlineStart='auto';sk.style.display='flex';sk.style.gap='8px';
+    sk.appendChild(btn(t('bSkipS'),'',()=>{GT.pos++;GT.level=1;gt2Load(true);},null));
+    b.appendChild(sk);
+  }
+}
+function gt2Check(){
+  if(GT.state!=='edit')return;
+  GT.attempts++;
+  let bad=0,alt=false,cs=false;
+  GT.inputs.forEach((inp,i)=>{
+    const a=GT.cl.gaps[i].a;
+    const r=evalGap(inp.value,a);
+    inp.classList.remove('ok','bad','shown');
+    if(r==='ok'||r==='alt'){inp.classList.add('ok');if(r==='alt'){alt=true;inp.value=a;}}
+    else{inp.classList.add('bad');bad++;if(r==='case')cs=true;}
+  });
+  if(bad===0){
+    GT.inputs.forEach(i=>i.disabled=true);
+    GT.state='solved';
+    if(GT.mode==='prog'){if(GT.level===3)GT.done.add(GT.id);}
+    else{GT.ex++;if(GT.attempts===1&&!GT.hinted)GT.first++;}
+    GT.fb={cls:'ok',m:'fbOk',s:alt?'fbUml':null};gt2Fb();
+    gt2Buttons();gt2Stat(false);gt2FocusPrimary();
+    if($('auto2').checked)speak(sentence(GT.item));
+  }else{
+    GT.fb={cls:'bad',m:'fbBad',s:cs?'fbCase':null};gt2Fb();
+    const f=GT.inputs.find(i=>i.classList.contains('bad'));if(f)f.focus();
+  }
+}
+function gt2Hint(){
+  if(GT.state!=='edit')return;
+  const idx=GT.inputs.findIndex((inp,i)=>!inp.classList.contains('ok')&&!inp.classList.contains('shown')&&evalGap(inp.value,GT.cl.gaps[i].a)!=='ok');
+  if(idx<0)return;
+  const inp=GT.inputs[idx];
+  inp.value=GT.cl.gaps[idx].a;inp.classList.remove('bad');inp.classList.add('shown');
+  GT.hinted=true;inp.focus();
+}
+function gt2Reveal(){
+  if(GT.state!=='edit')return;
+  GT.inputs.forEach((inp,i)=>{
+    if(!inp.classList.contains('ok')){inp.value=GT.cl.gaps[i].a;inp.classList.remove('bad');inp.classList.add('shown');}
+    inp.disabled=true;
+  });
+  GT.state='revealed';
+  if(GT.mode==='rand')GT.ex++;
+  GT.fb={cls:'bad',m:GT.mode==='prog'?'fbRevP':'fbRevR',s:null};gt2Fb();
+  gt2Buttons();gt2Stat(false);gt2FocusPrimary();
+}
+function gt2Fb(){
+  const fb=$('fb');fb.textContent='';
+  if(!GT.fb){fb.className='fb';return;}
+  fb.className='fb '+GT.fb.cls;fb.textContent=t(GT.fb.m);
+  if(GT.fb.s){const s=document.createElement('small');s.textContent=t(GT.fb.s);fb.appendChild(s);}
+}
+function gt2Relabel(){
+  if(!GT.item)return;
+  if($('fin2').hidden===false){gt2Finish();return;}
+  $('uk2').textContent=tr(GT.id);
+  const lv=$('lvls');lv.textContent='';
+  if(GT.mode==='prog'){
+    KINDS.forEach((k,i)=>{const s=document.createElement('span');s.className='l'+(i+1<GT.level?' past':'')+(i+1===GT.level?' on':'');s.textContent=(i+1)+' · '+t(KIND_KEY[k]);lv.appendChild(s);});
+  }else{const s=document.createElement('span');s.className='l on';s.textContent=t('kindIs')+t(KIND_KEY[GT.kind]);lv.appendChild(s);}
+  $('i2').textContent=(GT.mode==='prog'?t('lvlOf',GT.level):'')+t(HELP_KEY[GT.kind]);
+  GT.inputs.forEach((inp,i)=>inp.setAttribute('aria-label',t('gap',i+1)));
+  gt2Fb();gt2Buttons();gt2Stat($('fin2').hidden===false);
+}
+function gt2FocusPrimary(){const p=$('b2').querySelector('.primary');if(p)p.focus();}
+function gt2Next(){
+  if(GT.state==='edit')return;
+  if(GT.mode==='prog'){
+    if(GT.state==='revealed'){}
+    else if(GT.level<3)GT.level++;
+    else{GT.pos++;GT.level=1;}
+  }
+  gt2Load(true);
+}
+function gt2SetMode(m){
+  GT.mode=m;
+  $('m-prog').setAttribute('aria-pressed',m==='prog');
+  $('m-rand').setAttribute('aria-pressed',m==='rand');
+  $('shuf2w').hidden=m!=='prog';$('kindw').hidden=m!=='rand';
+  gt2Reset();
+}
+document.addEventListener('mousedown',e=>{if(e.target.closest&&e.target.closest('#chars button'))e.preventDefault();});
+function insertChar(ch){
+  const inp=GT.last&&!GT.last.disabled?GT.last:GT.inputs.find(i=>!i.disabled);
+  if(!inp)return;
+  if(inp.maxLength===1){inp.value=ch;inp.dispatchEvent(new Event('input'));}
+  else{
+    const s=inp.selectionStart==null?inp.value.length:inp.selectionStart,e=inp.selectionEnd==null?s:inp.selectionEnd;
+    inp.value=inp.value.slice(0,s)+ch+inp.value.slice(e);
+    inp.classList.remove('ok','bad','shown');
+    inp.focus();inp.setSelectionRange(s+1,s+1);
+  }
+  inp.focus();
+}
+
+/* ---------- tabs ---------- */
+function showView(n,fromHash){
+  VIEW=n;
+  if('speechSynthesis' in window)try{speechSynthesis.cancel();}catch(e){}
+  $('v1').hidden=n!==1;$('v2').hidden=n!==2;
+  $('tab1').setAttribute('aria-selected',n===1);$('tab2').setAttribute('aria-selected',n===2);
+  $('o1').hidden=n!==1;$('o2').hidden=n!==2;
+  $('st1').hidden=n!==1;$('st2').hidden=n!==2;
+  if(n===1)updateStat(S.pos>=S.queue.length);else gt2Stat($('fin2').hidden===false);
+  if(!fromHash){try{history.replaceState(null,'','#funktion-'+n);}catch(e){try{location.hash='funktion-'+n;}catch(_){}}}
+}
+function routeFromHash(){showView(location.hash==='#funktion-2'?2:1,true);}
+
+// setup
+(function init(){
+  const sel=$('sec');
+  const ls=$('lang');
+  Object.keys(LANGS).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=LANGS[k].n;ls.appendChild(o);});
+  let sv=null;try{sv=localStorage.getItem('pt-lang');}catch(e){}
+  const q=(location.search.match(/[?&]lang=(\w+)/)||[])[1];
+  const start=LANGS[q]?q:(LANGS[sv]?sv:'uk');
+  ls.value=start;
+  ls.addEventListener('change',()=>{setLang(ls.value);try{localStorage.setItem('pt-lang',ls.value);}catch(e){}});
+  sel.addEventListener('change',()=>{setQueue();gt2Reset();});
+  $('shuf').addEventListener('change',setQueue);
+  $('shuf2').addEventListener('change',gt2Reset);
+  $('kind').addEventListener('change',()=>{gt2Reset();});
+  $('again').addEventListener('click',setQueue);
+  $('again2').addEventListener('click',gt2Reset);
+  $('tab1').addEventListener('click',()=>showView(1));
+  $('tab2').addEventListener('click',()=>showView(2));
+  $('m-prog').addEventListener('click',()=>gt2SetMode('prog'));
+  $('m-rand').addEventListener('click',()=>gt2SetMode('rand'));
+  ['ä','ö','ü','ß','Ä','Ö','Ü'].forEach(ch=>{
+    const b=document.createElement('button');b.type='button';b.textContent=ch;
+    b.addEventListener('click',()=>insertChar(ch));$('chars').appendChild(b);
+  });
+  buildSecOptions();applyStatic(start);
+  setQueue();
+  gt2Reset();
+  window.addEventListener('hashchange',routeFromHash);
+  routeFromHash();
+})();
+</script>
+</body>
+</html>
