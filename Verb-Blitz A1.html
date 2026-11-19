@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verb-Blitz A1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Idee: eine Spalte, oben das Spielfeld (Strikes, Punkte, Zeit), darunter Satzkarte und vier große Antworttasten */
+  --bg:#edf0fa; --surface:#ffffff; --ink:#101437; --muted:#565c88; --line:#d3d8ee;
+  --accent:#2433ff; --accent-ink:#ffffff; --bonus:#ffc82e;
+  --ok:#0c8f55; --ok-bg:#d8f3e5; --bad:#d92b3f; --bad-bg:#fde0e4;
+  --font-display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --font-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1022; --surface:#171b3a; --ink:#eef0ff; --muted:#a0a6d2; --line:#2b3168;
+    --accent:#7d8aff; --accent-ink:#0d1022; --bonus:#ffc82e;
+    --ok:#52d493; --ok-bg:#12382b; --bad:#ff6f80; --bad-bg:#43202a;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d1022; --surface:#171b3a; --ink:#eef0ff; --muted:#a0a6d2; --line:#2b3168;
+  --accent:#7d8aff; --accent-ink:#0d1022; --bonus:#ffc82e;
+  --ok:#52d493; --ok-bg:#12382b; --bad:#ff6f80; --bad-bg:#43202a;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:1.0625rem;line-height:1.45;min-height:100vh}
+.wrap{max-width:560px;margin:0 auto;padding:18px 16px 48px}
+[hidden]{display:none!important}
+h1,h2,h3{font-family:var(--font-display);line-height:1.08;margin:0;text-wrap:balance}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.eyebrow{font-weight:700;font-size:.85rem;letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+.title{font-size:clamp(3rem,15vw,4.4rem);font-weight:800;letter-spacing:-.02em;margin:6px 0 10px}
+.title span{color:var(--accent)}
+.rules{list-style:none;padding:0;margin:0 0 20px;display:grid;gap:8px}
+.rules li{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start}
+.rules .n{font-family:var(--font-display);font-weight:800;background:var(--ink);color:var(--bg);border-radius:8px;text-align:center;line-height:34px;height:34px}
+.field{margin:0 0 18px}
+.field>.lbl{display:block;font-weight:700;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 15px;min-height:44px;font-weight:700}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:16px 18px;font-family:var(--font-display);font-weight:800;font-size:1.35rem;background:var(--accent);color:var(--accent-ink);min-height:58px}
+.btn.secondary{background:transparent;color:var(--ink);border:2px solid var(--ink);font-size:1.1rem;min-height:52px}
+.btn+.btn{margin-top:10px}
+.best{margin:14px 0 0;color:var(--muted);text-align:center}
+.back{background:none;border:0;padding:8px 0;color:var(--muted);font-weight:700;min-height:44px}
+
+/* Spiel */
+.hud{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:end}
+.strikes{display:flex;gap:7px}
+.strike{width:32px;height:32px;border-radius:50%;border:3px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:.95rem;color:transparent}
+.strike.used{background:var(--bad);border-color:var(--bad);color:#fff;animation:shake .35s}
+.score{text-align:center;line-height:1}
+.score b{font-family:var(--font-display);font-size:2.1rem;font-weight:800;font-variant-numeric:tabular-nums;display:block}
+.score small,.clock small{color:var(--muted);font-weight:700;font-size:.8rem}
+.clock{text-align:right;line-height:1}
+.clock b{font-family:var(--font-display);font-size:2.6rem;font-weight:800;font-variant-numeric:tabular-nums}
+.clock.low b{color:var(--bad)}
+.bar{height:12px;border-radius:999px;background:var(--line);margin:10px 0 8px;overflow:hidden}
+.bar>div{height:100%;background:var(--accent);transform-origin:left center;transform:scaleX(1);border-radius:999px}
+.bar>div.low{background:var(--bad)}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem;min-height:1.4em;margin-bottom:10px}
+.sentence{position:relative;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:24px 18px;min-height:132px;display:grid;align-items:center;font-size:clamp(1.45rem,6.2vw,1.95rem);font-weight:700;line-height:1.3;margin-bottom:14px}
+.sentence .count{font-family:var(--font-display);font-size:3.4rem;font-weight:800;text-align:center;color:var(--accent)}
+.blank{display:inline-block;min-width:3.6ch;height:1.05em;border-bottom:4px solid var(--accent);vertical-align:-.1em;margin:0 .1em}
+.fill{padding:0 .15em;border-radius:6px;background:var(--ok-bg);color:var(--ok)}
+.fill.bad{background:var(--bad-bg);color:var(--bad)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{min-height:74px;border:2px solid var(--line);border-bottom-width:5px;background:var(--surface);border-radius:14px;font-size:clamp(1.15rem,5vw,1.4rem);font-weight:700;padding:10px;overflow-wrap:anywhere}
+.opt:active:not(:disabled){transform:translateY(2px);border-bottom-width:3px}
+.opt:disabled{cursor:default}
+.opt.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.opt.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.opt.dim{opacity:.45}
+.feedback{margin-top:14px;background:var(--surface);border:2px solid var(--bad);border-radius:16px;padding:16px}
+.feedback .head{font-family:var(--font-display);font-weight:800;font-size:1.3rem;color:var(--bad);margin-bottom:6px}
+.feedback p{margin:6px 0}
+.feedback .btn{margin-top:12px}
+.pop{position:absolute;right:14px;top:8px;font-family:var(--font-display);font-weight:800;font-size:1.6rem;color:var(--ink);background:var(--bonus);padding:2px 10px;border-radius:10px;animation:rise .8s ease-out forwards;pointer-events:none}
+@keyframes rise{from{transform:translateY(8px);opacity:0}25%{opacity:1}to{transform:translateY(-14px);opacity:0}}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* Ergebnis */
+.big{font-family:var(--font-display);font-weight:800;font-size:clamp(3.4rem,18vw,5rem);line-height:1;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;background:var(--bonus);color:#101437;font-weight:800;border-radius:8px;padding:2px 10px;margin-left:8px;font-size:.9rem;vertical-align:middle}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.stat{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center}
+.stat b{display:block;font-family:var(--font-display);font-size:1.7rem;font-weight:800;font-variant-numeric:tabular-nums}
+.stat span{font-size:.85rem;color:var(--muted)}
+.panel{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px 16px;margin:0 0 16px}
+.panel h3{font-size:1.2rem;margin-bottom:8px}
+.catrow{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.catrow:first-of-type{border-top:0}
+.catrow .meter{grid-column:1/-1;height:8px;border-radius:99px;background:var(--bad-bg);overflow:hidden}
+.catrow .meter i{display:block;height:100%;background:var(--ok)}
+.miss{padding:8px 0;border-top:1px solid var(--line)}
+.miss:first-of-type{border-top:0}
+.miss small{display:block;color:var(--muted)}
+
+/* Entdecken */
+.step{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:16px;margin:0 0 14px}
+.step h3{font-size:1.25rem;margin-bottom:10px;display:flex;gap:10px;align-items:center}
+.step h3 .n{background:var(--ink);color:var(--bg);border-radius:8px;width:30px;height:30px;display:inline-grid;place-items:center;font-size:1rem}
+.paradigms{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.paradigm{border-collapse:collapse;width:100%;font-size:1.05rem}
+.paradigm caption{text-align:left;font-weight:800;font-family:var(--font-display);padding-bottom:4px}
+.paradigm th{text-align:left;color:var(--muted);font-weight:400;padding:3px 8px 3px 0;white-space:nowrap}
+.paradigm td{padding:3px 0}
+.paradigm b.e{color:var(--accent);font-weight:700}
+mark{background:var(--bonus);color:#101437;border-radius:4px;padding:0 3px}
+.ex{margin:0 0 12px;padding:0;list-style:none;display:grid;gap:8px}
+.ex .v{color:var(--accent);font-weight:700}
+.ex .p{background:var(--bonus);color:#101437;border-radius:4px;padding:0 3px;font-weight:700}
+.q{font-weight:700;margin:0 0 10px}
+.qopts{display:grid;gap:8px}
+.qopt{border:2px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 14px;text-align:left;min-height:48px}
+.qopt.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);font-weight:700}
+.qopt.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.note{margin:10px 0 0;color:var(--muted);min-height:1.4em}
+.rule{border-color:var(--accent)}
+.rule ul{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.lab-sentence{font-size:1.35rem;font-weight:700;margin:0 0 12px}
+
+@media (prefers-reduced-motion:reduce){
+  .strike.used,.pop{animation:none}
+  .pop{opacity:1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- START -->
+<section id="screen-start">
+  <div class="eyebrow">Deutsch A1 · Verbkonjugation</div>
+  <h1 class="title">Verb-<span>Blitz</span></h1>
+  <ol class="rules">
+    <li><span class="n">1</span><span>Ein Satz, eine Lücke. Tippe die richtige Verbform.</span></li>
+    <li><span class="n">2</span><span>Du hast <b id="rulesTime">7</b> Sekunden pro Satz. Je schneller du bist, desto mehr Punkte bekommst du.</span></li>
+    <li><span class="n">3</span><span>Falsch oder zu langsam: 1 Strike. Bei 3 Strikes ist Game over.</span></li>
+  </ol>
+  <div class="field">
+    <span class="lbl" id="lblTime">Zeit pro Satz</span>
+    <div class="chips" id="chipsTime" role="group" aria-labelledby="lblTime"></div>
+  </div>
+  <div class="field">
+    <span class="lbl" id="lblTopic">Thema</span>
+    <div class="chips" id="chipsTopic" role="group" aria-labelledby="lblTopic"></div>
+  </div>
+  <button class="btn" id="btnStart" type="button">Start</button>
+  <button class="btn secondary" id="btnLab" type="button">Erst entdecken: Wie funktioniert das Thema?</button>
+  <p class="best" id="bestLine"></p>
+</section>
+
+<!-- SPIEL -->
+<section id="screen-game" hidden>
+  <div class="hud">
+    <div class="strikes" id="strikes" role="img" aria-label="Strikes: 0 von 3"><span class="strike">✕</span><span class="strike">✕</span><span class="strike">✕</span></div>
+    <div class="score"><b id="score">0</b><small>Punkte</small></div>
+    <div class="clock" id="clockBox"><b id="clock">7.0</b><small> s</small></div>
+    <!-- Balken folgt der Uhr -->
+  </div>
+  <div class="bar" aria-hidden="true"><div id="fill"></div></div>
+  <div class="meta"><span id="topicLabel"></span><span id="streak"></span></div>
+  <div class="sentence" id="sentence"></div>
+  <div class="opts" id="opts"></div>
+  <div class="feedback" id="feedback" role="status" aria-live="polite" hidden></div>
+  <button class="back" id="btnQuit" type="button">← Abbrechen</button>
+</section>
+
+<!-- ERGEBNIS -->
+<section id="screen-result" hidden>
+  <div class="eyebrow">Game over</div>
+  <div class="big" id="resScore">0</div>
+  <div><span style="color:var(--muted)">Punkte</span><span class="tag" id="resNew" hidden>Neuer Rekord</span></div>
+  <div class="stats">
+    <div class="stat"><b id="resOk">0</b><span>richtig</span></div>
+    <div class="stat"><b id="resStreak">0</b><span>beste Serie</span></div>
+    <div class="stat"><b id="resAvg">–</b><span>Ø Sekunden</span></div>
+  </div>
+  <div class="panel" id="resCats"></div>
+  <div class="panel" id="resMiss"></div>
+  <button class="btn" id="btnAgain" type="button">Nochmal</button>
+  <button class="btn secondary" id="btnWeak" type="button" hidden></button>
+  <button class="btn secondary" id="btnHome" type="button">Zurück zum Start</button>
+</section>
+
+<!-- ENTDECKEN -->
+<section id="screen-lab" hidden>
+  <button class="back" id="labBack" type="button">← Zurück zum Start</button>
+  <div class="eyebrow">Entdecken und üben</div>
+  <div class="chips" id="labTabs" role="group" aria-label="Thema wählen" style="margin:8px 0 16px"></div>
+  <article id="labBody"></article>
+</section>
+
+</div>
+
+<script>
+"use strict";
+
+/* ---------- Daten ---------- */
+const PERS = ["ich","du","er/sie/es","wir","ihr","sie/Sie"];
+
+// Formen: ich, du, er/sie/es, wir, ihr, sie/Sie
+const V = {
+  lernen:["lerne","lernst","lernt","lernen","lernt","lernen"],
+  wohnen:["wohne","wohnst","wohnt","wohnen","wohnt","wohnen"],
+  machen:["mache","machst","macht","machen","macht","machen"],
+  spielen:["spiele","spielst","spielt","spielen","spielt","spielen"],
+  kommen:["komme","kommst","kommt","kommen","kommt","kommen"],
+  trinken:["trinke","trinkst","trinkt","trinken","trinkt","trinken"],
+  kochen:["koche","kochst","kocht","kochen","kocht","kochen"],
+  arbeiten:["arbeite","arbeitest","arbeitet","arbeiten","arbeitet","arbeiten"],
+  warten:["warte","wartest","wartet","warten","wartet","warten"],
+  finden:["finde","findest","findet","finden","findet","finden"],
+  heißen:["heiße","heißt","heißt","heißen","heißt","heißen"],
+  tanzen:["tanze","tanzt","tanzt","tanzen","tanzt","tanzen"],
+  reisen:["reise","reist","reist","reisen","reist","reisen"],
+  fahren:["fahre","fährst","fährt","fahren","fahrt","fahren"],
+  schlafen:["schlafe","schläfst","schläft","schlafen","schlaft","schlafen"],
+  laufen:["laufe","läufst","läuft","laufen","lauft","laufen"],
+  essen:["esse","isst","isst","essen","esst","essen"],
+  sprechen:["spreche","sprichst","spricht","sprechen","sprecht","sprechen"],
+  lesen:["lese","liest","liest","lesen","lest","lesen"],
+  sehen:["sehe","siehst","sieht","sehen","seht","sehen"],
+  nehmen:["nehme","nimmst","nimmt","nehmen","nehmt","nehmen"],
+  geben:["gebe","gibst","gibt","geben","gebt","geben"],
+  treffen:["treffe","triffst","trifft","treffen","trefft","treffen"],
+  helfen:["helfe","hilfst","hilft","helfen","helft","helfen"],
+  sein:["bin","bist","ist","sind","seid","sind"],
+  haben:["habe","hast","hat","haben","habt","haben"],
+  können:["kann","kannst","kann","können","könnt","können"],
+  müssen:["muss","musst","muss","müssen","müsst","müssen"],
+  wollen:["will","willst","will","wollen","wollt","wollen"],
+  möchten:["möchte","möchtest","möchte","möchten","möchtet","möchten"],
+  dürfen:["darf","darfst","darf","dürfen","dürft","dürfen"],
+  wissen:["weiß","weißt","weiß","wissen","wisst","wissen"],
+  aufstehen:["stehe","stehst","steht","stehen","steht","stehen"],
+  einkaufen:["kaufe","kaufst","kauft","kaufen","kauft","kaufen"],
+  anrufen:["rufe","rufst","ruft","rufen","ruft","rufen"],
+  mitkommen:["komme","kommst","kommt","kommen","kommt","kommen"],
+  fernsehen:["sehe","siehst","sieht","sehen","seht","sehen"],
+  abfahren:["fahre","fährst","fährt","fahren","fahrt","fahren"],
+  anfangen:["fange","fängst","fängt","fangen","fangt","fangen"],
+  aussteigen:["steige","steigst","steigt","steigen","steigt","steigen"]
+};
+
+// Typische Fehlformen als zusätzliche Ablenker (nie für eine Person richtig)
+const ERR = {
+  arbeiten:["arbeitst"], warten:["wartst"], finden:["findst"], heißen:["heißst"],
+  tanzen:["tanzst"], reisen:["reisst"],
+  fahren:["fahrst"], schlafen:["schlafst"], laufen:["laufst"], sprechen:["sprechst"],
+  sehen:["sehst"], nehmen:["nehmst"], geben:["gebst"], treffen:["treffst"], helfen:["helfst"],
+  haben:["habst"], können:["könnst"], wollen:["wollst"], dürfen:["dürfst"], wissen:["wisse"],
+  abfahren:["fahrst"], fernsehen:["sehst"]
+};
+
+const CAT = {
+  reg:{name:"Regelmäßig", hint:"Regelmäßig: Stamm + Endung (-e, -st, -t, -en, -t, -en)."},
+  stamm:{name:"Stamm auf -t / -s", hint:"Stamm auf -t oder -d: vor -st und -t steht ein -e- (du arbeitest, er arbeitet). Stamm auf -s, -ß oder -z: bei du nur -t (du heißt)."},
+  vokal:{name:"Vokalwechsel", hint:"Vokalwechsel nur bei du und er/sie/es (a → ä, e → i oder ie). Bei ich, wir, ihr, sie/Sie bleibt der Vokal."},
+  sein:{name:"sein & haben", hint:"sein und haben sind unregelmäßig. Diese Formen musst du auswendig lernen."},
+  modal:{name:"Modalverben & wissen", hint:"Modalverben: ich und er/sie/es haben dieselbe Form, ohne Endung (ich kann, er kann)."},
+  trenn:{name:"Trennbare Verben", hint:"Trennbare Verben: Das konjugierte Verb steht auf Position 2, die Vorsilbe steht am Ende."}
+};
+
+// [Thema, Verb, Person (0–5), Satz]
+const RAW = [
+  ["reg","lernen",0,"Ich ___ jeden Tag Deutsch."],
+  ["reg","wohnen",1,"Wo ___ du?"],
+  ["reg","machen",2,"Er ___ jetzt seine Hausaufgaben."],
+  ["reg","spielen",3,"Wir ___ am Samstag Fußball."],
+  ["reg","kommen",4,"Woher ___ ihr?"],
+  ["reg","trinken",2,"Meine Schwester ___ gern Tee."],
+  ["reg","kochen",0,"Ich ___ heute Abend Suppe."],
+  ["reg","lernen",5,"Die Kinder ___ in der Schule viel."],
+  ["reg","wohnen",3,"Anna und ich ___ in Erfurt."],
+  ["reg","machen",1,"Was ___ du am Wochenende?"],
+  ["reg","spielen",4,"___ ihr gern Karten?"],
+  ["reg","kommen",5,"Woher ___ Sie?"],
+  ["reg","kochen",2,"Mein Vater ___ sehr gut."],
+  ["reg","trinken",0,"Ich ___ morgens immer Kaffee."],
+  ["reg","lernen",3,"Wir ___ heute neue Wörter."],
+  ["reg","machen",4,"Was ___ ihr heute Abend?"],
+  ["reg","wohnen",2,"Lisa ___ in Jena."],
+  ["reg","spielen",1,"___ du gern Gitarre?"],
+  ["reg","kommen",2,"Mein Freund ___ aus Syrien."],
+  ["reg","kochen",3,"Am Sonntag ___ wir zusammen."],
+  ["reg","wohnen",5,"Wo ___ Sie?"],
+  ["reg","trinken",3,"Wir ___ gern Wasser."],
+  ["reg","lernen",1,"___ du jeden Tag Vokabeln?"],
+  ["reg","spielen",2,"Der Junge ___ im Garten."],
+
+  ["stamm","arbeiten",0,"Ich ___ in einem Restaurant."],
+  ["stamm","arbeiten",1,"___ du heute?"],
+  ["stamm","arbeiten",2,"Er ___ bei einer Bank."],
+  ["stamm","arbeiten",4,"Wo ___ ihr?"],
+  ["stamm","heißen",1,"Wie ___ du?"],
+  ["stamm","heißen",0,"Ich ___ Sara."],
+  ["stamm","heißen",2,"Mein Bruder ___ Tom."],
+  ["stamm","heißen",4,"Wie ___ ihr?"],
+  ["stamm","heißen",3,"Wir ___ Müller."],
+  ["stamm","tanzen",0,"Ich ___ gern."],
+  ["stamm","tanzen",1,"___ du gern?"],
+  ["stamm","reisen",2,"Meine Tante ___ viel."],
+  ["stamm","reisen",1,"Wohin ___ du im Sommer?"],
+  ["stamm","warten",1,"Auf wen ___ du?"],
+  ["stamm","warten",2,"Mein Kollege ___ vor dem Haus."],
+  ["stamm","finden",1,"Wie ___ du das Buch?"],
+  ["stamm","finden",0,"Ich ___ den Kurs super."],
+  ["stamm","finden",4,"Wie ___ ihr den Film?"],
+
+  ["vokal","fahren",2,"Mein Mann ___ mit dem Auto zur Arbeit."],
+  ["vokal","fahren",1,"Wann ___ du nach Berlin?"],
+  ["vokal","fahren",0,"Ich ___ mit dem Bus."],
+  ["vokal","fahren",3,"Wir ___ mit dem Zug."],
+  ["vokal","fahren",4,"___ ihr morgen nach Bern?"],
+  ["vokal","schlafen",1,"___ du noch?"],
+  ["vokal","schlafen",2,"Das Baby ___ sehr viel."],
+  ["vokal","schlafen",0,"Ich ___ sieben Stunden."],
+  ["vokal","essen",2,"Er ___ jeden Tag Reis."],
+  ["vokal","essen",1,"Was ___ du zum Frühstück?"],
+  ["vokal","essen",3,"Wir ___ um zwölf Uhr zu Mittag."],
+  ["vokal","essen",4,"Was ___ ihr?"],
+  ["vokal","sprechen",1,"___ du Deutsch?"],
+  ["vokal","sprechen",2,"Meine Lehrerin ___ langsam."],
+  ["vokal","sprechen",0,"Ich ___ ein bisschen Deutsch."],
+  ["vokal","sprechen",4,"Welche Sprachen ___ ihr?"],
+  ["vokal","lesen",1,"Was ___ du da?"],
+  ["vokal","lesen",2,"Mein Opa ___ jeden Morgen die Zeitung."],
+  ["vokal","lesen",3,"Wir ___ ein Buch."],
+  ["vokal","sehen",1,"___ du das Haus dort?"],
+  ["vokal","sehen",2,"Meine Mutter ___ den Bus."],
+  ["vokal","nehmen",1,"Was ___ du: Tee oder Kaffee?"],
+  ["vokal","nehmen",2,"Anna ___ den Bus."],
+  ["vokal","nehmen",0,"Ich ___ ein Brötchen."],
+  ["vokal","geben",2,"Der Lehrer ___ uns Hausaufgaben."],
+  ["vokal","geben",1,"Was ___ du deiner Mutter zum Geburtstag?"],
+  ["vokal","treffen",2,"Er ___ heute seine Freunde."],
+  ["vokal","treffen",3,"Wir ___ uns um acht Uhr."],
+  ["vokal","helfen",1,"___ du mir bitte?"],
+  ["vokal","helfen",2,"Mein Sohn ___ mir im Haushalt."],
+  ["vokal","laufen",2,"Der Hund ___ schnell."],
+  ["vokal","laufen",1,"Wie schnell ___ du?"],
+
+  ["sein","sein",0,"Ich ___ müde."],
+  ["sein","sein",1,"Wo ___ du?"],
+  ["sein","sein",2,"Das Wetter ___ heute schön."],
+  ["sein","sein",3,"Wir ___ im Kurs."],
+  ["sein","sein",4,"___ ihr schon da?"],
+  ["sein","sein",5,"Die Kinder ___ in der Schule."],
+  ["sein","sein",5,"Wie alt ___ Sie?"],
+  ["sein","sein",1,"Woher ___ du?"],
+  ["sein","sein",2,"Mein Auto ___ rot."],
+  ["sein","haben",0,"Ich ___ einen Bruder."],
+  ["sein","haben",1,"___ du Hunger?"],
+  ["sein","haben",2,"Meine Schwester ___ zwei Kinder."],
+  ["sein","haben",3,"Wir ___ heute keinen Unterricht."],
+  ["sein","haben",4,"___ ihr Zeit?"],
+  ["sein","haben",5,"Die Kinder ___ Durst."],
+  ["sein","haben",2,"Er ___ morgen Geburtstag."],
+
+  ["modal","können",0,"Ich ___ gut schwimmen."],
+  ["modal","können",1,"___ du Auto fahren?"],
+  ["modal","können",2,"Mein Sohn ___ schon lesen."],
+  ["modal","können",3,"Wir ___ heute nicht kommen."],
+  ["modal","können",4,"___ ihr mir helfen?"],
+  ["modal","müssen",0,"Ich ___ heute arbeiten."],
+  ["modal","müssen",1,"Du ___ nicht warten."],
+  ["modal","müssen",2,"Er ___ zum Arzt gehen."],
+  ["modal","müssen",3,"Wir ___ jetzt gehen."],
+  ["modal","wollen",0,"Ich ___ Deutsch lernen."],
+  ["modal","wollen",1,"Was ___ du essen?"],
+  ["modal","wollen",2,"Tom ___ ein Eis."],
+  ["modal","möchten",0,"Ich ___ einen Kaffee, bitte."],
+  ["modal","möchten",1,"___ du Tee?"],
+  ["modal","möchten",4,"Was ___ ihr trinken?"],
+  ["modal","möchten",5,"Was ___ Sie trinken?"],
+  ["modal","dürfen",0,"Ich ___ hier nicht parken."],
+  ["modal","dürfen",2,"Das Kind ___ nicht lange fernsehen."],
+  ["modal","dürfen",0,"___ ich Sie etwas fragen?"],
+  ["modal","wissen",0,"Ich ___ das nicht."],
+  ["modal","wissen",1,"___ du die Antwort?"],
+  ["modal","wissen",4,"___ ihr, wo der Bahnhof ist?"],
+  ["modal","wissen",2,"Meine Mutter ___ das."],
+
+  ["trenn","aufstehen",0,"Ich ___ um sechs Uhr auf."],
+  ["trenn","aufstehen",1,"Wann ___ du morgens auf?"],
+  ["trenn","aufstehen",2,"Mein Bruder ___ immer spät auf."],
+  ["trenn","einkaufen",3,"Wir ___ am Samstag im Supermarkt ein."],
+  ["trenn","einkaufen",2,"Die Mutter ___ Brot ein."],
+  ["trenn","anrufen",0,"Ich ___ meine Freundin an."],
+  ["trenn","anrufen",1,"___ du mich später an?"],
+  ["trenn","mitkommen",4,"___ ihr heute Abend mit?"],
+  ["trenn","mitkommen",2,"Mein Freund ___ nicht mit."],
+  ["trenn","fernsehen",0,"Ich ___ abends nie fern."],
+  ["trenn","fernsehen",2,"Er ___ jeden Tag fern."],
+  ["trenn","abfahren",2,"Der Zug ___ um acht Uhr ab."],
+  ["trenn","anfangen",2,"Der Kurs ___ um neun Uhr an."],
+  ["trenn","anfangen",3,"Wir ___ jetzt an."],
+  ["trenn","aussteigen",1,"Wo ___ du aus?"],
+  ["trenn","aussteigen",4,"Hier ___ ihr aus."]
+];
+const ITEMS = RAW.map(([cat,v,p,s]) => ({cat, v, p, s, ans:V[v][p]}));
+
+/* ---------- Helfer ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function shuffle(a){ a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const startsBlank = it => it.s.startsWith("___");
+const shown = (it,f) => startsBlank(it) ? cap(f) : f;
+function sentenceHTML(it, fill, cls){
+  const [a,b] = it.s.split("___");
+  const mid = fill === null
+    ? '<span class="blank" aria-label="Lücke"></span>'
+    : '<span class="fill ' + (cls||"") + '">' + esc(shown(it,fill)) + '</span>';
+  return esc(a) + mid + esc(b);
+}
+function makeOptions(it){
+  const pool = [...new Set([...V[it.v], ...(ERR[it.v]||[])])].filter(f => f !== it.ans);
+  return shuffle([it.ans, ...shuffle(pool).slice(0,3)]);
+}
+function store(k, v){ try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch(e){ return null; } }
+function vibrate(ms){ try { navigator.vibrate && navigator.vibrate(ms); } catch(e){} }
+
+/* ---------- Einstellungen / Startseite ---------- */
+const TIMES = [10,7,5];
+const TOPICS = [["mix","Mix"], ...Object.keys(CAT).map(k => [k, CAT[k].name])];
+const S = { limitSec:7, topic:"mix", gen:0, running:false, paused:false, locked:true, timers:[] };
+
+function chip(label, pressed, data){
+  return '<button type="button" class="chip" aria-pressed="' + pressed + '" data-v="' + esc(data) + '">' + esc(label) + '</button>';
+}
+function renderStart(){
+  $("chipsTime").innerHTML = TIMES.map(t => chip(t + " s", t === S.limitSec, t)).join("");
+  $("chipsTopic").innerHTML = TOPICS.map(([k,n]) => chip(n, k === S.topic, k)).join("");
+  $("rulesTime").textContent = S.limitSec;
+  const b = store("vb_best_" + S.limitSec);
+  $("bestLine").textContent = b ? "Dein Rekord bei " + S.limitSec + " Sekunden: " + b + " Punkte" : "";
+}
+$("chipsTime").addEventListener("click", e => {
+  const c = e.target.closest(".chip"); if (!c) return;
+  S.limitSec = Number(c.dataset.v); renderStart();
+});
+$("chipsTopic").addEventListener("click", e => {
+  const c = e.target.closest(".chip"); if (!c) return;
+  S.topic = c.dataset.v; renderStart();
+});
+function show(name){
+  ["start","game","result","lab"].forEach(n => $("screen-" + n).hidden = (n !== name));
+  window.scrollTo(0,0);
+}
+$("btnStart").onclick = () => startGame();
+$("btnLab").onclick = () => { renderLab(S.topic === "mix" ? "reg" : S.topic); show("lab"); };
+$("labBack").onclick = () => { renderStart(); show("start"); };
+$("btnHome").onclick = () => { renderStart(); show("start"); };
+$("btnAgain").onclick = () => startGame();
+
+/* ---------- Spiel ---------- */
+function later(fn, ms){
+  const g = S.gen;
+  const id = setTimeout(() => { if (g === S.gen) fn(); }, ms);
+  S.timers.push(id);
+}
+function stopAll(){
+  S.gen++; S.running = false; S.locked = true;
+  cancelAnimationFrame(S.raf);
+  S.timers.forEach(clearTimeout); S.timers = [];
+}
+function buildDeck(last){
+  let pool = S.topic === "mix" ? ITEMS : ITEMS.filter(i => i.cat === S.topic);
+  const d = shuffle(pool);
+  if (last && d.length > 1 && d[0] === last) d.push(d.shift());
+  return d;
+}
+function updateHud(){
+  const used = Math.min(3, S.strikes);
+  [...$("strikes").children].forEach((el,i) => el.classList.toggle("used", i < used));
+  $("strikes").setAttribute("aria-label", "Strikes: " + used + " von 3");
+  $("score").textContent = S.score;
+  $("streak").textContent = S.streak >= 2 ? "Serie: " + S.streak : "";
+}
+function startGame(){
+  stopAll();
+  Object.assign(S, {limit:S.limitSec*1000, score:0, strikes:0, streak:0, bestStreak:0, correct:0, times:[], log:[], deck:[], idx:0, cur:null});
+  $("topicLabel").textContent = (S.topic === "mix" ? "Mix" : CAT[S.topic].name) + " · " + S.limitSec + " s";
+  $("clock").textContent = S.limitSec.toFixed(1);
+  $("clockBox").classList.remove("low"); $("fill").classList.remove("low");
+  $("fill").style.transform = "scaleX(1)";
+  $("feedback").hidden = true;
+  $("opts").innerHTML = "";
+  updateHud(); show("game");
+  const steps = ["3","2","1"];
+  steps.forEach((n,i) => later(() => { $("sentence").innerHTML = '<div class="count">' + n + '</div>'; }, i*450));
+  later(nextItem, steps.length*450);
+}
+function nextItem(){
+  if (S.idx >= S.deck.length){ S.deck = buildDeck(S.cur); S.idx = 0; }
+  const it = S.cur = S.deck[S.idx++];
+  S.opts = makeOptions(it);
+  $("sentence").innerHTML = sentenceHTML(it, null);
+  $("opts").innerHTML = S.opts.map((o,i) => '<button type="button" class="opt" data-i="' + i + '">' + esc(shown(it,o)) + '</button>').join("");
+  $("feedback").hidden = true;
+  S.locked = false; S.running = true; S.paused = false; S.carry = 0; S.t0 = performance.now();
+  S.raf = requestAnimationFrame(tick);
+}
+function tick(){
+  if (!S.running || S.paused) return;
+  const rem = Math.max(0, S.limit - (S.carry + performance.now() - S.t0));
+  $("clock").textContent = (rem/1000).toFixed(1);
+  $("fill").style.transform = "scaleX(" + (rem/S.limit) + ")";
+  $("clockBox").classList.toggle("low", rem/S.limit < 0.34);
+  $("fill").classList.toggle("low", rem/S.limit < 0.34);
+  if (rem <= 0){ answer(-1); return; }
+  S.raf = requestAnimationFrame(tick);
+}
+document.addEventListener("visibilitychange", () => {
+  if (!S.running) return;
+  if (document.hidden){ cancelAnimationFrame(S.raf); S.carry += performance.now() - S.t0; S.paused = true; }
+  else if (S.paused){ S.paused = false; S.t0 = performance.now(); S.raf = requestAnimationFrame(tick); }
+});
+$("opts").addEventListener("click", e => {
+  const b = e.target.closest(".opt"); if (!b || S.locked) return;
+  answer(Number(b.dataset.i));
+});
+document.addEventListener("keydown", e => {
+  if ($("screen-game").hidden || S.locked) return;
+  const n = Number(e.key);
+  if (n >= 1 && n <= 4 && S.opts && S.opts[n-1] !== undefined) answer(n-1);
+});
+function answer(i){
+  if (S.locked) return;
+  S.locked = true; S.running = false; cancelAnimationFrame(S.raf);
+  const it = S.cur;
+  const elapsed = i < 0 ? S.limit : Math.min(S.limit, S.carry + performance.now() - S.t0);
+  const rem = S.limit - elapsed;
+  const chosen = i >= 0 ? S.opts[i] : null;
+  const ok = chosen === it.ans;
+  S.log.push({it, ok, chosen, timeout: i < 0});
+  const btns = [...$("opts").children];
+  btns.forEach((b,k) => {
+    b.disabled = true;
+    if (S.opts[k] === it.ans) b.classList.add("ok");
+    else if (k === i) b.classList.add("bad");
+    else b.classList.add("dim");
+  });
+  $("sentence").innerHTML = sentenceHTML(it, it.ans, ok ? "" : "");
+  if (ok){
+    const pts = 100 + Math.round(100 * rem / S.limit);
+    S.score += pts; S.correct++; S.streak++; S.bestStreak = Math.max(S.bestStreak, S.streak); S.times.push(elapsed);
+    updateHud();
+    const pop = document.createElement("span"); pop.className = "pop"; pop.textContent = "+" + pts;
+    $("sentence").appendChild(pop);
+    later(nextItem, 700);
+  } else {
+    S.strikes++; S.streak = 0; updateHud(); vibrate(80);
+    showFeedback(it, chosen, i < 0);
+  }
+}
+function showFeedback(it, chosen, timeout){
+  const over = S.strikes >= 3;
+  const head = (timeout ? "Zu langsam!" : "Falsch.") + " Strike " + S.strikes + " von 3";
+  const fb = $("feedback");
+  fb.innerHTML =
+    '<div class="head">' + head + '</div>' +
+    '<p><b>' + PERS[it.p] + ' → ' + esc(it.ans) + '</b>' + (chosen ? ' (du: ' + esc(chosen) + ')' : '') + '</p>' +
+    '<p>' + esc(CAT[it.cat].hint) + '</p>' +
+    '<button type="button" class="btn" id="btnNext">' + (over ? "Ergebnis ansehen" : "Weiter") + '</button>';
+  fb.hidden = false;
+  $("btnNext").onclick = () => over ? endGame() : nextItem();
+  $("btnNext").focus({preventScroll:false});
+}
+$("btnQuit").onclick = () => { stopAll(); renderStart(); show("start"); };
+
+/* ---------- Ergebnis ---------- */
+function endGame(){
+  stopAll();
+  const key = "vb_best_" + S.limitSec;
+  const prev = Number(store(key)) || 0;
+  const isNew = S.score > prev && S.score > 0;
+  if (isNew) store(key, String(S.score));
+  $("resScore").textContent = S.score;
+  $("resNew").hidden = !isNew;
+  $("resOk").textContent = S.correct;
+  $("resStreak").textContent = S.bestStreak;
+  $("resAvg").textContent = S.times.length ? (S.times.reduce((a,b)=>a+b,0)/S.times.length/1000).toFixed(1) : "–";
+
+  const stats = {};
+  S.log.forEach(l => { const s = stats[l.it.cat] = stats[l.it.cat] || {n:0, ok:0}; s.n++; if (l.ok) s.ok++; });
+  const cats = Object.keys(stats);
+  $("resCats").innerHTML = '<h3>Nach Thema</h3>' + cats.map(c => {
+    const s = stats[c];
+    return '<div class="catrow"><span>' + esc(CAT[c].name) + '</span><b>' + s.ok + ' von ' + s.n + '</b>' +
+      '<div class="meter"><i style="width:' + Math.round(100*s.ok/s.n) + '%"></i></div></div>';
+  }).join("");
+
+  const misses = [], seen = new Set();
+  S.log.forEach(l => { if (!l.ok && !seen.has(l.it)){ seen.add(l.it); misses.push(l); } });
+  $("resMiss").innerHTML = misses.length
+    ? '<h3>Das solltest du üben</h3>' + misses.slice(0,6).map(l =>
+        '<div class="miss">' + sentenceHTML(l.it, l.it.ans) + '<small>' + PERS[l.it.p] + ' → ' + esc(l.it.ans) +
+        (l.chosen ? ' · du: ' + esc(l.chosen) : ' · zu langsam') + '</small></div>').join("")
+    : '<h3>Keine Fehler</h3><p style="margin:0">Alle Antworten waren richtig.</p>';
+
+  let weak = null, worst = 0;
+  cats.forEach(c => { const m = stats[c].n - stats[c].ok; if (m > worst){ worst = m; weak = c; } });
+  const wb = $("btnWeak");
+  wb.hidden = !weak;
+  if (weak){ wb.textContent = "Üben: " + CAT[weak].name; wb.onclick = () => { renderLab(weak); show("lab"); }; }
+  show("result");
+}
+
+/* ---------- Entdecken ---------- */
+function fmt(form, stem){
+  if (stem === null) return esc(form);
+  if (stem !== undefined && form.startsWith(stem)) return esc(stem) + '<b class="e">' + esc(form.slice(stem.length)) + '</b>';
+  return '<mark>' + esc(form) + '</mark>';
+}
+function paradigm(v, stem){
+  return '<table class="paradigm"><caption>' + esc(v) + '</caption>' +
+    PERS.map((p,i) => '<tr><th>' + p + '</th><td>' + fmt(V[v][i], stem) + '</td></tr>').join("") + '</table>';
+}
+const LABS = {
+  reg:{
+    ex:'<div class="paradigms">' + paradigm("lernen","lern") + paradigm("wohnen","wohn") + '</div>',
+    qs:[
+      {q:"Welche Endung hat das Verb bei „du“?", o:["-e","-st","-t","-en"], a:"-st"},
+      {q:"Welche zwei Personen haben dieselbe Form auf -t?", o:["er/sie/es und ihr","ich und du","wir und sie","du und er/sie/es"], a:"er/sie/es und ihr"}
+    ],
+    rule:'<ul><li>Stamm bleibt gleich: lern-, wohn-</li><li>ich <b>-e</b> · du <b>-st</b> · er/sie/es <b>-t</b></li><li>wir <b>-en</b> · ihr <b>-t</b> · sie/Sie <b>-en</b></li></ul>'
+  },
+  stamm:{
+    ex:'<div class="paradigms">' + paradigm("arbeiten","arbeit") + paradigm("heißen","heiß") + paradigm("tanzen","tanz") + '</div>',
+    qs:[
+      {q:"Was passiert bei arbeiten (Stamm endet auf -t) bei du, er/sie/es und ihr?", o:["Vor der Endung steht ein zusätzliches -e-","Die Endung fällt weg","Der Vokal ändert sich","Nichts, es ist wie lernen"], a:"Vor der Endung steht ein zusätzliches -e-"},
+      {q:"Bei heißen und tanzen (Stamm endet auf -ß oder -z): Welche Endung hat „du“?", o:["-t","-st","-est","-e"], a:"-t"}
+    ],
+    rule:'<ul><li>Stamm auf <b>-t, -d</b> (arbeiten, warten, finden): du arbeit<b>est</b>, er arbeit<b>et</b>, ihr arbeit<b>et</b></li><li>Stamm auf <b>-s, -ß, -z</b> (heißen, tanzen, reisen): du heiß<b>t</b>, nicht „heißst“</li></ul>'
+  },
+  vokal:{
+    ex:'<div class="paradigms">' + paradigm("fahren","fahr") + paradigm("essen","ess") + paradigm("sprechen","sprech") + '</div><p class="note" style="margin:0 0 12px">Gelb = der Vokal verändert sich.</p>',
+    qs:[
+      {q:"Bei welchen Personen verändert sich der Vokal?", o:["du und er/sie/es","ich und wir","wir und sie/Sie","nur ihr"], a:"du und er/sie/es"},
+      {q:"Was passiert bei sprechen → du sprichst und essen → du isst?", o:["e wird zu i","e wird zu ä","a wird zu ä","Nichts ändert sich"], a:"e wird zu i"}
+    ],
+    rule:'<ul><li>Nur <b>du</b> und <b>er/sie/es</b> haben den Wechsel.</li><li><b>a → ä</b>: fahren, schlafen, laufen</li><li><b>e → i</b>: sprechen, essen, geben, helfen, nehmen, treffen</li><li><b>e → ie</b>: lesen, sehen</li><li>ich, wir, ihr, sie/Sie: wie bei regelmäßigen Verben</li></ul>'
+  },
+  sein:{
+    ex:'<div class="paradigms">' + paradigm("sein",null) + paradigm("haben","hab") + '</div><p class="note" style="margin:0 0 12px">Gelb = hier fehlt etwas im Vergleich zum Infinitiv.</p>',
+    qs:[
+      {q:"Was fällt bei haben auf: du hast, er hat?", o:["Das b fällt weg","Ein -e- kommt dazu","Der Vokal wird ä","Nichts ändert sich"], a:"Das b fällt weg"},
+      {q:"Welche Form von sein passt zu „ihr“?", o:["seid","sind","bist","ist"], a:"seid"}
+    ],
+    rule:'<ul><li><b>sein</b>: bin · bist · ist · sind · seid · sind</li><li><b>haben</b>: habe · hast · hat · haben · habt · haben</li><li>Beide Verben sind unregelmäßig. Du musst sie auswendig lernen.</li></ul>'
+  },
+  modal:{
+    ex:'<div class="paradigms">' + paradigm("können","könn") + paradigm("müssen","müss") + paradigm("wollen","woll") + '</div><p class="note" style="margin:0 0 12px">Gelb = andere Form als beim regelmäßigen Muster.</p>',
+    qs:[
+      {q:"Welche Endung haben ich und er/sie/es bei Modalverben?", o:["Keine Endung, beide Formen sind gleich","ich -e, er -t","ich -st, er -t","beide -en"], a:"Keine Endung, beide Formen sind gleich"},
+      {q:"Was ändert sich bei können im Singular (ich/du/er)?", o:["ö wird zu a","o wird zu ö","a wird zu ä","Nichts"], a:"ö wird zu a"}
+    ],
+    rule:'<ul><li><b>ich</b> und <b>er/sie/es</b>: gleiche Form, ohne Endung (ich kann, er kann)</li><li><b>wir</b> und <b>sie/Sie</b>: wie der Infinitiv (wir können)</li><li>Im Singular ändert sich der Vokal: können → kann, müssen → muss, wollen → will, dürfen → darf</li><li>möchten ist anders: ich möchte, du möchtest, er möchte</li><li>wissen: ich weiß, du weißt, er weiß</li></ul>'
+  },
+  trenn:{
+    ex:'<ul class="ex">' +
+      '<li><b>aufstehen</b>: Ich <span class="v">stehe</span> um sechs Uhr <span class="p">auf</span>.</li>' +
+      '<li><b>einkaufen</b>: Wir <span class="v">kaufen</span> am Samstag <span class="p">ein</span>.</li>' +
+      '<li><b>anrufen</b>: Er <span class="v">ruft</span> seine Mutter <span class="p">an</span>.</li></ul>',
+    qs:[
+      {q:"Wo steht das konjugierte Verb (blau) im Satz?", o:["Auf Position 2","Am Satzende","Auf Position 1","Nach der Vorsilbe"], a:"Auf Position 2"},
+      {q:"Wo steht die Vorsilbe (gelb: auf, ein, an)?", o:["Am Satzende","Direkt vor dem Verb","Am Satzanfang","Sie fällt weg"], a:"Am Satzende"}
+    ],
+    rule:'<ul><li>Das konjugierte Verb steht auf <b>Position 2</b>.</li><li>Die Vorsilbe steht <b>am Ende</b>: Ich stehe um sechs Uhr auf.</li><li>In Ja/Nein-Fragen steht das Verb auf Position 1: Kommst du mit?</li></ul>'
+  }
+};
+
+let lab = null;
+function renderLab(cat){
+  const L = LABS[cat];
+  lab = {cat, qi:0, items:shuffle(ITEMS.filter(i => i.cat === cat)).slice(0,3), pi:0};
+  $("labTabs").innerHTML = Object.keys(CAT).map(k => chip(CAT[k].name, k === cat, k)).join("");
+  $("labBody").innerHTML =
+    '<h2 style="font-size:1.9rem;margin-bottom:12px">' + esc(CAT[cat].name) + '</h2>' +
+    '<section class="step"><h3><span class="n">1</span>Beobachte</h3>' + L.ex + '<div id="labQ"></div></section>' +
+    '<section class="step rule" id="labRule" hidden><h3><span class="n">2</span>Regel</h3>' + L.rule + '</section>' +
+    '<section class="step" id="labPr" hidden><h3><span class="n">3</span>Übe</h3><div id="labPrBody"></div></section>';
+  labAsk();
+}
+$("labTabs").addEventListener("click", e => {
+  const c = e.target.closest(".chip"); if (!c) return;
+  renderLab(c.dataset.v);
+});
+function labAsk(){
+  const L = LABS[lab.cat], q = L.qs[lab.qi];
+  if (!q){
+    $("labQ").innerHTML = '<p class="note" style="color:var(--ok);font-weight:700">Du hast das Muster gefunden.</p>';
+    $("labRule").hidden = false; $("labPr").hidden = false;
+    labPractice();
+    return;
+  }
+  $("labQ").innerHTML =
+    '<p class="q">' + (lab.qi+1) + ' von ' + L.qs.length + ': ' + esc(q.q) + '</p>' +
+    '<div class="qopts">' + shuffle(q.o).map(o => '<button type="button" class="qopt" data-o="' + esc(o) + '">' + esc(o) + '</button>').join("") + '</div>' +
+    '<p class="note" id="labNote" role="status"></p>';
+}
+$("labBody").addEventListener("click", e => {
+  const o = e.target.closest(".qopt");
+  if (o && lab && !o.disabled){
+    const q = LABS[lab.cat].qs[lab.qi];
+    if (o.dataset.o === q.a){
+      o.classList.add("ok");
+      [...document.querySelectorAll("#labQ .qopt")].forEach(b => b.disabled = true);
+      $("labNote").textContent = "Richtig.";
+      const g = lab.cat; const qi = lab.qi;
+      setTimeout(() => { if (lab && lab.cat === g && lab.qi === qi){ lab.qi++; labAsk(); } }, 650);
+    } else {
+      o.classList.add("bad"); o.disabled = true;
+      $("labNote").textContent = "Schau noch einmal auf die Beispiele und versuche es noch einmal.";
+    }
+    return;
+  }
+  const p = e.target.closest(".popt");
+  if (p && lab && !p.disabled) labPracticeTap(p);
+});
+function labPractice(){ lab.pi = 0; labItem(); }
+function labItem(){
+  const body = $("labPrBody");
+  if (lab.pi >= lab.items.length){
+    body.innerHTML = '<p style="margin:0 0 12px;font-weight:700;color:var(--ok)">Geschafft. Jetzt im Blitz-Tempo.</p>' +
+      '<button type="button" class="btn" id="labGo">Blitz mit diesem Thema starten</button>' +
+      '<button type="button" class="btn secondary" id="labMore">Noch 3 Übungen</button>';
+    $("labGo").onclick = () => { S.topic = lab.cat; startGame(); };
+    $("labMore").onclick = () => { lab.items = shuffle(ITEMS.filter(i => i.cat === lab.cat)).slice(0,3); labPractice(); };
+    return;
+  }
+  const it = lab.items[lab.pi];
+  lab.opts = makeOptions(it);
+  body.innerHTML =
+    '<p class="note" style="margin:0 0 6px">Übung ' + (lab.pi+1) + ' von ' + lab.items.length + '</p>' +
+    '<p class="lab-sentence" id="labSent">' + sentenceHTML(it, null) + '</p>' +
+    '<div class="qopts">' + lab.opts.map((o,i) => '<button type="button" class="qopt popt" data-i="' + i + '">' + esc(shown(it,o)) + '</button>').join("") + '</div>' +
+    '<p class="note" id="labPNote" role="status"></p>';
+}
+function labPracticeTap(btn){
+  const it = lab.items[lab.pi];
+  const f = lab.opts[Number(btn.dataset.i)];
+  if (f === it.ans){
+    btn.classList.add("ok");
+    [...document.querySelectorAll("#labPrBody .popt")].forEach(b => b.disabled = true);
+    $("labSent").innerHTML = sentenceHTML(it, it.ans);
+    $("labPNote").textContent = PERS[it.p] + " → " + it.ans;
+    const g = lab.cat, k = lab.pi;
+    setTimeout(() => { if (lab && lab.cat === g && lab.pi === k){ lab.pi++; labItem(); } }, 900);
+  } else {
+    btn.classList.add("bad"); btn.disabled = true;
+    $("labPNote").textContent = "Noch nicht. " + CAT[it.cat].hint;
+  }
+}
+
+renderStart();
+</script>
+</body>
+</html>
