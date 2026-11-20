@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hörtraining: ei und ie</title>
+<style>
+  :root{
+    --bg:#f6f7fb; --card:#fff; --ink:#1d2433; --muted:#5b6478; --line:#d9dde8;
+    --accent:#2457c5; --accent-soft:#e6edfb; --ok:#1c7c3f; --ok-soft:#e3f4e9;
+    --bad:#b3261e; --bad-soft:#fbe7e5;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  header{background:var(--accent);color:#fff;padding:18px 20px}
+  header h1{margin:0;font-size:1.4rem}
+  header p{margin:4px 0 0;opacity:.9;font-size:.95rem}
+  main{max-width:860px;margin:0 auto;padding:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+  .settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+  .settings label{display:flex;flex-direction:column;font-size:.85rem;color:var(--muted);gap:4px}
+  select,input[type=text]{font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink)}
+  .warn{background:#fff4d6;border:1px solid #e9c46a;border-radius:10px;padding:10px 12px;margin-top:12px;font-size:.92rem}
+  nav{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  nav button{flex:1 1 180px;padding:12px;border:1px solid var(--line);background:#fff;border-radius:12px;font:inherit;font-weight:600;cursor:pointer;color:var(--ink)}
+  nav button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn{font:inherit;font-weight:600;border:none;border-radius:10px;padding:11px 18px;cursor:pointer;background:var(--accent);color:#fff}
+  .btn.sec{background:var(--accent-soft);color:var(--accent)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .play{width:44px;height:44px;border-radius:50%;border:none;background:var(--accent-soft);color:var(--accent);font-size:1.15rem;cursor:pointer;flex:none}
+  .play:hover{background:#d3defa}
+  .bigplay{width:84px;height:84px;font-size:2.1rem}
+  table.pairs{width:100%;border-collapse:collapse}
+  table.pairs td{padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:middle;width:50%}
+  .wcell{display:flex;align-items:center;gap:10px;font-size:1.15rem;font-weight:600}
+  .rule{background:var(--accent-soft);border-radius:10px;padding:12px 14px;margin-top:12px}
+  .rule ul{margin:6px 0 0;padding-left:20px}
+  .rule li{margin-bottom:8px}
+  .q{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  .opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .opt{font:inherit;padding:9px 14px;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;color:var(--ink)}
+  .opt.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:600}
+  .opt.bad{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+  .fb{margin-top:8px;font-size:.95rem;min-height:1.4em}
+  .prog{color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;gap:10px}
+  .bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0 16px}
+  .bar>div{height:100%;background:var(--accent);transition:width .25s}
+  .center{text-align:center}
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+  .choice{font:inherit;font-size:1.5rem;font-weight:700;padding:22px 10px;border:2px solid var(--line);background:#fff;border-radius:14px;cursor:pointer;color:var(--ink)}
+  .choice:hover:not(:disabled){border-color:var(--accent)}
+  .choice.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+  .choice.bad{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+  .writerow{display:flex;gap:10px;justify-content:center;margin:18px 0;flex-wrap:wrap}
+  .writerow input{font-size:1.4rem;width:min(320px,100%);text-align:center}
+  .fbbox{padding:10px 14px;border-radius:10px;margin:8px 0;font-weight:600}
+  .fbbox.ok{background:var(--ok-soft);color:var(--ok)}
+  .fbbox.bad{background:var(--bad-soft);color:var(--bad)}
+  .fbbox small{display:block;font-weight:400;color:var(--ink);margin-top:5px;font-size:.9rem}
+  .score{font-size:2.2rem;font-weight:800;color:var(--accent)}
+  ul.wrongs{text-align:left;max-width:560px;margin:12px auto;padding-left:22px}
+  ul.wrongs li{margin-bottom:6px}
+  .sent{font-size:1.4rem;font-weight:600;text-align:center;margin:12px 0 6px;line-height:1.6}
+  .gap{display:inline-block;min-width:5.5em;border-bottom:3px solid var(--ink);margin:0 4px;color:transparent;user-select:none}
+  .fill{color:var(--ok)}
+  .sentTr{background:var(--accent-soft);border-radius:10px;padding:8px 12px;margin:8px auto;max-width:640px;font-size:.95rem;text-align:center}
+  .trwrap{min-height:42px;margin:6px 0}
+  .audiorow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+  /* Übersetzungen */
+  .tr{display:block;font-size:.78em;font-weight:400;opacity:.85;line-height:1.3}
+  .tr:not([dir=rtl]){}
+  .choice .tr{font-size:.5em;margin-top:4px;font-weight:500}
+  .wcell .tr{font-size:.72em}
+  .btn .tr,nav button .tr{font-size:.8em}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="h-title"></h1>
+  <p id="h-sub"></p>
+</header>
+<main>
+
+  <div class="card">
+    <div class="settings">
+      <label><span id="l-voice"></span>
+        <select id="voice"></select>
+      </label>
+      <label><span id="l-rate"></span>
+        <select id="rate">
+          <option value="0.9" data-de="normal" data-k="o_rate_n">normal</option>
+          <option value="0.7" data-de="langsam" data-k="o_rate_s">langsam</option>
+          <option value="0.5" data-de="sehr langsam" data-k="o_rate_vs">sehr langsam</option>
+        </select>
+      </label>
+      <label><span id="l-audio"></span>
+        <select id="audio">
+          <option value="sentence" data-de="ganzer Satz" data-k="o_a_sent">ganzer Satz</option>
+          <option value="word" data-de="nur das Wort" data-k="o_a_word">nur das Wort</option>
+        </select>
+      </label>
+      <label><span id="l-group"></span>
+        <select id="group">
+          <option value="alle" data-de="alle Paare" data-k="o_g_all">alle Paare</option>
+          <option value="wort" data-de="nur Wörter" data-k="o_g_wort">nur Wörter</option>
+          <option value="verb" data-de="nur Verben (Gegenwart – Vergangenheit)" data-k="o_g_verb">nur Verben (Gegenwart – Vergangenheit)</option>
+        </select>
+      </label>
+      <label><span id="l-count"></span>
+        <select id="count">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+        </select>
+      </label>
+      <label><span>Hilfssprache / Help language</span>
+        <select id="lang">
+          <option value="none">keine</option>
+          <option value="ar">العربية (Arabisch)</option>
+          <option value="en">English (Englisch)</option>
+          <option value="ru">Русский (Russisch)</option>
+          <option value="uk">Українська (Ukrainisch)</option>
+          <option value="tr">Türkçe (Türkisch)</option>
+          <option value="ro">Română (Rumänisch)</option>
+        </select>
+      </label>
+    </div>
+    <div class="warn" id="novoice" hidden></div>
+  </div>
+
+  <nav>
+    <button data-tab="t1" class="active" id="nav1"></button>
+    <button data-tab="t2" id="nav2"></button>
+    <button data-tab="t3" id="nav3"></button>
+  </nav>
+
+  <section id="t1"></section>
+  <section id="t2" hidden></section>
+  <section id="t3" hidden></section>
+
+</main>
+
+<script>
+"use strict";
+
+/* ====================================================================
+   Daten: Wortpaare
+   ==================================================================== */
+const PAIRS = [
+  // erstes Wort = ei, zweites Wort = ie
+  {e:'Beine',    i:'Biene',    t:'wort'},
+  {e:'Zeile',    i:'Ziele',    t:'wort'},
+  {e:'Reise',    i:'Riese',    t:'wort'},
+  {e:'Leid',     i:'Lied',     t:'wort'},
+  {e:'Zeit',     i:'zieht',    t:'wort'},
+  {e:'Weise',    i:'Wiese',    t:'wort'},
+  {e:'zeigen',   i:'Ziegen',   t:'wort'},
+  {e:'steil',    i:'Stiel',    t:'wort'},
+  {e:'meine',    i:'Miene',    t:'wort'},
+  {e:'Schein',   i:'schien',   t:'wort'},
+  {e:'heiß',     i:'hieß',     t:'wort'},
+  {e:'weiß',     i:'wies',     t:'wort'},
+  {e:'bleiben',  i:'blieben',  t:'verb'},
+  {e:'schreiben',i:'schrieben',t:'verb'},
+  {e:'reiben',   i:'rieben',   t:'verb'},
+  {e:'leihen',   i:'liehen',   t:'verb'},
+  {e:'steigen',  i:'stiegen',  t:'verb'},
+  {e:'schweigen',i:'schwiegen',t:'verb'},
+  {e:'treiben',  i:'trieben',  t:'verb'},
+  {e:'meiden',   i:'mieden',   t:'verb'},
+  {e:'scheinen', i:'schienen', t:'verb'},
+  {e:'weisen',   i:'wiesen',   t:'verb'}
+];
+// Wörter, die gleich klingen wie ein anderes Wort (beim Schreiben akzeptiert)
+const ALT = {};
+
+/* ====================================================================
+   Übersetzungen
+   Reihenfolge: en, ar, ru, uk, tr, ro
+   ==================================================================== */
+const LANGS = ['en','ar','ru','uk','tr','ro'];
+
+// Bedeutung der Wörter
+const M = {
+  'Beine':    ["legs","أرجل، سيقان","ноги","ноги","bacaklar, ayaklar","picioare"],
+  'Biene':    ["bee","نحلة","пчела","бджола","arı","albină"],
+  'Zeile':    ["line (of text)","سطر","строка","рядок","satır","rând"],
+  'Ziele':    ["goals, aims","أهداف","цели","цілі","hedefler","obiective, scopuri"],
+  'Reise':    ["trip, journey","رحلة، سفر","поездка, путешествие","подорож, поїздка","yolculuk, seyahat","călătorie"],
+  'Riese':    ["giant","عملاق","великан","велетень","dev","uriaș"],
+  'Leid':     ["suffering, sorrow","معاناة، حزن","страдание, горе","страждання, горе","acı, keder","suferință, durere"],
+  'Lied':     ["song","أغنية","песня","пісня","şarkı","cântec"],
+  'Zeit':     ["time","وقت","время","час","zaman, vakit","timp"],
+  'zieht':    ["pulls, drags (ziehen)","يسحب","тянет, тащит","тягне","çeker","trage"],
+  'Weise':    ["way, manner","طريقة","способ, манера","спосіб, манера","yol, tarz","mod, fel"],
+  'Wiese':    ["meadow","مرج","луг","луг","çayır","pajiște"],
+  'zeigen':   ["to show, to point","يُظهر، يُشير","показывать","показувати","göstermek","a arăta"],
+  'Ziegen':   ["goats","ماعز","козы","кози","keçiler","capre"],
+  'steil':    ["steep","شديد الانحدار","крутой","крутий","dik","abrupt, povârnit"],
+  'Stiel':    ["stem, stalk, handle","ساق (نبات)، مقبض","стебель, черенок","стебло, ручка","sap, gövde","tulpină, coadă"],
+  'meine':    ["my (feminine/plural form)","لي (ملكية: مؤنث/جمع)","моя, мои","моя, мої","benim (dişil/çoğul)","a mea, ale mele"],
+  'Miene':    ["facial expression, look","ملامح الوجه","выражение лица","вираз обличчя","yüz ifadesi","expresie a feței"],
+  'Schein':   ["light, glow","ضوء، وهج","свет, сияние","світло, сяйво","ışık, parıltı","lumină, strălucire"],
+  'schien':   ["seemed; shone (scheinen)","بدا؛ أشرقت","казался; светило","здавався; світило","gibi göründü; parladı","părea; strălucea"],
+  'heiß':     ["hot","حار، ساخن","горячий, жаркий","гарячий, спекотний","sıcak, kızgın","fierbinte, cald"],
+  'hieß':     ["was called (heißen)","كان اسمه","назывался, звали","називався, звали","adı ... idi","se numea"],
+  'weiß':     ["know (ich weiß); white","أعرف؛ أبيض","знаю; белый","знаю; білий","biliyorum; beyaz","știu; alb"],
+  'wies':     ["pointed, showed (weisen)","أشار، دلّ","указал, показал","вказав, показав","işaret etti, gösterdi","a arătat, a indicat"],
+  'bleiben':  ["to stay, to remain","يبقى","оставаться","залишатися","kalmak","a rămâne"],
+  'blieben':  ["stayed (they stayed)","بقوا","они остались","вони залишилися","kaldılar","au rămas"],
+  'schreiben':["to write","يكتب","писать","писати","yazmak","a scrie"],
+  'schrieben':["wrote (they wrote)","كتبوا","они писали","вони писали","yazdılar","au scris"],
+  'reiben':   ["to rub","يفرك","тереть, растирать","терти, розтирати","ovmak","a freca"],
+  'rieben':   ["rubbed (they rubbed)","فركوا","они растирали","вони розтирали","ovdular","au frecat"],
+  'leihen':   ["to lend; to borrow","يُعير؛ يستعير","одалживать; брать взаймы","позичати","ödünç vermek; ödünç almak","a împrumuta"],
+  'liehen':   ["lent; borrowed (they)","أعاروا؛ استعاروا","они одолжили (или взяли взаймы)","вони позичили","ödünç verdiler; ödünç aldılar","au împrumutat"],
+  'steigen':  ["to climb; to rise","يصعد؛ يرتفع","подниматься; расти","підніматися; зростати","çıkmak; yükselmek","a urca; a crește"],
+  'stiegen':  ["climbed; rose (they/plural)","صعدوا؛ ارتفعت","поднимались; росли","піднімалися; зростали","çıktılar; yükseldi","au urcat; au crescut"],
+  'schweigen':["to be silent","يصمت","молчать","мовчати","susmak","a tăcea"],
+  'schwiegen':["were silent (they)","صمتوا","они молчали","вони мовчали","sustular","au tăcut"],
+  'treiben':  ["to do (sport); to drive","يمارس (رياضة)؛ يدفع","заниматься (спортом); гнать","займатися (спортом); гнати","yapmak (spor); sürmek","a face (sport); a mâna"],
+  'trieben':  ["did (sport); drove (they)","مارسوا؛ دفعوا","занимались; гнали","займалися; гнали","yaptılar; sürdüler","au făcut (sport); au mânat"],
+  'meiden':   ["to avoid","يتجنّب","избегать","уникати","kaçınmak","a evita"],
+  'mieden':   ["avoided (they)","تجنّبوا","они избегали","вони уникали","kaçındılar","au evitat"],
+  'scheinen': ["to shine; to seem","يلمع؛ يبدو","светить; казаться","світити; здаватися","parlamak; görünmek","a străluci; a părea"],
+  'schienen': ["shone; seemed (plural)","أشرقت؛ بدت","светили; казались","світили; здавалися","parladılar; göründüler","străluceau; păreau"],
+  'weisen':   ["to point, to show","يُشير، يدلّ","указывать, показывать","вказувати, показувати","göstermek, işaret etmek","a indica, a arăta"],
+  'wiesen':   ["pointed (they); also: meadows","أشاروا؛ (أو: مروج)","указывали (или: луга)","вказували (або: луки)","işaret ettiler (ayrıca: çayırlar)","au indicat (și: pajiști)"]
+};
+
+// Oberfläche, Arbeitsanweisungen, Regeln, Rückmeldungen
+const T = {
+  sub:["Listen – tell apart – write","استمع – ميّز – اكتب","Слушать – различать – писать","Слухати – розрізняти – писати","Dinle – ayırt et – yaz","Ascultă – distinge – scrie"],
+  l_voice:["Voice","الصوت","Голос","Голос","Ses","Voce"],
+  l_rate:["Speed","السرعة","Скорость","Швидкість","Hız","Viteză"],
+  l_group:["Word group","مجموعة الكلمات","Группа слов","Група слів","Kelime grubu","Grup de cuvinte"],
+  l_count:["Number of tasks","عدد المهام","Количество заданий","Кількість завдань","Görev sayısı","Număr de exerciții"],
+  o_rate_n:["normal","عادية","обычная","звичайна","normal","normală"],
+  o_rate_s:["slow","بطيئة","медленно","повільно","yavaş","încet"],
+  o_rate_vs:["very slow","بطيئة جدًا","очень медленно","дуже повільно","çok yavaş","foarte încet"],
+  o_g_all:["all pairs","كل الأزواج","все пары","усі пари","tüm çiftler","toate perechile"],
+  novoice:["No German voice found. Please install a German text-to-speech voice in your device settings and reload the page.","لم يتم العثور على صوت ألماني. يرجى تثبيت صوت ألماني لتحويل النص إلى كلام في إعدادات الجهاز ثم إعادة تحميل الصفحة.","Немецкий голос не найден. Установите немецкий голос синтеза речи в настройках устройства и перезагрузите страницу.","Німецький голос не знайдено. Встановіть німецький голос синтезу мовлення в налаштуваннях пристрою та перезавантажте сторінку.","Almanca ses bulunamadı. Lütfen cihaz ayarlarından Almanca bir konuşma sesi yükleyin ve sayfayı yeniden yükleyin.","Nu a fost găsită nicio voce germană. Instalați o voce germană de sinteză vocală în setările dispozitivului și reîncărcați pagina."],
+  nav1:["1 · Discover","1 · اكتشف","1 · Открываем","1 · Відкриваємо","1 · Keşfet","1 · Descoperă"],
+  nav2:["2 · Listen & choose","2 · استمع واختر","2 · Слушай и выбирай","2 · Слухай і вибирай","2 · Dinle ve seç","2 · Ascultă și alege"],
+  nav3:["3 · Listen & write","3 · استمع واكتب","3 · Слушай и пиши","3 · Слухай і пиши","3 · Dinle ve yaz","3 · Ascultă și scrie"],
+
+  f_wrong:["Listen again and compare.","استمع مرة أخرى وقارن.","Послушайте ещё раз и сравните.","Послухайте ще раз і порівняйте.","Tekrar dinleyin ve karşılaştırın.","Ascultați din nou și comparați."],
+  btn_rule:["Reveal the rule","اكشف القاعدة","Показать правило","Показати правило","Kuralı göster","Arată regula"],
+  title:["Listening training: ei and ie","تدريب على الاستماع: ei و ie","Тренировка аудирования: ei и ie","Тренування аудіювання: ei та ie","Dinleme alıştırması: ei ve ie","Exerciții de ascultare: ei și ie"],
+  o_g_wort:["words only","الكلمات فقط","только слова","лише слова","yalnızca kelimeler","doar cuvinte"],
+  o_g_verb:["verbs only (present – past)","الأفعال فقط (الحاضر – الماضي)","только глаголы (настоящее – прошедшее)","лише дієслова (теперішній – минулий)","yalnızca fiiller (şimdiki – geçmiş)","doar verbe (prezent – trecut)"],
+  d1_title:["ei and ie in words","ei و ie في الكلمات","ei и ie в словах","ei та ie в словах","Sözcüklerde ei ve ie","ei și ie în cuvinte"],
+  d1_intro:["Listen to the pairs. Click ▶ for each word. How do the words with ei sound, how the words with ie?","استمع إلى الأزواج. انقر على ▶ عند كل كلمة. كيف تبدو الكلمات التي فيها ei، وكيف الكلمات التي فيها ie؟","Послушайте пары. Нажмите ▶ у каждого слова. Как звучат слова с ei и как слова с ie?","Послухайте пари. Натисніть ▶ біля кожного слова. Як звучать слова з ei і як слова з ie?","Çiftleri dinleyin. Her kelimede ▶ düğmesine tıklayın. ei'li kelimeler nasıl, ie'li kelimeler nasıl duyuluyor?","Ascultați perechile. Apăsați ▶ la fiecare cuvânt. Cum sună cuvintele cu ei și cum cele cu ie?"],
+  d2_title:["ei and ie in verbs","ei و ie في الأفعال","ei и ie в глаголах","ei та ie в дієсловах","Fiillerde ei ve ie","ei și ie la verbe"],
+  d2_intro:["Listen to the pairs. Column ei shows the present (infinitive), column ie the past (preterite, plural). What do you notice?","استمع إلى الأزواج. في العمود ei يوجد الحاضر (المصدر)، وفي العمود ie الماضي (الماضي البسيط، الجمع). ماذا تلاحظ؟","Послушайте пары. В столбце ei — настоящее время (инфинитив), в столбце ie — прошедшее (Präteritum, мн. ч.). Что вы замечаете?","Послухайте пари. У стовпчику ei — теперішній час (інфінітив), у стовпчику ie — минулий (Präteritum, мн.). Що ви помічаєте?","Çiftleri dinleyin. ei sütununda şimdiki zaman (mastar), ie sütununda geçmiş zaman (Präteritum, çoğul) var. Ne fark ediyorsunuz?","Ascultați perechile. În coloana ei este prezentul (infinitivul), în coloana ie trecutul (Präteritum, plural). Ce observați?"],
+  q_ei:["The word with ei sounds like …","الكلمة التي فيها ei تبدو مثل …","Слово с ei звучит как …","Слово з ei звучить як …","ei'li kelime … gibi duyulur","Cuvântul cu ei sună ca …"],
+  o_ai:["“ai” (as in Wein)","«ai» (كما في Wein)","«ай» (как в Wein)","«ай» (як у Wein)","«ay» (Wein'daki gibi)","«ai» (ca în Wein)"],
+  o_longi:["long i (as in Tier)","i طويلة (كما في Tier)","долгий «и» (как в Tier)","довге «і» (як у Tier)","uzun i (Tier'deki gibi)","i lung (ca în Tier)"],
+  f_ei:["Yes: ei is pronounced like “ai”: Beine, Zeit, heiß.","نعم: تُنطق ei مثل «ai»: Beine, Zeit, heiß.","Да: ei произносится как «ай»: Beine, Zeit, heiß.","Так: ei вимовляється як «ай»: Beine, Zeit, heiß.","Evet: ei, «ay» gibi okunur: Beine, Zeit, heiß.","Da: ei se pronunță «ai»: Beine, Zeit, heiß."],
+  q_which:["In which word do you hear a long i?","في أي كلمة تسمع i طويلة؟","В каком слове вы слышите долгое «и»?","У якому слові ви чуєте довге «і»?","Hangi kelimede uzun i duyuyorsunuz?","În ce cuvânt auziți un i lung?"],
+  f_which:["Yes: ie is pronounced as a long i: zieht, Biene, hieß.","نعم: تُنطق ie كـ i طويلة: zieht, Biene, hieß.","Да: ie произносится как долгое «и»: zieht, Biene, hieß.","Так: ie вимовляється як довге «і»: zieht, Biene, hieß.","Evet: ie, uzun i olarak okunur: zieht, Biene, hieß.","Da: ie se pronunță ca un i lung: zieht, Biene, hieß."],
+  q_past:["In the past tense of these verbs, ei becomes …","في الماضي يتحوّل ei في هذه الأفعال إلى …","В прошедшем времени у этих глаголов ei превращается в …","У минулому часі в цих дієслів ei перетворюється на …","Bu fiillerde geçmiş zamanda ei … olur","La aceste verbe, în trecut ei devine …"],
+  f_past:["Yes: bleiben – blieben, schreiben – schrieben, steigen – stiegen.","نعم: bleiben – blieben, schreiben – schrieben, steigen – stiegen.","Да: bleiben – blieben, schreiben – schrieben, steigen – stiegen.","Так: bleiben – blieben, schreiben – schrieben, steigen – stiegen.","Evet: bleiben – blieben, schreiben – schrieben, steigen – stiegen.","Da: bleiben – blieben, schreiben – schrieben, steigen – stiegen."],
+  q_col:["Which verb form is in column ie?","أي صيغة فعل في العمود ie؟","Какая форма глагола стоит в столбце ie?","Яка форма дієслова стоїть у стовпчику ie?","ie sütununda hangi fiil biçimi var?","Ce formă verbală este în coloana ie?"],
+  o_pres:["present (infinitive)","الحاضر (المصدر)","настоящее время (инфинитив)","теперішній час (інфінітив)","şimdiki zaman (mastar)","prezent (infinitiv)"],
+  o_pret:["past (preterite)","الماضي (الماضي البسيط)","прошедшее время (Präteritum)","минулий час (Präteritum)","geçmiş zaman (Präteritum)","trecut (Präteritum)"],
+  f_col:["Exactly: column ie shows the past tense.","صحيح: في العمود ie يوجد الماضي.","Верно: в столбце ie стоит прошедшее время.","Правильно: у стовпчику ie — минулий час.","Doğru: ie sütununda geçmiş zaman var.","Exact: în coloana ie este trecutul."],
+  rc1:["ei is pronounced like “ai” ([aɪ]): Wein, Zeit, heiß, meine.","تُنطق ei مثل «ai» ([aɪ]): Wein, Zeit, heiß, meine.","ei произносится как «ай» ([aɪ]): Wein, Zeit, heiß, meine.","ei вимовляється як «ай» ([aɪ]): Wein, Zeit, heiß, meine.","ei, «ay» gibi ([aɪ]) okunur: Wein, Zeit, heiß, meine.","ei se pronunță «ai» ([aɪ]): Wein, Zeit, heiß, meine."],
+  rc2:["ie is pronounced as a long i ([iː]): Tier, Wiese, zieht, hieß.","تُنطق ie كـ i طويلة ([iː]): Tier, Wiese, zieht, hieß.","ie произносится как долгое «и» ([iː]): Tier, Wiese, zieht, hieß.","ie вимовляється як довге «і» ([iː]): Tier, Wiese, zieht, hieß.","ie, uzun i ([iː]) olarak okunur: Tier, Wiese, zieht, hieß.","ie se pronunță ca un i lung ([iː]): Tier, Wiese, zieht, hieß."],
+  rc3:["Tip: ei starts with an “a” sound – ie stays with “i”.","نصيحة: ei تبدأ بصوت «a»، أما ie فتبقى عند «i».","Совет: ei начинается со звука «а», а ie остаётся на «и».","Порада: ei починається зі звука «а», а ie залишається на «і».","İpucu: ei «a» sesiyle başlar – ie «i»'de kalır.","Sfat: ei începe cu un sunet «a» – ie rămâne la «i»."],
+  rd1:["Many verbs have ei in the infinitive and ie in the past: bleiben – blieb, schreiben – schrieb, steigen – stieg, leihen – lieh.","كثير من الأفعال فيها ei في المصدر وie في الماضي: bleiben – blieb, schreiben – schrieb, steigen – stieg, leihen – lieh.","У многих глаголов в инфинитиве ei, а в прошедшем времени ie: bleiben – blieb, schreiben – schrieb, steigen – stieg, leihen – lieh.","У багатьох дієслів в інфінітиві ei, а в минулому часі ie: bleiben – blieb, schreiben – schrieb, steigen – stieg, leihen – lieh.","Birçok fiilde mastarda ei, geçmiş zamanda ie vardır: bleiben – blieb, schreiben – schrieb, steigen – stieg, leihen – lieh.","Multe verbe au ei la infinitiv și ie la trecut: bleiben – blieb, schreiben – schrieb, steigen – stieg, leihen – lieh."],
+  rd2:["This is a vowel change (ablaut): ei → ie. These verbs are learned together with their forms.","هذا تغيّر في الحرف المتحرك (Ablaut): ei → ie. تُتعلَّم هذه الأفعال مع صيغها.","Это чередование гласных (Ablaut): ei → ie. Эти глаголы учат вместе с их формами.","Це чергування голосних (Ablaut): ei → ie. Ці дієслова вчать разом з їхніми формами.","Bu bir ünlü değişimidir (Ablaut): ei → ie. Bu fiiller biçimleriyle birlikte öğrenilir.","Este o alternanță vocalică (Ablaut): ei → ie. Aceste verbe se învață împreună cu formele lor."],
+  rd3:["Careful: not all verbs with ei change. Regular: reisen – reiste.","انتبه: ليست كل الأفعال التي فيها ei تتغيّر. منتظم: reisen – reiste.","Внимание: не все глаголы с ei меняются. Правильный глагол: reisen – reiste.","Увага: не всі дієслова з ei змінюються. Правильне дієслово: reisen – reiste.","Dikkat: ei'li her fiil değişmez. Düzenli: reisen – reiste.","Atenție: nu toate verbele cu ei se schimbă. Regulat: reisen – reiste."],
+  go1:["Ready? Now practise listening.","هل أنت مستعد؟ تدرّب الآن على الاستماع.","Готовы? Тогда потренируйте аудирование.","Готові? Тоді потренуйте аудіювання.","Hazır mısınız? O zaman şimdi dinleme çalışın.","Sunteți gata? Atunci exersați acum ascultarea."],
+  btn_go2:["Continue to task 2 · Listen & choose","تابع إلى المهمة 2 · استمع واختر","Далее: задание 2 · Слушай и выбирай","Далі: завдання 2 · Слухай і вибирай","Görev 2'ye geç · Dinle ve seç","Continuă cu exercițiul 2 · Ascultă și alege"],
+
+  t2_title:["Listen & choose","استمع واختر","Слушай и выбирай","Слухай і вибирай","Dinle ve seç","Ascultă și alege"],
+  t2_intro:["Read the sentence and listen. Which word is missing? Choose: a or b.","اقرأ الجملة واستمع. ما الكلمة الناقصة؟ اختر: a أو b.","Прочитайте предложение и послушайте. Какое слово пропущено? Выберите: a или b.","Прочитайте речення й послухайте. Яке слово пропущено? Виберіть: a або b.","Cümleyi okuyun ve dinleyin. Hangi kelime eksik? Seçin: a veya b.","Citiți propoziția și ascultați. Ce cuvânt lipsește? Alegeți: a sau b."],
+  btn_start:["Start","ابدأ","Начать","Почати","Başla","Începe"],
+  prog:["Task {a} / {b}","المهمة {a} / {b}","Задание {a} / {b}","Завдання {a} / {b}","Görev {a} / {b}","Exercițiul {a} / {b}"],
+  rcount:["Correct: {a}","صحيح: {a}","Верно: {a}","Правильно: {a}","Doğru: {a}","Corect: {a}"],
+  q2:["Which word is missing?","ما الكلمة الناقصة؟","Какое слово пропущено?","Яке слово пропущено?","Hangi kelime eksik?","Ce cuvânt lipsește?"],
+  fb_right:["Correct: {w}","صحيح: {w}","Верно: {w}","Правильно: {w}","Doğru: {w}","Corect: {w}"],
+  fb2_wrong:["Not quite. The correct word is {w} – not {c}.","ليس تمامًا. الكلمة الصحيحة هي {w} وليست {c}.","Не совсем. Правильное слово — {w}, а не {c}.","Не зовсім. Правильне слово — {w}, а не {c}.","Tam değil. Doğru kelime {w}, {c} değil.","Nu chiar. Cuvântul corect este {w}, nu {c}."],
+  btn_next:["Next","التالي","Далее","Далі","İleri","Înainte"],
+  res_title:["Result","النتيجة","Результат","Результат","Sonuç","Rezultat"],
+  hard:["These were difficult:","كانت هذه صعبة:","Это было трудно:","Це було складно:","Bunlar zordu:","Acestea au fost dificile:"],
+  perfect:["Perfect – no mistakes!","ممتاز – بلا أخطاء!","Отлично – без ошибок!","Чудово – без помилок!","Mükemmel – hata yok!","Perfect – nicio greșeală!"],
+  btn_redo:["Practise mistakes only","تدرّب على الأخطاء فقط","Тренировать только ошибки","Тренувати лише помилки","Yalnızca hataları çalış","Exersează doar greșelile"],
+  btn_again:["Start again","ابدأ من جديد","Начать заново","Почати знову","Yeniden başla","Reîncepe"],
+  btn_to3:["Continue to task 3","تابع إلى المهمة 3","Далее: задание 3","Далі: завдання 3","Görev 3'e geç","Continuă cu exercițiul 3"],
+
+  t3_title:["Listen & write","استمع واكتب","Слушай и пиши","Слухай і пиши","Dinle ve yaz","Ascultă și scrie"],
+  t3_intro:["Read the sentence and listen. Write the missing word. Press Enter to check and continue.","اقرأ الجملة واستمع. اكتب الكلمة الناقصة. اضغط Enter للتحقق والمتابعة.","Прочитайте предложение и послушайте. Напишите пропущенное слово. Клавиша Enter — проверить и продолжить.","Прочитайте речення й послухайте. Напишіть пропущене слово. Клавіша Enter — перевірити й продовжити.","Cümleyi okuyun ve dinleyin. Eksik kelimeyi yazın. Enter tuşuyla kontrol eder ve devam edersiniz.","Citiți propoziția și ascultați. Scrieți cuvântul lipsă. Cu tasta Enter verificați și continuați."],
+  q3:["Write the missing word.","اكتب الكلمة الناقصة.","Напишите пропущенное слово.","Напишіть пропущене слово.","Eksik kelimeyi yazın.","Scrieți cuvântul lipsă."],
+  btn_check:["Check","تحقّق","Проверить","Перевірити","Kontrol et","Verifică"],
+  empty:["Please write a word first.","من فضلك اكتب كلمة أولًا.","Сначала напишите слово.","Спочатку напишіть слово.","Lütfen önce bir kelime yazın.","Scrieți mai întâi un cuvânt."],
+  case_note:["Pay attention to capital and small letters: {w}","انتبه إلى الأحرف الكبيرة والصغيرة: {w}","Обратите внимание на заглавные и строчные буквы: {w}","Зверніть увагу на великі й малі літери: {w}","Büyük/küçük harfe dikkat edin: {w}","Atenție la literele mari și mici: {w}"],
+  hom_note:["“{a}” sounds the same – here the word meant was: {w}","«{a}» تُنطق بنفس الطريقة – المقصود هنا: {w}","«{a}» звучит так же – здесь имелось в виду: {w}","«{a}» звучить так само – тут мали на увазі: {w}","«{a}» aynı duyulur – burada kastedilen: {w}","«{a}» sună la fel – aici se referea la: {w}"],
+  wrong3:["Not quite. The correct word is: {w}","ليس تمامًا. الصحيح هو: {w}","Не совсем. Правильно: {w}","Не зовсім. Правильно: {w}","Tam değil. Doğrusu: {w}","Nu chiar. Corect este: {w}"],
+  wrong3b:["You wrote “{t}”. Note: the counterpart is {o}.","لقد كتبت «{t}». انتبه: الكلمة المقابلة هي {o}.","Вы написали «{t}». Внимание: парное слово — {o}.","Ви написали «{t}». Увага: парне слово — {o}.","«{t}» yazdınız. Dikkat: karşılığı olan kelime {o}.","Ați scris «{t}». Atenție: cuvântul pereche este {o}."],
+  l_audio:["Listening","الاستماع","Аудио","Аудіо","Dinleme","Ascultare"],
+  o_a_sent:["whole sentence","الجملة كاملة","всё предложение","ціле речення","tüm cümle","propoziția întreagă"],
+  o_a_word:["word only","الكلمة فقط","только слово","лише слово","yalnızca kelime","doar cuvântul"],
+  btn_sent:["Sentence","الجملة","Предложение","Речення","Cümle","Propoziție"],
+  btn_word:["Word","الكلمة","Слово","Слово","Kelime","Cuvânt"],
+  btn_showtr:["Show translation","أظهر الترجمة","Показать перевод","Показати переклад","Çeviriyi göster","Arată traducerea"],
+  written:["written","المكتوب","написано","написано","yazılan","scris"]
+};
+
+/* Beispielsätze: [Deutsch mit ___, en, ar, ru, uk, tr, ro] – nur das Zielwort passt in die Lücke */
+const SENT = {
+  'Beine':    ["Der Tisch hat vier ___.","The table has four legs.","للطاولة أربع أرجل.","У стола четыре ножки.","У столу чотири ніжки.","Masanın dört ayağı var.","Masa are patru picioare."],
+  'Biene':    ["Auf der Blume sitzt eine fleißige ___.","A busy bee is sitting on the flower.","تجلس نحلة نشيطة على الزهرة.","На цветке сидит трудолюбивая пчела.","На квітці сидить працьовита бджола.","Çiçeğin üstünde çalışkan bir arı duruyor.","Pe floare stă o albină harnică."],
+  'Zeile':    ["Bitte lies die erste ___ des Textes vor.","Please read out the first line of the text.","من فضلك اقرأ السطر الأول من النص بصوت عالٍ.","Пожалуйста, прочитай вслух первую строку текста.","Будь ласка, прочитай уголос перший рядок тексту.","Lütfen metnin ilk satırını yüksek sesle oku.","Te rog, citește cu voce tare primul rând din text."],
+  'Ziele':    ["Im neuen Jahr habe ich viele ___.","In the new year I have many goals.","في العام الجديد لديّ أهداف كثيرة.","В новом году у меня много целей.","У новому році в мене багато цілей.","Yeni yılda birçok hedefim var.","În anul nou am multe obiective."],
+  'Reise':    ["Nächste Woche beginnt meine ___ nach Spanien.","Next week my trip to Spain begins.","الأسبوع القادم تبدأ رحلتي إلى إسبانيا.","На следующей неделе начинается моя поездка в Испанию.","Наступного тижня починається моя поїздка до Іспанії.","Önümüzdeki hafta İspanya yolculuğum başlıyor.","Săptămâna viitoare începe călătoria mea în Spania."],
+  'Riese':    ["Der ___ im Märchen ist größer als ein Haus.","The giant in the fairy tale is taller than a house.","العملاق في الحكاية أطول من بيت.","Великан в сказке выше дома.","Велетень у казці вищий за будинок.","Masaldaki dev bir evden daha büyük.","Uriașul din poveste este mai mare decât o casă."],
+  'Leid':     ["Der Krieg bringt viel ___ über die Menschen.","The war brings a lot of suffering to the people.","تجلب الحرب الكثير من المعاناة على الناس.","Война приносит людям много страданий.","Війна приносить людям багато страждань.","Savaş insanlara çok acı getirir.","Războiul aduce multă suferință oamenilor."],
+  'Lied':     ["Sie singt ein schönes ___.","She sings a beautiful song.","هي تغني أغنية جميلة.","Она поёт красивую песню.","Вона співає гарну пісню.","O güzel bir şarkı söylüyor.","Ea cântă un cântec frumos."],
+  'Zeit':     ["Ich habe heute leider keine ___.","Unfortunately, I have no time today.","للأسف ليس لدي وقت اليوم.","К сожалению, у меня сегодня нет времени.","На жаль, у мене сьогодні немає часу.","Maalesef bugün vaktim yok.","Din păcate, azi nu am timp."],
+  'zieht':    ["Der Mann ___ den Koffer durch den Bahnhof.","The man pulls the suitcase through the station.","يسحب الرجل الحقيبة عبر المحطة.","Мужчина тащит чемодан по вокзалу.","Чоловік тягне валізу вокзалом.","Adam bavulu gar boyunca çekiyor.","Bărbatul trage valiza prin gară."],
+  'Weise':    ["Auf diese ___ kann man es auch machen.","You can also do it this way.","يمكن فعل ذلك بهذه الطريقة أيضًا.","Так тоже можно сделать.","Так теж можна зробити.","Bunu bu şekilde de yapabilirsin.","Se poate face și în acest fel."],
+  'Wiese':    ["Die Kühe stehen auf der grünen ___.","The cows are standing on the green meadow.","تقف الأبقار على المرج الأخضر.","Коровы стоят на зелёном лугу.","Корови стоять на зеленому лузі.","İnekler yeşil çayırda duruyor.","Vacile stau pe pajiștea verde."],
+  'zeigen':   ["Kannst du mir bitte den Weg ___?","Can you please show me the way?","هل يمكنك أن تُريني الطريق من فضلك؟","Ты можешь показать мне дорогу, пожалуйста?","Ти можеш показати мені дорогу, будь ласка?","Bana yolu gösterebilir misin?","Poți să-mi arăți drumul, te rog?"],
+  'Ziegen':   ["Auf dem Bauernhof gibt es Kühe und ___.","On the farm there are cows and goats.","في المزرعة توجد أبقار وماعز.","На ферме есть коровы и козы.","На фермі є корови та кози.","Çiftlikte inekler ve keçiler var.","La fermă sunt vaci și capre."],
+  'steil':    ["Der Berg ist sehr ___.","The mountain is very steep.","الجبل شديد الانحدار.","Гора очень крутая.","Гора дуже крута.","Dağ çok dik.","Muntele este foarte abrupt."],
+  'Stiel':    ["Die Rose hat einen langen ___.","The rose has a long stem.","للوردة ساق طويلة.","У розы длинный стебель.","У троянди довге стебло.","Gülün uzun bir sapı var.","Trandafirul are o tulpină lungă."],
+  'meine':    ["Das ist ___ Schwester.","This is my sister.","هذه أختي.","Это моя сестра.","Це моя сестра.","Bu benim kız kardeşim.","Aceasta este sora mea."],
+  'Miene':    ["Sie macht eine freundliche ___.","She puts on a friendly expression.","ترسم على وجهها ملامح ودّية.","У неё приветливое выражение лица.","У неї привітний вираз обличчя.","Yüzünde dostça bir ifade var.","Are o expresie prietenoasă."],
+  'Schein':   ["Die Lampe gibt einen warmen ___.","The lamp gives off a warm glow.","يعطي المصباح وهجًا دافئًا.","Лампа даёт тёплый свет.","Лампа дає тепле сяйво.","Lamba sıcak bir ışık veriyor.","Lampa dă o lumină caldă."],
+  'schien':   ["Gestern ___ die Sonne den ganzen Tag.","Yesterday the sun shone all day.","أمس أشرقت الشمس طوال اليوم.","Вчера солнце светило весь день.","Вчора сонце світило цілий день.","Dün güneş bütün gün parladı.","Ieri a strălucit soarele toată ziua."],
+  'heiß':     ["Im Sommer ist es hier sehr ___.","In summer it is very hot here.","في الصيف يكون الجو هنا حارًا جدًا.","Летом здесь очень жарко.","Влітку тут дуже спекотно.","Yazın burası çok sıcak.","Vara aici este foarte cald."],
+  'hieß':     ["Früher ___ die Straße anders.","The street used to have a different name.","كان اسم الشارع مختلفًا في السابق.","Раньше улица называлась по-другому.","Раніше вулиця називалася інакше.","Sokağın adı eskiden farklıydı.","Înainte, strada se numea altfel."],
+  'weiß':     ["Ich ___ nicht, wo mein Schlüssel ist.","I do not know where my key is.","لا أعرف أين مفتاحي.","Я не знаю, где мой ключ.","Я не знаю, де мій ключ.","Anahtarımın nerede olduğunu bilmiyorum.","Nu știu unde este cheia mea."],
+  'wies':     ["Der Polizist ___ den Autofahrer in die richtige Richtung.","The police officer directed the driver in the right direction.","وجّه الشرطي السائق إلى الاتجاه الصحيح.","Полицейский указал водителю нужное направление.","Поліцейський вказав водієві правильний напрямок.","Polis sürücüyü doğru yöne yönlendirdi.","Polițistul a indicat șoferului direcția corectă."],
+  'bleiben':  ["Wir wollen heute zu Hause ___.","We want to stay at home today.","نريد أن نبقى في البيت اليوم.","Мы хотим сегодня остаться дома.","Ми хочемо сьогодні залишитися вдома.","Bugün evde kalmak istiyoruz.","Vrem să rămânem acasă azi."],
+  'blieben':  ["Gestern ___ wir den ganzen Tag zu Hause.","Yesterday we stayed at home all day.","أمس بقينا في البيت طوال اليوم.","Вчера мы весь день оставались дома.","Вчора ми цілий день залишалися вдома.","Dün bütün gün evde kaldık.","Ieri am rămas acasă toată ziua."],
+  'schreiben':["Die Schüler ___ gerade einen Test.","The students are writing a test right now.","يكتب الطلاب اختبارًا الآن.","Ученики сейчас пишут тест.","Учні зараз пишуть тест.","Öğrenciler şu anda bir sınav yazıyor.","Elevii scriu acum un test."],
+  'schrieben':["Gestern ___ die Schüler einen Test.","Yesterday the students wrote a test.","أمس كتب الطلاب اختبارًا.","Вчера ученики писали тест.","Вчора учні писали тест.","Dün öğrenciler bir sınav yazdı.","Ieri elevii au scris un test."],
+  'reiben':   ["Jetzt ___ wir uns die kalten Hände.","Now we are rubbing our cold hands.","الآن نفرك أيدينا الباردة.","Сейчас мы растираем свои холодные руки.","Зараз ми розтираємо наші холодні руки.","Şimdi soğuk ellerimizi ovuyoruz.","Acum ne frecăm mâinile reci."],
+  'rieben':   ["Gestern ___ wir uns die kalten Hände.","Yesterday we rubbed our cold hands.","أمس فركنا أيدينا الباردة.","Вчера мы растирали свои холодные руки.","Вчора ми розтирали наші холодні руки.","Dün soğuk ellerimizi ovduk.","Ieri ne-am frecat mâinile reci."],
+  'leihen':   ["Kannst du mir bitte dein Fahrrad ___?","Can you please lend me your bicycle?","هل يمكنك أن تعيرني دراجتك من فضلك؟","Можешь одолжить мне свой велосипед, пожалуйста?","Можеш позичити мені свій велосипед, будь ласка?","Bana bisikletini ödünç verebilir misin?","Poți să-mi împrumuți bicicleta ta, te rog?"],
+  'liehen':   ["Gestern ___ wir uns ein Auto.","Yesterday we borrowed a car.","أمس استعرنا سيارة.","Вчера мы взяли на время машину.","Вчора ми позичили автомобіль.","Dün bir araba ödünç aldık.","Ieri ne-am împrumutat o mașină."],
+  'steigen':  ["Seit Wochen ___ die Preise immer weiter.","Prices have been rising further and further for weeks.","ترتفع الأسعار باستمرار منذ أسابيع.","Уже несколько недель цены всё растут и растут.","Уже кілька тижнів ціни все зростають і зростають.","Haftalardır fiyatlar durmadan yükseliyor.","De săptămâni, prețurile cresc tot mai mult."],
+  'stiegen':  ["Letztes Jahr ___ die Preise stark.","Last year prices rose sharply.","في العام الماضي ارتفعت الأسعار بشدّة.","В прошлом году цены сильно выросли.","Минулого року ціни сильно зросли.","Geçen yıl fiyatlar çok yükseldi.","Anul trecut prețurile au crescut mult."],
+  'schweigen':["Im Unterricht müssen alle jetzt ___.","In class everyone has to be quiet now.","في الدرس يجب على الجميع الصمت الآن.","На уроке все должны сейчас молчать.","На уроці всі мають зараз мовчати.","Derste şimdi herkesin susması gerekiyor.","La oră toți trebuie să tacă acum."],
+  'schwiegen':["Als der Lehrer kam, ___ alle Kinder.","When the teacher came, all the children fell silent.","عندما جاء المعلم صمت جميع الأطفال.","Когда пришёл учитель, все дети замолчали.","Коли прийшов учитель, усі діти замовкли.","Öğretmen geldiğinde bütün çocuklar sustu.","Când a venit profesorul, toți copiii au tăcut."],
+  'treiben':  ["Heute ___ wir Sport im Park.","Today we are doing sport in the park.","اليوم نمارس الرياضة في الحديقة.","Сегодня мы занимаемся спортом в парке.","Сьогодні ми займаємося спортом у парку.","Bugün parkta spor yapıyoruz.","Azi facem sport în parc."],
+  'trieben':  ["Früher ___ wir viel Sport.","In the past we did a lot of sport.","في الماضي كنا نمارس الرياضة كثيرًا.","Раньше мы много занимались спортом.","Раніше ми багато займалися спортом.","Eskiden çok spor yapardık.","Înainte făceam mult sport."],
+  'meiden':   ["Ich möchte Stress im Büro ___.","I would like to avoid stress in the office.","أريد تجنّب التوتر في المكتب.","Я хочу избегать стресса в офисе.","Я хочу уникати стресу в офісі.","Ofiste stresten kaçınmak istiyorum.","Vreau să evit stresul de la birou."],
+  'mieden':   ["Früher ___ wir die laute Straße.","In the past we avoided the noisy street.","في الماضي كنا نتجنّب الشارع الصاخب.","Раньше мы избегали шумной улицы.","Раніше ми уникали шумної вулиці.","Eskiden gürültülü sokaktan kaçınırdık.","Înainte evitam strada zgomotoasă."],
+  'scheinen': ["Jetzt ___ die Sterne hell.","Now the stars are shining brightly.","الآن تلمع النجوم بشدّة.","Сейчас звёзды ярко светят.","Зараз зорі яскраво світять.","Şimdi yıldızlar parlak parlıyor.","Acum stelele strălucesc puternic."],
+  'schienen': ["Gestern ___ die Sterne hell.","Yesterday the stars shone brightly.","أمس لمعت النجوم بشدّة.","Вчера звёзды ярко светили.","Вчора зорі яскраво світили.","Dün yıldızlar parlak parladı.","Ieri stelele au strălucit puternic."],
+  'weisen':   ["Die Schilder ___ den Touristen gerade den Weg.","The signs are showing the tourists the way right now.","اللافتات تدلّ السياح على الطريق الآن.","Указатели сейчас показывают туристам дорогу.","Вказівники зараз показують туристам дорогу.","Tabelalar şu anda turistlere yolu gösteriyor.","Indicatoarele le arată acum turiștilor drumul."],
+  'wiesen':   ["Gestern ___ die Schilder den Touristen den Weg.","Yesterday the signs showed the tourists the way.","أمس دلّت اللافتات السياح على الطريق.","Вчера указатели показывали туристам дорогу.","Вчора вказівники показували туристам дорогу.","Dün tabelalar turistlere yolu gösterdi.","Ieri indicatoarele le-au arătat turiștilor drumul."]
+};
+function sentText(w){ return SENT[w][0].replace('___',w); }
+function gapHtml(w){ return esc(SENT[w][0]).replace('___','<span class="gap">______</span>'); }
+function fillHtml(w){ return esc(SENT[w][0]).replace('___','<b class="fill">'+w+'</b>'); }
+function sentTrHtml(w){
+  if(LANG==='none') return '';
+  return '<div class="sentTr"'+langAttr()+'>'+esc(SENT[w][LANGS.indexOf(LANG)+1])+'</div>';
+}
+
+/* ====================================================================
+   Hilfsfunktionen
+   ==================================================================== */
+const $  = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function pool(){ const g=$('#group').value; return PAIRS.filter(p=>g==='alle'||p.t===g); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- Hilfssprache ---------- */
+let LANG='none';
+const LS_KEY='hoertraining_hilfssprache';
+try{ const s=localStorage.getItem(LS_KEY); if(s && LANGS.indexOf(s)>=0) LANG=s; }catch(e){}
+let NOSPEAK=false;
+
+function langAttr(){ return ' lang="'+LANG+'"'+(LANG==='ar'?' dir="rtl"':''); }
+function tr(key,args){
+  if(LANG==='none') return '';
+  const e=T[key]; if(!e) return '';
+  let s=e[LANGS.indexOf(LANG)]||'';
+  if(args) s=s.replace(/\{(\w+)\}/g,(m,k)=>args[k]!==undefined?args[k]:m);
+  return s;
+}
+function trSpan(s){ return s?'<span class="tr"'+langAttr()+'>'+s+'</span>':''; }
+/* Deutsch + Übersetzung darunter */
+function bi(de,key,args){ return de+trSpan(tr(key,args)); }
+/* Deutsch / Übersetzung in einer Zeile (für Optionen) */
+function plainBi(de,key,args){ const s=tr(key,args); return s?de+' · '+s:de; }
+function mean(w){ if(LANG==='none') return ''; const e=M[w]; return e?(e[LANGS.indexOf(LANG)]||''):''; }
+function meanSpan(w){ return trSpan(mean(w)); }
+function meanPair(it){
+  if(LANG==='none') return '';
+  return '<small>'+it.word+' – '+mean(it.word)+'<br>'+it.other+' – '+mean(it.other)+'</small>';
+}
+
+/* ---------- Sprachausgabe ---------- */
+const synth = window.speechSynthesis || null;
+let voices = [];
+function initVoices(){
+  if(!synth){ showNoVoice(true); return; }
+  voices = synth.getVoices().filter(v=>/^de/i.test(v.lang));
+  voices.sort((a,b)=>(/de[-_]DE/i.test(b.lang)?1:0)-(/de[-_]DE/i.test(a.lang)?1:0));
+  const sel=$('#voice'); const keep=sel.value;
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=i; o.textContent=v.name+' ('+v.lang+')'+(v.localService?' · offline':'');
+    sel.appendChild(o);
+  });
+  if(keep && sel.querySelector('option[value="'+keep+'"]')) sel.value=keep;
+  showNoVoice(voices.length===0);
+}
+function showNoVoice(flag){
+  const box=$('#novoice');
+  box.hidden=!flag;
+  box.innerHTML=bi('Es wurde keine deutsche Stimme gefunden. Bitte in den Geräteeinstellungen eine deutsche Sprachausgabe installieren (Windows: Sprache → Deutsch; Android/iOS: Sprachausgabe → Deutsch) und die Seite neu laden.','novoice');
+}
+function speak(word){
+  if(!synth) return;
+  synth.cancel();
+  setTimeout(()=>{
+    const u=new SpeechSynthesisUtterance(word);
+    u.lang='de-DE';
+    const v=voices[parseInt($('#voice').value||'0',10)];
+    if(v){ u.voice=v; u.lang=v.lang; }
+    u.rate=parseFloat($('#rate').value);
+    synth.speak(u);
+  },60);
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-say]');
+  if(b) speak(b.dataset.say);
+});
+
+/* ---------- statische Oberfläche ---------- */
+function updateStatic(){
+  $('#h-title').innerHTML=bi('Hörtraining: ei und ie','title');
+  $('#h-sub').innerHTML=bi('Hören – unterscheiden – schreiben','sub');
+  $('#l-voice').innerHTML=bi('Stimme','l_voice');
+  $('#l-rate').innerHTML=bi('Tempo','l_rate');
+  $('#l-audio').innerHTML=bi('Hören','l_audio');
+  $('#l-group').innerHTML=bi('Wortgruppe','l_group');
+  $('#l-count').innerHTML=bi('Anzahl Aufgaben','l_count');
+  $$('option[data-k]').forEach(o=>{ o.textContent=plainBi(o.dataset.de,o.dataset.k,o.dataset.arg?{x:o.dataset.arg}:null); });
+  $('#nav1').innerHTML=bi('1 · Entdecken','nav1');
+  $('#nav2').innerHTML=bi('2 · Hören &amp; wählen','nav2');
+  $('#nav3').innerHTML=bi('3 · Hören &amp; schreiben','nav3');
+  document.documentElement.setAttribute('data-hilfssprache',LANG);
+  if(!$('#novoice').hidden) showNoVoice(true);
+}
+
+/* ---------- Tabs ---------- */
+$$('nav button').forEach(b=>b.addEventListener('click',()=>{
+  $$('nav button').forEach(x=>x.classList.toggle('active',x===b));
+  ['t1','t2','t3'].forEach(id=>$('#'+id).hidden=(id!==b.dataset.tab));
+  if(synth) synth.cancel();
+}));
+
+/* ====================================================================
+   1 · Entdecken
+   ==================================================================== */
+const DISCOVER = {
+  s1:{
+    types:['wort'], heads:['ei','ie'],
+    title:'ei und ie in Wörtern', tk:'d1_title',
+    intro:'Hör dir die Paare an. Klicke auf ▶ bei jedem Wort. Wie klingen die Wörter mit ei, wie die Wörter mit ie?', ik:'d1_intro',
+    qs:[
+      {q:'Das Wort mit ei klingt wie …', qk:'q_ei', o:[['„ai“ (wie in Wein)','o_ai'],['langes i (wie in Tier)','o_longi']], a:0, f:'Ja: ei spricht man wie „ai“: Beine, Zeit, heiß.', fk:'f_ei'},
+      {q:'In welchem Wort hörst du ein langes i?', qk:'q_which', o:[['Zeit',null],['zieht',null]], a:1, f:'Ja: ie spricht man als langes i: zieht, Biene, hieß.', fk:'f_which'}
+    ],
+    rule:[
+      {de:'ei spricht man wie „ai“ ([aɪ]): Wein, Zeit, heiß, meine.', k:'rc1'},
+      {de:'ie spricht man als langes i ([iː]): Tier, Wiese, zieht, hieß.', k:'rc2'},
+      {de:'Tipp: ei beginnt mit a – ie bleibt bei i.', k:'rc3'}
+    ]
+  },
+  s2:{
+    types:['verb'], heads:['ei','ie'],
+    title:'ei und ie bei Verben', tk:'d2_title',
+    intro:'Hör dir die Paare an. In Spalte ei steht die Gegenwart (Infinitiv), in Spalte ie die Vergangenheit (Präteritum, Plural). Was fällt dir auf?', ik:'d2_intro',
+    qs:[
+      {q:'Welche Verbform steht in Spalte ie?', qk:'q_col', o:[['Gegenwart (Infinitiv)','o_pres'],['Vergangenheit (Präteritum)','o_pret']], a:1, f:'Genau: In Spalte ie steht die Vergangenheit.', fk:'f_col'},
+      {q:'Bei diesen Verben wird ei in der Vergangenheit zu …', qk:'q_past', o:[['ie',null],['ee',null],['ai',null]], a:0, f:'Ja: bleiben – blieben, schreiben – schrieben, steigen – stiegen.', fk:'f_past'}
+    ],
+    rule:[
+      {de:'Viele Verben haben ei im Infinitiv und ie in der Vergangenheit: bleiben – blieb, schreiben – schrieb, steigen – stieg, leihen – lieh.', k:'rd1'},
+      {de:'Das ist ein Vokalwechsel (Ablaut): ei → ie. Man lernt diese Verben zusammen mit ihren Formen.', k:'rd2'},
+      {de:'Achtung: Nicht alle Verben mit ei ändern sich. Regelmäßig: reisen – reiste.', k:'rd3'}
+    ]
+  }
+};
+
+function renderT1(){
+  const root=$('#t1'); root.innerHTML='';
+  Object.keys(DISCOVER).forEach(key=>{
+    const d=DISCOVER[key];
+    const rows=PAIRS.filter(p=>d.types.indexOf(p.t)>=0).map(p=>
+      '<tr>'+
+      '<td><div class="wcell"><button class="play" data-say="'+p.e+'" aria-label="'+p.e+' anhören">▶</button><div>'+p.e+meanSpan(p.e)+'</div></div></td>'+
+      '<td><div class="wcell"><button class="play" data-say="'+p.i+'" aria-label="'+p.i+' anhören">▶</button><div>'+p.i+meanSpan(p.i)+'</div></div></td>'+
+      '</tr>'
+    ).join('');
+    const qs=d.qs.map((q,qi)=>
+      '<div class="q" data-key="'+key+'" data-qi="'+qi+'"><b>'+bi(q.q,q.qk)+'</b><div class="opts">'+
+      q.o.map((o,oi)=>'<button class="opt" data-oi="'+oi+'">'+(o[1]?bi(o[0],o[1]):o[0])+'</button>').join('')+
+      '</div><div class="fb"></div></div>'
+    ).join('');
+    const card=document.createElement('div'); card.className='card';
+    card.innerHTML='<h2 style="margin-top:0">'+bi(d.title,d.tk)+'</h2><p>'+bi(d.intro,d.ik)+'</p>'+
+      '<table class="pairs"><thead><tr><th align="left">'+d.heads[0]+'</th><th align="left">'+d.heads[1]+'</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+      qs+
+      '<div style="margin-top:14px"><button class="btn sec" data-rule="'+key+'">'+bi('Regel aufdecken','btn_rule')+'</button></div>'+
+      '<div class="rule" data-rulebox="'+key+'" hidden><ul>'+d.rule.map(r=>'<li>'+bi(r.de,r.k)+'</li>').join('')+'</ul></div>';
+    root.appendChild(card);
+  });
+  const go=document.createElement('div'); go.className='card center';
+  go.innerHTML='<p>'+bi('Bereit? Dann trainiere jetzt das Hören.','go1')+'</p><button class="btn" id="go2">'+bi('Weiter zu Aufgabe 2 · Hören &amp; wählen','btn_go2')+'</button>';
+  root.appendChild(go);
+  $('#go2').addEventListener('click',()=>$('nav button[data-tab="t2"]').click());
+}
+$('#t1').addEventListener('click',e=>{
+  const opt=e.target.closest('.opt');
+  if(opt){
+    const q=opt.closest('.q'); const d=DISCOVER[q.dataset.key].qs[+q.dataset.qi];
+    const oi=+opt.dataset.oi;
+    q.querySelectorAll('.opt').forEach(b=>b.classList.remove('ok','bad'));
+    const fb=q.querySelector('.fb');
+    if(oi===d.a){ opt.classList.add('ok'); fb.innerHTML='✔ '+bi(d.f,d.fk); }
+    else { opt.classList.add('bad'); fb.innerHTML=bi('Noch einmal anhören und vergleichen.','f_wrong'); }
+    return;
+  }
+  const rb=e.target.closest('[data-rule]');
+  if(rb){ $('[data-rulebox="'+rb.dataset.rule+'"]').hidden=false; rb.hidden=true; }
+});
+
+/* ====================================================================
+   2 · Hören & wählen
+   ==================================================================== */
+let S2=null;
+function makeItems(n){
+  let out=[];
+  while(out.length<n) out=out.concat(shuffle(pool()));
+  return out.slice(0,n).map(p=>{
+    const side=Math.random()<.5?'e':'i';
+    return {p, side, word:p[side], other:p[side==='e'?'i':'e'], flip:Math.random()<.5};
+  });
+}
+function speakItem(it,mode){ speak(mode==='word'?it.word:sentText(it.word)); }
+function audioRowHtml(){
+  return '<div class="audiorow">'+
+    '<button class="btn sec" data-play="sentence">▶ '+bi('Satz','btn_sent')+'</button>'+
+    '<button class="btn sec" data-play="word">▶ '+bi('Wort','btn_word')+'</button></div>';
+}
+function trWrapHtml(show,it){
+  if(LANG==='none') return '';
+  return '<div class="trwrap">'+(show?sentTrHtml(it.word):'<button class="btn sec" data-trshow="1">'+bi('Übersetzung anzeigen','btn_showtr')+'</button>')+'</div>';
+}
+function bindCommon(sel,it,st){
+  $$(sel+' [data-play]').forEach(b=>b.addEventListener('click',()=>{
+    speakItem(it,b.dataset.play);
+    const i=$('#in3'); if(i && !i.disabled) i.focus();
+  }));
+  const tb=$(sel+' [data-trshow]');
+  if(tb) tb.addEventListener('click',()=>{ st.showTr=true; $(sel+' .trwrap').innerHTML=sentTrHtml(it.word); });
+}
+function startT2(){
+  S2={items:makeItems(parseInt($('#count').value,10)), i:0, score:0, wrong:[], done:false, sel:null, showTr:false};
+  renderT2();
+}
+function renderT2(){
+  const root=$('#t2');
+  if(!S2){
+    root.innerHTML='<div class="card center"><h2 style="margin-top:0">'+bi('Hören &amp; wählen','t2_title')+'</h2>'+
+      '<p>'+bi('Lies den Satz und höre zu. Welches Wort fehlt? Wähle: a oder b.','t2_intro')+'</p>'+
+      '<button class="btn" id="start2">'+bi('Starten','btn_start')+'</button></div>';
+    $('#start2').addEventListener('click',startT2); return;
+  }
+  if(S2.i>=S2.items.length){ resultT2(); return; }
+  const it=S2.items[S2.i];
+  const opts=it.flip?[it.other,it.word]:[it.word,it.other];
+  const pct=Math.round(S2.i/S2.items.length*100);
+  const a=S2.i+1, b=S2.items.length;
+  root.innerHTML='<div class="card">'+
+    '<div class="prog"><span>'+bi('Aufgabe '+a+' / '+b,'prog',{a:a,b:b})+'</span><span>'+bi('Richtig: '+S2.score,'rcount',{a:S2.score})+'</span></div>'+
+    '<div class="bar"><div style="width:'+pct+'%"></div></div>'+
+    '<div class="center"><p>'+bi('Welches Wort fehlt?','q2')+'</p>'+
+    '<div class="sent" id="sent2">'+gapHtml(it.word)+'</div>'+
+    trWrapHtml(S2.showTr||S2.done,it)+
+    audioRowHtml()+
+    '<div class="choices">'+
+      '<button class="choice" data-w="'+opts[0]+'">a) '+opts[0]+'</button>'+
+      '<button class="choice" data-w="'+opts[1]+'">b) '+opts[1]+'</button>'+
+    '</div>'+
+    '<div id="fb2"></div>'+
+    '<button class="btn" id="next2" hidden>'+bi('Weiter','btn_next')+'</button></div></div>';
+  bindCommon('#t2',it,S2);
+  $$('#t2 .choice').forEach(btn=>btn.addEventListener('click',()=>answerT2(btn.dataset.w,it)));
+  $('#next2').addEventListener('click',()=>{S2.i++;S2.done=false;S2.sel=null;S2.showTr=false;renderT2();});
+  if(S2.done){ showAnswerT2(it); }
+  else if(!NOSPEAK){ speakItem(it,$('#audio').value); }
+}
+function answerT2(chosen,it){
+  if(S2.done) return;
+  S2.done=true; S2.sel=chosen;
+  if(chosen===it.word) S2.score++; else S2.wrong.push(it);
+  showAnswerT2(it);
+  $('#next2').focus();
+}
+function showAnswerT2(it){
+  const ok=(S2.sel===it.word);
+  $$('#t2 .choice').forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.w===it.word) b.classList.add('ok');
+    else if(b.dataset.w===S2.sel) b.classList.add('bad');
+  });
+  $('#sent2').innerHTML=fillHtml(it.word);
+  const tw=$('#t2 .trwrap'); if(tw) tw.innerHTML=sentTrHtml(it.word);
+  const w='<b>'+it.word+'</b>', c='<b>'+S2.sel+'</b>';
+  $('#fb2').innerHTML = ok
+    ? '<div class="fbbox ok">'+bi('Richtig: '+w,'fb_right',{w:w})+meanPair(it)+'</div>'
+    : '<div class="fbbox bad">'+bi('Nicht ganz. Richtig ist '+w+' – nicht '+c+'.','fb2_wrong',{w:w,c:c})+meanPair(it)+'</div>';
+  $('#next2').hidden=false;
+}
+function resultT2(){
+  const n=S2.items.length;
+  const root=$('#t2');
+  root.innerHTML='<div class="card center"><h2 style="margin-top:0">'+bi('Ergebnis','res_title')+'</h2>'+
+    '<div class="score">'+S2.score+' / '+n+'</div>'+
+    (S2.wrong.length
+      ? '<p>'+bi('Das war schwierig:','hard')+'</p><ul class="wrongs">'+S2.wrong.map(w=>
+          '<li><button class="play" style="width:34px;height:34px;font-size:.9rem" data-say="'+w.word+'">▶</button> <b>'+w.word+'</b> ('+w.p.e+' – '+w.p.i+')'+meanSpan(w.word)+'<div style="font-size:.85em">'+fillHtml(w.word)+'</div></li>').join('')+'</ul>'
+      : '<p>'+bi('Perfekt – keine Fehler!','perfect')+'</p>')+
+    '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'+
+    (S2.wrong.length?'<button class="btn sec" id="redo2">'+bi('Nur Fehler üben','btn_redo')+'</button>':'')+
+    '<button class="btn" id="again2">'+bi('Neu starten','btn_again')+'</button>'+
+    '<button class="btn sec" id="to3">'+bi('Weiter zu Aufgabe 3','btn_to3')+'</button></div></div>';
+  const r=$('#redo2'); if(r) r.addEventListener('click',()=>{
+    S2={items:shuffle(S2.wrong).map(x=>({p:x.p,side:x.side,word:x.word,other:x.other,flip:Math.random()<.5})), i:0, score:0, wrong:[], done:false, sel:null, showTr:false}; renderT2();
+  });
+  $('#again2').addEventListener('click',startT2);
+  $('#to3').addEventListener('click',()=>$('nav button[data-tab="t3"]').click());
+}
+
+/* ====================================================================
+   3 · Hören & schreiben
+   ==================================================================== */
+let S3=null;
+function startT3(){
+  S3={items:makeItems(parseInt($('#count').value,10)), i:0, score:0, wrong:[], checked:false, typed:'', res:null, showTr:false};
+  renderT3();
+}
+function checkWord(input,item){
+  const a=input.trim(); if(!a) return null;
+  const t=item.word;
+  if(a===t) return {ok:true};
+  const al=a.toLowerCase(), tl=t.toLowerCase();
+  if(al===tl) return {ok:true,kind:'case'};
+  if((ALT[tl]||[]).indexOf(al)>=0) return {ok:true,kind:'hom'};
+  return {ok:false};
+}
+function renderT3(){
+  const root=$('#t3');
+  if(!S3){
+    root.innerHTML='<div class="card center"><h2 style="margin-top:0">'+bi('Hören &amp; schreiben','t3_title')+'</h2>'+
+      '<p>'+bi('Lies den Satz und höre zu. Schreibe das fehlende Wort. Mit der Eingabetaste prüfst du und gehst weiter.','t3_intro')+'</p>'+
+      '<button class="btn" id="start3">'+bi('Starten','btn_start')+'</button></div>';
+    $('#start3').addEventListener('click',startT3); return;
+  }
+  if(S3.i>=S3.items.length){ resultT3(); return; }
+  const it=S3.items[S3.i];
+  const pct=Math.round(S3.i/S3.items.length*100);
+  const a=S3.i+1, b=S3.items.length;
+  root.innerHTML='<div class="card">'+
+    '<div class="prog"><span>'+bi('Aufgabe '+a+' / '+b,'prog',{a:a,b:b})+'</span><span>'+bi('Richtig: '+S3.score,'rcount',{a:S3.score})+'</span></div>'+
+    '<div class="bar"><div style="width:'+pct+'%"></div></div>'+
+    '<div class="center"><p>'+bi('Schreibe das fehlende Wort.','q3')+'</p>'+
+    '<div class="sent" id="sent3">'+gapHtml(it.word)+'</div>'+
+    trWrapHtml(S3.showTr||S3.checked,it)+
+    audioRowHtml()+
+    '<div class="writerow"><input type="text" id="in3" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Wort schreiben">'+
+    '<button class="btn" id="chk3">'+bi('Prüfen','btn_check')+'</button></div>'+
+    '<div id="fb3"></div></div></div>';
+  const inp=$('#in3');
+  bindCommon('#t3',it,S3);
+  const act=()=>{ if(S3.checked){ S3.i++; S3.checked=false; S3.typed=''; S3.res=null; S3.showTr=false; renderT3(); } else { doCheck(it); } };
+  $('#chk3').addEventListener('click',act);
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();act();} });
+  if(S3.checked){
+    inp.value=S3.typed; inp.disabled=true;
+    showFeedbackT3(it);
+  } else {
+    inp.focus();
+    if(!NOSPEAK) speakItem(it,$('#audio').value);
+  }
+}
+function doCheck(it){
+  const inp=$('#in3'); const r=checkWord(inp.value,it);
+  if(r===null){ $('#fb3').innerHTML='<div class="fbbox bad">'+bi('Bitte schreibe zuerst ein Wort.','empty')+'</div>'; return; }
+  S3.checked=true; S3.typed=inp.value.trim(); S3.res=r; inp.disabled=true;
+  if(r.ok) S3.score++; else S3.wrong.push({p:it.p,side:it.side,word:it.word,other:it.other,typed:S3.typed});
+  showFeedbackT3(it);
+  $('#chk3').focus();
+}
+function showFeedbackT3(it){
+  const r=S3.res, typed=S3.typed;
+  const w='<b>'+it.word+'</b>';
+  $('#sent3').innerHTML=fillHtml(it.word);
+  const tw=$('#t3 .trwrap'); if(tw) tw.innerHTML=sentTrHtml(it.word);
+  if(r.ok){
+    let note='';
+    if(r.kind==='case') note='<small>'+bi('Achte auf die Groß- und Kleinschreibung: '+w,'case_note',{w:w})+'</small>';
+    if(r.kind==='hom')  note='<small>'+bi('„'+esc(typed)+'“ klingt genauso – gemeint war hier: '+w,'hom_note',{a:esc(typed),w:w})+'</small>';
+    $('#fb3').innerHTML='<div class="fbbox ok">'+bi('Richtig: '+w,'fb_right',{w:w})+note+meanPair(it)+'</div>';
+  } else {
+    const o='<b>'+it.other+'</b>';
+    $('#fb3').innerHTML='<div class="fbbox bad">'+bi('Nicht ganz. Richtig ist: '+w,'wrong3',{w:w})+
+      '<small>'+bi('Du hast „'+esc(typed)+'“ geschrieben. Achtung: Das Gegenstück ist '+o+'.','wrong3b',{t:esc(typed),o:o})+'</small>'+
+      meanPair(it)+'</div>';
+  }
+  $('#chk3').innerHTML=bi('Weiter','btn_next');
+}
+function resultT3(){
+  const n=S3.items.length;
+  const root=$('#t3');
+  const wlabel=LANG==='none'?'geschrieben':('geschrieben / '+tr('written'));
+  root.innerHTML='<div class="card center"><h2 style="margin-top:0">'+bi('Ergebnis','res_title')+'</h2>'+
+    '<div class="score">'+S3.score+' / '+n+'</div>'+
+    (S3.wrong.length
+      ? '<p>'+bi('Das war schwierig:','hard')+'</p><ul class="wrongs">'+S3.wrong.map(w=>
+          '<li><button class="play" style="width:34px;height:34px;font-size:.9rem" data-say="'+w.word+'">▶</button> <b>'+w.word+'</b> ('+wlabel+': '+esc(w.typed)+'; '+w.p.e+' – '+w.p.i+')'+meanSpan(w.word)+'<div style="font-size:.85em">'+fillHtml(w.word)+'</div></li>').join('')+'</ul>'
+      : '<p>'+bi('Perfekt – keine Fehler!','perfect')+'</p>')+
+    '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'+
+    (S3.wrong.length?'<button class="btn sec" id="redo3">'+bi('Nur Fehler üben','btn_redo')+'</button>':'')+
+    '<button class="btn" id="again3">'+bi('Neu starten','btn_again')+'</button></div></div>';
+  const r=$('#redo3'); if(r) r.addEventListener('click',()=>{
+    S3={items:shuffle(S3.wrong).map(x=>({p:x.p,side:x.side,word:x.word,other:x.other})), i:0, score:0, wrong:[], checked:false, typed:'', res:null, showTr:false}; renderT3();
+  });
+  $('#again3').addEventListener('click',startT3);
+}
+
+/* ====================================================================
+   Start & Ereignisse
+   ==================================================================== */
+function renderAll(){
+  updateStatic();
+  renderT1(); renderT2(); renderT3();
+}
+$('#lang').value=LANG;
+$('#lang').addEventListener('change',()=>{
+  LANG=$('#lang').value;
+  try{ localStorage.setItem(LS_KEY,LANG); }catch(e){}
+  NOSPEAK=true; renderAll(); NOSPEAK=false;
+});
+['group','count'].forEach(id=>$('#'+id).addEventListener('change',()=>{S2=null;S3=null;renderT2();renderT3();}));
+
+if(synth){ synth.onvoiceschanged=initVoices; }
+NOSPEAK=true;
+renderAll();
+NOSPEAK=false;
+initVoices();
+</script>
+</body>
+</html>
