@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>weil-Sätze: Wortstellung (A2)</title>
+<style>
+/* Designsprache „Treffpunkt“ (Cornelsen), wie in den Lektionsdateien – ohne abgerundete Ecken */
+:root{--g:#84c341;--gd:#5f9f26;--gs:#eef6e0;--navy:#2f3f98;--hand:#3a46a6;--cyan:#00a9e6;--orange:#f08a24;--coral:#ee5a3a;
+  --ink:#1d1d1b;--muted:#666;--line:#e2e2e2;--peach:#e3c4b4;
+  --ok:#15803d;--ok-soft:#dcfce7;--bad:#b91c1c;--bad-soft:#fee2e2;--warn:#b45309;--warn-soft:#fef3c7;--fokus:#e6f6fd;
+  --shadow:0 1px 2px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.05)}
+*{box-sizing:border-box;border-radius:0 !important}
+html,body{margin:0;padding:0}
+body{font:18px/1.5 "TPSans","Fira Sans","Source Sans 3","Segoe UI",Calibri,Carlito,system-ui,-apple-system,sans-serif;background:#fff;color:var(--ink);-webkit-text-size-adjust:100%}
+button,select,input{font-family:inherit;color:inherit}
+header.top{background:#fff}
+header.top .wrap{position:relative;max-width:1000px;margin:0 auto;padding:26px 20px 18px 150px;min-height:150px}
+header.top .chnum{position:absolute;left:0;top:0;bottom:0;width:118px;background:var(--g);color:#fff;font-size:3.4rem;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
+header.top .kicker{color:var(--muted);font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:.78rem}
+header.top h1{color:var(--gd);font-size:2.6rem;font-weight:700;margin:2px 0 8px;line-height:1.15}
+.progress{display:flex;align-items:center;font-size:.95rem;flex-wrap:wrap}
+.progress span{margin-right:12px;font-weight:600}
+.bar{flex:1;min-width:120px;max-width:340px;height:10px;background:#e4efd3;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--g);transition:width .3s}
+nav.jump{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);border-bottom:2px solid var(--g)}
+nav.jump .wrap{max-width:1000px;margin:0 auto;padding:8px 14px;display:flex;align-items:center;flex-wrap:wrap}
+nav.jump .sp{flex:1}
+.navbtn{font-weight:700;font-size:1rem;padding:6px 16px;border:2px solid var(--g);background:#fff;cursor:pointer;margin-right:10px;min-height:42px}
+.navbtn[aria-expanded=true]{background:var(--g);color:#14290a}
+.navbtn .tr{color:inherit;opacity:.8}
+select{font-size:1rem;padding:7px 10px;border:2px solid var(--line);background:#fff;min-height:42px;margin-right:6px}
+.link{background:none;border:none;color:var(--navy);font-size:.95rem;cursor:pointer;padding:6px 8px;font-weight:600}
+main{max-width:760px;margin:0 auto;padding:18px 14px 60px}
+.navp{max-width:1000px;margin:0 auto;background:#fff;border:1px solid var(--line);border-top:5px solid var(--navy);box-shadow:var(--shadow);padding:10px 14px;margin-top:12px;margin-bottom:0}
+.navp .nrow{margin:6px 0;display:flex;align-items:center;flex-wrap:wrap}
+.nl{font-weight:700;font-size:.9rem;min-width:100px;color:var(--muted);margin-right:4px;text-transform:uppercase;letter-spacing:.05em}
+.nb{min-width:40px;min-height:40px;padding:4px 10px;border:2px solid var(--line);background:#fff;font-size:1rem;margin:2px 5px 2px 0;cursor:pointer;font-weight:600}
+.nb:hover{border-color:var(--gd)}
+.nb.ok{background:var(--ok-soft);border-color:var(--ok)}
+.nb.part{background:var(--warn-soft);border-color:var(--warn)}
+.nb.cur{outline:3px solid var(--gd);outline-offset:1px}
+.card{background:#fff;border:1px solid var(--line);border-top:5px solid var(--gd);box-shadow:var(--shadow);padding:16px 20px 14px;margin-bottom:18px}
+.card.disc{border:2px dashed var(--gd);background:linear-gradient(180deg,#fcfef8,#f4f9ea);box-shadow:none}
+.dtag{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--gd);margin-bottom:2px}
+h2{font-size:1.3rem;margin:0 0 6px;line-height:1.3}
+p{margin:0 0 10px}
+.muted{color:var(--muted);font-size:.95rem}
+.x .de{display:block}
+.x .tr{display:block;font-size:.88em;font-weight:400;color:var(--hand);margin-top:2px}
+h2 .tr{font-size:.8em}
+.btn{display:inline-block;min-height:44px;padding:8px 20px;border:2px solid var(--gd);background:var(--gd);color:#fff;font-size:1rem;font-weight:700;cursor:pointer;margin:6px 8px 4px 0;text-align:center;vertical-align:top}
+.btn:hover{background:#74b232;border-color:#74b232}
+.btn .tr{font-size:.78rem;font-weight:400;color:#eaf5dc}
+.btn:disabled{opacity:.45;cursor:default;background:var(--gd);border-color:var(--gd)}
+.btn.sec{background:#fff;color:var(--ink);border:2px solid var(--line)}
+.btn.sec:hover{border-color:#aaa;background:#faf9f6}
+.btn.sec .tr{color:var(--hand)}
+.ex{border-top:1px solid #f0efe9;padding:12px 0}
+.ex:first-of-type{border-top:none}
+.row{margin:4px 0;font-size:1.05rem}
+.tag{display:inline-block;min-width:118px;font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.w{display:inline-block;margin:3px 5px 3px 0;padding:5px 12px;border:1.5px solid var(--peach);background:#fff;font-size:1.05rem;color:inherit;cursor:pointer;min-height:40px;box-shadow:0 1px 2px rgba(0,0,0,.08);line-height:1.35}
+.w:hover{border-color:var(--gd)}
+.w.plain{border:none;background:none;padding:6px 2px;cursor:default;min-height:0;box-shadow:none;margin:2px 3px 2px 0}
+.w.plain:hover{border:none}
+.w.bad{border-color:var(--bad);background:var(--bad-soft);animation:sh .3s}
+.w.v,.v{background:#fde68a;border-color:#f59e0b;font-weight:700}
+.w.plain.v{border:none;padding:3px 7px}
+.k{font-weight:700;color:var(--navy)}
+@keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.msg{font-size:.96rem;margin:8px 0;padding:8px 12px}
+.msg.no{background:var(--bad-soft);color:#7f1d1d}
+.msg.no .tr{color:#7f1d1d;opacity:.85}
+.msg.ok{background:var(--ok-soft);color:#14532d}
+.msg.ok .tr{color:#14532d;opacity:.85}
+.msg.info{background:var(--warn-soft);color:#78350f}
+.msg.info .tr{color:#78350f;opacity:.85}
+.opt{display:block;width:100%;text-align:left;min-height:46px;padding:8px 14px;margin:6px 0;border:2px solid var(--line);background:#fff;font-size:1.02rem;cursor:pointer}
+.opt:hover{border-color:var(--gd)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft);color:#7f1d1d}
+.opt.good{border-color:var(--ok);background:var(--ok-soft)}
+.rule{margin-top:14px;padding:12px 14px;background:var(--ok-soft);color:#14532d;border-left:5px solid var(--ok)}
+.rule b.h{display:block;font-size:.76rem;text-transform:uppercase;letter-spacing:.1em;color:#14532d;margin-bottom:6px}
+.rule b.h .tr{text-transform:none;letter-spacing:0;color:#14532d}
+.rule .tr{color:#14532d;opacity:.9}
+.formula{margin:10px 0;font-size:1.05rem}
+.formula span{display:inline-block;padding:5px 11px;margin:3px 5px 3px 0;background:#fff;border:1.5px solid var(--peach)}
+.formula span.k2{background:#e8ebfa;border-color:var(--navy);color:var(--navy);font-weight:700}
+.formula span.v2{background:#fde68a;border-color:#f59e0b;font-weight:700}
+.bubble{background:var(--fokus);border-left:5px solid var(--cyan);padding:9px 14px;font-size:1.1rem;margin-bottom:12px;display:inline-block;font-weight:600}
+.build{font-size:1.1rem;margin:6px 0 4px}
+.slot{display:block;min-height:56px;border:2px dashed #c9bfae;padding:6px;margin:6px 0 10px;background:#fcfaf6}
+.slot .w{background:var(--gs);border-color:var(--gd)}
+.pool{margin:6px 0 10px;padding:10px;background:#f4f0e9;min-height:52px}
+.score{font-size:2.2rem;font-weight:700;color:var(--gd)}
+table{border-collapse:collapse;width:100%;margin:8px 0}
+td{padding:8px 4px;border-bottom:1px solid #f0efe9;font-size:1rem;vertical-align:top}
+td:last-child{text-align:right;font-weight:700}
+td .tr{font-weight:400;font-size:.8rem}
+ol.steps{padding-left:22px;margin:8px 0 14px}
+ol.steps li{margin:6px 0}
+@media (max-width:640px){
+  header.top .wrap{padding:20px 14px 14px 96px;min-height:120px}
+  header.top .chnum{width:76px;font-size:2.4rem}
+  header.top h1{font-size:1.9rem}
+  .card{padding:14px 12px 10px}
+  nav.jump .sp{display:none}
+  .tag{display:block;min-width:0}
+}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="app"></div></div>
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Sprachen ---------- */
+  var LANGS = ["de", "en", "fa", "ar", "ru", "uk", "tr", "ro"];
+  var LNAMES = { de: "Deutsch (ohne Übersetzung)", en: "English", fa: "فارسی", ar: "العربية", ru: "Русский", uk: "Українська", tr: "Türkçe", ro: "Română" };
+  var LI = {}; (function () { for (var i = 0; i < LANGS.length; i++) { LI[LANGS[i]] = i; } })();
+
+  /* Reihenfolge: de, en, fa, ar, ru, uk, tr, ro */
+  var I = {
+    start: ["Los geht’s", "Let’s go", "شروع کنیم", "هيا نبدأ", "Поехали", "Починаймо", "Başlayalım", "Să începem"],
+    restart: ["Neu starten", "Restart", "شروع دوباره", "البدء من جديد", "Начать заново", "Почати заново", "Yeniden başla", "Începe din nou"],
+    nav: ["Aufgaben", "Tasks", "تمرین‌ها", "المهام", "Задания", "Завдання", "Görevler", "Exerciții"],
+    check: ["Prüfen", "Check", "بررسی", "تحقق", "Проверить", "Перевірити", "Kontrol et", "Verifică"],
+    reset: ["Zurücksetzen", "Reset", "پاک کردن", "إعادة الضبط", "Сбросить", "Скинути", "Sıfırla", "Resetează"],
+    next: ["Nächste Aufgabe", "Next task", "تمرین بعدی", "المهمة التالية", "Следующее задание", "Наступне завдання", "Sonraki görev", "Exercițiul următor"],
+    cont: ["Weiter", "Continue", "ادامه", "متابعة", "Дальше", "Далі", "Devam", "Mai departe"],
+    practise: ["Jetzt üben", "Practise now", "حالا تمرین کنیم", "تدرّب الآن", "Теперь тренируемся", "Тепер тренуємося", "Şimdi alıştırma yap", "Acum exersăm"],
+    sol: ["Lösung zeigen", "Show solution", "نمایش پاسخ", "إظهار الحل", "Показать решение", "Показати розв’язок", "Çözümü göster", "Arată soluția"],
+    again: ["Noch einmal", "Once more", "یک بار دیگر", "مرة أخرى", "Ещё раз", "Ще раз", "Bir kez daha", "Încă o dată"],
+    ok1: ["Richtig!", "Correct!", "درست!", "صحيح!", "Правильно!", "Правильно!", "Doğru!", "Corect!"],
+    ok2: ["Richtig – jetzt stimmt es.", "Correct – now it works.", "درست – حالا درست شد.", "صحيح – الآن أصبحت الجملة صحيحة.", "Правильно – теперь верно.", "Правильно – тепер усе вірно.", "Doğru – şimdi oldu.", "Corect – acum este bine."],
+    slot: ["Tippe unten auf die Wörter …", "Tap the words below …", "روی کلمه‌های زیر بزنید …", "اضغط على الكلمات في الأسفل …", "Нажимайте на слова внизу …", "Натискайте на слова внизу …", "Aşağıdaki kelimelere dokunun …", "Atinge cuvintele de mai jos …"],
+    merke: ["Merke", "Remember", "به خاطر بسپارید", "تذكّر", "Запомните", "Запам’ятайте", "Unutmayın", "Reține"],
+    wrongtap: ["Das ist nicht das gesuchte Verb. Such das Wort, das sich mit der Person ändert.", "That is not the verb we are looking for. Find the word that changes with the person.", "این فعل مورد نظر نیست. کلمه‌ای را پیدا کنید که با شخص تغییر می‌کند.", "هذا ليس الفعل المطلوب. ابحث عن الكلمة التي تتغيّر حسب الشخص.", "Это не тот глагол. Найдите слово, которое меняется по лицам.", "Це не те дієслово. Знайдіть слово, яке змінюється за особами.", "Aranan fiil bu değil. Kişiye göre değişen kelimeyi bulun.", "Acesta nu este verbul căutat. Caută cuvântul care se schimbă în funcție de persoană."],
+    look: ["Gut! Schau jetzt auf die markierten Verben: Wo stehen sie?", "Good! Now look at the highlighted verbs: Where are they?", "آفرین! حالا به فعل‌های مشخص‌شده نگاه کنید: کجا قرار دارند؟", "جيد! انظر الآن إلى الأفعال الملوّنة: أين تقع؟", "Хорошо! Теперь посмотрите на выделенные глаголы: где они стоят?", "Добре! Тепер подивіться на виділені дієслова: де вони стоять?", "Güzel! Şimdi renkli fiillere bakın: Nerede duruyorlar?", "Bine! Acum uită-te la verbele marcate: unde se află?"],
+    qwrong: ["Noch nicht ganz. Schau noch einmal auf die Beispiele oben.", "Not quite yet. Look at the examples above again.", "هنوز کاملاً درست نیست. دوباره به مثال‌های بالا نگاه کنید.", "ليس تمامًا بعد. انظر إلى الأمثلة في الأعلى مرة أخرى.", "Пока не совсем. Посмотрите ещё раз на примеры выше.", "Ще не зовсім. Подивіться ще раз на приклади вище.", "Henüz tam değil. Yukarıdaki örneklere bir daha bakın.", "Încă nu e corect. Mai uită-te o dată la exemplele de mai sus."],
+
+    intro_title: ["Wortstellung im weil-Satz", "Word order in the weil-sentence", "ترتیب کلمات در جمله‌ی weil", "ترتيب الكلمات في جملة weil", "Порядок слов в предложении с weil", "Порядок слів у реченні з weil", "weil cümlesinde sözcük sırası", "Ordinea cuvintelor în propoziția cu weil"],
+    intro_text: ["Du schaust zuerst Beispiele an und entdeckst die Regel selbst. Danach übst du sie.", "First you look at examples and discover the rule yourself. Then you practise it.", "اول مثال‌ها را نگاه می‌کنید و خودتان قاعده را کشف می‌کنید. بعد آن را تمرین می‌کنید.", "تنظر أولًا في الأمثلة وتكتشف القاعدة بنفسك. ثم تتدرّب عليها.", "Сначала вы смотрите на примеры и сами открываете правило. Потом тренируетесь.", "Спочатку ви дивитеся на приклади й самі відкриваєте правило. Потім тренуєтеся.", "Önce örneklere bakar, kuralı kendiniz keşfedersiniz. Sonra alıştırma yaparsınız.", "Mai întâi te uiți la exemple și descoperi singur regula. Apoi exersezi."],
+
+    d1_title: ["Wo steht das Verb nach „weil“?", "Where is the verb after “weil”?", "فعل بعد از «weil» کجا قرار دارد؟", "أين يقع الفعل بعد «weil»؟", "Где стоит глагол после «weil»?", "Де стоїть дієслово після «weil»?", "«weil» sonrasında fiil nerede durur?", "Unde stă verbul după «weil»?"],
+    d1_task: ["Vergleiche den normalen Satz mit dem weil-Satz. Tippe im weil-Satz auf das Verb.", "Compare the normal sentence with the weil-sentence. Tap the verb in the weil-sentence.", "جمله‌ی عادی را با جمله‌ی weil مقایسه کنید. در جمله‌ی weil روی فعل بزنید.", "قارن بين الجملة العادية وجملة weil. اضغط على الفعل في جملة weil.", "Сравните обычное предложение с предложением с weil. Нажмите на глагол в предложении с weil.", "Порівняйте звичайне речення з реченням із weil. Натисніть на дієслово в реченні з weil.", "Normal cümleyi weil cümlesiyle karşılaştırın. weil cümlesindeki fiile dokunun.", "Compară propoziția obișnuită cu propoziția cu weil. Atinge verbul din propoziția cu weil."],
+    d1_q: ["Wo steht das Verb im weil-Satz?", "Where is the verb in the weil-sentence?", "فعل در جمله‌ی weil کجاست؟", "أين يقع الفعل في جملة weil؟", "Где стоит глагол в предложении с weil?", "Де стоїть дієслово в реченні з weil?", "weil cümlesinde fiil nerede?", "Unde este verbul în propoziția cu weil?"],
+    pos2: ["An Position 2 – wie im normalen Satz", "In position 2 – like in a normal sentence", "در جایگاه ۲ – مثل جمله‌ی عادی", "في الموضع الثاني – كما في الجملة العادية", "На 2-м месте – как в обычном предложении", "На 2-му місці – як у звичайному реченні", "2. sırada – normal cümledeki gibi", "Pe poziția 2 – ca într-o propoziție obișnuită"],
+    atend: ["Ganz am Ende des Satzes", "At the very end of the sentence", "درست در آخر جمله", "في نهاية الجملة تمامًا", "В самом конце предложения", "Наприкінці речення", "Cümlenin en sonunda", "Chiar la sfârșitul propoziției"],
+    aftweil: ["Direkt nach „weil“", "Directly after “weil”", "بلافاصله بعد از «weil»", "مباشرةً بعد «weil»", "Сразу после «weil»", "Одразу після «weil»", "«weil»'den hemen sonra", "Imediat după «weil»"],
+    d1_rule: ["Nach „weil“ steht das Verb ganz am Ende. Der Satz vor „weil“ bleibt normal (Verb auf Position 2).", "After “weil”, the verb comes at the very end. The sentence before “weil” stays normal (verb in position 2).", "بعد از «weil» فعل در آخر جمله می‌آید. جمله‌ی قبل از «weil» عادی می‌ماند (فعل در جایگاه ۲).", "بعد «weil» يأتي الفعل في نهاية الجملة تمامًا. أما الجملة قبل «weil» فتبقى عادية (الفعل في الموضع الثاني).", "После «weil» глагол стоит в самом конце. Предложение перед «weil» остаётся обычным (глагол на 2-м месте).", "Після «weil» дієслово стоїть наприкінці. Речення перед «weil» залишається звичайним (дієслово на 2-му місці).", "«weil»'den sonra fiil en sona gelir. «weil»'den önceki cümle normal kalır (fiil 2. sırada).", "După «weil» verbul stă la sfârșit. Propoziția dinaintea lui «weil» rămâne obișnuită (verbul pe poziția 2)."],
+
+    e1_title: ["Baue den weil-Satz", "Build the weil-sentence", "جمله‌ی weil را بسازید", "ابنِ جملة weil", "Постройте предложение с weil", "Побудуйте речення з weil", "weil cümlesini kurun", "Construiește propoziția cu weil"],
+    e_task: ["Tippe die Wörter in der richtigen Reihenfolge an.", "Tap the words in the correct order.", "کلمه‌ها را به ترتیب درست لمس کنید.", "اضغط على الكلمات بالترتيب الصحيح.", "Нажимайте на слова в правильном порядке.", "Натискайте на слова в правильному порядку.", "Kelimelere doğru sırayla dokunun.", "Atinge cuvintele în ordinea corectă."],
+
+    d2_title: ["Und mit zwei Verben?", "And with two verbs?", "و وقتی دو فعل داریم؟", "وماذا لو كان هناك فعلان؟", "А если два глагола?", "А якщо два дієслова?", "Peki iki fiil olursa?", "Și dacă sunt două verbe?"],
+    d2_task: ["Vergleiche wieder. Tippe im weil-Satz auf das konjugierte Verb – das Verb, das sich mit der Person ändert (ich muss, er ist, sie steht …).", "Compare again. Tap the conjugated verb in the weil-sentence – the verb that changes with the person (ich muss, er ist, sie steht …).", "دوباره مقایسه کنید. در جمله‌ی weil روی فعل صرف‌شده بزنید – فعلی که با شخص تغییر می‌کند (ich muss, er ist, sie steht …).", "قارن مرة أخرى. اضغط على الفعل المصرَّف في جملة weil – الفعل الذي يتغيّر حسب الشخص (ich muss, er ist, sie steht …).", "Снова сравните. Нажмите в предложении с weil на спрягаемый глагол – тот, который меняется по лицам (ich muss, er ist, sie steht …).", "Знову порівняйте. Натисніть у реченні з weil на дієслово в особовій формі – те, що змінюється за особами (ich muss, er ist, sie steht …).", "Yine karşılaştırın. weil cümlesinde çekimli fiile dokunun – kişiye göre değişen fiil (ich muss, er ist, sie steht …).", "Compară din nou. Atinge în propoziția cu weil verbul conjugat – cel care se schimbă în funcție de persoană (ich muss, er ist, sie steht …)."],
+    d2_q: ["Welches Verb steht im weil-Satz ganz am Ende?", "Which verb is at the very end of the weil-sentence?", "کدام فعل در جمله‌ی weil در آخر می‌آید؟", "أيّ فعل يقع في نهاية جملة weil تمامًا؟", "Какой глагол стоит в самом конце предложения с weil?", "Яке дієслово стоїть наприкінці речення з weil?", "weil cümlesinin en sonunda hangi fiil durur?", "Care verb stă la sfârșitul propoziției cu weil?"],
+    d2_o0: ["Das Verb im Infinitiv oder Partizip (arbeiten, gegangen)", "The verb in the infinitive or participle (arbeiten, gegangen)", "فعل مصدر یا اسم مفعول (arbeiten, gegangen)", "الفعل في المصدر أو اسم المفعول (arbeiten, gegangen)", "Глагол в инфинитиве или в причастии (arbeiten, gegangen)", "Дієслово в інфінітиві або в дієприкметнику (arbeiten, gegangen)", "Mastar veya ortaç hâlindeki fiil (arbeiten, gegangen)", "Verbul la infinitiv sau la participiu (arbeiten, gegangen)"],
+    d2_o1: ["Das konjugierte Verb (muss, ist, aufsteht)", "The conjugated verb (muss, ist, aufsteht)", "فعل صرف‌شده (muss, ist, aufsteht)", "الفعل المصرَّف (muss, ist, aufsteht)", "Спрягаемый глагол (muss, ist, aufsteht)", "Дієслово в особовій формі (muss, ist, aufsteht)", "Çekimli fiil (muss, ist, aufsteht)", "Verbul conjugat (muss, ist, aufsteht)"],
+    d2_o2: ["Mal so, mal so", "Sometimes one, sometimes the other", "گاهی این، گاهی آن", "مرة هكذا ومرة هكذا", "По-разному", "По-різному", "Bazen biri, bazen öbürü", "Când unul, când altul"],
+    d2_rule: ["Bei zwei Verben steht das konjugierte Verb ganz am Ende – nach dem Infinitiv oder Partizip. Trennbare Verben sind im weil-Satz wieder zusammen: weil sie aufsteht (nicht: sie steht … auf).", "With two verbs, the conjugated verb comes at the very end – after the infinitive or participle. Separable verbs are joined again in the weil-sentence: weil sie aufsteht (not: sie steht … auf).", "وقتی دو فعل داریم، فعل صرف‌شده در آخر می‌آید – بعد از مصدر یا اسم مفعول. فعل‌های جداشدنی در جمله‌ی weil دوباره به هم می‌چسبند: weil sie aufsteht (نه: sie steht … auf).", "عند وجود فعلين يأتي الفعل المصرَّف في النهاية تمامًا – بعد المصدر أو اسم المفعول. والأفعال المنفصلة تعود متّصلة في جملة weil: weil sie aufsteht (وليس: sie steht … auf).", "Если глаголов два, спрягаемый глагол стоит в самом конце – после инфинитива или причастия. Отделяемые глаголы в предложении с weil снова пишутся слитно: weil sie aufsteht (не: sie steht … auf).", "Якщо дієслів два, дієслово в особовій формі стоїть наприкінці – після інфінітива або дієприкметника. Відокремлювані дієслова в реченні з weil знову пишуться разом: weil sie aufsteht (не: sie steht … auf).", "İki fiil varsa çekimli fiil en sonda durur – mastardan veya ortaçtan sonra. Ayrılabilen fiiller weil cümlesinde yine birleşir: weil sie aufsteht (değil: sie steht … auf).", "Când sunt două verbe, verbul conjugat stă la sfârșit – după infinitiv sau participiu. Verbele separabile se unesc din nou în propoziția cu weil: weil sie aufsteht (nu: sie steht … auf)."],
+
+    e2_title: ["Zwei Verben, trennbare Verben", "Two verbs and separable verbs", "دو فعل و فعل‌های جداشدنی", "فعلان وأفعال منفصلة", "Два глагола и отделяемые глаголы", "Два дієслова та відокремлювані дієслова", "İki fiil ve ayrılabilen fiiller", "Două verbe și verbe separabile"],
+
+    e3_title: ["Antworte auf die Frage", "Answer the question", "به پرسش پاسخ دهید", "أجب عن السؤال", "Ответьте на вопрос", "Дайте відповідь на запитання", "Soruyu yanıtlayın", "Răspunde la întrebare"],
+    e3_task: ["Baue die ganze Antwort mit „weil“. Der erste Buchstabe wird automatisch groß.", "Build the whole answer with “weil”. The first letter is capitalised automatically.", "پاسخ کامل را با «weil» بسازید. حرف اول خودکار بزرگ می‌شود.", "ابنِ الإجابة كاملةً مع «weil». يتحوّل الحرف الأول تلقائيًا إلى حرف كبير.", "Составьте весь ответ с «weil». Первая буква станет заглавной автоматически.", "Складіть усю відповідь із «weil». Перша літера стане великою автоматично.", "Cevabın tamamını «weil» ile kurun. İlk harf otomatik olarak büyür.", "Construiește tot răspunsul cu «weil». Prima literă devine automat majusculă."],
+
+    d3_title: ["Und nach „denn“ und „aber“?", "And after “denn” and “aber”?", "و بعد از «denn» و «aber»؟", "وماذا بعد «denn» و«aber»؟", "А после «denn» и «aber»?", "А після «denn» і «aber»?", "Peki «denn» ve «aber»'den sonra?", "Și după «denn» și «aber»?"],
+    d3_task: ["Vergleiche. Tippe im Satz mit „denn“ oder „aber“ auf das Verb.", "Compare. Tap the verb in the sentence with “denn” or “aber”.", "مقایسه کنید. در جمله‌ی دارای «denn» یا «aber» روی فعل بزنید.", "قارن. اضغط على الفعل في الجملة التي فيها «denn» أو «aber».", "Сравните. Нажмите на глагол в предложении с «denn» или «aber».", "Порівняйте. Натисніть на дієслово в реченні з «denn» або «aber».", "Karşılaştırın. «denn» veya «aber» içeren cümlede fiile dokunun.", "Compară. Atinge verbul din propoziția cu «denn» sau «aber»."],
+    d3_q: ["Wo steht das Verb nach „denn“ und „aber“?", "Where is the verb after “denn” and “aber”?", "فعل بعد از «denn» و «aber» کجا قرار دارد؟", "أين يقع الفعل بعد «denn» و«aber»؟", "Где стоит глагол после «denn» и «aber»?", "Де стоїть дієслово після «denn» і «aber»?", "«denn» ve «aber»'den sonra fiil nerede durur?", "Unde stă verbul după «denn» și «aber»?"],
+    d3_o0: ["Ganz am Ende – wie nach „weil“", "At the very end – like after “weil”", "در آخر جمله – مثل بعد از «weil»", "في النهاية – كما بعد «weil»", "В самом конце – как после «weil»", "Наприкінці – як після «weil»", "En sonda – «weil»'deki gibi", "La sfârșit – ca după «weil»"],
+    d3_o2: ["Auf Position 1", "In position 1", "در جایگاه ۱", "في الموضع الأول", "На 1-м месте", "На 1-му місці", "1. sırada", "Pe poziția 1"],
+    d3_rule: ["Nach „denn“ und „aber“ bleibt alles wie im normalen Hauptsatz: Das Verb steht auf Position 2. Nur „weil“ schickt das Verb ans Ende!", "After “denn” and “aber” everything stays as in a normal main clause: the verb is in position 2. Only “weil” sends the verb to the end!", "بعد از «denn» و «aber» همه‌چیز مثل جمله‌ی اصلی عادی می‌ماند: فعل در جایگاه ۲ است. فقط «weil» فعل را به آخر جمله می‌فرستد!", "بعد «denn» و«aber» يبقى كل شيء كما في الجملة الرئيسية العادية: الفعل في الموضع الثاني. فقط «weil» تنقل الفعل إلى النهاية!", "После «denn» и «aber» всё остаётся как в обычном главном предложении: глагол стоит на 2-м месте. Только «weil» отправляет глагол в конец!", "Після «denn» і «aber» усе залишається як у звичайному головному реченні: дієслово стоїть на 2-му місці. Лише «weil» відправляє дієслово в кінець!", "«denn» ve «aber»'den sonra her şey normal ana cümledeki gibi kalır: fiil 2. sıradadır. Fiili yalnızca «weil» sona gönderir!", "După «denn» și «aber» totul rămâne ca într-o propoziție principală obișnuită: verbul stă pe poziția 2. Doar «weil» trimite verbul la sfârșit!"],
+
+    e4_title: ["Gemischt: Sätze und Fragen", "Mixed: sentences and questions", "ترکیبی: جمله‌ها و پرسش‌ها", "تمرين مختلط: جمل وأسئلة", "Смешанное задание: предложения и вопросы", "Змішане завдання: речення й запитання", "Karışık alıştırma: cümleler ve sorular", "Exercițiu mixt: propoziții și întrebări"],
+    e4_task: ["Baue den Satz oder die Frage. Achtung: Nur manche Sätze haben „weil“ – das Verb steht nicht immer am Ende!", "Build the sentence or question. Careful: only some sentences have “weil” – the verb is not always at the end!", "جمله یا پرسش را بسازید. دقت کنید: فقط بعضی جمله‌ها «weil» دارند – فعل همیشه در آخر نیست!", "ابنِ الجملة أو السؤال. انتبه: بعض الجمل فقط فيها «weil» – ولا يكون الفعل دائمًا في النهاية!", "Составьте предложение или вопрос. Внимание: «weil» есть только в некоторых предложениях – глагол не всегда стоит в конце!", "Складіть речення або запитання. Увага: «weil» є лише в деяких реченнях – дієслово не завжди стоїть в кінці!", "Cümleyi veya soruyu kurun. Dikkat: «weil» yalnızca bazı cümlelerde var – fiil her zaman sonda durmaz!", "Construiește propoziția sau întrebarea. Atenție: doar unele propoziții au «weil» – verbul nu stă mereu la sfârșit!"],
+
+    h_end: ["Denk an die Regel: Im weil-Satz steht das konjugierte Verb ganz am Ende.", "Remember the rule: in a weil-sentence the conjugated verb is at the very end.", "قاعده را به یاد بیاورید: در جمله‌ی weil فعل صرف‌شده در آخر جمله می‌آید.", "تذكّر القاعدة: في جملة weil يأتي الفعل المصرَّف في النهاية تمامًا.", "Вспомните правило: в предложении с weil спрягаемый глагол стоит в самом конце.", "Згадайте правило: у реченні з weil дієслово в особовій формі стоїть наприкінці.", "Kuralı hatırlayın: weil cümlesinde çekimli fiil en sonda durur.", "Amintește-ți regula: în propoziția cu weil verbul conjugat stă la sfârșit."],
+    h_main: ["Das Verb im weil-Satz steht richtig. Aber der Hauptsatz kommt zuerst, dann „weil“.", "The verb in the weil-sentence is right. But the main clause comes first, then “weil”.", "فعل جمله‌ی weil درست است. اما ابتدا جمله‌ی اصلی می‌آید، بعد «weil».", "الفعل في جملة weil في مكانه الصحيح. لكن تأتي الجملة الرئيسية أولًا ثم «weil».", "Глагол в предложении с weil стоит правильно. Но сначала идёт главное предложение, потом «weil».", "Дієслово в реченні з weil стоїть правильно. Але спочатку йде головне речення, потім «weil».", "weil cümlesindeki fiil doğru yerde. Ama önce ana cümle, sonra «weil» gelir.", "Verbul din propoziția cu weil este bine plasat. Dar mai întâi vine propoziția principală, apoi «weil»."],
+    h_subj: ["Das Verb steht richtig am Ende. Prüfe die anderen Wörter: Nach „weil“ kommt zuerst das Subjekt.", "The verb is correctly at the end. Check the other words: after “weil” the subject comes first.", "فعل درست در آخر است. کلمه‌های دیگر را بررسی کنید: بعد از «weil» ابتدا نهاد می‌آید.", "الفعل في مكانه الصحيح في النهاية. تحقّق من بقية الكلمات: بعد «weil» يأتي الفاعل أولًا.", "Глагол правильно стоит в конце. Проверьте остальные слова: после «weil» сначала идёт подлежащее.", "Дієслово правильно стоїть наприкінці. Перевірте інші слова: після «weil» спочатку йде підмет.", "Fiil doğru şekilde sonda. Diğer kelimeleri kontrol edin: «weil»'den sonra önce özne gelir.", "Verbul este corect la sfârșit. Verifică celelalte cuvinte: după «weil» vine mai întâi subiectul."],
+    h_hs: ["Im Hauptsatz steht das Verb auf Position 2.", "In a main clause the verb is in position 2.", "در جمله‌ی اصلی فعل در جایگاه ۲ است.", "في الجملة الرئيسية يقع الفعل في الموضع الثاني.", "В главном предложении глагол стоит на 2-м месте.", "У головному реченні дієслово стоїть на 2-му місці.", "Ana cümlede fiil 2. sıradadır.", "În propoziția principală verbul stă pe poziția 2."],
+    h_denn: ["Nach „denn“ und „aber“ steht das Verb auf Position 2 – wie im normalen Satz.", "After “denn” and “aber” the verb is in position 2 – like in a normal sentence.", "بعد از «denn» و «aber» فعل در جایگاه ۲ است – مثل جمله‌ی عادی.", "بعد «denn» و«aber» يقع الفعل في الموضع الثاني – كما في الجملة العادية.", "После «denn» и «aber» глагол стоит на 2-м месте – как в обычном предложении.", "Після «denn» і «aber» дієслово стоїть на 2-му місці – як у звичайному реченні.", "«denn» ve «aber»'den sonra fiil 2. sıradadır – normal cümledeki gibi.", "După «denn» și «aber» verbul stă pe poziția 2 – ca într-o propoziție obișnuită."],
+    h_w: ["W-Frage: Das W-Wort steht auf Position 1, das Verb auf Position 2.", "W-question: the question word is in position 1, the verb in position 2.", "پرسش با کلمه‌ی پرسشی (W-Frage): کلمه‌ی پرسشی در جایگاه ۱ و فعل در جایگاه ۲ است.", "سؤال بأداة استفهام (W-Frage): أداة الاستفهام في الموضع الأول والفعل في الموضع الثاني.", "W-вопрос: вопросительное слово на 1-м месте, глагол на 2-м.", "W-запитання: питальне слово на 1-му місці, дієслово на 2-му.", "W-sorusu: Soru sözcüğü 1., fiil 2. sıradadır.", "Întrebare cu cuvânt interogativ (W-Frage): cuvântul interogativ pe poziția 1, verbul pe poziția 2."],
+    h_jn: ["Ja/Nein-Frage: Das Verb steht auf Position 1.", "Yes/no question: the verb is in position 1.", "پرسش بله/خیر: فعل در جایگاه ۱ است.", "سؤال بنعم/لا: الفعل في الموضع الأول.", "Вопрос «да/нет»: глагол стоит на 1-м месте.", "Запитання «так/ні»: дієслово стоїть на 1-му місці.", "Evet/hayır sorusu: Fiil 1. sıradadır.", "Întrebare cu da/nu: verbul stă pe poziția 1."],
+    h_noweil: ["Hier gibt es kein „weil“! Das Verb steht nicht am Ende.", "There is no “weil” here! The verb is not at the end.", "اینجا «weil» وجود ندارد! فعل در آخر نیست.", "لا توجد «weil» هنا! الفعل ليس في النهاية.", "Здесь нет «weil»! Глагол не стоит в конце.", "Тут немає «weil»! Дієслово не стоїть в кінці.", "Burada «weil» yok! Fiil sonda durmaz.", "Aici nu există «weil»! Verbul nu stă la sfârșit."],
+    solmsg: ["Das ist die richtige Lösung. Versuche es bei der nächsten Aufgabe noch einmal.", "This is the correct solution. Try again with the next task.", "این پاسخ درست است. در تمرین بعدی دوباره تلاش کنید.", "هذا هو الحل الصحيح. حاول مرة أخرى في المهمة التالية.", "Это правильное решение. Попробуйте ещё раз в следующем задании.", "Це правильний розв’язок. Спробуйте ще раз у наступному завданні.", "Doğru çözüm bu. Bir sonraki görevde tekrar deneyin.", "Aceasta este soluția corectă. Încearcă din nou la exercițiul următor."],
+    endtitle: ["Geschafft!", "Done!", "تمام شد!", "انتهينا!", "Готово!", "Готово!", "Tamam!", "Gata!"],
+    firsttry: ["beim 1. Versuch richtig", "correct on the first try", "در تلاش اول درست", "صحيح من المحاولة الأولى", "верно с первой попытки", "правильно з першої спроби", "ilk denemede doğru", "corect din prima încercare"]
+  };
+
+  /* ---------- Übungsinhalte (Treffpunkt A1 + A2, Lektion 1–3) ---------- */
+  var STEPS = [
+    { kind: "intro" },
+
+    { kind: "discover", label: "Entdecken 1", title: "d1_title", task: "d1_task",
+      examples: [
+        { simple: ["Ich", "bin", "krank."], sv: 1, pre: "Ich bleibe zu Hause,", conn: "weil", words: ["ich", "krank", "bin."], v: 2 },
+        { simple: ["Sie", "arbeitet", "in", "Deutschland."], sv: 1, pre: "Anna lernt Deutsch,", conn: "weil", words: ["sie", "in", "Deutschland", "arbeitet."], v: 3 },
+        { simple: ["Er", "hat", "kein", "Auto."], sv: 1, pre: "Mein Bruder fährt nicht,", conn: "weil", words: ["er", "kein", "Auto", "hat."], v: 3 }
+      ],
+      q: { text: "d1_q", options: ["pos2", "atend", "aftweil"], correct: 1 },
+      rule: { text: "d1_rule", formula: [["weil", "k2"], ["Subjekt", ""], ["…", ""], ["Verb", "v2"]] } },
+
+    { kind: "ex", label: "Übung 1", title: "e1_title", task: "e_task", fixedWeil: true,
+      items: [
+        { pre: "Ich lerne Deutsch,", clause: ["ich", "Arbeit", "suche"], verb: "suche" },
+        { pre: "Er ist müde,", clause: ["er", "schlecht", "schläft"], verb: "schläft" },
+        { pre: "Ich gehe heute nicht zur Arbeit,", clause: ["ich", "krank", "bin"], verb: "bin" },
+        { pre: "Wir kaufen kein Sofa,", clause: ["es", "zu teuer", "ist"], verb: "ist" },
+        { pre: "Maria geht oft ins Kino,", clause: ["sie", "Filme", "liebt"], verb: "liebt" },
+        { pre: "Ich bleibe zu Hause,", clause: ["das Wetter", "schlecht", "ist"], verb: "ist" },
+        { pre: "Mein Sohn lernt Englisch,", clause: ["er", "Freunde in London", "hat"], verb: "hat" },
+        { pre: "Ich nehme den Bus,", clause: ["ich", "kein Auto", "habe"], verb: "habe" },
+        { pre: "Wir machen eine Pause,", clause: ["wir", "Hunger", "haben"], verb: "haben" },
+        { pre: "Sie arbeitet gern hier,", clause: ["die Kollegen", "nett", "sind"], verb: "sind" }
+      ] },
+
+    { kind: "discover", label: "Entdecken 2", title: "d2_title", task: "d2_task",
+      examples: [
+        { simple: ["Ich", "muss", "arbeiten."], sv: 1, pre: "Ich bleibe zu Hause,", conn: "weil", words: ["ich", "arbeiten", "muss."], v: 2 },
+        { simple: ["Er", "ist", "spät", "ins", "Bett", "gegangen."], sv: 1, pre: "Er ist müde,", conn: "weil", words: ["er", "spät", "ins", "Bett", "gegangen", "ist."], v: 5 },
+        { simple: ["Sie", "steht", "früh", "auf."], sv: 1, pre: "Sie ist müde,", conn: "weil", words: ["sie", "früh", "aufsteht."], v: 2 }
+      ],
+      q: { text: "d2_q", options: ["d2_o0", "d2_o1", "d2_o2"], correct: 1 },
+      rule: { text: "d2_rule", formula: [["weil", "k2"], ["Subjekt", ""], ["…", ""], ["Infinitiv / Partizip", ""], ["konjugiertes Verb", "v2"]] } },
+
+    { kind: "ex", label: "Übung 2", title: "e2_title", task: "e_task", fixedWeil: true,
+      items: [
+        { pre: "Ich kann nicht kommen,", clause: ["ich", "arbeiten", "muss"], verb: "muss" },
+        { pre: "Er ist müde,", clause: ["er", "viel", "gearbeitet", "hat"], verb: "hat" },
+        { pre: "Sie ist früh wach,", clause: ["sie", "um 6 Uhr", "aufsteht"], verb: "aufsteht" },
+        { pre: "Wir lernen jeden Tag,", clause: ["wir", "die Prüfung", "bestehen", "wollen"], verb: "wollen" },
+        { pre: "Er lernt jetzt Deutsch,", clause: ["er", "nach Deutschland", "gekommen", "ist"], verb: "ist" },
+        { pre: "Ich gehe früh ins Bett,", clause: ["ich", "morgen früh", "aufstehen", "muss"], verb: "muss" },
+        { pre: "Ich fahre mit dem Fahrrad,", clause: ["ich", "Sport", "machen", "will"], verb: "will" },
+        { pre: "Tom kommt nicht zum Kurs,", clause: ["er", "seine Tochter", "abholen", "muss"], verb: "muss" },
+        { pre: "Ich bin müde,", clause: ["ich", "heute Nacht", "nicht", "geschlafen", "habe"], verb: "habe" },
+        { pre: "Wir sind schnell,", clause: ["der Kurs", "um 8 Uhr", "anfängt"], verb: "anfängt" }
+      ] },
+
+    { kind: "ex", label: "Übung 3", title: "e3_title", task: "e3_task", fixedWeil: false,
+      items: [
+        { q: "Warum kommt Tom nicht?", chips: ["Tom", "kommt", "nicht", "weil", "er", "Fieber", "hat"], verb: "hat" },
+        { q: "Warum lernst du Deutsch?", chips: ["ich", "lerne", "Deutsch", "weil", "ich", "hier", "arbeiten", "möchte"], verb: "möchte" },
+        { q: "Warum bist du so müde?", chips: ["ich", "bin", "müde", "weil", "ich", "schlecht", "geschlafen", "habe"], verb: "habe" },
+        { q: "Warum kaufst du kein Sofa?", chips: ["ich", "kaufe", "kein Sofa", "weil", "es", "zu teuer", "ist"], verb: "ist" },
+        { q: "Warum gehst du ins Kino?", chips: ["ich", "gehe", "ins Kino", "weil", "ich", "gern", "Filme", "sehe"], verb: "sehe" },
+        { q: "Warum ruft Anna ihre Mutter an?", chips: ["Anna", "ruft", "ihre Mutter", "an", "weil", "sie", "Hilfe", "braucht"], verb: "braucht" },
+        { q: "Warum bleibst du zu Hause?", chips: ["ich", "bleibe", "zu Hause", "weil", "ich", "Hausaufgaben", "machen", "muss"], verb: "muss" },
+        { q: "Warum fährt er mit dem Fahrrad?", chips: ["er", "fährt", "mit dem Fahrrad", "weil", "das Auto", "kaputt", "ist"], verb: "ist" },
+        { q: "Warum steht ihr so früh auf?", chips: ["wir", "stehen", "früh", "auf", "weil", "der Kurs", "um 8 Uhr", "anfängt"], verb: "anfängt" },
+        { q: "Warum arbeitest du gern hier?", chips: ["ich", "arbeite", "gern", "hier", "weil", "die Kollegen", "nett", "sind"], verb: "sind",
+          alts: [["ich", "arbeite", "hier", "gern", "weil", "die Kollegen", "nett", "sind"]] }
+      ] },
+
+    { kind: "discover", label: "Entdecken 3", title: "d3_title", task: "d3_task",
+      examples: [
+        { simple: ["Ich", "bin", "krank."], sv: 1, pre: "Ich bleibe zu Hause,", conn: "denn", words: ["ich", "bin", "krank."], v: 1,
+          cmp: { conn: "weil", words: ["ich", "krank", "bin."], v: 2 } },
+        { simple: ["Ich", "habe", "kein", "Geld."], sv: 1, pre: "Ich möchte ins Kino,", conn: "aber", words: ["ich", "habe", "kein", "Geld."], v: 1 },
+        { simple: ["Er", "hat", "viel", "Arbeit."], sv: 1, pre: "Er ist müde,", conn: "denn", words: ["er", "hat", "viel", "Arbeit."], v: 1,
+          cmp: { conn: "weil", words: ["er", "viel", "Arbeit", "hat."], v: 3 } }
+      ],
+      q: { text: "d3_q", options: ["d3_o0", "pos2", "d3_o2"], correct: 1 },
+      rule: { text: "d3_rule", formula: [["denn / aber", "k2"], ["Subjekt", ""], ["Verb", "v2"], ["…", ""]] } },
+
+    { kind: "ex", label: "Übung 4", title: "e4_title", task: "e4_task", fixedWeil: false,
+      items: [
+        { type: "hs", chips: ["ich", "arbeite", "heute", "in Erfurt"], verb: "arbeite",
+          alts: [["heute", "arbeite", "ich", "in Erfurt"]] },
+        { type: "w", end: "?", chips: ["was", "kostet", "das Handy"], verb: "kostet" },
+        { type: "weil", chips: ["er", "kommt", "nicht", "weil", "er", "arbeiten", "muss"], verb: "muss" },
+        { type: "hs", chips: ["am Wochenende", "spiele", "ich", "Fußball"], verb: "spiele",
+          alts: [["ich", "spiele", "am Wochenende", "Fußball"], ["ich", "spiele", "Fußball", "am Wochenende"]] },
+        { type: "jn", end: "?", chips: ["hast", "du", "morgen", "Zeit"], verb: "hast",
+          alts: [["hast", "du", "Zeit", "morgen"]] },
+        { type: "denn", chips: ["ich", "bleibe", "zu Hause", "denn", "ich", "bin", "krank"], verb: "bin" },
+        { type: "hs", chips: ["wir", "sehen", "am Abend", "fern"], verb: "sehen", hl: ["sehen", "fern"],
+          alts: [["am Abend", "sehen", "wir", "fern"]] },
+        { type: "weil", chips: ["wir", "gehen", "nicht", "ins Kino", "weil", "der Film", "zu teuer", "ist"], verb: "ist" },
+        { type: "aber", chips: ["ich", "möchte", "gern", "ins Kino", "aber", "ich", "habe", "kein Geld"], verb: "habe" },
+        { type: "hs", chips: ["mein Bruder", "hat", "gestern", "Fußball", "gespielt"], verb: "hat", hl: ["hat", "gespielt"],
+          alts: [["gestern", "hat", "mein Bruder", "Fußball", "gespielt"], ["mein Bruder", "hat", "Fußball", "gestern", "gespielt"]] }
+      ] },
+
+    { kind: "end" }
+  ];
+
+  /* ---------- Zustand ---------- */
+  var S = { step: 0, item: 0, d: null, st: null, ds: {}, states: {}, navOpen: false, lang: "de" };
+  try { var saved = window.localStorage.getItem("weilTrainerLang"); if (saved && LI[saved] !== undefined) { S.lang = saved; } } catch (e) { /* ignorieren */ }
+  var root = document.getElementById("app");
+  var app = root;
+
+  /* ---------- Helfer ---------- */
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) { e.className = cls; }
+    if (text !== undefined) { e.textContent = text; }
+    return e;
+  }
+  function X(key, wrapCls) {
+    var box = el("span", "x" + (wrapCls ? " " + wrapCls : ""));
+    var entry = I[key];
+    if (!entry) { box.appendChild(el("span", "de", key)); return box; }
+    box.appendChild(el("span", "de", entry[0]));
+    if (S.lang !== "de") {
+      var t = entry[LI[S.lang]];
+      if (t) {
+        var s = el("span", "tr", t);
+        s.setAttribute("dir", (S.lang === "fa" || S.lang === "ar") ? "rtl" : "ltr");
+        s.setAttribute("lang", S.lang);
+        box.appendChild(s);
+      }
+    }
+    return box;
+  }
+  function btn(text, cls, fn) {
+    var b = el("button", cls, text);
+    b.type = "button";
+    if (fn) { b.addEventListener("click", fn); }
+    return b;
+  }
+  function btnX(key, cls, fn) {
+    var b = el("button", cls);
+    b.type = "button";
+    b.appendChild(X(key));
+    if (fn) { b.addEventListener("click", fn); }
+    return b;
+  }
+  function shuffle(a) {
+    var r = a.slice(), i, j, t;
+    for (i = r.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      t = r[i]; r[i] = r[j]; r[j] = t;
+    }
+    return r;
+  }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function de(key) { return I[key][0]; }
+
+  function langSelect() {
+    var sel = el("select");
+    sel.setAttribute("aria-label", "Erklärsprache / Language");
+    LANGS.forEach(function (l) {
+      var o = el("option", null, LNAMES[l]);
+      o.value = l;
+      if (l === S.lang) { o.selected = true; }
+      sel.appendChild(o);
+    });
+    sel.addEventListener("change", function () {
+      S.lang = sel.value;
+      try { window.localStorage.setItem("weilTrainerLang", S.lang); } catch (e) { /* ignorieren */ }
+      render();
+    });
+    return sel;
+  }
+
+  function newItemState(step, item) {
+    var chips = step.fixedWeil ? item.clause.slice() : item.chips.slice();
+    var idx = [], i, order, tries = 0, same;
+    for (i = 0; i < chips.length; i++) { idx.push(i); }
+    do {
+      order = shuffle(idx);
+      same = true;
+      for (i = 0; i < order.length; i++) { if (order[i] !== i) { same = false; } }
+      tries++;
+    } while (same && tries < 30);
+    return { chips: chips, order: order, placed: [], attempts: 0, done: false, msgKey: "", msgType: "", offerSolution: false };
+  }
+
+  function resetAll() { S.ds = {}; S.states = {}; S.navOpen = false; enterStep(0); }
+
+  function enterStep(i, itemIdx) {
+    var step = STEPS[i], n;
+    S.step = i; S.item = itemIdx || 0; S.d = null; S.st = null; S.navOpen = false;
+    if (step.kind === "discover") {
+      if (!S.ds[i]) {
+        S.ds[i] = { solved: [], wrong: {}, msgs: {}, qWrong: {}, qDone: false };
+        for (n = 0; n < step.examples.length; n++) { S.ds[i].solved.push(false); }
+      }
+      S.d = S.ds[i];
+    }
+    if (step.kind === "ex") {
+      var key = i + "-" + S.item;
+      if (!S.states[key]) { S.states[key] = newItemState(step, step.items[S.item]); }
+      S.st = S.states[key];
+    }
+    render();
+    try { window.scrollTo(0, 0); } catch (e) { /* ignorieren */ }
+  }
+
+  function navPanel() {
+    var panel = el("div", "navp");
+    STEPS.forEach(function (s, si) {
+      if (s.kind === "intro") { return; }
+      var row = el("div", "nrow");
+      if (s.kind === "end") {
+        row.appendChild(btn("Ergebnis", "nb" + (S.step === si ? " cur" : ""), function () { enterStep(si); }));
+        panel.appendChild(row);
+        return;
+      }
+      row.appendChild(el("span", "nl", s.label));
+      if (s.kind === "discover") {
+        var cls = "nb" + (S.ds[si] && S.ds[si].qDone ? " ok" : "") + (S.step === si ? " cur" : "");
+        row.appendChild(btn("Beispiele", cls, function () { enterStep(si); }));
+      } else {
+        s.items.forEach(function (it, k) {
+          var st = S.states[si + "-" + k];
+          var c = "nb";
+          if (st && st.done) { c += st.attempts === 0 ? " ok" : " part"; }
+          if (S.step === si && S.item === k) { c += " cur"; }
+          row.appendChild(btn(String(k + 1), c, function () { enterStep(si, k); }));
+        });
+      }
+      panel.appendChild(row);
+    });
+    return panel;
+  }
+
+  function header(step) {
+    var label = step.label || "Einführung";
+    if (step.kind === "ex") { label += " · Aufgabe " + (S.item + 1) + " von " + step.items.length; }
+    var hd = el("header", "top");
+    var wrap = el("div", "wrap");
+    wrap.appendChild(el("div", "chnum", "A2"));
+    wrap.appendChild(el("div", "kicker", "Treffpunkt A1/A2 · Lektion 1–3 · Grammatik"));
+    wrap.appendChild(el("h1", null, "weil-Sätze"));
+    var pr = el("div", "progress");
+    pr.appendChild(el("span", null, label));
+    var bar = el("div", "bar");
+    var fill = el("i");
+    fill.style.width = Math.round((S.step / (STEPS.length - 1)) * 100) + "%";
+    bar.appendChild(fill);
+    pr.appendChild(bar);
+    wrap.appendChild(pr);
+    hd.appendChild(wrap);
+    root.appendChild(hd);
+
+    var nav = el("nav", "jump");
+    nav.setAttribute("aria-label", "Aufgaben");
+    var nw = el("div", "wrap");
+    var nb = el("button", "navbtn");
+    nb.type = "button";
+    nb.setAttribute("aria-expanded", S.navOpen ? "true" : "false");
+    nb.appendChild(X("nav"));
+    nb.addEventListener("click", function () { S.navOpen = !S.navOpen; render(); });
+    nw.appendChild(nb);
+    nw.appendChild(langSelect());
+    nw.appendChild(el("span", "sp"));
+    nw.appendChild(btnX("restart", "link", function () { resetAll(); }));
+    nav.appendChild(nw);
+    root.appendChild(nav);
+    if (S.navOpen) { root.appendChild(navPanel()); }
+  }
+
+  /* ---------- Rendern ---------- */
+  function render() {
+    var step = STEPS[S.step];
+    root.innerHTML = "";
+    app = root;
+    header(step);
+    app = el("main");
+    root.appendChild(app);
+    if (step.kind === "intro") { renderIntro(); }
+    else if (step.kind === "discover") { renderDiscover(step); }
+    else if (step.kind === "ex") { renderExercise(step); }
+    else if (step.kind === "end") { renderEnd(); }
+  }
+
+  function renderIntro() {
+    var c = el("div", "card");
+    var h = el("h2"); h.appendChild(X("intro_title")); c.appendChild(h);
+    c.appendChild(el("p", "muted", "Deutsch A2 · Entwurf · Wortschatz aus Treffpunkt A1/A2, Lektion 1–3"));
+    var p = el("p"); p.appendChild(X("intro_text")); c.appendChild(p);
+    var ol = el("ol", "steps");
+    STEPS.forEach(function (s) {
+      if (s.kind === "intro" || s.kind === "end") { return; }
+      var li = el("li");
+      li.appendChild(el("b", null, s.label + ": "));
+      li.appendChild(X(s.title));
+      ol.appendChild(li);
+    });
+    c.appendChild(ol);
+    c.appendChild(btnX("start", "btn", function () { enterStep(1); }));
+    app.appendChild(c);
+  }
+
+  function wordsLine(words, vIdx, showV) {
+    var frag = document.createDocumentFragment();
+    words.forEach(function (w, i) {
+      frag.appendChild(el("span", "w plain" + (showV && i === vIdx ? " v" : ""), w));
+    });
+    return frag;
+  }
+
+  function renderDiscover(step) {
+    var d = S.d;
+    var card = el("div", "card disc");
+    card.appendChild(el("div", "dtag", "Zum Entdecken"));
+    var h = el("h2"); h.appendChild(X(step.title)); card.appendChild(h);
+    var t = el("p", "muted"); t.appendChild(X(step.task)); card.appendChild(t);
+
+    step.examples.forEach(function (ex, i) {
+      var box = el("div", "ex");
+      var r1 = el("div", "row");
+      r1.appendChild(el("span", "tag", "Normaler Satz"));
+      r1.appendChild(wordsLine(ex.simple, ex.sv, d.solved[i]));
+      box.appendChild(r1);
+
+      if (ex.cmp && d.solved[i]) {
+        var rc = el("div", "row");
+        rc.appendChild(el("span", "tag", "Mit " + ex.cmp.conn));
+        rc.appendChild(el("span", "w plain", ex.pre));
+        rc.appendChild(el("span", "w plain k", ex.cmp.conn));
+        rc.appendChild(wordsLine(ex.cmp.words, ex.cmp.v, true));
+        box.appendChild(rc);
+      }
+
+      var r2 = el("div", "row");
+      r2.appendChild(el("span", "tag", "Mit " + ex.conn));
+      r2.appendChild(el("span", "w plain", ex.pre));
+      r2.appendChild(el("span", "w plain k", ex.conn));
+      if (d.solved[i]) {
+        r2.appendChild(wordsLine(ex.words, ex.v, true));
+      } else {
+        ex.words.forEach(function (w, wi) {
+          var b = btn(w, "w" + (d.wrong[i + "-" + wi] ? " bad" : ""), function () {
+            if (wi === ex.v) {
+              d.solved[i] = true; d.msgs[i] = false;
+            } else {
+              d.wrong[i + "-" + wi] = true;
+              d.msgs[i] = true;
+            }
+            render();
+          });
+          r2.appendChild(b);
+        });
+      }
+      box.appendChild(r2);
+      if (d.msgs[i] && !d.solved[i]) {
+        var m = el("div", "msg no"); m.appendChild(X("wrongtap")); box.appendChild(m);
+      }
+      card.appendChild(box);
+    });
+
+    var allSolved = d.solved.every(function (x) { return x; });
+    if (allSolved) {
+      var look = el("div", "msg ok"); look.appendChild(X("look")); card.appendChild(look);
+      var qh = el("h2"); qh.appendChild(X(step.q.text)); card.appendChild(qh);
+      step.q.options.forEach(function (ok, oi) {
+        var cls = "opt";
+        if (d.qDone && oi === step.q.correct) { cls += " good"; }
+        else if (d.qWrong[oi]) { cls += " bad"; }
+        var b = el("button", cls);
+        b.type = "button";
+        b.appendChild(X(ok));
+        b.addEventListener("click", function () {
+          if (d.qDone) { return; }
+          if (oi === step.q.correct) { d.qDone = true; } else { d.qWrong[oi] = true; }
+          render();
+        });
+        card.appendChild(b);
+      });
+      if (!d.qDone && Object.keys(d.qWrong).length) {
+        var qw = el("div", "msg no"); qw.appendChild(X("qwrong")); card.appendChild(qw);
+      }
+    }
+
+    if (d.qDone) {
+      var rule = el("div", "rule");
+      var rh = el("b", "h"); rh.appendChild(X("merke")); rule.appendChild(rh);
+      var rp = el("p"); rp.appendChild(X(step.rule.text)); rule.appendChild(rp);
+      var f = el("div", "formula");
+      step.rule.formula.forEach(function (p) { f.appendChild(el("span", p[1], p[0])); });
+      rule.appendChild(f);
+      card.appendChild(rule);
+      card.appendChild(btnX("practise", "btn", function () { enterStep(S.step + 1); }));
+    }
+    app.appendChild(card);
+  }
+
+  function renderExercise(step) {
+    var item = step.items[S.item];
+    var st = S.st;
+    var card = el("div", "card");
+    var h = el("h2"); h.appendChild(X(step.title)); card.appendChild(h);
+    var t = el("p", "muted"); t.appendChild(X(step.task)); card.appendChild(t);
+
+    if (item.q) { card.appendChild(el("div", "bubble", item.q)); }
+
+    if (step.fixedWeil) {
+      var line = el("div", "build");
+      line.appendChild(el("span", null, item.pre + " "));
+      line.appendChild(el("span", "k", "weil …"));
+      card.appendChild(line);
+    }
+
+    var slot = el("div", "slot");
+    st.placed.forEach(function (ci, pos) {
+      var txt = st.chips[ci];
+      if (!step.fixedWeil && pos === 0) { txt = cap(txt); }
+      slot.appendChild(btn(txt, "w", function () {
+        if (st.done) { return; }
+        st.placed.splice(pos, 1);
+        st.msgKey = ""; st.msgType = "";
+        render();
+      }));
+    });
+    if (!st.placed.length) {
+      var ph = el("span", "muted"); ph.appendChild(X("slot")); slot.appendChild(ph);
+    }
+    card.appendChild(slot);
+
+    if (!st.done) {
+      var pool = el("div", "pool");
+      st.order.forEach(function (ci) {
+        if (st.placed.indexOf(ci) !== -1) { return; }
+        pool.appendChild(btn(st.chips[ci], "w", function () {
+          st.placed.push(ci);
+          st.msgKey = ""; st.msgType = "";
+          render();
+        }));
+      });
+      card.appendChild(pool);
+    }
+
+    if (st.msgKey) {
+      var m = el("div", "msg " + st.msgType); m.appendChild(X(st.msgKey)); card.appendChild(m);
+    }
+
+    if (st.done) {
+      card.appendChild(solutionLine(step, item, st));
+      var last = S.item === step.items.length - 1;
+      card.appendChild(btnX(last ? "cont" : "next", "btn", function () {
+        if (last) { enterStep(S.step + 1); }
+        else { enterStep(S.step, S.item + 1); }
+      }));
+    } else {
+      var check = btnX("check", "btn", function () { checkAnswer(step, item); });
+      check.disabled = st.placed.length !== st.chips.length;
+      card.appendChild(check);
+      card.appendChild(btnX("reset", "btn sec", function () { st.placed = []; st.msgKey = ""; st.msgType = ""; render(); }));
+      if (st.offerSolution) {
+        card.appendChild(btnX("sol", "btn sec", function () {
+          st.done = true; st.msgKey = "solmsg"; st.msgType = "info";
+          st.placed = [];
+          for (var i = 0; i < st.chips.length; i++) { st.placed.push(i); }
+          render();
+        }));
+      }
+    }
+    app.appendChild(card);
+  }
+
+  function solutionLine(step, item, st) {
+    var wrap = el("div", "row");
+    var toks = st.placed.map(function (ci) { return st.chips[ci]; });
+    var hl = item.hl || [item.verb];
+    var conns = ["weil", "denn", "aber"];
+    if (step.fixedWeil) {
+      wrap.appendChild(el("span", "w plain", item.pre));
+      wrap.appendChild(el("span", "w plain k", "weil"));
+    }
+    toks.forEach(function (tk, i) {
+      var txt = tk;
+      if (!step.fixedWeil && i === 0) { txt = cap(txt); }
+      if (i === toks.length - 1) { txt += (item.end || "."); }
+      else if (!step.fixedWeil && conns.indexOf(toks[i + 1]) !== -1) { txt += ","; }
+      var isV = hl.indexOf(tk) !== -1;
+      var isConn = conns.indexOf(tk) !== -1;
+      wrap.appendChild(el("span", "w plain" + (isV ? " v" : "") + (isConn ? " k" : ""), txt));
+    });
+    return wrap;
+  }
+
+  function sameSeq(a, b) {
+    var i;
+    if (a.length !== b.length) { return false; }
+    for (i = 0; i < a.length; i++) { if (a[i] !== b[i]) { return false; } }
+    return true;
+  }
+
+  function checkAnswer(step, item) {
+    var st = S.st;
+    var toks = st.placed.map(function (ci) { return st.chips[ci]; });
+    var sols = [st.chips].concat(item.alts || []);
+    var ok = false, i;
+    for (i = 0; i < sols.length; i++) { if (sameSeq(toks, sols[i])) { ok = true; } }
+
+    if (ok) {
+      st.done = true;
+      st.msgKey = st.attempts === 0 ? "ok1" : "ok2";
+      st.msgType = "ok";
+    } else {
+      st.attempts++;
+      var lastTok = toks[toks.length - 1];
+      var key;
+      if (item.type && item.type !== "weil") {
+        if (item.type === "denn" || item.type === "aber") { key = "h_denn"; }
+        else if (item.type === "w") { key = "h_w"; }
+        else if (item.type === "jn") { key = "h_jn"; }
+        else { key = (lastTok === item.verb) ? "h_noweil" : "h_hs"; }
+      } else if (lastTok !== item.verb) {
+        key = "h_end";
+      } else if (!step.fixedWeil && toks.indexOf("weil") !== st.chips.indexOf("weil")) {
+        key = "h_main";
+      } else {
+        key = "h_subj";
+      }
+      st.msgKey = key;
+      st.msgType = "no";
+      if (st.attempts >= 2) { st.offerSolution = true; }
+    }
+    render();
+  }
+
+  function renderEnd() {
+    var card = el("div", "card");
+    var h = el("h2"); h.appendChild(X("endtitle")); card.appendChild(h);
+    var right = 0, total = 0;
+    var table = el("table");
+    STEPS.forEach(function (s, si) {
+      if (s.kind !== "ex") { return; }
+      var r = { right: 0, total: s.items.length }, k, stt;
+      for (k = 0; k < s.items.length; k++) {
+        stt = S.states[si + "-" + k];
+        if (stt && stt.done && stt.attempts === 0) { r.right++; }
+      }
+      right += r.right; total += r.total;
+      var tr = el("tr");
+      tr.appendChild(el("td", null, s.label));
+      var td = el("td");
+      td.appendChild(el("div", null, r.right + " / " + r.total));
+      td.appendChild(X("firsttry"));
+      tr.appendChild(td);
+      table.appendChild(tr);
+    });
+    card.appendChild(el("div", "score", right + " / " + total));
+    card.appendChild(table);
+    card.appendChild(btnX("again", "btn", function () { resetAll(); }));
+    app.appendChild(card);
+  }
+
+  enterStep(0);
+})();
+</script>
+</body>
+</html>
