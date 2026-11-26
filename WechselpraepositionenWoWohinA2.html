@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wo? Wohin? Wechselpräpositionen (A2, Lektion 4)</title>
+<style>
+:root{--g:#84c341;--gd:#5f9f26;--gs:#eef6e0;--navy:#2f3f98;--hand:#3a46a6;--cyan:#00a9e6;--coral:#ee5a3a;--ink:#1d1d1b;--muted:#555;--line:#e2e2e2;--peach:#e3c4b4;--ok:#15803d;--ok-soft:#dcfce7;--bad:#b91c1c;--bad-soft:#fee2e2;--warn-soft:#fef3c7;--shadow:0 1px 2px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.05)}
+*{box-sizing:border-box;border-radius:0 !important}
+html{font-size:17px}
+@media(min-width:1500px){html{font-size:20px}}
+@media(min-width:2200px){html{font-size:26px}}
+@media(min-width:3200px){html{font-size:34px}}
+body{margin:0;font:1.05rem/1.5 "TPSans","Fira Sans","Source Sans 3","Segoe UI",Calibri,Carlito,system-ui,-apple-system,sans-serif;background:#fff;color:var(--ink);-webkit-text-size-adjust:100%}
+button,select,input{font-family:inherit;color:inherit;touch-action:manipulation}
+[hidden]{display:none!important}
+.wrap,main,.navp{max-width:70rem;margin:0 auto}
+header.top .wrap{position:relative;padding:1rem 1rem .8rem 8rem;min-height:7rem}
+header.top .chnum{position:absolute;left:0;top:0;bottom:0;width:6.5rem;background:var(--g);color:#fff;font-size:3rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.kicker{color:var(--muted);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.75rem}
+h1{color:var(--gd);font-size:2.4rem;margin:0 0 .3rem;line-height:1.15}
+.progress{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;font-weight:600;font-size:.9rem}
+.bar{flex:1;min-width:7rem;max-width:20rem;height:.55rem;background:#e4efd3}.bar i{display:block;height:100%;background:var(--g);width:0;transition:width .3s}
+nav.jump{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);border-bottom:2px solid var(--g)}
+nav.jump .wrap{padding:.4rem .8rem;display:flex;align-items:center;flex-wrap:wrap;gap:.5rem}.sp{flex:1}
+.navbtn{font-weight:700;font-size:.95rem;padding:.3rem .9rem;border:2px solid var(--g);background:#fff;cursor:pointer;min-height:2.5rem}
+.navbtn[aria-expanded=true]{background:var(--g)}
+select{font-size:1rem;padding:.35rem .5rem;border:2px solid var(--line);background:#fff;min-height:2.5rem}
+.navp{padding:.4rem .8rem .6rem;border-top:4px solid var(--navy)}
+.nb{min-height:2.5rem;min-width:2.5rem;padding:.2rem .7rem;border:2px solid var(--line);background:#fff;font-size:1rem;margin:.15rem .3rem .15rem 0;cursor:pointer;font-weight:600}
+.nb.ok{background:var(--ok-soft);border-color:var(--ok)}.nb.cur{outline:3px solid var(--gd);outline-offset:1px}.nb.on{background:var(--gd);border-color:var(--gd);color:#fff}
+main{padding:.9rem .7rem 3rem}
+.card{background:#fff;border:1px solid var(--line);border-top:5px solid var(--gd);box-shadow:var(--shadow);padding:1rem 1.1rem}
+.card.disc{border:2px dashed var(--gd);background:linear-gradient(180deg,#fcfef8,#f4f9ea);box-shadow:none}
+.dtag{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--gd)}
+h2{font-size:1.45rem;margin:0 0 .4rem;color:var(--gd);line-height:1.3}p{margin:0 0 .6rem}
+.x .de{display:block}.x .tr{display:block;font-size:.88em;font-weight:400;color:var(--hand);margin-top:.1rem}
+[dir=rtl]{text-align:right}
+.grid2,.items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;direction:ltr}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;direction:ltr}
+.cell,.item{background:#fff;border:1px solid var(--line);padding:.5rem;position:relative;min-width:0}
+.pic{margin:0;border:3px solid var(--navy);line-height:0}.pic.mv{border-color:var(--coral)}
+.pic svg{width:100%;height:auto;display:block;font-family:inherit}
+.qt{display:inline-block;font-weight:700;color:#fff;padding:.05rem .7rem;background:var(--navy);font-size:.95rem}.qt.wohin{background:var(--coral)}.qt.letter{background:#333}
+.cell .qt+.pic{margin-top:0}
+.sent{font-size:1.15rem;font-weight:600;margin:.5rem 0 .2rem}
+.item .num{position:absolute;left:0;top:0;z-index:2;background:var(--gd);color:#fff;font-weight:700;padding:.1rem .6rem}
+.item.done{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok-soft)}
+.base{font-size:.9rem;color:var(--muted);font-weight:700;margin:.15rem 0 .4rem}
+.gap{display:inline-block;min-width:4.5rem;border-bottom:3px dashed #a99d88;text-align:center}.gap.filled{border:none;background:var(--ok-soft);padding:0 .4rem}
+.blank{color:var(--muted)}
+.w{display:inline-block;margin:.2rem .35rem .2rem 0;padding:.35rem .8rem;border:2px solid var(--peach);background:#fff;font-size:1.1rem;cursor:pointer;min-height:2.8rem;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.w.big{min-width:8rem;font-weight:700}
+.w:hover{border-color:var(--gd)}.w:disabled{cursor:default}
+.w.bad,.opt.bad,select.bad,input.bad{border-color:var(--bad);background:var(--bad-soft)}
+.w.good,.opt.good,select.good,input.good{border-color:var(--ok);background:var(--ok-soft)}
+.w.mark{background:#fde68a;border-color:#f59e0b;font-weight:700}
+mark{background:#fde68a;padding:0 .15rem}
+u{text-decoration-color:#f59e0b;text-decoration-thickness:4px;text-underline-offset:4px;font-weight:700}
+s.l{text-decoration:none;color:var(--muted)}
+.q{margin-top:1rem;border-top:2px solid var(--gs);padding-top:.7rem}.qh{font-weight:700}
+.row{margin:.2rem 0;direction:ltr}
+.opt{display:block;width:100%;text-align:left;min-height:2.8rem;padding:.4rem .8rem;margin:.35rem 0;border:2px solid var(--line);background:#fff;font-size:1.02rem;cursor:pointer}
+.btn{display:inline-block;min-height:2.8rem;padding:.4rem 1.2rem;border:2px solid var(--gd);background:var(--gd);color:#fff;font-size:1rem;font-weight:700;cursor:pointer;margin:.6rem .5rem .2rem 0;vertical-align:top}
+.btn .tr{font-size:.8rem;color:#fff;text-align:center}.btn.sec{background:#fff;color:var(--ink);border-color:var(--line)}.btn.sec .tr{color:var(--hand)}.btn:disabled{opacity:.45;cursor:default}
+.msg{font-size:.96rem;margin:.5rem 0;padding:.45rem .7rem}
+.msg.no{background:var(--bad-soft);color:#7f1d1d}.msg.ok{background:var(--ok-soft);color:#14532d}.msg.info{background:var(--warn-soft);color:#78350f}
+.msg .tr{color:inherit!important}
+.rule{margin-top:1rem;padding:.7rem .9rem;background:var(--ok-soft);color:#14532d;border-left:5px solid var(--ok)}
+.rule .tr{color:#14532d!important}.rule .h{display:block;font-size:.76rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem}
+.formula span{display:inline-block;padding:.3rem .8rem;margin:.5rem .5rem 0 0;color:#fff;font-weight:700;background:var(--navy)}.formula .wh{background:var(--coral)}
+.pair{margin:.9rem 0;border-top:2px solid var(--gs);padding-top:.5rem}.pair .base{color:var(--gd);font-size:1.05rem}
+.tab{border-collapse:collapse;width:100%;max-width:40rem}.tab th,.tab td{border:1px solid #cdd9bb;padding:.35rem .5rem;text-align:left;background:#fff}
+.tab th.wo{background:var(--navy);color:#fff}.tab th.wh{background:var(--coral);color:#fff}.tab select{width:100%}
+.prbar{margin:.8rem 0 .6rem}
+.typed{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}.typed input{font-size:1.2rem;padding:.4rem .6rem;border:2px solid var(--peach);min-width:0;flex:1;min-height:2.8rem;background:#fff}.typed .btn{margin:0}
+.score{font-size:2.2rem;font-weight:700;color:var(--gd)}
+table{width:100%}td{padding:.3rem .2rem;border-bottom:1px solid #eee}
+@media(max-width:760px){.grid2,.grid3,.items{grid-template-columns:1fr}header.top .wrap{padding-left:5.4rem}header.top .chnum{width:4.4rem;font-size:2rem}h1{font-size:1.8rem}.card{padding:.8rem .6rem}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function(){
+"use strict";
+/* ---------- Grafiken (alle selbst gezeichnet, SVG) ---------- */
+function R(x,y,w,h,f,s,sw){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+f+'"'+(s?' stroke="'+s+'" stroke-width="'+(sw||2)+'"':'')+'/>';}
+function C(x,y,r,f,s){return '<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+f+'"'+(s?' stroke="'+s+'" stroke-width="2"':'')+'/>';}
+function P(d,f,s,sw){return '<path d="'+d+'" fill="'+(f||'none')+'"'+(s?' stroke="'+s+'" stroke-width="'+(sw||2)+'" stroke-linecap="round" stroke-linejoin="round"':'')+'/>';}
+function T(x,y,t,sz,f){return '<text x="'+x+'" y="'+y+'" font-size="'+(sz||13)+'" font-weight="700" text-anchor="middle" fill="'+(f||'#444')+'">'+t+'</text>';}
+var INK='#2b2b2b';
+
+/* Figuren: Nullpunkt = unten Mitte */
+function person(shirt,hair,cap){return R(-11,-34,8,34,'#3d4a63')+R(3,-34,8,34,'#3d4a63')+R(-15,-72,30,40,shirt,INK,1.5)
+  +P('M-15 -68 L-24 -44',null,shirt,7)+P('M15 -68 L24 -44',null,shirt,7)+C(0,-86,13,'#f2c9a5',INK)
+  +(cap?R(-14,-101,28,9,'#2f3f98')+R(8,-95,12,4,'#2f3f98'):P('M-13 -88 Q-12 -104 2 -101 Q15 -99 13 -86 Q5 -95 -13 -88 Z',hair))
+  +C(-4,-86,1.7,INK)+C(5,-86,1.7,INK)+P('M-4 -80 Q0 -77 4 -80',null,INK,1.5);}
+var A={
+  frau:function(){return person('#ee5a3a','#6b3b1f');},
+  mann:function(){return person('#5f9f26','#222',true);},
+  kind:function(){return '<g transform="scale(.75)">'+person('#f08a24','#c98a2b')+'</g>';},
+  kindsitzt:function(){return '<g transform="scale(.95)">'+R(-20,-6,28,6,'#8a5a2b')+R(-24,-40,6,40,'#8a5a2b')+R(-4,-14,34,10,'#3d4a63')+R(22,-12,9,12,'#3d4a63')+R(-15,-50,30,40,'#f08a24',INK,1.5)+P('M10 -42 L24 -22',null,'#f08a24',7)+C(0,-64,13,'#f2c9a5',INK)+P('M-13 -66 Q-12 -82 2 -79 Q15 -77 13 -64 Q5 -73 -13 -66 Z','#c98a2b')+C(-4,-64,1.7,INK)+C(5,-64,1.7,INK)+P('M-4 -58 Q0 -55 4 -58',null,INK,1.5)+'</g>';},
+  /* Katze sitzt */
+  katze:function(){return P('M14 -6 Q34 -4 28 -24',null,'#6f6a66',6)+P('M-16 0 Q-20 -32 0 -32 Q20 -32 16 0 Z','#8d8782',INK,1.5)+C(0,-40,13,'#8d8782',INK)+P('M-12 -46 L-11 -60 L-2 -52 Z','#8d8782',INK,1.5)+P('M12 -46 L11 -60 L2 -52 Z','#8d8782',INK,1.5)+C(-5,-42,2.2,'#1d1d1b')+C(5,-42,2.2,'#1d1d1b')+P('M-3 -35 L0 -33 L3 -35',null,INK,1.3)+P('M-6 -36 L-19 -38 M-6 -34 L-18 -31 M6 -36 L19 -38 M6 -34 L18 -31',null,INK,.8);},
+  /* Katze läuft (nach rechts) */
+  katzelauf:function(){return P('M-22 -22 Q-38 -28 -32 -46',null,'#6f6a66',6)+P('M-18 -14 L-22 0 M-8 -14 L-5 0 M10 -14 L7 0 M18 -14 L23 0',null,'#6f6a66',5)+'<ellipse cx="0" cy="-21" rx="25" ry="12" fill="#8d8782" stroke="#2b2b2b" stroke-width="1.5"/>'+C(25,-31,11,'#8d8782',INK)+P('M16 -37 L17 -49 L25 -41 Z','#8d8782',INK,1.5)+P('M34 -37 L33 -49 L26 -41 Z','#8d8782',INK,1.5)+C(28,-33,2,INK);},
+  vogel:function(){return P('M-2 -5 L-3 0 M5 -5 L6 0',null,'#c26a12',2)+'<ellipse cx="0" cy="-13" rx="16" ry="10" fill="#00a9e6" stroke="#2b2b2b" stroke-width="1.5"/>'+C(12,-22,8,'#00a9e6',INK)+P('M19 -23 L29 -20 L19 -17 Z','#f08a24')+C(14,-24,1.8,INK)+P('M-14 -14 L-27 -21 L-24 -8 Z','#0084b5')+P('M-8 -15 Q0 -24 8 -13 Q0 -8 -8 -15 Z','#0084b5');},
+  ball:function(){return C(0,-13,13,'#fff',INK)+P('M0 -19 L6 -14 L4 -7 L-4 -7 L-6 -14 Z',INK)+P('M0 -19 L0 -26 M6 -14 L12 -17 M4 -7 L8 -2 M-4 -7 L-8 -2 M-6 -14 L-12 -17',null,INK,1.3);},
+  schluessel:function(){return C(-13,-7,7,'none','#b8860b')+C(-13,-7,3,'none','#b8860b')+P('M-6 -7 L18 -7 M11 -7 L11 0 M18 -7 L18 -1',null,'#b8860b',4);},
+  zweischluessel:function(){return '<g transform="translate(-18,0)">'+A.schluessel()+'</g><g transform="translate(24,-2) rotate(-18)">'+A.schluessel()+'</g>';},
+  topf:function(){return P('M-13 -20 L13 -20 L9 0 L-9 0 Z','#c8643c',INK,1.5)+R(-15,-25,30,6,'#d97a50',INK,1.5)+P('M0 -25 L0 -40 M0 -30 L-9 -37 M0 -32 L9 -39',null,'#4d8b22',2.5)+C(0,-44,6,'#e8457c')+C(-11,-39,5,'#f6b73c')+C(11,-41,5,'#e8457c');},
+  zeitung:function(){return P('M-22 -2 L-14 -13 L24 -13 L16 -2 Z','#fff',INK,1.5)+P('M-10 -10 L18 -10 M-13 -7 L15 -7 M-16 -4.5 L0 -4.5',null,'#777',1.2);},
+  fahrrad:function(){return C(-24,-17,16,'none',INK)+C(24,-17,16,'none',INK)+P('M-24 -17 L-8 -40 L16 -40 L2 -17 L-24 -17 M-8 -40 L2 -17 M16 -40 L24 -17 M16 -40 L13 -50 L21 -50 M-8 -40 L-10 -46 M-16 -46 L-3 -46',null,'#ee5a3a',3.2);},
+  auto:function(){return P('M-50 -12 L-50 -32 L-28 -34 L-16 -52 L22 -52 L36 -34 L50 -30 L50 -12 Z','#2f3f98',INK,1.5)+P('M-12 -47 L2 -47 L2 -35 L-21 -35 Z M7 -47 L20 -47 L29 -35 L7 -35 Z','#cfeefa')+C(-28,-11,11,'#222')+C(28,-11,11,'#222')+C(-28,-11,4,'#bbb')+C(28,-11,4,'#bbb');},
+  jacke:function(){return P('M0 -62 L0 -54',null,INK,2)+P('M-8 -55 L-24 -44 L-30 -12 L-20 -9 L-16 -32 L-17 0 L17 0 L16 -32 L20 -9 L30 -12 L24 -44 L8 -55 L0 -46 Z','#f08a24',INK,1.5)+P('M0 -46 L0 0',null,INK,1.2)+C(0,-63,3,'#555');},
+  bild:function(){return P('M-22 -42 L0 -56 L22 -42',null,'#555',1.5)+C(0,-56,2.5,'#555')+R(-30,-42,60,42,'#fff','#8a5a2b',5)+P('M-24 -6 L-8 -26 L4 -14 L12 -22 L24 -6 Z','#84c341')+C(13,-31,5,'#f6b73c');},
+  lampe:function(){return P('M0 -70 L0 -24',null,INK,2)+P('M-12 -24 L12 -24 L22 -4 L-22 -4 Z','#f6b73c',INK,1.5)+C(0,0,5,'#fff3b0',INK);}
+};
+
+/* Orte: back = hinter der Figur, front = vor der Figur, to = Zielpunkt, from = Startpunkt */
+function ground(){return R(0,0,400,250,'#f3faff')+R(0,220,400,30,'#e8e2d6')+P('M0 220 L400 220',null,'#8f877a',2);}
+function indoor(){return R(0,0,400,250,'#fbf7ee')+R(0,220,400,30,'#d9c3a0')+P('M0 220 L400 220',null,'#8a6d45',2);}
+function bin(x,col){return R(x-26,148,52,68,col,INK,1.8)+R(x-30,140,60,10,col,INK,1.8)+P('M'+(x-12)+' 162 L'+(x-12)+' 204 M'+x+' 162 L'+x+' 204 M'+(x+12)+' 162 L'+(x+12)+' 204',null,'rgba(0,0,0,.25)',2)+C(x-18,217,4,'#222')+C(x+18,217,4,'#222');}
+function tree(x){return R(x-7,130,14,90,'#8a5a2b')+C(x,103,34,'#84c341')+C(x-26,118,22,'#74b232')+C(x+26,118,22,'#74b232')+C(x,76,24,'#98d055');}
+function sofa(op){return '<g opacity="'+(op||1)+'">'+R(160,140,170,46,'#5b78c7',INK,1.8)+R(145,164,26,48,'#4a66b3',INK,1.8)+R(319,164,26,48,'#4a66b3',INK,1.8)+R(171,184,148,28,'#6d89d6',INK,1.8)+P('M245 186 L245 210',null,INK,1.2)+R(160,212,10,8,'#333')+R(320,212,10,8,'#333')+'</g>';}
+function table(){return R(170,142,160,11,'#b57a42',INK,1.6)+R(180,153,10,67,'#9c6534',INK,1.2)+R(310,153,10,67,'#9c6534',INK,1.2);}
+function windowsRow(y,xs){var s='';xs.forEach(function(x){s+=R(x,y,40,40,'#cfeefa','#6d6457',3)+P('M'+(x+20)+' '+y+' L'+(x+20)+' '+(y+40),null,'#6d6457',2);});return s;}
+var O={
+  balkon:{back:function(){return ground()+R(30,10,340,210,'#f2e1c9','#8f877a')+R(70,64,64,100,'#7b5a3c',INK)+R(78,72,48,84,'#cfeefa')+windowsRow(75,[300])+R(130,160,200,13,'#9a948b',INK,1.5)+T(200,198,'der Balkon',14);},
+    front:function(){var s=P('M150 126 L328 126',null,'#333',4);for(var x=154;x<=326;x+=19)s+=P('M'+x+' 126 L'+x+' 160',null,'rgba(40,40,40,.55)',2.5);return s;},from:[96,160],to:[238,160]},
+  hof:{back:function(){return ground()+R(150,30,230,190,'#e9d8bd','#8f877a')+windowsRow(48,[170,244,318])+windowsRow(106,[170,318])+R(240,104,48,56,'#8a6d45',INK,1.5)+R(150,168,230,52,'#d8d2c4')+P('M150 168 L380 168',null,'#8f877a',2)+R(142,150,10,70,'#8f877a',INK,1)+tree(352).replace(/r="34"/,'r="26"')+T(320,244,'der Hof',14);},from:[55,226],to:[250,226]},
+  garage:{back:function(){return ground()+P('M150 84 L265 40 L380 84 Z','#a4533a',INK,1.8)+R(160,84,210,136,'#cfc8bb',INK,1.8)+R(176,104,178,116,'#6f6a62')+T(265,77,'die Garage',14,'#fff');},from:[60,220],to:[265,220]},
+  treppenhaus:{back:function(){return ground()+R(150,24,236,196,'#f6ecd8','#8f877a')+P('M262 220 L262 200 L286 200 L286 180 L310 180 L310 160 L334 160 L334 140 L358 140 L358 120 L386 120 L386 220 Z','#c9bfae',INK,1.5)+P('M262 164 L386 66',null,'#5a4630',5)+R(142,24,10,70,'#8f877a')+T(246,46,'das Treppenhaus',14);},from:[55,220],to:[218,220]},
+  keller:{back:function(){return R(0,0,400,70,'#f3faff')+R(0,70,400,180,'#a98c67')+R(0,64,400,8,'#84c341')+R(120,92,264,148,'#d9d4ca',INK,1.8)+R(146,104,42,24,'#cfeefa',INK,1.5)+P('M20 70 L62 70 L240 226 L240 240 L196 240 Z','#e9e4da','#8a6d45',1.5)+P('M48 82 L74 82 L74 106 L101 106 L101 129 L128 129 L128 153 L155 153 L155 177 L182 177 L182 200 L208 200 L208 223 L236 223',null,'#8a6d45',2.5)+R(330,180,40,60,'#b57a42',INK,1.5)+R(330,140,40,40,'#c98a50',INK,1.5)+T(262,114,'der Keller',14);},from:[60,70],to:[240,240]},
+  tuer:{back:function(){return ground()+R(170,20,200,200,'#f2e1c9','#8f877a')+R(262,86,70,134,'#7b5a3c',INK,2)+R(272,98,50,40,'#94704f')+C(274,158,4.5,'#f6b73c',INK)+R(236,128,12,18,'#ddd',INK,1)+C(242,137,3,'#ee5a3a')+T(297,76,'die Tür',14);},from:[55,220],to:[236,222]},
+  tonnen:{back:function(){return ground()+bin(168,'#5f9f26')+bin(312,'#5a5f66')+T(240,244,'die Mülltonnen',14);},from:[50,220],to:[240,220]},
+  tonne:{back:function(){return ground()+bin(262,'#5f9f26')+T(262,244,'die Mülltonne',14);},from:[55,220],to:[198,220]},
+  baeume:{back:function(){return ground()+tree(190)+tree(330)+T(260,244,'die Bäume',14);},from:[45,222],to:[260,222]},
+  unterbaeume:{back:function(){return ground()+R(178,100,14,120,'#8a5a2b')+R(328,100,14,120,'#8a5a2b')+C(180,82,44,'#74b232')+C(232,66,52,'#84c341')+C(292,64,52,'#98d055')+C(342,84,44,'#74b232')+C(262,92,38,'#84c341')+T(260,244,'die Bäume',14);},from:[45,222],to:[260,222]},
+  tisch:{back:function(){return indoor()+table()+T(250,244,'der Tisch',14);},from:[60,220],to:[250,220]},
+  tischauf:{back:function(){return indoor()+table()+T(250,244,'der Tisch',14);},from:[250,20],to:[250,142]},
+  tischueber:{back:function(){return indoor()+R(0,0,400,10,'#d8cdb5')+table()+T(250,244,'der Tisch',14);},from:[70,90],to:[250,100]},
+  sofa:{back:function(){return indoor()+T(245,244,'das Sofa',14);},front:function(){return sofa(1);},from:[90,50],to:[232,142]},
+  sofaauf:{back:function(){return indoor()+sofa(1)+T(245,244,'das Sofa',14);},from:[60,60],to:[245,186]},
+  dach:{back:function(){return ground()+R(190,112,170,108,'#f2e1c9','#8f877a')+R(180,98,190,15,'#a4533a',INK,1.8)+windowsRow(130,[210,300])+R(260,170,32,50,'#7b5a3c')+T(275,244,'das Dach',14);},from:[45,60],to:[260,98]},
+  haus:{back:function(){return ground()+P('M170 128 L245 78 L320 128 Z','#a4533a',INK,1.8)+R(182,128,126,92,'#f2e1c9','#8f877a')+windowsRow(142,[198,254])+R(230,184,28,36,'#7b5a3c')+T(245,244,'das Haus',14);},from:[40,150],to:[248,60]},
+  fenster:{back:function(){return ground()+R(170,18,200,202,'#f2e1c9','#8f877a')+R(262,62,82,100,'#cfeefa','#6d6457',5)+P('M303 62 L303 162 M262 110 L344 110',null,'#6d6457',3)+R(244,160,108,11,'#9a948b',INK,1.5)+T(303,192,'das Fenster',14);},from:[40,70],to:[261,160]},
+  tor:{back:function(){var s=ground()+R(168,76,18,144,'#8f877a',INK,1.5)+R(356,76,18,144,'#8f877a',INK,1.5);for(var x=198;x<=346;x+=18)s+=P('M'+x+' 214 L'+x+' 98',null,'#333',4);return s+P('M188 112 L354 112 M188 196 L354 196',null,'#333',5)+T(271,66,'das Tor',14);},from:[48,222],to:[266,236]},
+  haustuer:{back:function(){return ground()+R(120,20,200,200,'#f2e1c9','#8f877a')+R(184,86,72,134,'#7b5a3c',INK,2)+R(194,98,52,40,'#94704f')+C(244,158,4.5,'#f6b73c',INK)+T(220,76,'die Haustür',14);},from:[52,236],to:[290,236]},
+  gehweg:{back:function(){return ground()+R(20,0,150,220,'#f2e1c9','#8f877a')+windowsRow(40,[44])+R(166,78,76,10,'#9a948b',INK,1.5)+P('M170 78 L170 52 L240 52 L240 78 M188 52 L188 78 M206 52 L206 78 M224 52 L224 78',null,'#333',2)+R(150,220,250,12,'#bfb8ab')+T(325,246,'der Gehweg',14);},from:[225,52],to:[288,222]},
+  wand:{back:function(){return indoor()+R(120,18,250,202,'#efe3cc','#bba985')+T(330,42,'die Wand',14);},from:[245,150],to:[245,150]},
+  fahrradstaender:{back:function(){var s=ground();for(var x=232;x<=322;x+=22)s+=P('M'+x+' 220 L'+x+' 188 Q'+(x+7)+' 174 '+(x+14)+' 188 L'+(x+14)+' 220',null,'#7d8590',4);return s+T(284,246,'der Fahrradständer',14);},from:[60,220],to:[190,220]}
+};
+/* Szene: {o:Ort, a:Figur, am:Figur in Bewegung, mode:'walk'|'fly'|'fall', to, from} */
+var SC={
+  balkon:{o:'balkon',a:'katze',am:'katzelauf',mode:'walk'},
+  hof:{o:'hof',a:'kind',mode:'walk'},
+  garage:{o:'garage',a:'mann',mode:'walk'},
+  treppe:{o:'treppenhaus',a:'frau',mode:'walk'},
+  keller:{o:'keller',a:'mann',mode:'walk'},
+  tuer:{o:'tuer',a:'frau',mode:'walk'},
+  tonnen:{o:'tonnen',a:'katze',am:'katzelauf',mode:'walk'},
+  tonneball:{o:'tonne',a:'ball',mode:'fall',from:[160,30]},
+  baeume:{o:'baeume',a:'kind',mode:'walk'},
+  unterbaeume:{o:'unterbaeume',a:'kind',mode:'walk'},
+  sofahinter:{o:'sofa',a:'katze',am:'katzelauf',mode:'walk',from:[50,160],to:[238,159]},
+  tischkeys:{o:'tisch',a:'zweischluessel',mode:'fall',from:[160,110]},
+  tischkey:{o:'tisch',a:'schluessel',mode:'fall',from:[160,110]},
+  tischkatze:{o:'tisch',a:'katze',am:'katzelauf',mode:'walk'},
+  tischzeitung:{o:'tischauf',a:'zeitung',mode:'fall'},
+  tischvogel:{o:'tischueber',a:'vogel',mode:'fly'},
+  sofakey:{o:'sofa',a:'schluessel',mode:'fall',from:[232,50],to:[232,142]},
+  sofaball:{o:'sofa',a:'ball',mode:'fly',from:[40,120],to:[212,148]},
+  sofakatze:{o:'sofaauf',a:'katze',am:'katzelauf',mode:'fly',from:[60,220]},
+  dach:{o:'dach',a:'vogel',mode:'fly'},
+  haus:{o:'haus',a:'vogel',mode:'fly'},
+  fenster:{o:'fenster',a:'vogel',mode:'fly'},
+  tor:{o:'tor',a:'mann',mode:'walk'},
+  haustuer:{o:'haustuer',a:'frau',mode:'walk',from:[60,236],to:[220,236]},
+  gehweg:{o:'gehweg',a:'topf',mode:'fall'},
+  rad:{o:'fahrradstaender',a:'fahrrad',mode:'walk'},
+  radtonne:{o:'tonne',a:'fahrrad',mode:'walk',to:[252,231]},
+  autogarage:{o:'garage',a:'auto',mode:'walk'},
+  bild:{o:'wand',a:'bild',mode:'walk',to:[220,130]},
+  jacke:{o:'tuer',a:'jacke',mode:'walk',to:[297,176]},
+  lampe:{o:'tischueber',a:'lampe',mode:'walk',to:[250,76]},
+  kindbalkon:{o:'balkon',a:'kindsitzt',mode:'walk'}
+};
+var ANIM=[], uid=0;
+function scene(key,dir,opt){
+  /* dir: 'wo' | 'wohin' */
+  var s=SC[key], o=O[s.o], to=s.to||o.to, from=s.from||o.from, id='a'+(++uid), mv=dir==='wohin';
+  var fig=(mv&&s.am)?s.am:s.a;
+  var svg='<svg viewBox="0 0 400 250" role="img" aria-label="'+(opt&&opt.alt?opt.alt:(mv?'Bild mit Bewegung':'Bild ohne Bewegung'))+'">'+o.back();
+  if(mv){
+    var mx=(from[0]+to[0])/2, my=s.mode==='fly'?Math.max(12,Math.min(from[1],to[1])-55):(from[1]+to[1])/2;
+    var path = s.mode==='fly' ? 'M'+from[0]+' '+(from[1]-14)+' Q'+mx+' '+my+' '+to[0]+' '+(to[1]-14) : 'M'+from[0]+' '+(from[1]-12)+' L'+to[0]+' '+(to[1]-12);
+    svg+='<g id="'+id+'" data-from="'+from+'" data-to="'+to+'" data-mode="'+s.mode+'" data-my="'+my+'" transform="translate('+to+')">'+A[fig]()+'</g>';
+    if(o.front) svg+=o.front();
+    var ang=s.mode==='fly'?Math.atan2((to[1]-14)-my,to[0]-mx):Math.atan2(to[1]-from[1],to[0]-from[0]);
+    var ex=to[0], ey=to[1]-(s.mode==='fly'?14:12), L=14;
+    svg+=P(path,null,'#ee5a3a',3).replace('/>',' stroke-dasharray="7 7"/>')
+      +P('M'+(ex-L*Math.cos(ang-.5))+' '+(ey-L*Math.sin(ang-.5))+' L'+ex+' '+ey+' L'+(ex-L*Math.cos(ang+.5))+' '+(ey-L*Math.sin(ang+.5)),null,'#ee5a3a',4);
+  } else {
+    svg+='<g transform="translate('+to+')">'+A[fig]()+'</g>';
+    if(o.front) svg+=o.front();
+  }
+  return '<figure class="pic '+(mv?'mv':'st')+'">'+svg+'</svg></figure>';
+}
+var T0=null, paused=false, clock=0, last=null;
+function tick(ts){
+  if(last===null)last=ts; if(!paused)clock+=ts-last; last=ts;
+  var cyc=3800, t=(clock%cyc), p;
+  p = t<600?0 : t<2600?(t-600)/2000 : 1;
+  var els=document.querySelectorAll('g[data-mode]');
+  for(var i=0;i<els.length;i++){
+    var e=els[i], f=e.getAttribute('data-from').split(',').map(Number), to=e.getAttribute('data-to').split(',').map(Number), m=e.getAttribute('data-mode'), my=+e.getAttribute('data-my');
+    var q = m==='fall' ? p*p : (p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2);
+    var x=f[0]+(to[0]-f[0])*q, y=f[1]+(to[1]-f[1])*q, rot=0;
+    if(m==='fly'){ var y0=f[1], y1=to[1], c=my+14; y=(1-q)*(1-q)*y0+2*(1-q)*q*c+q*q*y1; }
+    if(m==='walk' && p>0 && p<1) y-=Math.abs(Math.sin(q*Math.PI*7))*5;
+    if(m==='fall' && p>0 && p<1) rot=Math.sin(q*Math.PI*2)*25;
+    e.setAttribute('transform','translate('+x.toFixed(1)+','+y.toFixed(1)+') rotate('+rot.toFixed(1)+')');
+  }
+  requestAnimationFrame(tick);
+}
+/* Reihenfolge: de, en, ru, uk, tr, ar, fa, ro */
+var LANGS=['de','en','ru','uk','tr','ar','fa','ro'];
+var LNAMES=['Deutsch (ohne Übersetzung)','English','Русский','Українська','Türkçe','العربية','فارسی','Română'];
+var I={
+start:['Los geht’s','Let’s go','Поехали','Починаймо','Başlayalım','هيا نبدأ','شروع کنیم','Să începem'],
+next:['Weiter','Continue','Дальше','Далі','Devam','متابعة','ادامه','Mai departe'],
+practise:['Jetzt üben','Practise now','Теперь тренируемся','Тепер тренуємося','Şimdi alıştırma','تدرّب الآن','حالا تمرین کنیم','Acum exersăm'],
+check:['Prüfen','Check','Проверить','Перевірити','Kontrol et','تحقّق','بررسی','Verifică'],
+again:['Übung neu starten','Restart exercise','Начать упражнение заново','Почати вправу заново','Alıştırmayı yeniden başlat','إعادة التمرين','شروع دوباره‌ی تمرین','Reia exercițiul'],
+sol:['Lösung zeigen','Show solution','Показать ответ','Показати відповідь','Çözümü göster','إظهار الحل','نمایش پاسخ','Arată soluția'],
+look:['Noch nicht. Sehen Sie sich die Bilder und Sätze noch einmal an.','Not yet. Look at the pictures and sentences again.','Пока нет. Посмотрите ещё раз на картинки и предложения.','Ще ні. Подивіться ще раз на малюнки та речення.','Henüz değil. Resimlere ve cümlelere tekrar bakın.','ليس بعد. انظر إلى الصور والجمل مرة أخرى.','هنوز نه. دوباره تصویرها و جمله‌ها را ببینید.','Încă nu. Priviți din nou imaginile și propozițiile.'],
+good:['Richtig!','Correct!','Правильно!','Правильно!','Doğru!','صحيح!','درست!','Corect!'],
+motion:['Wohin? Bewegung zu einem Ziel → Akkusativ.','“Wohin?” (where to?): movement to a goal → accusative.','«Wohin?» (куда?): движение к цели → винительный падеж (Akkusativ).','«Wohin?» (куди?): рух до мети → знахідний відмінок (Akkusativ).','„Wohin?“ (nereye?): hedefe doğru hareket → Akkusativ.','«Wohin?» (إلى أين؟): حركة نحو هدف ← حالة النصب (Akkusativ).','«Wohin?» (به کجا؟): حرکت به سوی مقصد ← حالت Akkusativ.','„Wohin?“ (încotro?): mișcare spre o țintă → acuzativ (Akkusativ).'],
+static:['Wo? Ein Ort, kein neues Ziel → Dativ.','“Wo?” (where?): a place, no new goal → dative.','«Wo?» (где?): место, нет новой цели → дательный падеж (Dativ).','«Wo?» (де?): місце, без нової мети → давальний відмінок (Dativ).','„Wo?“ (nerede?): bir yer, yeni hedef yok → Dativ.','«Wo?» (أين؟): مكان، بلا هدف جديد ← حالة الجر (Dativ).','«Wo?» (کجا؟): یک مکان، بدون مقصد تازه ← حالت Dativ.','„Wo?“ (unde?): un loc, fără țintă nouă → dativ (Dativ).'],
+nav:['Aufgaben','Tasks','Задания','Завдання','Görevler','المهام','تمرین‌ها','Exerciții'],
+pause:['Bewegung anhalten','Pause animation','Остановить анимацию','Зупинити анімацію','Animasyonu durdur','إيقاف الحركة','توقف حرکت','Oprește animația'],
+play:['Bewegung starten','Start animation','Запустить анимацию','Запустити анімацію','Animasyonu başlat','تشغيل الحركة','شروع حرکت','Pornește animația'],
+
+intro_h:['Wo? oder Wohin?','Where? or where to?','Где? или куда?','Де? чи куди?','Nerede? mi Nereye? mi?','أين؟ أم إلى أين؟','کجا؟ یا به کجا؟','Unde? sau încotro?'],
+intro:['Im Haus, im Hof, bei den Nachbarn: Sie sehen zuerst Bilder und Sätze und entdecken die Regel selbst. Danach üben Sie.','In the house, in the courtyard, with the neighbours: first you look at pictures and sentences and discover the rule yourself. Then you practise.','Дом, двор, соседи: сначала вы смотрите на картинки и предложения и сами открываете правило. Потом тренируетесь.','Будинок, двір, сусіди: спочатку ви дивитеся на малюнки й речення та самі відкриваєте правило. Потім тренуєтеся.','Ev, avlu, komşular: Önce resimlere ve cümlelere bakıp kuralı kendiniz keşfedersiniz. Sonra alıştırma yaparsınız.','البيت والفناء والجيران: تنظر أولًا إلى الصور والجمل وتكتشف القاعدة بنفسك، ثم تتدرّب.','خانه، حیاط، همسایه‌ها: اول تصویرها و جمله‌ها را می‌بینید و خودتان قاعده را کشف می‌کنید. بعد تمرین می‌کنید.','Casa, curtea, vecinii: mai întâi priviți imagini și propoziții și descoperiți singuri regula. Apoi exersați.'],
+hint1:['Wichtig: Man kann die Präpositionen oft nicht 1:1 in die eigene Sprache übersetzen. Merken Sie sich das Bild.','Important: you often cannot translate the prepositions one-to-one into your language. Remember the picture.','Важно: предлоги часто нельзя перевести на ваш язык один к одному. Запоминайте картинку.','Важливо: прийменники часто не можна перекласти вашою мовою один до одного. Запам’ятовуйте картинку.','Önemli: Bu edatlar çoğu zaman dilinize bire bir çevrilemez. Resmi aklınızda tutun.','مهم: غالبًا لا يمكن ترجمة حروف الجر هذه إلى لغتك حرفيًا. احفظ الصورة.','مهم: این حرف‌های اضافه را اغلب نمی‌توان یک‌به‌یک به زبان خودتان ترجمه کرد. تصویر را به خاطر بسپارید.','Important: adesea prepozițiile nu se pot traduce cuvânt cu cuvânt în limba voastră. Rețineți imaginea.'],
+
+d1_h:['Was ist anders?','What is different?','Что отличается?','Що відрізняється?','Fark ne?','ما الفرق؟','چه فرقی هست؟','Ce este diferit?'],
+d1_task:['Sehen Sie sich die Bilder an. Lesen Sie die Sätze.','Look at the pictures. Read the sentences.','Посмотрите на картинки. Прочитайте предложения.','Подивіться на малюнки. Прочитайте речення.','Resimlere bakın. Cümleleri okuyun.','انظر إلى الصور واقرأ الجمل.','تصویرها را ببینید و جمله‌ها را بخوانید.','Priviți imaginile. Citiți propozițiile.'],
+d1_q1:['In welchen Bildern gibt es eine Bewegung zu einem Ziel?','Which pictures show movement to a goal?','На каких картинках есть движение к цели?','На яких малюнках є рух до мети?','Hangi resimlerde hedefe doğru hareket var?','في أي الصور توجد حركة نحو هدف؟','در کدام تصویرها حرکت به سوی مقصد وجود دارد؟','În care imagini există mișcare spre o țintă?'],
+d1_q2:['Wählen Sie jetzt in allen vier Sätzen das Wort vor „Balkon“ und „Garage“.','Now select the word before “Balkon” and “Garage” in all four sentences.','Теперь выберите во всех четырёх предложениях слово перед «Balkon» и «Garage».','Тепер виберіть у всіх чотирьох реченнях слово перед «Balkon» і «Garage».','Şimdi dört cümlede de „Balkon“ ve „Garage“ önündeki sözcüğü seçin.','اختر الآن في الجمل الأربع الكلمة التي تسبق «Balkon» و«Garage».','حالا در هر چهار جمله کلمه‌ی قبل از «Balkon» و «Garage» را انتخاب کنید.','Acum selectați în toate cele patru propoziții cuvântul dinaintea „Balkon” și „Garage”.'],
+d1_q3:['Was passt? Bei einer Bewegung zu einem Ziel heißt es …','Which fits? With movement to a goal we say …','Что подходит? При движении к цели говорят …','Що підходить? Під час руху до мети кажуть …','Hangisi doğru? Hedefe doğru harekette … denir.','ما المناسب؟ عند الحركة نحو هدف نقول …','کدام درست است؟ هنگام حرکت به سوی مقصد می‌گوییم …','Ce se potrivește? La mișcare spre o țintă spunem …'],
+left:['in Bild A und C','in pictures A and C','на картинках A и C','на малюнках A і C','A ve C resimlerinde','في الصورتين A وC','در تصویرهای A و C','în imaginile A și C'],
+right:['in Bild B und D','in pictures B and D','на картинках B и D','на малюнках B і D','B ve D resimlerinde','في الصورتين B وD','در تصویرهای B و D','în imaginile B și D'],
+d1_rule:['Frage „Wo?“ → Ort → Dativ. Frage „Wohin?“ → Bewegung zu einem Ziel → Akkusativ. Diese neun Präpositionen können beides: in, an, auf, über, unter, vor, hinter, neben, zwischen (Wechselpräpositionen).','Question “Wo?” (where) → place → dative. Question “Wohin?” (where to) → movement to a goal → accusative. These nine prepositions can take both: in, an, auf, über, unter, vor, hinter, neben, zwischen (two-way prepositions).','Вопрос «Wo?» (где?) → место → Dativ. Вопрос «Wohin?» (куда?) → движение к цели → Akkusativ. Эти девять предлогов управляют обоими падежами: in, an, auf, über, unter, vor, hinter, neben, zwischen.','Запитання «Wo?» (де?) → місце → Dativ. Запитання «Wohin?» (куди?) → рух до мети → Akkusativ. Ці дев’ять прийменників можуть вживатися з обома відмінками: in, an, auf, über, unter, vor, hinter, neben, zwischen.','„Wo?“ (nerede?) → yer → Dativ. „Wohin?“ (nereye?) → hedefe hareket → Akkusativ. Şu dokuz edat ikisiyle de kullanılır: in, an, auf, über, unter, vor, hinter, neben, zwischen.','سؤال «Wo?» (أين؟) ← مكان ← Dativ. سؤال «Wohin?» (إلى أين؟) ← حركة نحو هدف ← Akkusativ. حروف الجر التسعة هذه تأتي مع الحالتين: in, an, auf, über, unter, vor, hinter, neben, zwischen.','پرسش «Wo?» (کجا؟) ← مکان ← Dativ. پرسش «Wohin?» (به کجا؟) ← حرکت به سوی مقصد ← Akkusativ. این نه حرف اضافه با هر دو حالت می‌آیند: in, an, auf, über, unter, vor, hinter, neben, zwischen.','Întrebarea „Wo?” (unde?) → loc → Dativ. Întrebarea „Wohin?” (încotro?) → mișcare spre o țintă → Akkusativ. Aceste nouă prepoziții merg cu ambele cazuri: in, an, auf, über, unter, vor, hinter, neben, zwischen.'],
+
+x1_h:['Wo? oder Wohin?','“Wo?” or “Wohin?”','«Wo?» или «Wohin?»','«Wo?» чи «Wohin?»','„Wo?“ mu „Wohin?“ mu?','«Wo?» أم «Wohin?»','«Wo?» یا «Wohin?»','„Wo?” sau „Wohin?”'],
+x1_task:['Welche Frage passt? Wählen Sie.','Which question fits? Choose.','Какой вопрос подходит? Выберите.','Яке запитання підходить? Виберіть.','Hangi soru uygun? Seçin.','أي سؤال يناسب؟ اختر.','کدام پرسش مناسب است؟ انتخاب کنید.','Ce întrebare se potrivește? Alegeți.'],
+
+d2_h:['der, die, das, Plural: Was passiert?','der, die, das, plural: what happens?','der, die, das, множественное число: что происходит?','der, die, das, множина: що відбувається?','der, die, das, çoğul: Ne oluyor?','der وdie وdas والجمع: ماذا يحدث؟','der، die، das و جمع: چه اتفاقی می‌افتد؟','der, die, das, plural: ce se întâmplă?'],
+d2_task:['Lesen Sie die Satzpaare. Ergänzen Sie dann die Tabelle: Was finden Sie in den Sätzen?','Read the sentence pairs. Then complete the table with what you find in the sentences.','Прочитайте пары предложений. Затем заполните таблицу тем, что вы нашли в предложениях.','Прочитайте пари речень. Потім заповніть таблицю тим, що ви знайшли в реченнях.','Cümle çiftlerini okuyun. Sonra cümlelerde bulduklarınızla tabloyu tamamlayın.','اقرأ أزواج الجمل، ثم أكمل الجدول بما تجده في الجمل.','جفت‌جمله‌ها را بخوانید. سپس جدول را با آنچه در جمله‌ها می‌بینید کامل کنید.','Citiți perechile de propoziții. Apoi completați tabelul cu ce găsiți în ele.'],
+d2_rule:['Wo? → aus „der“ wird dem, aus „die“ wird der, aus „das“ wird dem. Wohin? → aus „der“ wird den; „die“ und „das“ bleiben gleich. Plural: Wo? → den, und das Nomen bekommt ein -n (die Bäume → unter den Bäumen). Wohin? → die (unter die Bäume). Kein zusätzliches -n: wenn der Plural schon auf -n endet (die Mülltonnen) oder auf -s (die Autos).','Wo? → dem (der), der (die), dem (das). Wohin? → den (der), die (die), das (das). Plural: Wo? → den, and the noun gets -n (die Bäume → unter den Bäumen). Wohin? → die (unter die Bäume). No extra -n if the plural already ends in -n (die Mülltonnen) or in -s (die Autos).','Wo? → dem (der), der (die), dem (das). Wohin? → den (der), die (die), das (das). Множественное число: Wo? → den, и существительное получает -n (die Bäume → unter den Bäumen). Wohin? → die. Лишнее -n не нужно, если множественное число уже оканчивается на -n (die Mülltonnen) или на -s (die Autos).','Wo? → dem (der), der (die), dem (das). Wohin? → den (der), die (die), das (das). Множина: Wo? → den, а іменник отримує -n (die Bäume → unter den Bäumen). Wohin? → die. Додаткове -n не потрібне, якщо множина вже закінчується на -n (die Mülltonnen) або на -s (die Autos).','Wo? → dem (der), der (die), dem (das). Wohin? → den (der), die (die), das (das). Çoğul: Wo? → den ve isim -n alır (die Bäume → unter den Bäumen). Wohin? → die. Çoğul zaten -n (die Mülltonnen) veya -s (die Autos) ile bitiyorsa ek -n gelmez.','Wo? ← dem (der)، der (die)، dem (das). Wohin? ← den (der)، die (die)، das (das). الجمع: Wo? ← den ويأخذ الاسم ‎-n (die Bäume ← unter den Bäumen). Wohin? ← die. لا تُضاف ‎-n إذا كان الجمع ينتهي أصلًا بـ ‎-n (die Mülltonnen) أو ‎-s (die Autos).','Wo? ← dem (der)، der (die)، dem (das). Wohin? ← den (der)، die (die)، das (das). جمع: Wo? ← den و اسم ‎-n می‌گیرد (die Bäume ← unter den Bäumen). Wohin? ← die. اگر جمع خودش به ‎-n (die Mülltonnen) یا ‎-s (die Autos) ختم شود، ‎-n اضافه نمی‌شود.','Wo? → dem (der), der (die), dem (das). Wohin? → den (der), die (die), das (das). Plural: Wo? → den, iar substantivul primește -n (die Bäume → unter den Bäumen). Wohin? → die. Fără -n în plus dacă pluralul se termină deja în -n (die Mülltonnen) sau în -s (die Autos).'],
+x2_h:['Welcher Artikel?','Which article?','Какой артикль?','Який артикль?','Hangi artikel?','أي أداة تعريف؟','کدام حرف تعریف؟','Ce articol?'],
+x2_task:['Wo oder wohin? Wählen Sie den Artikel. Die Grundform steht unter dem Satz.','Where or where to? Choose the article. The basic form is below the sentence.','Где или куда? Выберите артикль. Исходная форма указана под предложением.','Де чи куди? Виберіть артикль. Початкова форма подана під реченням.','Nerede mi, nereye mi? Artikeli seçin. Yalın hâl cümlenin altında.','أين أم إلى أين؟ اختر الأداة. الصيغة الأساسية تحت الجملة.','کجا یا به کجا؟ حرف تعریف را انتخاب کنید. شکل پایه زیر جمله است.','Unde sau încotro? Alegeți articolul. Forma de bază este sub propoziție.'],
+
+d3_h:['Kurze Formen','Short forms','Краткие формы','Короткі форми','Kısa biçimler','الصيغ المختصرة','شکل‌های کوتاه','Forme scurte'],
+d3_task:['Vergleichen Sie: lange Form und kurze Form. Welche Wörter stecken in der kurzen Form?','Compare the long and the short form. Which words are inside the short form?','Сравните полную и краткую форму. Из каких слов состоит краткая?','Порівняйте повну й коротку форму. З яких слів складається коротка?','Uzun ve kısa biçimi karşılaştırın. Kısa biçimde hangi sözcükler var?','قارن بين الصيغة الطويلة والمختصرة. ما الكلمات الموجودة في المختصرة؟','شکل بلند و کوتاه را مقایسه کنید. شکل کوتاه از کدام کلمه‌ها ساخته شده؟','Comparați forma lungă și forma scurtă. Ce cuvinte conține forma scurtă?'],
+d3_rule:['in dem = im · an dem = am (Wo?) — in das = ins · an das = ans (Wohin?). Im Alltag benutzt man fast immer die kurze Form. Für „in der“, „in die“, „in den“ gibt es keine kurze Form.','in dem = im · an dem = am (Wo?) — in das = ins · an das = ans (Wohin?). In everyday German the short form is almost always used. “in der”, “in die”, “in den” have no short form.','in dem = im · an dem = am (Wo?) — in das = ins · an das = ans (Wohin?). В речи почти всегда используют краткую форму. У «in der», «in die», «in den» краткой формы нет.','in dem = im · an dem = am (Wo?) — in das = ins · an das = ans (Wohin?). У мовленні майже завжди вживають коротку форму. «in der», «in die», «in den» не мають короткої форми.','in dem = im · an dem = am (Wo?) — in das = ins · an das = ans (Wohin?). Günlük dilde neredeyse hep kısa biçim kullanılır. „in der“, „in die“, „in den“ kısalmaz.','in dem = im · an dem = am ‏(Wo?) — in das = ins · an das = ans ‏(Wohin?). في الحياة اليومية تُستعمل الصيغة المختصرة غالبًا. لا اختصار لـ «in der» و«in die» و«in den».','in dem = im · an dem = am ‏(Wo?) — in das = ins · an das = ans ‏(Wohin?). در گفتار روزمره تقریباً همیشه شکل کوتاه به کار می‌رود. «in der»، «in die» و «in den» شکل کوتاه ندارند.','in dem = im · an dem = am (Wo?) — in das = ins · an das = ans (Wohin?). În limbajul zilnic se folosește aproape mereu forma scurtă. „in der”, „in die”, „in den” nu au formă scurtă.'],
+x3_h:['im, ins, am, ans …','im, ins, am, ans …','im, ins, am, ans …','im, ins, am, ans …','im, ins, am, ans …','im, ins, am, ans …','im, ins, am, ans …','im, ins, am, ans …'],
+choose:['Wählen Sie die richtige Form.','Choose the correct form.','Выберите правильную форму.','Виберіть правильну форму.','Doğru biçimi seçin.','اختر الصيغة الصحيحة.','شکل درست را انتخاب کنید.','Alegeți forma corectă.'],
+
+d4_h:['Die neun Wechselpräpositionen','The nine two-way prepositions','Девять предлогов с двумя падежами','Дев’ять прийменників з двома відмінками','Dokuz yer edatı','حروف الجر التسعة','نه حرف اضافه‌ی دوحالته','Cele nouă prepoziții'],
+d4_task:['Erst entdecken: auf, über und an. Sehen Sie sich die drei Bilder an.','First discover: auf, über and an. Look at the three pictures.','Сначала открытие: auf, über и an. Посмотрите на три картинки.','Спочатку відкриття: auf, über та an. Подивіться на три малюнки.','Önce keşif: auf, über ve an. Üç resme bakın.','اكتشف أولًا: auf وüber وan. انظر إلى الصور الثلاث.','اول کشف کنید: auf، über و an. سه تصویر را ببینید.','Mai întâi descoperiți: auf, über și an. Priviți cele trei imagini.'],
+d4_q1:['In welchem Bild gibt es KEINEN Kontakt zum Tisch?','In which picture is there NO contact with the table?','На какой картинке НЕТ контакта со столом?','На якому малюнку НЕМАЄ контакту зі столом?','Hangi resimde masayla temas YOK?','في أي صورة لا يوجد تلامس مع الطاولة؟','در کدام تصویر هیچ تماسی با میز نیست؟','În care imagine NU există contact cu masa?'],
+d4_q2:['Die Zeitung berührt den Tisch von oben. Welches Wort passt?','The newspaper touches the table from above. Which word fits?','Газета касается стола сверху. Какое слово подходит?','Газета торкається столу зверху. Яке слово підходить?','Gazete masaya üstten değiyor. Hangi sözcük uygun?','الجريدة تلامس الطاولة من الأعلى. ما الكلمة المناسبة؟','روزنامه از بالا با میز تماس دارد. کدام کلمه مناسب است؟','Ziarul atinge masa de sus. Ce cuvânt se potrivește?'],
+d4_q3:['Das Bild und die Jacke sind an einer Seite fest, nicht oben darauf. Welches Wort passt?','The picture and the jacket are attached at the side, not lying on top. Which word fits?','Картина и куртка закреплены сбоку, а не лежат сверху. Какое слово подходит?','Картина й куртка закріплені збоку, а не лежать зверху. Яке слово підходить?','Resim ve ceket yan tarafa tutturulmuş, üstünde değil. Hangi sözcük uygun?','اللوحة والسترة مثبتتان على الجانب، لا فوقه. ما الكلمة المناسبة؟','تابلو و کاپشن به پهلو وصل‌اند، نه روی آن. کدام کلمه مناسب است؟','Tabloul și geaca sunt prinse lateral, nu stau deasupra. Ce cuvânt se potrivește?'],
+d4_rule:['auf = oben darauf, mit Kontakt · über = höher, ohne Kontakt · an = Kontakt an der Seite oder ganz nah an einer Grenze (an der Wand, an der Tür, am Fenster). Probieren Sie unten alle neun Präpositionen aus: jeweils ein Bild zu „Wo?“ und eines zu „Wohin?“.','auf = on top, touching · über = higher, not touching · an = touching at the side, or right at an edge (an der Wand, an der Tür, am Fenster). Try all nine prepositions below: each with one picture for “Wo?” and one for “Wohin?”.','auf = сверху, с контактом · über = выше, без контакта · an = контакт сбоку или вплотную к краю. Попробуйте ниже все девять предлогов: для каждого есть картинка к «Wo?» и картинка к «Wohin?».','auf = зверху, з контактом · über = вище, без контакту · an = контакт збоку або впритул до краю. Спробуйте нижче всі дев’ять прийменників: для кожного є малюнок до «Wo?» і малюнок до «Wohin?».','auf = üstünde, temas var · über = yukarıda, temas yok · an = yandan temas veya bir kenarın hemen yanı. Aşağıda dokuz edatın hepsini deneyin: her biri için bir „Wo?“ ve bir „Wohin?“ resmi var.','auf = فوقه مع تلامس · über = أعلى منه دون تلامس · an = تلامس من الجانب أو عند الحافة تمامًا. جرّب في الأسفل الحروف التسعة: لكل حرف صورة مع «Wo?» وصورة مع «Wohin?».','auf = روی چیزی، با تماس · über = بالاتر، بدون تماس · an = تماس از پهلو یا درست در لبه. پایین هر نه حرف را امتحان کنید: برای هر کدام یک تصویر «Wo?» و یک تصویر «Wohin?» هست.','auf = deasupra, cu contact · über = mai sus, fără contact · an = contact lateral sau chiar la margine. Încercați mai jos toate cele nouă prepoziții: fiecare are o imagine pentru „Wo?” și una pentru „Wohin?”.'],
+x4_h:['Welche Präposition?','Which preposition?','Какой предлог?','Який прийменник?','Hangi edat?','أي حرف جر؟','کدام حرف اضافه؟','Ce prepoziție?'],
+x4_task:['Sehen Sie sich das Bild genau an. Wählen Sie die Präposition.','Look closely at the picture. Choose the preposition.','Внимательно посмотрите на картинку. Выберите предлог.','Уважно подивіться на малюнок. Виберіть прийменник.','Resme dikkatle bakın. Edatı seçin.','انظر إلى الصورة جيدًا واختر حرف الجر.','تصویر را با دقت ببینید و حرف اضافه را انتخاب کنید.','Priviți atent imaginea. Alegeți prepoziția.'],
+why4:['Sehen Sie sich an: Wo ist die Figur (oder wo endet der Pfeil)?','Check: where is the figure (or where does the arrow end)?','Проверьте: где фигура (или где заканчивается стрелка)?','Перевірте: де фігура (або де закінчується стрілка)?','Bakın: Figür nerede (veya ok nerede bitiyor)?','لاحظ: أين الشكل (أو أين ينتهي السهم)؟','دقت کنید: شکل کجاست (یا فلش کجا تمام می‌شود)؟','Verificați: unde este figura (sau unde se termină săgeata)?'],
+
+d5_h:['stehen, liegen, sitzen, hängen','stehen, liegen, sitzen, hängen','stehen, liegen, sitzen, hängen','stehen, liegen, sitzen, hängen','stehen, liegen, sitzen, hängen','stehen, liegen, sitzen, hängen','stehen, liegen, sitzen, hängen','stehen, liegen, sitzen, hängen'],
+d5_task:['Vier Verben für „Wo?“. Lesen Sie die Sätze und sehen Sie sich die Bilder an.','Four verbs for “Wo?”. Read the sentences and look at the pictures.','Четыре глагола для «Wo?». Прочитайте предложения и посмотрите на картинки.','Чотири дієслова для «Wo?». Прочитайте речення та подивіться на малюнки.','„Wo?“ için dört fiil. Cümleleri okuyun, resimlere bakın.','أربعة أفعال مع «Wo?». اقرأ الجمل وانظر إلى الصور.','چهار فعل برای «Wo?». جمله‌ها را بخوانید و تصویرها را ببینید.','Patru verbe pentru „Wo?”. Citiți propozițiile și priviți imaginile.'],
+d5_q1:['Etwas ist flach, in horizontaler Position. Welches Verb?','Something is flat, in a horizontal position. Which verb?','Предмет лежит плоско, горизонтально. Какой глагол?','Предмет лежить пласко, горизонтально. Яке дієслово?','Bir şey yatay, düz duruyor. Hangi fiil?','شيء في وضع أفقي مسطّح. ما الفعل؟','چیزی به حالت افقی و تخت است. کدام فعل؟','Ceva este în poziție orizontală. Ce verb?'],
+d5_q2:['Etwas ist oben befestigt, unten ist nichts darunter, was es trägt. Welches Verb?','Something is fixed at the top; nothing supports it from below. Which verb?','Предмет закреплён сверху, снизу его ничто не держит. Какой глагол?','Предмет закріплений зверху, знизу його ніщо не тримає. Яке дієслово?','Bir şey üstten tutturulmuş, alttan destek yok. Hangi fiil?','شيء مثبّت من الأعلى ولا شيء يحمله من الأسفل. ما الفعل؟','چیزی از بالا بسته شده و از پایین تکیه‌گاهی ندارد. کدام فعل؟','Ceva este prins sus și nu e sprijinit de jos. Ce verb?'],
+d5_q3:['Das Fahrrad ist auf seinen Rädern, aufrecht. Welches Verb?','The bike is upright on its wheels. Which verb?','Велосипед находится вертикально на колёсах. Какой глагол?','Велосипед вертикально на колесах. Яке дієслово?','Bisiklet tekerlekleri üzerinde, dik. Hangi fiil?','الدراجة قائمة على عجلاتها. ما الفعل؟','دوچرخه صاف روی چرخ‌هایش است. کدام فعل؟','Bicicleta este verticală, pe roți. Ce verb?'],
+d5_rule:['stehen: aufrecht (Personen, Fahrrad, Auto, Mülltonne) · liegen: flach (Zeitung, Schlüssel, Ball) · sitzen: Personen auf dem Po; auch Katzen und Vögel · hängen: oben befestigt (Bild, Jacke, Lampe). Alle vier antworten auf „Wo?“ → Dativ.','stehen: upright (people, bike, car, bin) · liegen: flat (newspaper, key, ball) · sitzen: sitting (people; also cats and birds) · hängen: fixed at the top (picture, jacket, lamp). All four answer “Wo?” → dative.','stehen: стоять вертикально (люди, велосипед, машина, бак) · liegen: лежать (газета, ключ, мяч) · sitzen: сидеть (люди, а также кошки и птицы) · hängen: висеть (картина, куртка, лампа). Все четыре отвечают на «Wo?» → Dativ.','stehen: стояти (люди, велосипед, авто, бак) · liegen: лежати (газета, ключ, м’яч) · sitzen: сидіти (люди, а також коти й птахи) · hängen: висіти (картина, куртка, лампа). Усі чотири відповідають на «Wo?» → Dativ.','stehen: dik durmak (insan, bisiklet, araba, çöp kutusu) · liegen: yatay durmak (gazete, anahtar, top) · sitzen: oturmak (insanlar; kedi ve kuşlar da) · hängen: asılı olmak (resim, ceket, lamba). Dördü de „Wo?“ sorusuna cevap verir → Dativ.','stehen: وضع قائم (أشخاص، دراجة، سيارة، حاوية) · liegen: وضع مسطّح (جريدة، مفتاح، كرة) · sitzen: جلوس (الأشخاص، وكذلك القطط والطيور) · hängen: معلّق (لوحة، سترة، مصباح). الأربعة تجيب عن «Wo?» ← Dativ.','stehen: ایستاده و قائم (آدم، دوچرخه، ماشین، سطل) · liegen: خوابیده و تخت (روزنامه، کلید، توپ) · sitzen: نشسته (آدم‌ها؛ گربه و پرنده هم) · hängen: آویزان (تابلو، کاپشن، چراغ). هر چهار به «Wo?» پاسخ می‌دهند ← Dativ.','stehen: în picioare/vertical (oameni, bicicletă, mașină, pubelă) · liegen: culcat/plat (ziar, cheie, minge) · sitzen: așezat (oameni; și pisici, păsări) · hängen: atârnat (tablou, geacă, lampă). Toate răspund la „Wo?” → Dativ.'],
+x5_h:['Welches Verb passt?','Which verb fits?','Какой глагол подходит?','Яке дієслово підходить?','Hangi fiil uygun?','ما الفعل المناسب؟','کدام فعل مناسب است؟','Ce verb se potrivește?'],
+chooseverb:['Wählen Sie das Verb.','Choose the verb.','Выберите глагол.','Виберіть дієслово.','Fiili seçin.','اختر الفعل.','فعل را انتخاب کنید.','Alegeți verbul.'],
+
+d6_h:['gehen, kommen, fliegen, fallen','gehen, kommen, fliegen, fallen','gehen, kommen, fliegen, fallen','gehen, kommen, fliegen, fallen','gehen, kommen, fliegen, fallen','gehen, kommen, fliegen, fallen','gehen, kommen, fliegen, fallen','gehen, kommen, fliegen, fallen'],
+d6_task:['Vier Verben für „Wohin?“. Frau Weber steht im Hof und spricht. Vergleichen Sie „kommt“ und „geht“.','Four verbs for “Wohin?”. Frau Weber is standing in the courtyard and speaking. Compare “kommt” and “geht”.','Четыре глагола для «Wohin?». Фрау Вебер стоит во дворе и говорит. Сравните «kommt» и «geht».','Чотири дієслова для «Wohin?». Пані Вебер стоїть у дворі й говорить. Порівняйте «kommt» і «geht».','„Wohin?“ için dört fiil. Bayan Weber avluda durup konuşuyor. „kommt“ ve „geht“i karşılaştırın.','أربعة أفعال مع «Wohin?». السيدة فيبر تقف في الفناء وتتكلم. قارن بين «kommt» و«geht».','چهار فعل برای «Wohin?». خانم وبر در حیاط ایستاده و حرف می‌زند. «kommt» و «geht» را مقایسه کنید.','Patru verbe pentru „Wohin?”. Doamna Weber stă în curte și vorbește. Comparați „kommt” și „geht”.'],
+d6_q1:['Das Ziel ist dort, wo Frau Weber ist. Welches Verb benutzt sie?','The goal is where Frau Weber is. Which verb does she use?','Цель — там, где находится фрау Вебер. Какой глагол она использует?','Мета там, де перебуває пані Вебер. Яке дієслово вона вживає?','Hedef Bayan Weber’in bulunduğu yer. Hangi fiili kullanıyor?','الهدف حيث توجد السيدة فيبر. أي فعل تستعمل؟','مقصد همان جایی است که خانم وبر هست. کدام فعل را به کار می‌برد؟','Ținta este locul unde se află doamna Weber. Ce verb folosește?'],
+d6_q2:['„fallen“: Wie heißt die Form mit er, sie, es?','“fallen”: what is the form for er, sie, es?','«fallen»: какая форма с er, sie, es?','«fallen»: яка форма з er, sie, es?','„fallen“: er, sie, es ile biçimi nedir?','«fallen»: ما صيغته مع er وsie وes؟','«fallen»: شکل آن با er، sie، es چیست؟','„fallen”: care este forma pentru er, sie, es?'],
+d6_rule:['kommen: das Ziel ist bei der Person, die spricht (hierher) · gehen: das Ziel ist ein anderer Ort · fliegen: durch die Luft · fallen: nach unten, ohne Absicht (ich falle, du fällst, er/sie/es fällt, sie fallen). Wohin? → Akkusativ.','kommen: the goal is where the speaker is (towards here) · gehen: the goal is another place · fliegen: through the air · fallen: downwards, not on purpose (ich falle, du fällst, er/sie/es fällt, sie fallen). Wohin? → accusative.','kommen: цель там, где говорящий (сюда) · gehen: цель — другое место · fliegen: по воздуху · fallen: падать вниз, неумышленно (er/sie/es fällt). Wohin? → Akkusativ.','kommen: мета там, де мовець (сюди) · gehen: мета — інше місце · fliegen: у повітрі · fallen: падати вниз, ненавмисно (er/sie/es fällt). Wohin? → Akkusativ.','kommen: hedef konuşanın yanı (buraya) · gehen: hedef başka bir yer · fliegen: havada uçmak · fallen: istemeden aşağı düşmek (er/sie/es fällt). Wohin? → Akkusativ.','kommen: الهدف حيث المتكلم (إلى هنا) · gehen: الهدف مكان آخر · fliegen: عبر الهواء · fallen: إلى الأسفل دون قصد (er/sie/es fällt). ‏Wohin? ← Akkusativ.','kommen: مقصد پیش گوینده است (به اینجا) · gehen: مقصد جای دیگری است · fliegen: در هوا · fallen: به پایین، بدون قصد (er/sie/es fällt). ‏Wohin? ← Akkusativ.','kommen: ținta e unde se află vorbitorul (încoace) · gehen: ținta e alt loc · fliegen: prin aer · fallen: în jos, fără intenție (er/sie/es fällt). Wohin? → Akkusativ.'],
+x6_h:['gehen, kommen, fliegen oder fallen?','gehen, kommen, fliegen or fallen?','gehen, kommen, fliegen или fallen?','gehen, kommen, fliegen чи fallen?','gehen, kommen, fliegen mi fallen mi?','gehen أم kommen أم fliegen أم fallen؟','gehen، kommen، fliegen یا fallen؟','gehen, kommen, fliegen sau fallen?'],
+
+x7_h:['Alles zusammen: Schreiben Sie','All together: write','Всё вместе: напишите','Усе разом: напишіть','Hepsi bir arada: yazın','كل شيء معًا: اكتب','همه با هم: بنویسید','Totul împreună: scrieți'],
+x7_task:['Schreiben Sie Präposition und Artikel (oder die kurze Form), z. B. „auf dem“ oder „ins“.','Write preposition and article (or the short form), e.g. “auf dem” or “ins”.','Напишите предлог и артикль (или краткую форму), напр. «auf dem» или «ins».','Напишіть прийменник і артикль (або коротку форму), напр. «auf dem» або «ins».','Edat ve artikeli (veya kısa biçimi) yazın, ör. „auf dem“ ya da „ins“.','اكتب حرف الجر وأداة التعريف (أو الصيغة المختصرة)، مثل «auf dem» أو «ins».','حرف اضافه و حرف تعریف (یا شکل کوتاه) را بنویسید، مثلاً «auf dem» یا «ins».','Scrieți prepoziția și articolul (sau forma scurtă), de ex. „auf dem” sau „ins”.'],
+shortnote:['Richtig! Meistens sagt man kurz:','Correct! Usually the short form is used:','Правильно! Обычно говорят кратко:','Правильно! Зазвичай кажуть коротко:','Doğru! Genellikle kısaca denir:','صحيح! يقال عادةً باختصار:','درست! معمولاً کوتاه می‌گویند:','Corect! De obicei se spune scurt:'],
+wprep:['Prüfen Sie die Präposition. Sehen Sie sich das Bild an.','Check the preposition. Look at the picture.','Проверьте предлог. Посмотрите на картинку.','Перевірте прийменник. Подивіться на малюнок.','Edatı kontrol edin. Resme bakın.','تحقّق من حرف الجر وانظر إلى الصورة.','حرف اضافه را بررسی کنید و تصویر را ببینید.','Verificați prepoziția. Priviți imaginea.'],
+
+end_h:['Fertig!','Finished!','Готово!','Готово!','Bitti!','انتهيت!','تمام شد!','Gata!'],
+end_t:['So viele Aufgaben waren beim ersten Versuch richtig:','Items correct on the first try:','Правильно с первой попытки:','Правильно з першої спроби:','İlk denemede doğru:','الإجابات الصحيحة من المحاولة الأولى:','پاسخ‌های درست در تلاش اول:','Corecte din prima încercare:']
+};
+/* ---------- Übungsinhalte ----------
+   Wohin-Verben ausschließlich: kommen, gehen, fliegen, fallen */
+var X1=[ /* [Szene, 'wo'|'wohin', Satz] */
+['dach','wohin','Der Vogel fliegt auf das Dach.'],
+['keller','wo','Der Hausmeister ist im Keller.'],
+['gehweg','wohin','Der Blumentopf fällt auf den Gehweg.'],
+['rad','wo','Das Fahrrad steht neben dem Fahrradständer.'],
+['hof','wohin','Das Kind geht in den Hof.'],
+['kindbalkon','wo','Das Kind sitzt auf dem Balkon.'],
+['tuer','wohin','Die Nachbarin kommt an die Tür.'],
+['tischkey','wo','Der Schlüssel liegt unter dem Tisch.'],
+['sofaball','wohin','Der Ball fliegt hinter das Sofa.'],
+['jacke','wo','Die Jacke hängt an der Tür.']];
+
+/* [Szene, dir, vor, nach, richtig, Optionen, Grundform] */
+var DS=['dem','der','den','die','das'];
+var X2=[
+['hof','wo','Das Kind ist in','Hof.','dem',DS,'der Hof'],
+['garage','wohin','Der Hausmeister geht in','Garage.','die',DS,'die Garage'],
+['dach','wo','Der Vogel sitzt auf','Dach.','dem',DS,'das Dach'],
+['balkon','wohin','Die Katze geht auf','Balkon.','den',DS,'der Balkon'],
+['radtonne','wo','Das Fahrrad steht vor','Mülltonne.','der',DS,'die Mülltonne'],
+['sofakey','wohin','Der Schlüssel fällt hinter','Sofa.','das',DS,'das Sofa'],
+['tonnen','wo','Die Katze sitzt zwischen','Mülltonnen.','den',DS,'die Mülltonnen (Plural)'],
+['tonnen','wohin','Die Katze geht zwischen','Mülltonnen.','die',DS,'die Mülltonnen (Plural)'],
+['tischkey','wohin','Der Schlüssel fällt unter','Tisch.','den',DS,'der Tisch'],
+['tuer','wo','Die Nachbarin steht an','Tür.','der',DS,'die Tür'],
+['gehweg','wohin','Der Blumentopf fällt auf','Gehweg.','den',DS,'der Gehweg'],
+['haus','wohin','Der Vogel fliegt über','Haus.','das',DS,'das Haus']];
+var X2b=['unterbaeume','wo','Das Kind ist unter den','.','Bäumen',['Bäume','Bäumen','Baum'],'die Bäume (Plural)'];
+
+var K=['im','in der','in den','ins','in die'], KA=['am','an der','an den','ans','an die'];
+var X3=[
+['treppe','wo','Die Nachbarin steht','Treppenhaus.','im',K,'das Treppenhaus'],
+['treppe','wohin','Die Nachbarin kommt','Treppenhaus.','ins',K,'das Treppenhaus'],
+['keller','wohin','Der Hausmeister geht','Keller.','in den',K,'der Keller'],
+['keller','wo','Der Hausmeister ist','Keller.','im',K,'der Keller'],
+['autogarage','wo','Das Auto steht','Garage.','in der',K,'die Garage'],
+['fenster','wohin','Der Vogel fliegt','Fenster.','ans',KA,'das Fenster'],
+['tuer','wo','Die Nachbarin steht','Tür.','an der',KA,'die Tür'],
+['fenster','wo','Der Vogel sitzt','Fenster.','am',KA,'das Fenster'],
+['hof','wohin','Das Kind geht','Hof.','in den',K,'der Hof'],
+['garage','wohin','Der Hausmeister geht','Garage.','in die',K,'die Garage']];
+
+var PR=['in','an','auf','über','unter','vor','hinter','neben','zwischen'];
+var X4=[
+['tischzeitung','wo','Die Zeitung liegt','dem Tisch.','auf'],
+['tischvogel','wohin','Der Vogel fliegt','den Tisch.','über'],
+['tischkatze','wo','Die Katze sitzt','dem Tisch.','unter'],
+['tor','wohin','Der Hausmeister geht','das Tor.','vor'],
+['sofahinter','wo','Die Katze sitzt','dem Sofa.','hinter'],
+['tonneball','wohin','Der Ball fällt','die Mülltonne.','neben'],
+['tonnen','wo','Die Katze sitzt','den Mülltonnen.','zwischen'],
+['bild','wo','Das Bild hängt','der Wand.','an'],
+['autogarage','wo','Das Auto steht','der Garage.','in'],
+['haus','wohin','Der Vogel fliegt','das Haus.','über'],
+['baeume','wohin','Das Kind geht','die Bäume.','zwischen'],
+['sofakatze','wohin','Die Katze geht','das Sofa.','auf']];
+
+var V=['steht','liegt','sitzt','hängt'];
+var X5=[
+['radtonne','wo','Das Fahrrad','vor der Mülltonne.','steht'],
+['tischzeitung','wo','Die Zeitung','auf dem Tisch.','liegt'],
+['jacke','wo','Die Jacke','an der Tür.','hängt'],
+['kindbalkon','wo','Das Kind','auf dem Balkon.','sitzt'],
+['autogarage','wo','Das Auto','in der Garage.','steht'],
+['tischkey','wo','Der Schlüssel','unter dem Tisch.','liegt'],
+['lampe','wo','Die Lampe','über dem Tisch.','hängt'],
+['dach','wo','Der Vogel','auf dem Dach.','sitzt'],
+['bild','wo','Das Bild','an der Wand.','hängt'],
+['tuer','wo','Die Nachbarin','an der Tür.','steht']];
+
+var W=['geht','kommt','fliegt','fällt'];
+var X6=[ /* [Szene, dir, vor, nach, richtig, Optionen, Situation] */
+['gehweg','wohin','Vorsicht! Der Blumentopf','auf den Gehweg!','fällt',['geht','kommt','fällt'],''],
+['dach','wohin','Der Vogel','durch die Luft auf das Dach.','fliegt',W,''],
+['hof','wohin','„Ich bin im Hof. Mein Sohn','auch gleich in den Hof.“','kommt',W,'Die Mutter ist im Hof.'],
+['garage','wohin','„Ich bleibe hier in der Wohnung. Mein Mann','jetzt in die Garage.“','geht',W,'Die Frau ist in der Wohnung.'],
+['sofakey','wohin','Oh nein! Mein Schlüssel','hinter das Sofa.','fällt',['geht','kommt','fällt'],''],
+['sofaball','wohin','Der Ball','durch das Zimmer hinter das Sofa.','fliegt',W,''],
+['treppe','wohin','„Ich warte hier im Treppenhaus. Bitte','Sie auch ins Treppenhaus!“','kommen',['gehen','kommen','fliegen','fallen'],'Die Person, die spricht, ist im Treppenhaus.'],
+['keller','wohin','„Ich bleibe oben. Herr Yilmaz','allein in den Keller.“','geht',W,'Die Person, die spricht, ist oben.'],
+['tischkeys','wohin','Pass auf, die Schlüssel','unter den Tisch!','fallen',['gehen','kommen','fliegen','fallen'],''],
+['fenster','wohin','Der Vogel','durch die Luft an das Fenster.','fliegt',W,'']];
+
+var X7=[ /* [Szene, dir, vor, nach, Präp, Artikel, Grundform] */
+['balkon','wo','Die Katze sitzt','Balkon.','auf','dem','der Balkon'],
+['balkon','wohin','Die Katze geht','Balkon.','auf','den','der Balkon'],
+['garage','wohin','Der Hausmeister geht','Garage.','in','die','die Garage'],
+['treppe','wo','Die Nachbarin steht','Treppenhaus.','in','dem','das Treppenhaus'],
+['tischkey','wohin','Der Schlüssel fällt','Tisch.','unter','den','der Tisch'],
+['tor','wohin','Der Hausmeister geht','Tor.','vor','das','das Tor'],
+['radtonne','wo','Das Fahrrad steht','Mülltonne.','vor','der','die Mülltonne'],
+['sofahinter','wo','Die Katze sitzt','Sofa.','hinter','dem','das Sofa'],
+['baeume','wo','Das Kind steht','Bäumen.','zwischen','den','die Bäume (Plural)'],
+['fenster','wohin','Der Vogel fliegt','Fenster.','an','das','das Fenster']];
+
+var EXPL={ /* Präposition: [Szene, Satz Wo, Satz Wohin] */
+'in':['garage','Der Hausmeister ist in der Garage.','Der Hausmeister geht in die Garage.'],
+'an':['tuer','Die Nachbarin steht an der Tür.','Die Nachbarin kommt an die Tür.'],
+'auf':['dach','Der Vogel sitzt auf dem Dach.','Der Vogel fliegt auf das Dach.'],
+'über':['tischvogel','Der Vogel ist über dem Tisch.','Der Vogel fliegt über den Tisch.'],
+'unter':['tischkey','Der Schlüssel liegt unter dem Tisch.','Der Schlüssel fällt unter den Tisch.'],
+'vor':['tor','Der Hausmeister steht vor dem Tor.','Der Hausmeister geht vor das Tor.'],
+'hinter':['sofahinter','Die Katze sitzt hinter dem Sofa.','Die Katze geht hinter das Sofa.'],
+'neben':['tonneball','Der Ball liegt neben der Mülltonne.','Der Ball fällt neben die Mülltonne.'],
+'zwischen':['tonnen','Die Katze sitzt zwischen den Mülltonnen.','Die Katze geht zwischen die Mülltonnen.']};
+
+/* ---------- App ---------- */
+var lang=0, cur=0, state={}, score={};
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function tr(k){return lang?'<span class="tr" lang="'+LANGS[lang]+'" dir="'+(lang===5||lang===6?'rtl':'ltr')+'">'+esc(I[k][lang])+'</span>':'';}
+function t(k){return '<span class="x"><span class="de">'+esc(I[k][0])+'</span>'+tr(k)+'</span>';}
+function el(html){var d=document.createElement('div');d.innerHTML=html;return d.firstElementChild;}
+function btn(k,cls,fn){var b=el('<button type="button" class="btn '+(cls||'')+'">'+t(k)+'</button>');b.onclick=fn;return b;}
+function msg(box,cls,k,extra){box.innerHTML='<div class="msg '+cls+'">'+(extra?'<b dir="ltr">'+extra+'</b> ':'')+(k?t(k):'')+'</div>';}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x;}return a;}
+function qtag(d){return '<span class="qt '+d+'">'+(d==='wo'?'Wo?':'Wohin?')+'</span>';}
+
+var STEPS=[
+ {id:'start',nav:'Start'},
+ {id:'d1',nav:'Entdecken 1',disc:1},{id:'x1',nav:'Übung 1'},
+ {id:'d2',nav:'Entdecken 2',disc:1},{id:'x2',nav:'Übung 2'},
+ {id:'d3',nav:'Entdecken 3',disc:1},{id:'x3',nav:'Übung 3'},
+ {id:'d4',nav:'Entdecken 4',disc:1},{id:'x4',nav:'Übung 4'},
+ {id:'d5',nav:'Entdecken 5',disc:1},{id:'x5',nav:'Übung 5'},
+ {id:'d6',nav:'Entdecken 6',disc:1},{id:'x6',nav:'Übung 6'},
+ {id:'x7',nav:'Übung 7'},{id:'end',nav:'Ergebnis'}];
+
+function go(i){cur=i;render();window.scrollTo(0,0);}
+function nextBtn(k){return btn(k||'next','',function(){state[STEPS[cur].id]=state[STEPS[cur].id]||'ok';go(cur+1);});}
+function head(card,h,task){card.appendChild(el('<div><h2>'+t(h)+'</h2>'+(task?'<p>'+t(task)+'</p>':'')+'</div>'));}
+function fig(sc,dir,sent){return '<div class="cell">'+qtag(dir)+scene(sc,dir,{alt:sent})+'<p class="sent">'+sent+'</p></div>';}
+
+/* Entdeckerfragen nacheinander */
+function chain(card,steps,done){
+  var host=el('<div></div>');card.appendChild(host);
+  function run(n){
+    if(n>=steps.length){done(host);return;}
+    steps[n](host,function(){run(n+1);});
+  }
+  run(0);
+}
+function mc(qk,opts,right){ /* opts: [{k:key}|{s:string}] */
+  return function(host,ok){
+    var box=el('<div class="q"><p class="qh">'+t(qk)+'</p></div>'),fb=el('<div aria-live="polite"></div>');
+    shuffle(opts.map(function(o,i){return {o:o,i:i};})).forEach(function(p){
+      var b=el('<button type="button" class="opt">'+(p.o.k?t(p.o.k):'<span dir="ltr">'+p.o.s+'</span>')+'</button>');
+      b.onclick=function(){
+        if(p.i===right){b.className='opt good';[].forEach.call(box.querySelectorAll('.opt'),function(x){x.disabled=true;});msg(fb,'ok','good');ok();}
+        else{b.className='opt bad';msg(fb,'no','look');}
+      };box.appendChild(b);
+    });
+    box.appendChild(fb);host.appendChild(box);
+  };
+}
+function rule(host,k,extra){
+  host.appendChild(el('<div class="rule"><b class="h">Merke</b>'+t(k)+(extra||'')+'</div>'));
+  host.appendChild(nextBtn('practise'));
+}
+
+var DISC={
+d1:function(c){
+  head(c,'d1_h','d1_task');
+  function lp(l,sc,dir,sent){return fig(sc,dir,sent).replace(/<span class="qt.*?<\/span>/,'<span class="qt letter">'+l+'</span>');}
+  c.appendChild(el('<div class="grid2">'+lp('A','balkon','wo','Die Katze sitzt auf dem Balkon.')+lp('B','balkon','wohin','Die Katze geht auf den Balkon.')
+    +lp('C','garage','wo','Der Hausmeister ist in der Garage.')+lp('D','garage','wohin','Der Hausmeister geht in die Garage.')+'</div>'));
+  chain(c,[mc('d1_q1',[{k:'left'},{k:'right'}],1),
+   function(host,ok){
+     var box=el('<div class="q"><p class="qh">'+t('d1_q2')+'</p></div>'),fb=el('<div></div>'),found=0;
+     [['Die Katze sitzt auf dem Balkon.',4],['Die Katze geht auf den Balkon.',4],['Der Hausmeister ist in der Garage.',4],['Der Hausmeister geht in die Garage.',4]].forEach(function(s){
+       var line=el('<div class="row"></div>'),w=s[0].split(' ');
+       w.forEach(function(x,i){var b=el('<button type="button" class="w">'+x+'</button>');b.onclick=function(){
+         if(i===s[1]){if(b.className!=='w mark'){b.className='w mark';found++;fb.innerHTML='';if(found===4){msg(fb,'ok','good','dem → den · der → die');ok();}}}
+         else{b.className='w bad';setTimeout(function(){if(b.className==='w bad')b.className='w';},500);msg(fb,'no','look');}
+       };line.appendChild(b);});
+       box.appendChild(line);
+     });
+     box.appendChild(fb);host.appendChild(box);
+   },
+   mc('d1_q3',[{s:'auf den Balkon · in die Garage'},{s:'auf dem Balkon · in der Garage'}],0)
+  ],function(host){rule(host,'d1_rule','<div class="formula" dir="ltr"><span class="wo">Wo? → Dativ</span><span class="wh">Wohin? → Akkusativ</span></div>');});
+},
+d2:function(c){
+  head(c,'d2_h','d2_task');
+  [['hof','Das Kind ist <u>in dem</u> Hof.','Das Kind geht <u>in den</u> Hof.','der Hof'],
+   ['garage','Der Hausmeister ist <u>in der</u> Garage.','Der Hausmeister geht <u>in die</u> Garage.','die Garage'],
+   ['dach','Der Vogel sitzt <u>auf dem</u> Dach.','Der Vogel fliegt <u>auf das</u> Dach.','das Dach'],
+   ['unterbaeume','Das Kind ist <u>unter den</u> Bäumen.','Das Kind geht <u>unter die</u> Bäume.','die Bäume (Plural)']].forEach(function(p){
+    c.appendChild(el('<div class="pair"><div class="base">'+p[3]+'</div><div class="grid2">'+fig(p[0],'wo',p[1])+fig(p[0],'wohin',p[2])+'</div></div>'));});
+  var sol=[['der (der Hof)','dem','den'],['die (die Garage)','der','die'],['das (das Dach)','dem','das'],['Plural (die Bäume)','den (+ n)','die']];
+  chain(c,[function(host,ok){
+    var html='<div class="q"><table class="tab" dir="ltr"><tr><th></th><th class="wo">Wo?</th><th class="wh">Wohin?</th></tr>';
+    sol.forEach(function(r){html+='<tr><th>'+r[0]+'</th>';[1,2].forEach(function(j){var o=r[0].indexOf('Plural')===0&&j===1?['dem','der','den (+ n)','die','das']:['dem','der','den','die','das'];html+='<td><select data-a="'+r[j]+'" aria-label="'+r[0]+' '+(j===1?'Wo':'Wohin')+'"><option value="">?</option>'+o.map(function(x){return '<option>'+x+'</option>';}).join('')+'</select></td>';});html+='</tr>';});
+    var box=el(html+'</table></div>'),fb=el('<div></div>');
+    box.appendChild(btn('check','',function(){var all=true;[].forEach.call(box.querySelectorAll('select'),function(s){var g=s.value===s.getAttribute('data-a');s.className=g?'good':'bad';if(!g)all=false;});
+      if(all){msg(fb,'ok','good');[].forEach.call(box.querySelectorAll('select,button'),function(x){x.disabled=true;});ok();}else msg(fb,'no','look');}));
+    box.appendChild(fb);host.appendChild(box);
+  }],function(host){rule(host,'d2_rule');});
+},
+d3:function(c){
+  head(c,'d3_h','d3_task');
+  c.appendChild(el('<div class="grid2">'+fig('keller','wo','<s class="l">in dem Keller</s> → <b>im</b> Keller')+fig('treppe','wohin','<s class="l">in das Treppenhaus</s> → <b>ins</b> Treppenhaus')+fig('fenster','wo','<s class="l">an dem Fenster</s> → <b>am</b> Fenster')+fig('fenster','wohin','<s class="l">an das Fenster</s> → <b>ans</b> Fenster')+'</div>'));
+  chain(c,[mcS('im = ?',['in dem','in das','in den'],0),mcS('ins = ?',['in dem','in das','in die'],1),mcS('am = ?',['an das','an der','an dem'],2),mcS('ans = ?',['an das','an dem','an den'],0)],function(host){rule(host,'d3_rule');});
+},
+d4:function(c){
+  head(c,'d4_h','d4_task');
+  function pic(l,sc,s){return '<div class="cell"><span class="qt wo">'+l+'</span>'+scene(sc,'wo',{alt:'Bild '+l})+'<p class="sent">'+s+'</p></div>';}
+  c.appendChild(el('<div class="grid3">'+pic('A','tischzeitung','Die Zeitung ___ dem Tisch.')+pic('B','tischvogel','Der Vogel ___ dem Tisch.')+pic('C','bild','Das Bild ___ der Wand.')+'</div>'));
+  chain(c,[mc('d4_q1',[{s:'Bild A'},{s:'Bild B'}],1),mc('d4_q2',[{s:'auf'},{s:'über'},{s:'an'}],0),mc('d4_q3',[{s:'auf'},{s:'über'},{s:'an'}],2)],function(host){
+    host.appendChild(el('<div class="rule"><b class="h">Merke</b>'+t('d4_rule')+'</div>'));
+    var bar=el('<div class="prbar" dir="ltr"></div>'),view=el('<div></div>');
+    function show(p){var e=EXPL[p];view.innerHTML='<div class="grid2">'+fig(e[0],'wo',e[1].replace(' '+p+' ',' <mark>'+p+'</mark> '))+fig(e[0],'wohin',e[2].replace(' '+p+' ',' <mark>'+p+'</mark> '))+'</div>';
+      [].forEach.call(bar.children,function(b){b.className='nb'+(b.textContent===p?' on':'');});}
+    PR.forEach(function(p){var b=el('<button type="button" class="nb">'+p+'</button>');b.onclick=function(){show(p);};bar.appendChild(b);});
+    host.appendChild(bar);host.appendChild(view);show('in');host.appendChild(nextBtn('practise'));
+  });
+},
+d5:function(c){
+  head(c,'d5_h','d5_task');
+  function pic(sc,s){return '<div class="cell">'+scene(sc,'wo',{alt:s})+'<p class="sent">'+s+'</p></div>';}
+  c.appendChild(el('<div class="grid2">'+pic('radtonne','Das Fahrrad <mark>steht</mark> vor der Mülltonne.')+pic('tischzeitung','Die Zeitung <mark>liegt</mark> auf dem Tisch.')+pic('kindbalkon','Das Kind <mark>sitzt</mark> auf dem Balkon.')+pic('jacke','Die Jacke <mark>hängt</mark> an der Tür.')+'</div>'));
+  var o=[{s:'stehen'},{s:'liegen'},{s:'sitzen'},{s:'hängen'}];
+  chain(c,[mc('d5_q1',o,1),mc('d5_q2',o,3),mc('d5_q3',o,0)],function(host){rule(host,'d5_rule');});
+},
+d6:function(c){
+  head(c,'d6_h','d6_task');
+  c.appendChild(el('<div class="grid2">'+fig('hof','wohin','Frau Weber (im Hof): „Mein Sohn <mark>kommt</mark> in den Hof.“')+fig('garage','wohin','Frau Weber (im Hof): „Mein Mann <mark>geht</mark> in die Garage.“')+fig('dach','wohin','Der Vogel <mark>fliegt</mark> auf das Dach.')+fig('gehweg','wohin','Der Blumentopf <mark>fällt</mark> auf den Gehweg.')+'</div>'));
+  chain(c,[mc('d6_q1',[{s:'kommen'},{s:'gehen'}],0),mc('d6_q2',[{s:'er fallt'},{s:'er fällt'},{s:'er fallen'}],1)],function(host){rule(host,'d6_rule');});
+}};
+function mcS(q,opts,right){return function(host,ok){
+  var box=el('<div class="q" dir="ltr"><p class="qh">'+q+'</p></div>'),fb=el('<div></div>');
+  opts.forEach(function(o,i){var b=el('<button type="button" class="w">'+o+'</button>');b.onclick=function(){if(i===right){b.className='w good';[].forEach.call(box.querySelectorAll('.w'),function(x){x.disabled=true;});msg(fb,'ok','good');ok();}else{b.className='w bad';msg(fb,'no','look');}};box.appendChild(b);});
+  box.appendChild(fb);host.appendChild(box);};}
+
+/* ---------- Übungen ---------- */
+function exercise(c,id,h,task,items){
+  head(c,h,task);
+  var grid=el('<div class="items"></div>'),done=0,first=0,foot=el('<div></div>');
+  score[id]={ok:0,n:items.length,done:false};
+  items.forEach(function(it,n){
+    var box=el('<div class="item"><div class="num">'+(n+1)+'</div>'+it.pic+'<div class="body" dir="ltr">'+it.text+'</div></div>'),fb=el('<div aria-live="polite"></div>'),tries=0,solved=false;
+    function solve(shown){
+      if(solved)return; solved=true;done++;
+      if(tries===0&&!shown){first++;}
+      score[id].ok=first;
+      var g=box.querySelector('.gap'); if(g){g.innerHTML=it.show;g.className='gap filled';}
+      box.className='item done';
+      [].forEach.call(box.querySelectorAll('.choices button,.typed input,.typed button,.solbtn'),function(x){x.disabled=true;});
+      if(done===items.length){score[id].done=true;state[id]='ok';navMark();foot.innerHTML='<div class="msg ok"><b dir="ltr">'+first+' / '+items.length+'</b> '+t('end_t')+'</div>';foot.appendChild(nextBtn());}
+    }
+    it.mount(box.querySelector('.body'),function(correct,k,extra){
+      if(correct){msg(fb,'ok',k||'good',extra);solve(false);}
+      else{tries++;msg(fb,'no',k,extra);
+        if(tries>=2&&!box.querySelector('.solbtn')){var s=btn('sol','sec solbtn',function(){msg(fb,'info',it.why,it.expl);solve(true);});box.appendChild(s);}}
+    });
+    box.appendChild(fb);grid.appendChild(box);
+  });
+  c.appendChild(grid);c.appendChild(foot);
+  c.appendChild(btn('again','sec',function(){render();window.scrollTo(0,0);}));
+}
+function choiceMount(opts,right,why,expl,whyFor){
+  return function(body,res){
+    var w=el('<div class="choices"></div>');
+    opts.forEach(function(o){var b=el('<button type="button" class="w">'+o+'</button>');b.onclick=function(){
+      if(o===right){b.className='w good';res(true,null,expl);}
+      else{b.className='w bad';b.disabled=true;var f=whyFor?whyFor(o):null;res(false,f?f[0]:why,f?f[1]:'');}
+    };w.appendChild(b);});
+    body.appendChild(w);
+  };
+}
+function gapText(a,b){return '<p class="sent">'+a+' <span class="gap">……</span>'+(b==='.'?'':' ')+b+'</p>';}
+function caseWhy(d){return d==='wo'?'static':'motion';}
+function shortOf(p,a){var m={'in dem':'im','an dem':'am','in das':'ins','an das':'ans'};return m[p+' '+a]||null;}
+function explArt(it){return (it[1]==='wo'?'Wo? → Dativ':'Wohin? → Akkusativ')+' · '+it[6]+' → '+it[4]+'.';}
+
+var EX={
+x1:function(c){exercise(c,'x1','x1_h','x1_task',X1.map(function(it){
+  return {pic:scene(it[0],it[1],{alt:it[2]}),text:'<p class="sent">'+it[2].replace(/ (auf das|auf den|auf dem|im|neben dem|in den|an die|an der|unter dem|hinter das) /,' <span class="blank">…</span> ')+'</p>',show:'',why:caseWhy(it[1]),expl:'',
+    mount:function(body,res){var w=el('<div class="choices"></div>');['wo','wohin'].forEach(function(d){var b=el('<button type="button" class="w big">'+(d==='wo'?'Wo?':'Wohin?')+'</button>');b.onclick=function(){
+      if(d===it[1]){b.className='w big good';body.querySelector('.sent').textContent=it[2];res(true,caseWhy(it[1]));}else{b.className='w big bad';b.disabled=true;res(false,caseWhy(it[1]));}};w.appendChild(b);});body.appendChild(w);}};
+}));},
+x2:function(c){var list=X2.map(function(it){
+  return {pic:scene(it[0],it[1],{alt:it[2]+' … '+it[3]}),text:gapText(it[2],it[3])+'<div class="base">'+it[6]+'</div>',show:it[4],why:caseWhy(it[1]),expl:explArt(it),mount:choiceMount(it[5],it[4],caseWhy(it[1]),'',null)};});
+  var b=X2b;list.push({pic:scene(b[0],b[1],{alt:'Kind unter den Bäumen'}),text:gapText(b[2],b[3])+'<div class="base">'+b[6]+'</div>',show:b[4],why:'static',expl:'Plural + Dativ: den Bäumen (+ n)',mount:choiceMount(b[5],b[4],'static','Plural + Dativ: + n',null)});
+  exercise(c,'x2','x2_h','x2_task',list);},
+x3:function(c){exercise(c,'x3','x3_h','choose',X3.map(function(it){
+  return {pic:scene(it[0],it[1],{alt:it[2]+' … '+it[3]}),text:gapText(it[2],it[3])+'<div class="base">'+it[6]+'</div>',show:it[4],why:caseWhy(it[1]),expl:explArt(it),mount:choiceMount(it[5],it[4],caseWhy(it[1]),'',null)};}));},
+x4:function(c){exercise(c,'x4','x4_h','x4_task',X4.map(function(it){
+  var NO={tischzeitung:['an'],tischkatze:['hinter','zwischen','vor','in'],tor:['an','neben'],sofahinter:['in','über'],tonneball:['an','vor','zwischen'],tonnen:['neben','vor','in'],bild:['neben','vor','in'],autogarage:['vor','unter','hinter'],haus:['auf'],baeume:['unter','neben','vor','hinter','in'],sofakatze:['in','über','an','vor','hinter'],tischvogel:['auf']}[it[0]]||[];
+  var opts=shuffle([it[4]].concat(shuffle(PR.filter(function(p){return p!==it[4]&&NO.indexOf(p)<0;})).slice(0,3)));
+  return {pic:scene(it[0],it[1],{alt:'Szene zum Satz'}),text:gapText(it[2],it[3]),show:it[4],why:'why4',expl:it[2]+' '+it[4]+' '+it[3],mount:choiceMount(opts,it[4],'why4','',null)};}));},
+x5:function(c){exercise(c,'x5','x5_h','chooseverb',X5.map(function(it){
+  return {pic:scene(it[0],'wo',{alt:'Szene zum Satz'}),text:gapText(it[2],it[3]),show:it[4],why:'d5_rule',expl:it[2]+' '+it[4]+' '+it[3],mount:choiceMount(V,it[4],'d5_rule','',null)};}));},
+x6:function(c){exercise(c,'x6','x6_h','chooseverb',X6.map(function(it){
+  return {pic:scene(it[0],'wohin',{alt:'Szene zum Satz'}),text:(it[6]?'<div class="base">'+it[6]+'</div>':'')+gapText(it[2],it[3]),show:it[4],why:'d6_rule',expl:'→ '+it[4],mount:choiceMount(it[5],it[4],'d6_rule','',null)};}));},
+x7:function(c){exercise(c,'x7','x7_h','x7_task',X7.map(function(it){
+  var sh=shortOf(it[4],it[5]),long=it[4]+' '+it[5],best=sh||long;
+  return {pic:scene(it[0],it[1],{alt:'Szene zum Satz'}),text:gapText(it[2],it[3])+'<div class="base">'+it[6]+'</div>',show:best,why:caseWhy(it[1]),expl:(it[1]==='wo'?'Wo? → Dativ':'Wohin? → Akkusativ')+' · '+best+'.',
+    mount:function(body,res){var w=el('<form class="typed" autocomplete="off"><input type="text" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Antwort"><button type="submit" class="btn">'+t('check')+'</button></form>'),inp=w.querySelector('input');
+      w.onsubmit=function(e){e.preventDefault();var v=inp.value.trim().toLowerCase().replace(/\s+/g,' ');if(!v)return;
+        if(v===best){inp.className='good';res(true);}
+        else if(v===long){inp.className='good';res(true,'shortnote','');var m=body.parentNode.querySelector('.msg.ok');m.insertAdjacentHTML('beforeend',' <b dir="ltr">'+sh+'</b>');}
+        else{inp.className='bad';var first=v.split(' ')[0];var okPrep=first===it[4]||(sh&&v===sh)||(({'im':'in','ins':'in','am':'an','ans':'an'})[first]===it[4]);res(false,okPrep?caseWhy(it[1]):'wprep','');}
+      };body.appendChild(w);}};
+}));}};
+
+function navMark(){[].forEach.call(document.querySelectorAll('.nb[data-i]'),function(b){var i=+b.getAttribute('data-i');b.className='nb'+(state[STEPS[i].id]==='ok'?' ok':'')+(i===cur?' cur':'');});
+  var n=STEPS.filter(function(s){return state[s.id]==='ok';}).length,m=STEPS.length-2;
+  var bar=document.querySelector('.bar i');if(bar)bar.style.width=Math.min(100,Math.round(n/(m+1)*100))+'%';}
+var navOpen=false;
+function render(){
+  uid=0;
+  var app=document.getElementById('app'),s=STEPS[cur];
+  app.innerHTML='<header class="top"><div class="wrap"><div class="chnum">A2</div><div class="kicker">Treffpunkt A2 · Lektion 4 · Wohnen und Nachbarn</div><h1>Wo? Wohin?</h1><div class="progress"><span>'+(cur+1)+' / '+STEPS.length+' · '+s.nav+'</span><div class="bar"><i></i></div></div></div></header>'
+   +'<nav class="jump"><div class="wrap"><button type="button" class="navbtn" id="nv" aria-expanded="'+navOpen+'">'+esc(I.nav[0])+'</button><button type="button" class="navbtn" id="pz"></button><span class="sp"></span><select id="lg" aria-label="Meine Sprache">'+LNAMES.map(function(n,i){return '<option value="'+i+'"'+(i===lang?' selected':'')+'>'+(i===0?'Meine Sprache: Deutsch':n)+'</option>';}).join('')+'</select></div>'
+   +'<div class="navp"'+(navOpen?'':' hidden')+'>'+STEPS.map(function(x,i){return '<button type="button" class="nb" data-i="'+i+'">'+x.nav+'</button>';}).join('')+'</div></nav><main></main>';
+  var pz=document.getElementById('pz');function pzl(){pz.textContent=paused?'▶ '+I.play[0]:'❚❚ '+I.pause[0];pz.title=I[paused?'play':'pause'][lang];}pzl();pz.onclick=function(){paused=!paused;pzl();};
+  document.getElementById('nv').onclick=function(){navOpen=!navOpen;this.setAttribute('aria-expanded',navOpen);app.querySelector('.navp').hidden=!navOpen;};
+  document.getElementById('lg').onchange=function(){
+    /* Sprache umschalten, ohne Antworten zu löschen */
+    var old=lang;lang=+this.value;
+    [].forEach.call(app.querySelectorAll('.x'),function(x){var de=x.querySelector('.de').textContent;for(var k in I){if(I[k][0]===de){x.innerHTML='<span class="de">'+esc(de)+'</span>'+tr(k);break;}}});
+    pzl();};
+  [].forEach.call(app.querySelectorAll('.nb[data-i]'),function(b){b.onclick=function(){navOpen=false;go(+b.getAttribute('data-i'));};});
+  var main=app.querySelector('main'),c=el('<section class="card'+(s.disc?' disc':'')+'">'+(s.disc?'<div class="dtag">Zum Entdecken</div>':'')+'</section>');
+  main.appendChild(c);
+  if(s.id==='start'){
+    head(c,'intro_h','intro');
+    c.appendChild(el('<div class="grid2">'+fig('balkon','wo','Wo ist die Katze?')+fig('balkon','wohin','Wohin geht die Katze?')+'</div>'));
+    c.appendChild(el('<div class="msg info">'+t('hint1')+'</div>'));
+    c.appendChild(btn('start','',function(){go(1);}));
+  } else if(s.id==='end'){
+    head(c,'end_h','end_t');var sum=0,max=0,rows='';
+    STEPS.forEach(function(x,i){if(x.id.charAt(0)==='x'){var r=score[x.id];var n={x1:10,x2:13,x3:10,x4:12,x5:10,x6:10,x7:10}[x.id];max+=n;var v=r&&r.done?r.ok:null;if(v!==null)sum+=v;rows+='<tr><td>'+x.nav+'</td><td dir="ltr">'+(v===null?'—':v+' / '+n)+'</td></tr>';}});
+    c.appendChild(el('<div><div class="score" dir="ltr">'+sum+' / '+max+'</div><table>'+rows+'</table></div>'));
+  } else if(DISC[s.id]) DISC[s.id](c); else EX[s.id](c);
+  navMark();
+}
+render();
+requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
